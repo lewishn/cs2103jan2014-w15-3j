@@ -37,15 +37,15 @@ public class Logic{
 	private static void executeAdd(Task task) {
 		if(!isNullString(task)) {
 			list.add(task);
-			printFeedback(String.format(MESSAGE_ADDED, FILE_NAME, task.getDescription()));
+			DoThings.printFeedback(String.format(MESSAGE_ADDED, FILE_NAME, task.getDescription()));
 		} else {
-			printFeedback(MESSAGE_INVALID_ADD);
+			DoThings.printFeedback(MESSAGE_INVALID_ADD);
 		}	
 	}
 	
 	private static void executeClear() {
 		list = new ArrayList<Task>();
-		printFeedback(String.format(MESSAGE_CLEAR, FILE_NAME));
+		DoThings.printFeedback(String.format(MESSAGE_CLEAR, FILE_NAME));
 	}
 	
 	private static void executeSort(){
@@ -56,12 +56,12 @@ public class Logic{
 	private static void executeDisplay() {		
 		
 		if(fileIsEmpty()) {
-			printFeedback(String.format(MESSAGE_EMPTY, FILE_NAME));
+			DoThings.printFeedback(String.format(MESSAGE_EMPTY, FILE_NAME));
 		}
 		else{
 			executeSort();
 			String contentToDisplay = concatContentToDisplay();
-			printFeedback(contentToDisplay);
+			DoThings.printFeedback(contentToDisplay);
 		}
 	}
 
