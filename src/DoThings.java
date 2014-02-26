@@ -8,6 +8,10 @@ public class DoThings {
 		exit=false;
 		sc = new Scanner(System.in);
 	}
+	protect static void printFeedback(String message) {
+		System.out.println(message);
+	}
+
 	private static void readCommand() {
 		System.out.print("Command: ");
 		String input=sc.nextln();
