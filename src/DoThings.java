@@ -1,4 +1,4 @@
-import java.util.*
+import java.util.*;
 
 public class DoThings {
 	private static boolean exit;
@@ -20,12 +20,11 @@ public class DoThings {
 		if(capInput.equals("EXIT")) {
 			exit=true;
 		} else {
-			Parser ultimate = new Parser(input);
-			ultimate.parseCommands();
+			Parser.parseCommands();
 		}
 	}
 
-	public static void main() {
+	public static void main() throws Exception {
 		DoThings program = new DoThings();
 		program.run();
 	}

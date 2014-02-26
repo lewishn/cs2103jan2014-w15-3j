@@ -5,7 +5,7 @@ class Task implements Comparable<Task>{
 	private Calendar start_time=Calendar.getInstance();
 	private Calendar end_time=Calendar.getInstance();
 	private String description;
-	
+
 	public Task(String description, int date, int month, int year, int start, int end) {
 		this.start_time.set(year, month, date, start, start);
 		this.end_time.set(year, month, date, end, end);
@@ -23,8 +23,14 @@ class Task implements Comparable<Task>{
 	public Calendar getStart() {
 		return this.start_time;
 	}
-	public Integer getStartDate() {
+	public int getStartDate() {
 		return this.getStart().get(Calendar.DAY_OF_MONTH);
+	}
+	public int getStartMonth() {
+		return this.getStart().get(Calendar.MONTH);
+	}
+	public int getStartYear() {
+		return this.getStart().get(Calendar.YEAR);
 	}
 	public int getStartDay() {
 		return this.getStart().get(Calendar.DAY_OF_WEEK);
@@ -35,8 +41,14 @@ class Task implements Comparable<Task>{
 	public Calendar getEnd() {
 		return this.end_time;
 	}
-	public Integer getEndDate() {
+	public int getEndDate() {
 		return this.getEnd().get(Calendar.DAY_OF_MONTH);
+	}
+	public int getEndMonth() {
+		return this.getEnd().get(Calendar.MONTH);
+	}
+	public int getEndYear() {
+		return this.getEnd().get(Calendar.YEAR);
 	}
 	public int getEndDay() {
 		return this.getEnd().get(Calendar.DAY_OF_WEEK);
@@ -47,14 +59,19 @@ class Task implements Comparable<Task>{
 	public String getDescription() {
 		return this.description;
 	}
-	
-	/*
+
 	public String toString() {
-        String result = this.getDescription() + " || " + this.getDate() + " || " + this.getHours() + " || " + this.getHours();
-        return result;
+		String result; 
+		if (this.getStartDate()==0) {
+			result=this.getDescription();
+		}
+		else {
+			result= this.getDescription() + " || " + this.getStartDate() + "-" + this.getStartMonth() 
+					+"-"+ this.getStartYear()+ " "+this.getStartHours() + " || " + this.getEndDate() + "-"
+					+ this.getEndMonth()+ this.getEndYear() + " " + this.getEndHours();
+		}
+		return result;
 	}
-	*/
-	
 	public int compareTo(Task abc) {
 		return this.start_time.compareTo(abc.start_time);
 	}
