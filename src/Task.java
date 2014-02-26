@@ -2,24 +2,26 @@ import java.util.*;
 import java.lang.*;
 
 class Task implements Comparable<Task>{
-	private Calendar start_time=Calendar.getInstance();
-	private Calendar end_time=Calendar.getInstance();
+	private Calendar start_time;
+	private Calendar end_time;
 	private String description;
 	// for tasks with time and date range
-	public Task(String description, int date, int month, int year, int start, int end) {
-		this.start_time.set(year, month, date, start, 0);
-		this.end_time.set(year, month, date, end, 0);
+	public Task(String description, Calendar start, Calendar end) {
+		this.start_time=start;
+		this.end_time=end;
 		this.description=description;
 	}
 	// for deadlines
-	public Task(String description, int date, int month, int year, int start) {
-		this.start_time.set(year, month, date, start, 0);
+	public Task(String description, Calendar start) {
+		this.start_time=start;
 		this.description=description;
 		this.end_time.set(0,0,0,0,0);
 	}
 	// for floating tasks
 	public Task(String description) {
-		this.description=description;		
+		this.description=description;	
+		this.end_time.set(0,0,0,0,0);
+		this.start_time.set(0,0,0,0,0);
 	}
 	public void setDescription(String description) {
 		this.description=description;
