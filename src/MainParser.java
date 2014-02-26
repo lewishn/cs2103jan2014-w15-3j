@@ -24,7 +24,7 @@ class MainParser {
 			return CommandType.DELETE;
 		} else {
 			return CommandType.CREATE;
-		}
+		} 
 	}
 	
 	public static void main(String args[]){
