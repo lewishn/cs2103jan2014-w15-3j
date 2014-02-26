@@ -26,8 +26,10 @@ public class Logic{
 	private static final String MESSAGE_INVALID_SORT = "Usage: sort";
 	private static final String MESSAGE_INVALID_SEARCH = "Usage: search <keyword>";
 	
+	private static final int DELETE_ARRAY_OFFSET = 1;
 	private static ArrayList<Task> list;
 	static String FILE_NAME = "";
+	
 	
 	private static Task createTask(String description, int date, int month, int year, int start, int end){
 		Task task = new Task(description, date, month, year, start, end);
@@ -64,6 +66,25 @@ public class Logic{
 			DoThings.printFeedback(contentToDisplay);
 		}
 	}
+	
+	private static void executeDelete(int index) {
+		executeDisplay();
+		// Method will exit if index is out of range
+		if(unableToDelete(index)) {
+			DoThings.printFeedback(String.format(MESSAGE_INVALID_DELETE_NUMBER));
+		}
+		else{
+			String deletedString = list.get(index).getDescription();
+			list.remove(index);
+			DoThings.printFeedback(String.format(MESSAGE_DELETED, FILE_NAME, deletedString));
+		}
+	}
+	
+	private static void executeUpdate(int index){
+		executeDisplay();
+		
+		
+	}
 
 	private static String concatContentToDisplay() {
 		String contentToDisplay="";
@@ -79,6 +100,14 @@ public class Logic{
 			index++;
 		}
 		return contentToDisplay;
+	}
+	
+	private static boolean unableToDelete(int index) {
+		if(index + 1 <= list.size() && list.size() > 0 && index >= 0) {
+			return false;
+		} else {
+			return true;
+		}
 	}
 	
 	private static boolean isNullString(Task task) {
