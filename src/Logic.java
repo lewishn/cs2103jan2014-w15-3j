@@ -55,21 +55,21 @@ public class Logic {
 		}	
 	}
 	
-	private static void displayTaskList(File fileName) throws IOException {
-		if(list.isEmpty())	
-			System.out.println(fileName + " is empty");
-		else{
-			int lineNumber = 1;
-			int numberOfLineInText = list.size();
-
-			while(lineNumber <= numberOfLineInText){
-				int lineNumberInArray = lineNumber - 1;
-				Task line = list.get(lineNumberInArray);
-				System.out.println(lineNumber + ". " + line);
-				lineNumber++;
-			}
+	private static String executeDisplay(Task task) {
+		if(!isNullString(task)) {
+			return MESSAGE_INVALID_DISPLAY;
 		}
-	}	
+		
+		if(fileIsEmpty()) {
+			return String.format(MESSAGE_EMPTY, FILE_NAME);
+		}
+		
+		String contentToDisplay = concatContentToDisplay();
+		
+		return contentToDisplay;
+	}
+	
+	
 	private static void updateFileOutput(File fileName) throws IOException {
 		int numberOfLine = list.size();
 
@@ -81,11 +81,24 @@ public class Logic {
 
 		outputFile.close();
 	}
-	private static void invalidCommand() 
-	{
-		System.out.printf(MESSAGE_INVALID);
+	
+	// Method concats content to display to user
+	private static String concatContentToDisplay() {
+		String contentToDisplay="";
+		int index = 0;
+		for(int i = 1; i <= list.size(); i++) {
+			if(index==0){
+				contentToDisplay = contentToDisplay.concat(String.format(MESSAGE_DISPLAY, i, list.get(i-1)));
+				index++;
+			}
+			else{
+				contentToDisplay = contentToDisplay.concat("\n"+String.format(MESSAGE_DISPLAY, i, list.get(i-1)));
+			}
+			index++;
+		}
+		return contentToDisplay;
 	}
-
+	
 	private static boolean isNullString(Task task) {
 		if(task.getDescription() == null) {
 			return true;
@@ -96,4 +109,14 @@ public class Logic {
 			return false;
 		}
 	}
+	
+	private static boolean fileIsEmpty() {
+		if(list.isEmpty()) {
+			return true;
+		} else {
+			return false;
+		}
+	}
 }
+
+
