@@ -47,10 +47,14 @@ class Task implements Comparable<Task>{
 	public String getDescription() {
 		return this.description;
 	}
+	
+	/*
 	public String toString() {
         String result = this.getDescription() + " || " + this.getDate() + " || " + this.getHours() + " || " + this.getHours();
         return result;
 	}
+	*/
+	
 	public int compareTo(Task abc) {
 		return this.start_time.compareTo(abc.start_time);
 	}
