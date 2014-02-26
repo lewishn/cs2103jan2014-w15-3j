@@ -43,6 +43,11 @@ public class Logic {
 		}	
 	}
 	
+	private static String executeClear() {
+		list = new ArrayList<Task>();
+		return String.format(MESSAGE_CLEAR, FILE_NAME);
+	}
+	
 	private static void executeSort(){
 		java.util.Collections.sort(list, Collator.getInstance());
 
@@ -59,8 +64,7 @@ public class Logic {
 			return contentToDisplay;
 		}
 	}
-	
-	// Method concats content to display to user
+
 	private static String concatContentToDisplay() {
 		String contentToDisplay="";
 		int index = 0;
