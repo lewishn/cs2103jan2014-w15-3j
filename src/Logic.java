@@ -35,13 +35,14 @@ public class Logic{
 	};
 	
 	protected static Task createTask(String description, Calendar startOfTask, Calendar endOfTask){
-		Task task = new Task(description, startOfTask, endOfTask);
+		Task task = new Task();
 		return task;
 	}
 	
 	private static void executeAdd(Task task) {
 		if(!isNullString(task)) {
 			list.add(task);
+			executeSort();
 			DoThings.printFeedback(String.format(MESSAGE_ADDED, FILE_NAME, task.getDescription()));
 		} else {
 			DoThings.printFeedback(MESSAGE_INVALID_ADD);
@@ -106,6 +107,7 @@ public class Logic{
 		else{
 			String deletedString = list.get(index).getDescription();
 			list.remove(index);
+			executeSort();
 			DoThings.printFeedback(String.format(MESSAGE_DELETED, FILE_NAME, deletedString));
 		}
 	}
@@ -123,10 +125,13 @@ public class Logic{
 		UPDATE_TYPE update_type = determineUpdateType(update);
 		switch(update_type){
 		case TIME:
+			executeSort();
 			break;
 		case DATE:
+			executeSort();
 			break;
 		case DESCRIPTION:
+			executeSort();
 			break;
 		default:
 			break;
