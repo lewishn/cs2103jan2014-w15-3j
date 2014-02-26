@@ -2,21 +2,20 @@ import java.util.*;
 import java.lang.*;
 
 class Task {
-	private String title;
 	private Calendar start_time=Calendar.getInstance();
 	private Calendar end_time=Calendar.getInstance();
 	private String description;
 	
-	public void Task(String title, int date, int month, int start, int end, String description) {
-		this.title=title;
-		this.start_time.set(2014, month, date, start, start);
-		this.end_time.set(2014, month, date, end, end);
+	public void Task(String description, int date, int month, int year, int start, int end) {
+		this.start_time.set(year, month, date, start, start);
+		this.end_time.set(year, month, date, end, end);
 		this.description=description;
 	}
 	
-	public String getTitle() {
-		return this.title;
+	public void Task(String description) {
+		this.description=description;
 	}
+
 	public Calendar getStart() {
 		return this.start_time;
 	}
