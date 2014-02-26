@@ -34,8 +34,8 @@ public class Logic{
 		TIME, DATE, DESCRIPTION
 	};
 	
-	private static Task createTask(String description, int date, int month, int year, int start, int end){
-		Task task = new Task(description, date, month, year, start, end);
+	protected static Task createTask(String description, Calendar startOfTask, Calendar endOfTask){
+		Task task = new Task(description, startOfTask, endOfTask);
 		return task;
 	}
 	
