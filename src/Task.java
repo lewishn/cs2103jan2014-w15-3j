@@ -5,21 +5,55 @@ class Task implements Comparable<Task>{
 	private Calendar start_time=Calendar.getInstance();
 	private Calendar end_time=Calendar.getInstance();
 	private String description;
-
+	// for tasks with time and date range
 	public Task(String description, int date, int month, int year, int start, int end) {
-		this.start_time.set(year, month, date, start, start);
-		this.end_time.set(year, month, date, end, end);
+		this.start_time.set(year, month, date, start, 0);
+		this.end_time.set(year, month, date, end, 0);
 		this.description=description;
 	}
+	// for deadlines
 	public Task(String description, int date, int month, int year, int start) {
-		this.start_time.set(year, month, date, start, start);
+		this.start_time.set(year, month, date, start, 0);
 		this.description=description;
-		this.end_time.clear();
+		this.end_time.set(0,0,0,0,0);
 	}
+	// for floating tasks
 	public Task(String description) {
+		this.description=description;		
+	}
+	public void setDescription(String description) {
 		this.description=description;
 	}
-
+	public void setStartDate(int date) {
+		this.start_time.set(Calendar.DAY_OF_MONTH, date);
+	}
+	public void setStartMonth(int month) {
+		this.start_time.set(Calendar.MONTH, month);
+	}
+	public void setStartYear(int year) {
+		this.start_time.set(Calendar.YEAR, year);
+	}
+	public void setStartHour(int hour) {
+		this.start_time.set(Calendar.HOUR_OF_DAY, hour);
+	}
+	public void setStartMinutes(int minutes) {
+		this.start_time.set(Calendar.MINUTE, minutes);
+	}
+	public void setEndDate(int date) {
+		this.end_time.set(Calendar.DAY_OF_MONTH, date);
+	}
+	public void setEndMonth(int month) {
+		this.end_time.set(Calendar.MONTH, month);
+	}
+	public void setEndYear(int year) {
+		this.end_time.set(Calendar.YEAR, year);
+	}
+	public void setEndHour(int hour) {
+		this.end_time.set(Calendar.HOUR_OF_DAY, hour);
+	}
+	public void setEndMinutes(int minutes) {
+		this.start_time.set(Calendar.MINUTE, minutes);
+	}
 	public Calendar getStart() {
 		return this.start_time;
 	}
