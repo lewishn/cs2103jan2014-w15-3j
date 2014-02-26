@@ -9,7 +9,7 @@ public class Parser {
 	}
 	
 	enum CommandType {
-		ADD, DELETE, DISPLAY, CLEAR, SORT, SEARCH, EXIT, INVALID, UPDATE;
+		ADD, DELETE, DISPLAY, CLEAR, SEARCH, EXIT, INVALID, UPDATE;
 	}
 	private static CommandType getCommandType(String com){
 		if ( com.equalsIgnoreCase("\\add") || com.equalsIgnoreCase("\\a") ) {
@@ -31,20 +31,28 @@ public class Parser {
 
 		switch (commandType) {
 			case ADD:
-				//add
-				break;
-			case DISPLAY:
-				//display
-				break;
-			case UPDATE:
-				//call edit function
+				
 				break;
 			case DELETE:
 				//call delete function
 				break;
-			case: INVALID:
+			case DISPLAY:
+				//display
+				break;
+			case CLEAR:
+				//clear all
+				break;
+			case SEARCH:
+				//search for keyword
+				break;
+			case EXIT:
+				//exit
+				break;
+			case INVALID:
 				//print error msg
-			}
+				break;	
+			case UPDATE:
+				//call edit function			
 		}
 	}
 }
