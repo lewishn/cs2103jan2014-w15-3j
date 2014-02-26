@@ -3,7 +3,7 @@ import java.util.*;
 import java.lang.*;
 import java.io.*;
 
-public class Logic {
+public class Logic{
 	private static final String MESSAGE_INVALID = "Invalid command.\nPlease input the available command: \n 1. add\n 2. display\n 3. update\n 4. delete\n";
 	private static final String MESSAGE_WELCOME = "Welcome to TextBuddy. %s is ready for use";
 	private static final String MESSAGE_ADDED = "added to my %s: \"%s\"";
@@ -26,8 +26,6 @@ public class Logic {
 	private static final String MESSAGE_INVALID_SORT = "Usage: sort";
 	private static final String MESSAGE_INVALID_SEARCH = "Usage: search <keyword>";
 	
-	//printFeedback()
-	
 	private static ArrayList<Task> list;
 	static String FILE_NAME = "";
 	
@@ -39,15 +37,15 @@ public class Logic {
 	private static void executeAdd(Task task) {
 		if(!isNullString(task)) {
 			list.add(task);
-			return String.format(MESSAGE_ADDED, FILE_NAME, task.getDescription());
+			printFeedback(String.format(MESSAGE_ADDED, FILE_NAME, task.getDescription()));
 		} else {
-			return MESSAGE_INVALID_ADD;
+			printFeedback(MESSAGE_INVALID_ADD);
 		}	
 	}
 	
 	private static void executeClear() {
 		list = new ArrayList<Task>();
-		return String.format(MESSAGE_CLEAR, FILE_NAME);
+		printFeedback(String.format(MESSAGE_CLEAR, FILE_NAME));
 	}
 	
 	private static void executeSort(){
@@ -58,12 +56,12 @@ public class Logic {
 	private static void executeDisplay() {		
 		
 		if(fileIsEmpty()) {
-			return String.format(MESSAGE_EMPTY, FILE_NAME);
+			printFeedback(String.format(MESSAGE_EMPTY, FILE_NAME));
 		}
 		else{
 			executeSort();
 			String contentToDisplay = concatContentToDisplay();
-			return contentToDisplay;
+			printFeedback(contentToDisplay);
 		}
 	}
 

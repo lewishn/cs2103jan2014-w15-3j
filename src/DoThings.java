@@ -8,13 +8,14 @@ public class DoThings {
 		exit=false;
 		sc = new Scanner(System.in);
 	}
-	protect static void printFeedback(String message) {
+	
+	protected static void printFeedback(String message) {
 		System.out.println(message);
 	}
 
 	private static void readCommand() {
 		System.out.print("Command: ");
-		String input=sc.nextln();
+		String input=sc.nextLine();
 		String capInput=input.toUpperCase();
 		if(capInput.equals("EXIT")) {
 			exit=true;
@@ -28,7 +29,7 @@ public class DoThings {
 		DoThings program = new DoThings();
 		program.run();
 	}
-	public run() throws Exception {
+	public void run() throws Exception {
 		System.out.println("Get ready to Do Things!");
 		while(exit==false) {
 			readCommand();
