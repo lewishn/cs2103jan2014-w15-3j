@@ -25,10 +25,14 @@ public class Logic {
 	private static final String MESSAGE_INVALID_EXIT = "Usage: exit";
 	private static final String MESSAGE_INVALID_SORT = "Usage: sort";
 	private static final String MESSAGE_INVALID_SEARCH = "Usage: search <keyword>";
-	private static final String MESSAGE_COMMAND = "command: ";
 	
 	private static ArrayList<Task> list;
 	static String FILE_NAME = "";
+	
+	private static Task createTask(String description, int date, int month, int year, int start, int end){
+		Task task = new Task(description, date, month, year, start, end);
+		return task;
+	}
 	
 	private static String executeAdd(Task task) {
 		if(!isNullString(task)) {
@@ -39,7 +43,7 @@ public class Logic {
 		}	
 	}
 	
-	public static void executeSort(){
+	private static void executeSort(){
 		java.util.Collections.sort(list, Collator.getInstance());
 
 	}
