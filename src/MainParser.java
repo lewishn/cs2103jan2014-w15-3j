@@ -8,24 +8,44 @@ import java.util.Scanner;
 
 
 class MainParser {
-	
-	private enum CommandType{
-		CREATE, READ, UPDATE, DELETE, SEARCH, EXIT;
+	private static final String DEFAULT_ADD = "\\add";
+	private static final String DEFAULT_ADD2 = "\\a";
+	private static final String DEFAULT_UPDATE = "\\update";
+	private static final String DEFAULT_UPDATE2 = "\\u";
+	private static final String DEFAULT_DELETE = "\\delete";
+	private static final String DEFAULT_DELETE2 = "\\d";
+	private static final String DEFAULT_LIST = "\\list";
+	private static final String DEFAULT_LIST2 = "\\l";
+	private static final String DEFAULT_UNDO = "\\undo";
+	private static final String DEFAULT_UNDO2 = "\\un";
+	private static final String DEFAULT_CUSTOM = "\\custom";
+	private static final String DEFAULT_CUSTOM2 = "\\cc";
+	private static final String DEFAULT_HELP = "\\help";
+	private static final String DEFAULT_HELP2 = "\\h";
+
+	private enum CommandType {
+		ADD, DELETE, UPDATE, LIST, UNDO, CUSTOM, HELP;
 	}
-	
-	private static CommandType getCommandType(String com){
-		if ( com.equalsIgnoreCase("\\add") || com.equalsIgnoreCase("\\a") ) {
+
+	private static CommandType getCommandType(String com) {
+		ArrayList<ArrayList<String>> customCommand = DiskIO.readCustomCommands();
+		
+		if( com.equals(DEFAULT_ADD) || com.equals(DEFAULT_ADD2) || customCommad.get(0).contains(com)) {
 			return CommandType.CREATE;
-		} else if ( com.equalsIgnoreCase("\\list") || com.equalsIgnoreCase("\\l") ) {
-			return CommandType.READ;
-		} else if ( com.equalsIgnoreCase("\\update") || com.equalsIgnoreCase("\\u") ) {
+		} else if( com.equals(DEFAULT_LIST) || com.equals(DEFAULT_LIST2) || customCommad.get(1).contains(com)) {
+			return CommandType.LIST;
+		} else if( com.equals(DEFAULT_UPDATE) || com.equals(DEFAULT_UPDATE2) || customCommad.get(2).contains(com)) {
 			return CommandType.UPDATE;
-		} else if ( com.equalsIgnoreCase("\\delete") || com.equalsIgnoreCase("\\d") ) {
+		} else if( com.equals(DEFAULT_DELETE) || com.equals(DEFAULT_DELETE2) || customCommad.get(3).contains(com)) {
 			return CommandType.DELETE;
-		} else {
-			return CommandType.CREATE;
-		} 
-	}
+		} else if( com.equals(DEFAULT_UNDO) || com.equals(DEFAULT_UNDO2) || customCommad.get(4).contains(com)) {
+			return CommandType.UNDO;
+		} else if( com.equals(DEFAULT_CUSTOM) || com.equals(DEFAULT_CUSTOM2) || customCommad.get(5).contains(com)) {
+			return CommandType.CUSTOM;
+		} else if( com.equals(DEFAULT_HELP) || com.equals(DEFAULT_HELP2) || customCommad.get(6).contains(com)) {
+			return CommandType.HELP;
+		}
+	} 
 	
 	public static void main(String args[]){
 		Scanner sc = new Scanner(System.in);
