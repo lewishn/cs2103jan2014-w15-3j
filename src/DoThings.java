@@ -16,12 +16,7 @@ public class DoThings {
 	private static void readCommand() {
 		System.out.print("Command: ");
 		String input=sc.nextLine();
-		String capInput=input.toUpperCase();
-		if(capInput.equals("EXIT")) {
-			exit=true;
-		} else {
-			Parser.parseCommands();
-		}
+		Parser.parseCommands(input);
 	}
 
 	public static void main() throws Exception {

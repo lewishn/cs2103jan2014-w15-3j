@@ -1,12 +1,6 @@
 import java.util.*;
 
 public class Parser {
-	private static String input;
-	private static ArrayList<String> parsedInput;
-
-	public Parser(String userInput) {
-		input = userInput;
-	}
 	
 	enum CommandType {
 		ADD, DELETE, DISPLAY, CLEAR, SEARCH, EXIT, INVALID, UPDATE;
@@ -24,14 +18,14 @@ public class Parser {
 			return CommandType.INVALID;
 		} 
 	}
-	protected static void parseCommands() {
-		parsedInput = new ArrayList<String>(Arrays.asList(input.split(" ", 2)));
+	protected static void parseCommands(String userInput) {
+		ArrayList<String> parsedInput = new ArrayList<String>(Arrays.asList(userInput.split(" ", 2)));
 		String command = parsedInput.get(0); 
 		CommandType commandType = getCommandType(command);
 
 		switch (commandType) {
 			case ADD:
-				
+				addTask(parsedInput.get(1));
 				break;
 			case DELETE:
 				//call delete function
@@ -54,5 +48,26 @@ public class Parser {
 			case UPDATE:
 				//call edit function			
 		}
+	}
+	private static void addTask(String parsedUserInput) {
+		String description, upperCasedParsedUserInput;
+		Calendar startOfTask, endOfTask;
+		startOfTask=Calendar.getInstance();
+		endOfTask=Calendar.getInstance();
+		
+		parsedUserInput = parsedUserInput.trim();
+		upperCasedParsedUserInput = parsedUserInput.toUpperCase();
+		
+		ArrayList<String> keyWordIdentifiers = new ArrayList<String>();
+		int index=0;
+		for(int i=0; i<keyWordIdentifiers.size(); i++) {
+			index=upperCasedParsedUserInput.indexOf(keyWordIdentifiers.get(i));
+			
+		}
+		
+		// find date 
+		// find time
+		// find description
+		Logic.executeAdd(createTask(description, startOfTask, endOfTask));
 	}
 }
