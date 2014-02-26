@@ -25,12 +25,17 @@ public class Logic{
 	private static final String MESSAGE_INVALID_EXIT = "Usage: exit";
 	private static final String MESSAGE_INVALID_SORT = "Usage: sort";
 	private static final String MESSAGE_INVALID_SEARCH = "Usage: search <keyword>";
-	
+
+	private static final int DELETE_ARRAY_OFFSET = 1;
 	private static ArrayList<Task> list;
 	static String FILE_NAME = "";
 	
-	private static Task createTask(String description, int date, int month, int year, int start, int end){
-		Task task = new Task(description, date, month, year, start, end);
+	enum UPDATE_TYPE{
+		TIME, DATE, DESCRIPTION
+	};
+	
+	protected static Task createTask(String description, Calendar startOfTask, Calendar endOfTask){
+		Task task = new Task(description, startOfTask, endOfTask);
 		return task;
 	}
 	
@@ -41,6 +46,17 @@ public class Logic{
 		} else {
 			DoThings.printFeedback(MESSAGE_INVALID_ADD);
 		}	
+	}
+	
+	private static boolean isNullString(Task task) {
+		if(task.getDescription() == null) {
+			return true;
+		}
+		if(task.getDescription().equals("")) {
+			return true;
+		} else {
+			return false;
+		}
 	}
 	
 	private static void executeClear() {
@@ -64,7 +80,7 @@ public class Logic{
 			DoThings.printFeedback(contentToDisplay);
 		}
 	}
-
+	
 	private static String concatContentToDisplay() {
 		String contentToDisplay="";
 		int index = 0;
@@ -81,14 +97,51 @@ public class Logic{
 		return contentToDisplay;
 	}
 	
-	private static boolean isNullString(Task task) {
-		if(task.getDescription() == null) {
+	private static void executeDelete(int index) {
+		executeDisplay();
+		// Method will exit if index is out of range
+		if(unableToDelete(index)) {
+			DoThings.printFeedback(String.format(MESSAGE_INVALID_DELETE_NUMBER));
+		}
+		else{
+			String deletedString = list.get(index).getDescription();
+			list.remove(index);
+			DoThings.printFeedback(String.format(MESSAGE_DELETED, FILE_NAME, deletedString));
+		}
+	}
+	
+	private static boolean unableToDelete(int index) {
+		if(index + 1 <= list.size() && list.size() > 0 && index >= 0) {
+			return false;
+		} else {
 			return true;
 		}
-		if(task.getDescription().equals("")) {
-			return true;
-		} else {
-			return false;
+	}
+	
+	private static void executeUpdate(int index, String update, String updateText){
+		executeDisplay();
+		UPDATE_TYPE update_type = determineUpdateType(update);
+		switch(update_type){
+		case TIME:
+			break;
+		case DATE:
+			break;
+		case DESCRIPTION:
+			break;
+		default:
+			break;
+		}
+	}
+	
+	private static UPDATE_TYPE determineUpdateType(String inputString) {
+		if(inputString.equalsIgnoreCase("time")){
+			return UPDATE_TYPE.TIME;
+		}
+		else if(inputString.equalsIgnoreCase("date")){
+			return UPDATE_TYPE.DATE;
+		}
+		else{
+			return UPDATE_TYPE.DESCRIPTION;
 		}
 	}
 	
