@@ -1,22 +1,25 @@
 import java.util.*;
 import java.lang.*;
 
-class Task {
-	private String title;
+class Task implements Comparable<Task>{
 	private Calendar start_time=Calendar.getInstance();
 	private Calendar end_time=Calendar.getInstance();
 	private String description;
 	
-	public void Task(String title, int date, int month, int start, int end, String description) {
-		this.title=title;
-		this.start_time.set(2014, month, date, start, start);
-		this.end_time.set(2014, month, date, end, end);
+	public Task(String description, int date, int month, int year, int start, int end) {
+		this.start_time.set(year, month, date, start, start);
+		this.end_time.set(year, month, date, end, end);
 		this.description=description;
 	}
-	
-	public String getTitle() {
-		return this.title;
+	public Task(String description, int date, int month, int year, int start) {
+		this.start_time.set(year, month, date, start, start);
+		this.description=description;
+		this.end_time.clear();
 	}
+	public Task(String description) {
+		this.description=description;
+	}
+
 	public Calendar getStart() {
 		return this.start_time;
 	}
@@ -45,7 +48,10 @@ class Task {
 		return this.description;
 	}
 	public String toString() {
-        String result = this.getTitle() + " || " + this.getDate() + " || " + this.getHours() + " || " + this.getHours();
+        String result = this.getDescription() + " || " + this.getDate() + " || " + this.getHours() + " || " + this.getHours();
         return result;
+	}
+	public int compareTo(Task abc) {
+		return this.start_time.compareTo(abc.start_time);
 	}
 }
