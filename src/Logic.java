@@ -30,10 +30,6 @@ public class Logic {
 	private static ArrayList<Task> list;
 	static String FILE_NAME = "";
 	
-	enum userCommands{
-		ADD, DISPLAY, DELETE, SEARCH, UPDATE, EXIT, INVALID, UNDO
-	};
-
 	private static String executeAdd(Task task) {
 		if(!isNullString(task)) {
 			list.add(task);
