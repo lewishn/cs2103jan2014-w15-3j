@@ -30,12 +30,8 @@ public class Logic{
 	private static ArrayList<Task> list;
 	static String FILE_NAME = "";
 	
-	enum UPDATE_TYPE{
-		TIME, DATE, DESCRIPTION
-	};
-	
-	protected static Task createTask(String description, int date, int month, int year, int start, int end){
-		Task task = new Task(description, date, month, year, start, end);
+	protected static Task createTask(String description, Calendar startOfTask, Calendar endOfTask){
+		Task task = new Task(description, startOfTask, endOfTask);
 		return task;
 	}
 	
@@ -120,7 +116,25 @@ public class Logic{
 		}
 	}
 	
-	private static void executeUpdate(int index, String update, String updateText){
+	private static void executeUpdate(int index, String textToBeUpdated, Calendar startOfTask, Calendar endOfTask){
+		
+	}
+	
+	private static boolean fileIsEmpty() {
+		if(list.isEmpty()) {
+			return true;
+		} else {
+			return false;
+		}
+	}
+	
+/*
+  	enum UPDATE_TYPE{
+		TIME, DATE, DESCRIPTION
+	};
+  
+  
+ 	private static void executeUpdate(int index, String update, String updateText){
 		executeDisplay();
 		UPDATE_TYPE update_type = determineUpdateType(update);
 		switch(update_type){
@@ -149,40 +163,8 @@ public class Logic{
 			return UPDATE_TYPE.DESCRIPTION;
 		}
 	}
+*/	
 	
-	private static boolean fileIsEmpty() {
-		if(list.isEmpty()) {
-			return true;
-		} else {
-			return false;
-		}
-	}
-	
-	/*
-	private static void createTextFile() throws IOException {
-		File fileName = new File("todolist");
-		BufferedWriter outputFile;
-
-		boolean hasFile = fileName.exists();
-
-		if(!hasFile){
-			outputFile = new BufferedWriter(new FileWriter(fileName));
-			outputFile.close();
-		}
-	}
-	
-	private static void updateFileOutput(File fileName) throws IOException {
-		int numberOfLine = list.size();
-
-		BufferedWriter outputFile = new BufferedWriter(new FileWriter(fileName));
-
-		for(int i=0;i<numberOfLine;i++){
-			outputFile.write(list.get(i) + "\n");
-		}
-
-		outputFile.close();
-	}
-	*/
 }
 
 
