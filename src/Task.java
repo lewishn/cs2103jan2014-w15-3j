@@ -46,8 +46,7 @@ class Task {
 		return this.description;
 	}
 	public String toString() {
-        String result = this.getTitle()+" || "+this.getDate()+" || "+this.getHours()+" || "
-        		+this.getHours()+" || ";
+        String result = this.getTitle() + " || " + this.getDate() + " || " + this.getHours() + " || " + this.getHours();
         return result;
 	}
 }
