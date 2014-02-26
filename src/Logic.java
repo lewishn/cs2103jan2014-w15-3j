@@ -26,6 +26,8 @@ public class Logic {
 	private static final String MESSAGE_INVALID_SORT = "Usage: sort";
 	private static final String MESSAGE_INVALID_SEARCH = "Usage: search <keyword>";
 	
+	//printFeedback()
+	
 	private static ArrayList<Task> list;
 	static String FILE_NAME = "";
 	
@@ -34,7 +36,7 @@ public class Logic {
 		return task;
 	}
 	
-	private static String executeAdd(Task task) {
+	private static void executeAdd(Task task) {
 		if(!isNullString(task)) {
 			list.add(task);
 			return String.format(MESSAGE_ADDED, FILE_NAME, task.getDescription());
@@ -43,7 +45,7 @@ public class Logic {
 		}	
 	}
 	
-	private static String executeClear() {
+	private static void executeClear() {
 		list = new ArrayList<Task>();
 		return String.format(MESSAGE_CLEAR, FILE_NAME);
 	}
@@ -53,7 +55,7 @@ public class Logic {
 
 	}
 	
-	private static String executeDisplay() {		
+	private static void executeDisplay() {		
 		
 		if(fileIsEmpty()) {
 			return String.format(MESSAGE_EMPTY, FILE_NAME);
