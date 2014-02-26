@@ -22,13 +22,28 @@ public class Logic {
 		}
 	}
 	private static userCommands checkCommandType(String commandInputted) {
-		if (commandInputted.equalsIgnoreCase("ADD"))			return userCommands.ADD;
-		else if (commandInputted.equalsIgnoreCase("DISPLAY")) 	return userCommands.DISPLAY;
-		else if (commandInputted.equalsIgnoreCase("DELETE")) 	return userCommands.DELETE;
-		else if (commandInputted.equalsIgnoreCase("UPDATE"))	return userCommands.UPDATE;
-		else if (commandInputted.equalsIgnoreCase("UNDO"))		return userCommands.UNDO;
-		else if (commandInputted.equalsIgnoreCase("EXIT"))		return userCommands.EXIT;
-		return userCommands.INVALID;
+		if (commandInputted.equalsIgnoreCase("ADD")){
+			return userCommands.ADD;
+		}
+		else if (commandInputted.equalsIgnoreCase("DISPLAY")){
+			return userCommands.DISPLAY;
+		}
+		else if (commandInputted.equalsIgnoreCase("DELETE")){
+			return userCommands.DELETE;
+		}
+		else if (commandInputted.equalsIgnoreCase("UPDATE")){
+			return userCommands.UPDATE;
+		}
+		else if (commandInputted.equalsIgnoreCase("UNDO")){
+			return userCommands.UNDO;
+		}
+		else if (commandInputted.equalsIgnoreCase("EXIT")){
+			return userCommands.EXIT;
+		}
+		else{
+			return userCommands.INVALID;
+		}
+		
 	}
 	private static void executeCommands(Scanner scanner, File fileName)
 			throws IOException, Error {
