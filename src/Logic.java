@@ -1,3 +1,4 @@
+import java.text.Collator;
 import java.util.*;
 import java.lang.*;
 import java.io.*;
@@ -32,19 +33,6 @@ public class Logic {
 	enum userCommands{
 		ADD, DISPLAY, DELETE, SEARCH, UPDATE, EXIT, INVALID, UNDO
 	};
-	
-	/*
-	private static void createTextFile() throws IOException {
-		File fileName = new File("todolist");
-		BufferedWriter outputFile;
-
-		boolean hasFile = fileName.exists();
-
-		if(!hasFile){
-			outputFile = new BufferedWriter(new FileWriter(fileName));
-			outputFile.close();
-		}
-	}*/
 
 	private static String executeAdd(Task task) {
 		if(!isNullString(task)) {
@@ -55,31 +43,21 @@ public class Logic {
 		}	
 	}
 	
-	private static String executeDisplay(Task task) {
-		if(!isNullString(task)) {
-			return MESSAGE_INVALID_DISPLAY;
-		}
+	public static void executeSort(){
+		java.util.Collections.sort(list, Collator.getInstance());
+
+	}
+	
+	private static String executeDisplay() {		
 		
 		if(fileIsEmpty()) {
 			return String.format(MESSAGE_EMPTY, FILE_NAME);
 		}
-		
-		String contentToDisplay = concatContentToDisplay();
-		
-		return contentToDisplay;
-	}
-	
-	
-	private static void updateFileOutput(File fileName) throws IOException {
-		int numberOfLine = list.size();
-
-		BufferedWriter outputFile = new BufferedWriter(new FileWriter(fileName));
-
-		for(int i=0;i<numberOfLine;i++){
-			outputFile.write(list.get(i) + "\n");
+		else{
+			executeSort();
+			String contentToDisplay = concatContentToDisplay();
+			return contentToDisplay;
 		}
-
-		outputFile.close();
 	}
 	
 	// Method concats content to display to user
@@ -117,6 +95,32 @@ public class Logic {
 			return false;
 		}
 	}
+	
+	/*
+	private static void createTextFile() throws IOException {
+		File fileName = new File("todolist");
+		BufferedWriter outputFile;
+
+		boolean hasFile = fileName.exists();
+
+		if(!hasFile){
+			outputFile = new BufferedWriter(new FileWriter(fileName));
+			outputFile.close();
+		}
+	}
+	
+	private static void updateFileOutput(File fileName) throws IOException {
+		int numberOfLine = list.size();
+
+		BufferedWriter outputFile = new BufferedWriter(new FileWriter(fileName));
+
+		for(int i=0;i<numberOfLine;i++){
+			outputFile.write(list.get(i) + "\n");
+		}
+
+		outputFile.close();
+	}
+	*/
 }
 
 
