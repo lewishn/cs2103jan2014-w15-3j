@@ -27,6 +27,7 @@ public class Logic {
 	private static final String MESSAGE_COMMAND = "command: ";
 	
 	private static ArrayList<Task> list;
+	static String FILE_NAME = "";
 	
 	enum userCommands{
 		ADD, DISPLAY, DELETE, SEARCH, UPDATE, EXIT, INVALID, UNDO
@@ -44,97 +45,11 @@ public class Logic {
 			outputFile.close();
 		}
 	}*/
-	
-	/*
-	private static userCommands checkCommandType(String commandInputted) {
-		if (commandInputted.equalsIgnoreCase("ADD")){
-			return userCommands.ADD;
-		}
-		else if (commandInputted.equalsIgnoreCase("DISPLAY")){
-			return userCommands.DISPLAY;
-		}
-		else if (commandInputted.equalsIgnoreCase("DELETE")){
-			return userCommands.DELETE;
-		}
-		else if (commandInputted.equalsIgnoreCase("UPDATE")){
-			return userCommands.UPDATE;
-		}
-		else if (commandInputted.equalsIgnoreCase("UNDO")){
-			return userCommands.UNDO;
-		}
-		else if (commandInputted.equalsIgnoreCase("EXIT")){
-			return userCommands.EXIT;
-		}
-		else{
-			return userCommands.INVALID;
-		}
-		
-	}
-	private static void executeCommands(Scanner scanner, File fileName)
-			throws IOException, Error {
-		final boolean isExecuting = true;
 
-		while(isExecuting){	
-			System.out.print("command: ");
-			userCommands command = checkCommandType(scanner.next());
-
-			switch(command)	{
-			}
-			case ADD:
-				String userInputLine = readUserInputForAdd();
-				addLine(userInputLine, fileName);
-				break;
-
-			case DISPLAY:
-				displayTaskList(fileName);
-				break;
-
-			case DELETE:
-				int lineNumberToBeDeleted = scanner.nextInt();
-				deleteLineNumber(lineNumberToBeDeleted, fileName);
-				break;
-
-			case SORT:
-				sortList(fileName);
-				break;
-
-			case EXIT:
-				System.exit(0);
-				break;
-
-			case SEARCH:
-				String keyWord=scanner.next();
-				int result=searchList(keyWord);
-				if (result==1) System.out.println(MESSAGE_SEARCH_FOUND);
-				else System.out.println(MESSAGE_SEARCH_NOTFOUND);
-				break;
-
-			case INVALID:
-				invalidCommand();
-				break;
-
-			default:
-				throw new Error("There is an error in the command");
-				
-			}
-			
-		}
-		
-	}
-	
-	*/
-	/*
-	private static void addLine(String userInputLine, File fileName) throws IOException {
-		//tasksToBeWritten.add(userInputLine);
-		updateFileOutput(fileName);
-
-		System.out.println("added to " + fileName + ": \"" + userInputLine + "\"");
-	}*/
-	
-	private static String executeAdd(String inputString) {
-		if(!isNullString(inputString)) {
-			list.add(inputString);
-			return String.format(MESSAGE_ADDED, FILE_NAME, inputString);
+	private static String executeAdd(Task task) {
+		if(!isNullString(task)) {
+			list.add(task);
+			return String.format(MESSAGE_ADDED, FILE_NAME, task.getDescription());
 		} else {
 			return MESSAGE_INVALID_ADD;
 		}	
@@ -171,11 +86,11 @@ public class Logic {
 		System.out.printf(MESSAGE_INVALID);
 	}
 
-	private static boolean isNullString(String inputString) {
-		if(inputString == null) {
+	private static boolean isNullString(Task task) {
+		if(task.getDescription() == null) {
 			return true;
 		}
-		if(inputString.equals("")) {
+		if(task.getDescription().equals("")) {
 			return true;
 		} else {
 			return false;
