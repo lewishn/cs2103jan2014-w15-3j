@@ -20,8 +20,9 @@ class DiskIO {
 	public static final int UNDO_INDEX = 4;
 	public static final int SEACRH_INDEX = 5;
 	public static final int CUSTOM_INDEX = 6;
-	public static final int HELP_INDEX = 7;
-	public static final int EXIT_INDEX = 8;
+	public static final int DELETE_CUSTOM_INDEX = 7;
+	public static final int HELP_INDEX = 8;
+	public static final int EXIT_INDEX = 9;
 	
 	private static final String FILE_TASKS = "tasks.txt";
 	private static final String FILE_CUSTOM = "custom.txt";
@@ -57,8 +58,7 @@ class DiskIO {
 			return null;
 		}
 	}	
-	
-	// 1. add, 2. Read, 3. Update, 4. Delete, 5. Undo, 6. Help, 7. Custom Commands
+
 	protected static ArrayList<ArrayList<String>> readCustomCommands() {
 		ArrayList<ArrayList<String>> list = new ArrayList<ArrayList<String>>();
 		File customFile = new File(FILE_CUSTOM);

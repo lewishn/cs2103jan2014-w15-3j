@@ -27,8 +27,14 @@ public class Logic{
 	private static final String MESSAGE_INVALID_SEARCH = "Usage: search <keyword>";
 
 	private static final int DELETE_ARRAY_OFFSET = 1;
-	private static ArrayList<Task> list;
 	static String FILE_NAME = "";
+	/////////////////////////////////////////////////
+	private static final String MESSAGE_CUSTOM_DUPLICATE = "Sorry, but this word is already in use.";
+	
+	private static ArrayList<Task> taskList;
+	private static ArrayList<ArrayList<String>> customCommandList;
+	private static Stack<ArrayList<Task>> taskUndoStack;
+	private static Stack<ArrayList<ArrayList<String>>> commandUndoStack;
 	
 	protected static Task createTask(String description, Calendar startOfTask, Calendar endOfTask){
 		Task task = new Task(description, startOfTask, endOfTask);
@@ -37,7 +43,7 @@ public class Logic{
 	
 	private static void executeAdd(Task task) {
 		if(!isNullString(task)) {
-			list.add(task);
+			taskList.add(task);
 			executeSort();
 			DoThings.printFeedback(String.format(MESSAGE_ADDED, FILE_NAME, task.getDescription()));
 		} else {
@@ -57,12 +63,12 @@ public class Logic{
 	}
 	
 	private static void executeClear() {
-		list = new ArrayList<Task>();
+		taskList = new ArrayList<Task>();
 		DoThings.printFeedback(String.format(MESSAGE_CLEAR, FILE_NAME));
 	}
 	
 	private static void executeSort(){
-		java.util.Collections.sort(list, Collator.getInstance());
+		java.util.Collections.sort(taskList, Collator.getInstance());
 
 	}
 	
@@ -81,13 +87,13 @@ public class Logic{
 	private static String concatContentToDisplay() {
 		String contentToDisplay="";
 		int index = 0;
-		for(int i = 1; i <= list.size(); i++) {
+		for(int i = 1; i <= taskList.size(); i++) {
 			if(index==0){
-				contentToDisplay = contentToDisplay.concat(String.format(MESSAGE_DISPLAY, i, list.get(i-1)));
+				contentToDisplay = contentToDisplay.concat(String.format(MESSAGE_DISPLAY, i, taskList.get(i-1)));
 				index++;
 			}
 			else{
-				contentToDisplay = contentToDisplay.concat("\n"+String.format(MESSAGE_DISPLAY, i, list.get(i-1)));
+				contentToDisplay = contentToDisplay.concat("\n"+String.format(MESSAGE_DISPLAY, i, taskList.get(i-1)));
 			}
 			index++;
 		}
@@ -101,15 +107,15 @@ public class Logic{
 			DoThings.printFeedback(String.format(MESSAGE_INVALID_DELETE_NUMBER));
 		}
 		else{
-			String deletedString = list.get(index).getDescription();
-			list.remove(index);
+			String deletedString = taskList.get(index).getDescription();
+			taskList.remove(index);
 			executeSort();
 			DoThings.printFeedback(String.format(MESSAGE_DELETED, FILE_NAME, deletedString));
 		}
 	}
 	
 	private static boolean unableToDelete(int index) {
-		if(index + 1 <= list.size() && list.size() > 0 && index >= 0) {
+		if(index + 1 <= taskList.size() && taskList.size() > 0 && index >= 0) {
 			return false;
 		} else {
 			return true;
@@ -121,17 +127,47 @@ public class Logic{
 	}
 	
 	private static boolean fileIsEmpty() {
-		if(list.isEmpty()) {
+		if(taskList.isEmpty()) {
 			return true;
 		} else {
 			return false;
 		}
 	}
 	
-	protected static void addCustomCommand(String command){
+	protected static void addCustomCommand(int index, String command) {
+		for (int i = 0; i < customCommandList.size(); i++) {
+			if (customCommandList.get(i).contains(command)) {
+				DoThings.printFeedbackLn(MESSAGE_CUSTOM_DUPLICATE);
+				return;
+			}
+		}
 		
+		//save undo stack
+		customCommandList.get(index).add(command);
+		//save custom command file
+		//feedback
 	}
 	
+	protected static void deleteCustomCommand(int index, String command) {
+		//save undo stack
+		for (int i = 0; i < customCommandList.size(); i++) {
+			customCommandList.remove(command);
+		}
+		//save custom command file
+		//feedback
+	}
+	
+	private static void pushUndoStack() {
+		taskUndoStack.push(taskList);
+		commandUndoStack.push(customCommandList);
+		//save file
+	}
+	
+	private static void popUndoStack() {
+		taskList = taskUndoStack.pop();
+		customCommandList = commandUndoStack.pop();
+		//save file
+	}
 	
 /*
   	enum UPDATE_TYPE{
