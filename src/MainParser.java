@@ -139,10 +139,10 @@ class MainParser {
 	private static void undoActions(ArrayList<String> tokens) {
 		if (tokens.size() != 0 && isInteger(tokens.get(0))) {
 			for (int i = 0; i < Integer.parseInt(tokens.get(0)); i++) {
-				//call undo once
+				Logic.undoCommand();
 			}
 		} else if (tokens.size() == 0) {
-			//call undo once
+			Logic.undoCommand();
 		} else {
 			//error?
 		}

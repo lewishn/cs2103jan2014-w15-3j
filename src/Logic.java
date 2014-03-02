@@ -28,8 +28,15 @@ public class Logic{
 
 	private static final int DELETE_ARRAY_OFFSET = 1;
 	static String FILE_NAME = "";
+	
 	/////////////////////////////////////////////////
+	/////////////////////////////////////////////////
+	/////////////////////////////////////////////////
+	
 	private static final String MESSAGE_CUSTOM_DUPLICATE = "Sorry, but this word is already in use.";
+	private static final String MESSAGE_CUSTOM_SUCCESS = " has been successfully added to the command list.";
+	private static final String MESSAGE_CUSTOM_NONEXISTANT = "Error deleting. There is no such word in the command list.";
+	private static final String MESSAGE_CUSTOM_DELETED = " has been successfully deleted from the command list.";
 	
 	private static ArrayList<Task> taskList;
 	private static ArrayList<ArrayList<String>> customCommandList;
@@ -134,39 +141,60 @@ public class Logic{
 		}
 	}
 	
+	/////////////////////////////////////////////////////////////////
 	protected static void addCustomCommand(int index, String command) {
-		for (int i = 0; i < customCommandList.size(); i++) {
-			if (customCommandList.get(i).contains(command)) {
-				DoThings.printFeedbackLn(MESSAGE_CUSTOM_DUPLICATE);
-				return;
-			}
+		if (isDuplicateCommand(command)) {
+			DoThings.printFeedbackLn(MESSAGE_CUSTOM_DUPLICATE);
+			return;
 		}
 		
-		//save undo stack
+		pushUndoStack();
 		customCommandList.get(index).add(command);
-		//save custom command file
-		//feedback
+		DiskIO.writeCustomCommands(customCommandList);
+		DoThings.printFeedbackLn(MESSAGE_CUSTOM_SUCCESS);
+	}
+
+	private static boolean isDuplicateCommand(String command) {
+		for (int i = 0; i < customCommandList.size(); i++) {
+			if (customCommandList.get(i).contains(command)) {
+				return true;
+			}
+		}
+		return false;
 	}
 	
 	protected static void deleteCustomCommand(int index, String command) {
-		//save undo stack
+		pushUndoStack();
+		boolean wordExists = false;
 		for (int i = 0; i < customCommandList.size(); i++) {
-			customCommandList.remove(command);
+			if (customCommandList.remove(command)) {
+				DoThings.printFeedbackLn(command + MESSAGE_CUSTOM_DELETED);
+				wordExists = true;
+			}
 		}
-		//save custom command file
-		//feedback
+		
+		if (!wordExists) {
+			DoThings.printFeedbackLn(MESSAGE_CUSTOM_NONEXISTANT);
+		} else {
+			DiskIO.writeCustomCommands(customCommandList);
+		}
 	}
 	
 	private static void pushUndoStack() {
 		taskUndoStack.push(taskList);
 		commandUndoStack.push(customCommandList);
-		//save file
 	}
 	
 	private static void popUndoStack() {
+		// TODO: might need to check for stack size;
 		taskList = taskUndoStack.pop();
 		customCommandList = commandUndoStack.pop();
-		//save file
+	}
+	
+	protected static void undoCommand() {
+		popUndoStack();
+		DiskIO.writeCustomCommands(customCommandList);
+		DiskIO.writeTaskToFile(taskList);
 	}
 	
 /*
