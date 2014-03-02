@@ -1,36 +1,37 @@
 import java.util.*;
 
 public class DoThings {
+	private static final String MESSAGE_COMMAND = "Please enter a command: ";
 	private static boolean exit;
-	private static Scanner sc;
-
+	private static Scanner userInput;
 	private DoThings() {
 		exit=false;
-		sc = new Scanner(System.in);
+		userInput = new Scanner(System.in);
 	}
 	
 	protected static void printFeedback(String message) {
+		System.out.print(message);
+	}
+	
+	protected static void printFeedbackLn(String message) {
 		System.out.println(message);
 	}
 
 	private static void readCommand() {
-		System.out.print("Command: ");
-		String input=sc.nextLine();
-		String capInput=input.toUpperCase();
-		if(capInput.equals("EXIT")) {
-			exit=true;
-		} else {
-			Parser.parseCommands();
-		}
+		printFeedback(MESSAGE_COMMAND);
+		String input = userInput.nextLine();
+		
+		exit = MainParser.parse(input);
 	}
 
 	public static void main() throws Exception {
 		DoThings program = new DoThings();
 		program.run();
 	}
+	
 	public void run() throws Exception {
 		System.out.println("Get ready to Do Things!");
-		while(exit==false) {
+		while(exit == false) {
 			readCommand();
 		}
 	}
