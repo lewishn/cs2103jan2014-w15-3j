@@ -128,6 +128,11 @@ public class Logic{
 		}
 	}
 	
+	protected static void addCustomCommand(String command){
+		
+	}
+	
+	
 /*
   	enum UPDATE_TYPE{
 		TIME, DATE, DESCRIPTION
