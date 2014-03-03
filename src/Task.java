@@ -11,12 +11,19 @@ class Task implements Comparable<Task>{
 		this.end_time=end;
 		this.description=description;
 	}
+	public Task(String description, int date, int month, int year, int startHour, int startMinute, 
+			int endHour, int endMinute) {
+		this.description=description;
+		this.start_time.set(year, month, date, startHour, startMinute);
+		this.end_time.set(year, month, date, endHour, endMinute);
+	}
 	// for deadlines
 	public Task(String description, Calendar start) {
 		this.start_time=start;
 		this.description=description;
 		this.end_time.set(0,0,0,0,0);
 	}
+	
 	// for floating tasks
 	public Task(String description) {
 		this.description=description;	
