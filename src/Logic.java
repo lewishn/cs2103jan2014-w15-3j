@@ -40,10 +40,12 @@ public class Logic{
 	private static Stack<ArrayList<ArrayList<String>>> commandUndoStack;
 	
 	// not needed
+	/*
 	protected static Task createTask(String description, Calendar startOfTask, Calendar endOfTask) {
 		Task task = new Task(description, startOfTask, endOfTask);
 		return task;
 	}
+	*/
 	
 	private static void executeAdd(Task task) {
 		//TODO: some error checking, e.g : start date > end date

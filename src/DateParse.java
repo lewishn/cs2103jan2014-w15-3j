@@ -1,7 +1,5 @@
-import java.text.ParseException;
 import java.util.ArrayList;
 import java.util.Arrays;
-import java.util.Scanner;
 
 import org.joda.time.DateTime;
 import org.joda.time.format.DateTimeFormat;

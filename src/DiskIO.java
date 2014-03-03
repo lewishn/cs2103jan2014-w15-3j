@@ -49,8 +49,7 @@ class DiskIO {
 			String line;
 			ArrayList<Task> list = new ArrayList<Task>();
 			while ((line = br.readLine()) != null) {
-				// to be implemented
-				// Task(String);
+				list.add(Task.parseTaskFromString(line));
 			}
 			return list;
 		} catch (IOException e) {

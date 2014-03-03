@@ -1,121 +1,147 @@
-import java.util.*;
-import java.lang.*;
+import org.joda.time.DateTime;
+
+
 
 class Task implements Comparable<Task>{
-	private Calendar start_time;
-	private Calendar end_time;
+	private static final String DELIMITER = " ||| ";
+	private static final String NULL_START = "no_start_time";
+	private static final String NULL_END = "no_end_time";
+	
+	private DateTime startDateTime;
+	private DateTime endDateTime;
 	private String description;
-	// for tasks with time and date range
-	public Task(String description, Calendar start, Calendar end) {
-		this.start_time=start;
-		this.end_time=end;
-		this.description=description;
-	}
-	public Task(String description, int date, int month, int year, int startHour, int startMinute, 
-			int endHour, int endMinute) {
-		this.description=description;
-		this.start_time.set(year, month, date, startHour, startMinute);
-		this.end_time.set(year, month, date, endHour, endMinute);
-	}
-	// for deadlines
-	public Task(String description, Calendar start) {
-		this.start_time=start;
-		this.description=description;
-		this.end_time.set(0,0,0,0,0);
+	
+	// For tasks with date ranges
+	protected Task(String desc, DateTime start, DateTime end) {
+		startDateTime = start;
+		endDateTime = end;
+		description = desc;
 	}
 	
-	// for floating tasks
-	public Task(String description) {
-		this.description=description;	
-		this.end_time.set(0,0,0,0,0);
-		this.start_time.set(0,0,0,0,0);
+	protected static Task parseTaskFromString(String line) {
+		String[] tokens = line.split(DELIMITER);
+		DateTime start = (tokens[0].equals(NULL_START)) ? null : new DateTime(tokens[0]);
+		DateTime end = (tokens[1].equals(NULL_END)) ? null : new DateTime(tokens[1]);
+		String desc = tokens[2];
+		
+		return new Task(desc, start, end);
 	}
-	public void setDescription(String description) {
-		this.description=description;
+	
+	protected void setDescription(String desc) {
+		description = desc;
 	}
-	public void setStartDate(int date) {
-		this.start_time.set(Calendar.DAY_OF_MONTH, date);
+	
+	protected void setStartDateTime(DateTime start) {
+		startDateTime = start;
 	}
-	public void setStartMonth(int month) {
-		this.start_time.set(Calendar.MONTH, month);
+	
+	protected void setEndDateTime(DateTime end) {
+		endDateTime = end; 
 	}
-	public void setStartYear(int year) {
-		this.start_time.set(Calendar.YEAR, year);
+	
+	protected String getDescription() {
+		return description;
 	}
-	public void setStartHour(int hour) {
-		this.start_time.set(Calendar.HOUR_OF_DAY, hour);
+	
+	protected DateTime getStartDateTime() {
+		return startDateTime;
 	}
-	public void setStartMinutes(int minutes) {
-		this.start_time.set(Calendar.MINUTE, minutes);
+	
+	protected DateTime getEndDateTime() {
+		return endDateTime;
 	}
-	public void setEndDate(int date) {
-		this.end_time.set(Calendar.DAY_OF_MONTH, date);
+	
+	@Override
+	public String toString() {
+		String start = (startDateTime == null) ? NULL_START : startDateTime.toString();
+		String end = (endDateTime == null) ? NULL_END : endDateTime.toString();
+		
+		return start + DELIMITER + end + DELIMITER + description;
 	}
-	public void setEndMonth(int month) {
-		this.end_time.set(Calendar.MONTH, month);
+	
+	@Override
+	public int compareTo(Task task) {
+		if (this.startDateTime != null && task.startDateTime != null) {
+			return this.startDateTime.compareTo(task.startDateTime);
+		} else if (this.startDateTime == null && task.startDateTime != null) {
+			return -1;
+		} else if (this.startDateTime != null && task.startDateTime == null) {
+			return 1;
+		} else {
+			return this.description.compareTo(task.description);
+		}
 	}
-	public void setEndYear(int year) {
-		this.end_time.set(Calendar.YEAR, year);
+	
+	/*
+	protected void setStartDate(int date) {
+		this.startDateTime.set(DateTime.DAY_OF_MONTH, date);
 	}
-	public void setEndHour(int hour) {
-		this.end_time.set(Calendar.HOUR_OF_DAY, hour);
+	protected void setStartMonth(int month) {
+		this.startDateTime.set(DateTime.MONTH, month);
 	}
-	public void setEndMinutes(int minutes) {
-		this.start_time.set(Calendar.MINUTE, minutes);
+	protected void setStartYear(int year) {
+		this.startDateTime.set(DateTime.YEAR, year);
 	}
-	public Calendar getStart() {
-		return this.start_time;
+	protected void setStartHour(int hour) {
+		this.startDateTime.set(DateTime.HOUR_OF_DAY, hour);
 	}
-	public int getStartDate() {
-		return this.getStart().get(Calendar.DAY_OF_MONTH);
+	protected void setStartMinutes(int minutes) {
+		this.startDateTime.set(DateTime.MINUTE, minutes);
 	}
-	public int getStartMonth() {
-		return this.getStart().get(Calendar.MONTH);
+	protected void setEndDate(int date) {
+		this.endDateTime.set(DateTime.DAY_OF_MONTH, date);
 	}
-	public int getStartYear() {
-		return this.getStart().get(Calendar.YEAR);
+	protected void setEndMonth(int month) {
+		this.endDateTime.set(DateTime.MONTH, month);
 	}
-	public int getStartDay() {
-		return this.getStart().get(Calendar.DAY_OF_WEEK);
+	protected void setEndYear(int year) {
+		this.endDateTime.set(DateTime.YEAR, year);
 	}
-	public int getStartHours() {
-		return this.getStart().get(Calendar.HOUR_OF_DAY);
+	protected void setEndHour(int hour) {
+		this.endDateTime.set(DateTime.HOUR_OF_DAY, hour);
 	}
-	public Calendar getEnd() {
-		return this.end_time;
+	protected void setEndMinutes(int minutes) {
+		this.startDateTime.set(DateTime.MINUTE, minutes);
 	}
-	public int getEndDate() {
-		return this.getEnd().get(Calendar.DAY_OF_MONTH);
+	
+	protected DateTime getStart() {
+		return this.startDateTime;
 	}
-	public int getEndMonth() {
-		return this.getEnd().get(Calendar.MONTH);
+	protected int getStartDate() {
+		return this.getStart().get(DateTime.DAY_OF_MONTH);
 	}
-	public int getEndYear() {
-		return this.getEnd().get(Calendar.YEAR);
+	protected int getStartMonth() {
+		return this.getStart().get(DateTime.MONTH);
 	}
-	public int getEndDay() {
-		return this.getEnd().get(Calendar.DAY_OF_WEEK);
+	protected int getStartYear() {
+		return this.getStart().get(DateTime.YEAR);
 	}
-	public int getEndHours() {
-		return this.getEnd().get(Calendar.HOUR_OF_DAY);
+	protected int getStartDay() {
+		return this.getStart().get(DateTime.DAY_OF_WEEK);
 	}
-	public String getDescription() {
+	protected int getStartHours() {
+		return this.getStart().get(DateTime.HOUR_OF_DAY);
+	}
+	protected DateTime getEnd() {
+		return this.endDateTime;
+	}
+	protected int getEndDate() {
+		return this.getEnd().get(DateTime.DAY_OF_MONTH);
+	}
+	protected int getEndMonth() {
+		return this.getEnd().get(DateTime.MONTH);
+	}
+	protected int getEndYear() {
+		return this.getEnd().get(DateTime.YEAR);
+	}
+	protected int getEndDay() {
+		return this.getEnd().get(DateTime.DAY_OF_WEEK);
+	}
+	protected int getEndHours() {
+		return this.getEnd().get(DateTime.HOUR_OF_DAY);
+	}
+	protected String getDescription() {
 		return this.description;
 	}
-
-	public String toString() {
-		String result; 
-		if (this.getStartDate()==0) {
-			result=this.getDescription();
-		}
-		else {
-			result= this.getDescription() + " || " + this.getStartDate() + "-" + this.getStartMonth() 
-					+"-"+ this.getStartYear()+ " "+this.getStartHours() + " || " + this.getEndDate() + "-"
-					+ this.getEndMonth()+ this.getEndYear() + " " + this.getEndHours();
-		}
-		return result;
-	}
-	public int compareTo(Task abc) {
-		return this.start_time.compareTo(abc.start_time);
-	}
+	*/
 }
