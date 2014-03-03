@@ -47,7 +47,6 @@ public class DateParse{
 	private static void setDate(String input) {
 		int formatType = getDateFormatType(input);
 		DateTime date = new DateTime();
-		System.out.print(formatType + " ");
 		
 
 		if (formatType == 0) {
