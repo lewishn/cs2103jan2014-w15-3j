@@ -68,6 +68,6 @@ public class Parser {
 		// find date 
 		// find time
 		// find description
-		Logic.executeAdd(createTask(description, startOfTask, endOfTask));
+		// Logic.executeAdd(createTask(description, startOfTask, endOfTask));
 	}
 }

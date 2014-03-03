@@ -24,6 +24,7 @@ public class Logic{
 	/////////////////////////////////////////////////
 	/////////////////////////////////////////////////
 	/////////////////////////////////////////////////
+	private static final String MESSAGE_ADDED_TASK = "Added \"%s\" to the task list.";
 	private static final String MESSAGE_LIST_NUMBER = "%d. %s";
 	private static final String MESSAGE_EMPTY_TASKS = "You have no tasks scheduled.";
 	private static final String MESSAGE_TASK_DELETED = "\"%s\" has been deleted from the task list.";
@@ -70,6 +71,14 @@ public class Logic{
 	}
 	
 	/////////////////////////////////////////////////////////////////
+	private static void addTask(Task task) {
+		pushUndoStack();
+		taskList.add(task);
+		sortTasks();
+		DiskIO.writeTaskToFile(taskList);
+		DoThings.printFeedbackLn(String.format(MESSAGE_ADDED_TASK, task.getDescription()));
+	}
+
 	private static void sortTasks() {
 		Collections.sort(taskList, Collator.getInstance());
 	}
@@ -100,6 +109,7 @@ public class Logic{
 		}
 		
 		pushUndoStack();
+		index--;
 		String deletedTask = taskList.get(index).getDescription();
 		taskList.remove(index);
 		DiskIO.writeTaskToFile(taskList);
