@@ -27,7 +27,7 @@ public class DoThings {
 		exit = MainParser.parse(input);
 	}
 
-	public static void main() throws Exception {
+	public static void main(String[] args) throws Exception {
 		DoThings program = new DoThings();
 		program.run();
 	}

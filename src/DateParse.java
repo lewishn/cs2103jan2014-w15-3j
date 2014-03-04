@@ -23,7 +23,7 @@ public class DateParse{
 	private static final String DATE_FORMAT_14 = "E";
 	private static final int FORMAT_TYPE_0_INDEX = 7;	//format 0 : full date, with year
 	private static final int FORMAT_TYPE_1_INDEX = 14;	//format 1 : with day and month only
-	private static final int FORMAT_TYPE_2_INDEX = 15;	//format 2 : day of the week, friday, etc.
+	private static final int FORMAT_TYPE_2_INDEX = 15;	//format 2 : day of the week, Friday, etc.
 	
 	private static ArrayList<DateTimeFormatter> dateFormats = 
 		new ArrayList<DateTimeFormatter> (Arrays.asList( 
