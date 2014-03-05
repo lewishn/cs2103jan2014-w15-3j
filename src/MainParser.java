@@ -97,10 +97,8 @@ class MainParser {
 			case EXIT:
 				return true;
 			default:
-				//
-				
+				//	
 		}
-		
 		return false;
 	}
 	
@@ -117,7 +115,6 @@ class MainParser {
 			}
 		}
 		*/
-		
 	}
 
 	private static void listTasks(String command) {
