@@ -99,14 +99,14 @@ public class Logic{
 		String cmd;
 		ArrayList<String> infoFromParser = new ArrayList<String>();
 		checkTxtFile();
-		infoFromParser = parseCommand(userInput);
+		infoFromParser = MainParser.initialParse(userInput);
 
 		CommandType commandType = getCommandType(infoFromParser.get(0));
-		String userDescription = infoFromParser.get(1);
+		String taskDescription = infoFromParser.get(1);
 		
 		switch (commandType) {
 			case ADD:
-				addTasks(userDescription);
+				String[]taskInformation = determineTask(taskDescription);
 				break;
 			case LIST:
 				break;
@@ -131,6 +131,7 @@ public class Logic{
 			case EXIT:
 				return true;
 			default:
+
 
 		return message;
 	}

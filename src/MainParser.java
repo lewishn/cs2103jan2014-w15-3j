@@ -5,54 +5,51 @@ import java.util.Date;
 //TODO : ADD, UPDATE, SEARCH, CUSTOM, HELP
 
 class MainParser {
-	protected static ArrayList<String> parseCommand(String userInput) {
+	protected static ArrayList<String> initalParse(String userInput) {
 		ArryaList<String> userCommand =new ArrayList<String>();
 		userCommand = Arrays.asList(userInput.split(" ", 2));
 		return userCommand;
 	}
 
-	// returns true only on exit command
-	public static boolean parse(String code) {
-		ArrayList<String> tokens = new ArrayList<String>(Arrays.asList(code.split(" ", 2)));
-		CommandType commandType = getCommandType(tokens.get(0));
-		String command = tokens.get(1);
-		
-		switch (commandType) {
-			case ADD:
-				addTasks(command);
-				break;
-			case LIST:
-				listTasks(command);
-				break;
-			case UPDATE:
-				//
-				break;
-			case DELETE:
-				deleteTasks(command);
-				break;
-			case HELP:
-				displayHelp();
-				break;
-			case CUSTOM:
-				//
-				break;
-			case DELETE_CUSTOM:
-				//
-				break;
-			case UNDO:
-				undoActions(command);
-				break;
-			case SEARCH:
-				//
-				break;
-			case EXIT:
-				return true;
-			default:
-				//	
-		}
-		return false;
+	protected static void String[] determineTask (String userTaskDescription) {
+		String[] information;
+
+		retrun information;
 	}
-	
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 	private static void addTasks(String command) {
 		Date startDate;
 		Date endDate;
