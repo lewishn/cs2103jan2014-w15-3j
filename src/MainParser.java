@@ -5,8 +5,8 @@ import java.util.Date;
 //TODO : ADD, UPDATE, SEARCH, CUSTOM, HELP
 
 class MainParser {
-	protected static String[] parseCommand(String userInput) {
-		String[] userCommand =new String[2];
+	protected static ArrayList<String> parseCommand(String userInput) {
+		ArryaList<String> userCommand =new ArrayList<String>();
 		userCommand = Arrays.asList(userInput.split(" ", 2));
 		return userCommand;
 	}

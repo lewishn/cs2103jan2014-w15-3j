@@ -97,28 +97,25 @@ public class Logic{
 	protected static String firstStep (String userInput) {
 		String message;
 		String cmd;
-		String[] infoFromParser = new String[2];
+		ArrayList<String> infoFromParser = new ArrayList<String>();
 		checkTxtFile();
 		infoFromParser = parseCommand(userInput);
 
-		CommandType commandType = getCommandType(infoFromParser[0]);
-		String userDescription = infoFromParser[1];
+		CommandType commandType = getCommandType(infoFromParser.get(0));
+		String userDescription = infoFromParser.get(1);
 		
 		switch (commandType) {
 			case ADD:
 				addTasks(userDescription);
 				break;
 			case LIST:
-				listTasks(userDescription);
 				break;
 			case UPDATE:
 				//
 				break;
 			case DELETE:
-				deleteTasks(userDescription);
 				break;
 			case HELP:
-				displayHelp();
 				break;
 			case CUSTOM:
 				//
@@ -127,7 +124,6 @@ public class Logic{
 				//
 				break;
 			case UNDO:
-				undoActions(userDescription);
 				break;
 			case SEARCH:
 				//
