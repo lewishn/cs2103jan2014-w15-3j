@@ -1,6 +1,5 @@
 import java.util.Arrays;
 import java.util.ArrayList;
-import java.util.Calendar;
 import java.util.Date;
 
 //TODO : ADD, UPDATE, SEARCH, CUSTOM, HELP
@@ -29,10 +28,10 @@ class MainParser {
 
 	public static final String MESSAGE_INVALID_DELETE = " is an invalid task number, cannot delete.";
 	public static final String MESSAGE_DELETE_SUCCESS = "Successfuly deleted task number ";
-	
+
 	private enum CommandType {
 		ADD, DELETE, UPDATE, LIST, UNDO, SEARCH, CUSTOM, DELETE_CUSTOM, HELP, EXIT, INVALID;
-	}
+	}	
 
 	private static CommandType getCommandType(String com) {
 		ArrayList<ArrayList<String>> customCommand = DiskIO.readCustomCommands();

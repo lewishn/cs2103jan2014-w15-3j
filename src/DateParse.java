@@ -44,7 +44,7 @@ public class DateParse{
 			DateTimeFormat.forPattern(DATE_FORMAT_14)
 		));
 	
-	private static void setDate(String input) {
+	protected static void setDate(String input) {
 		int formatType = getDateFormatType(input);
 		DateTime date = new DateTime();
 		
@@ -52,14 +52,17 @@ public class DateParse{
 		if (formatType == 0) {
 			date = parseDateFormat0(input);
 			System.out.println(date);
+			Parser.setFloatingTaskFalse();
 		} else if (formatType == 1) {
 			date = parseDateFormat1(input, date);
 			System.out.println(date);
+			Parser.setFloatingTaskFalse();
 		} else if (formatType == 2) {
 			date = parseDateFormat2(input, date);
 			System.out.println(date);
+			Parser.setFloatingTaskFalse();
 		} else {
-			System.out.println("error");
+			System.out.println("not a date");
 		}
 	}
 

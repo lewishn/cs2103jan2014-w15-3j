@@ -46,7 +46,19 @@ public class Logic{
 		return task;
 	}
 	*/
-	
+	protected static String firstStep (String userInput) {
+		String message;
+		String cmd;
+		checkTxtFile();
+		parseCommand(userInput);
+
+		return message;
+	}
+
+	private static void checkTxtFile() {
+	}
+
+
 	private static void executeAdd(Task task) {
 		//TODO: some error checking, e.g : start date > end date
 		if (!isNullString(task)) {
@@ -78,7 +90,7 @@ public class Logic{
 		taskList.add(task);
 		sortTasks();
 		DiskIO.writeTaskToFile(taskList);
-		DoThings.printFeedbackLn(String.format(MESSAGE_ADDED_TASK, task.getDescription()));
+		DoThings.printFeedback(String.format(MESSAGE_ADDED_TASK, task.getDescription()));
 	}
 
 	private static void sortTasks() {
@@ -87,7 +99,7 @@ public class Logic{
 	
 	private static void listTasks() {		
 		if (taskList.isEmpty()) {
-			DoThings.printFeedbackLn(MESSAGE_EMPTY_TASKS);
+			DoThings.printFeedback(MESSAGE_EMPTY_TASKS);
 			return;
 		}
 
@@ -106,7 +118,7 @@ public class Logic{
 	
 	private static void deleteTask(int index) {
 		if (isOutOfDeleteRange(index)) {
-			DoThings.printFeedbackLn(index + MainParser.MESSAGE_INVALID_DELETE);
+			DoThings.printFeedback(index + MainParser.MESSAGE_INVALID_DELETE);
 			return;
 		}
 		
@@ -115,14 +127,14 @@ public class Logic{
 		String deletedTask = taskList.get(index).getDescription();
 		taskList.remove(index);
 		DiskIO.writeTaskToFile(taskList);
-		DoThings.printFeedbackLn(String.format(MESSAGE_TASK_DELETED, deletedTask));
+		DoThings.printFeedback(String.format(MESSAGE_TASK_DELETED, deletedTask));
 	}
 	
 	private static void deleteAllTasks() {
 		pushUndoStack();
 		taskList = new ArrayList<Task>();
 		DiskIO.writeTaskToFile(taskList);
-		DoThings.printFeedbackLn(MESSAGE_TASK_DELETED_ALL);
+		DoThings.printFeedback(MESSAGE_TASK_DELETED_ALL);
 	}
 	
 	private static boolean isOutOfDeleteRange(int index) {
@@ -135,14 +147,14 @@ public class Logic{
 	
 	protected static void addCustomCommand(int index, String command) {
 		if (isDuplicateCommand(command)) {
-			DoThings.printFeedbackLn(MESSAGE_CUSTOM_DUPLICATE);
+			DoThings.printFeedback(MESSAGE_CUSTOM_DUPLICATE);
 			return;
 		}
 		
 		pushUndoStack();
 		customCommandList.get(index).add(command);
 		DiskIO.writeCustomCommands(customCommandList);
-		DoThings.printFeedbackLn(MESSAGE_CUSTOM_SUCCESS);
+		DoThings.printFeedback(MESSAGE_CUSTOM_SUCCESS);
 	}
 
 	private static boolean isDuplicateCommand(String command) {
@@ -159,13 +171,13 @@ public class Logic{
 		boolean wordExists = false;
 		for (int i = 0; i < customCommandList.size(); i++) {
 			if (customCommandList.remove(command)) {
-				DoThings.printFeedbackLn(command + MESSAGE_CUSTOM_DELETED);
+				DoThings.printFeedback(command + MESSAGE_CUSTOM_DELETED);
 				wordExists = true;
 			}
 		}
 		
 		if (!wordExists) {
-			DoThings.printFeedbackLn(MESSAGE_CUSTOM_NONEXISTANT);
+			DoThings.printFeedback(MESSAGE_CUSTOM_NONEXISTANT);
 		} else {
 			DiskIO.writeCustomCommands(customCommandList);
 		}

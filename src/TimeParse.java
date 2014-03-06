@@ -31,7 +31,7 @@ public class TimeParse{
 			DateTimeFormat.forPattern(TIME_FORMAT_8)
 		));
 	
-	private static void setTime(DateTime date, String input) {
+	protected static void setTime(DateTime date, String input) {
 		if (isValidFormat(input)) {
 			date = parseTimeFormat(date, input);
 			System.out.println(date);

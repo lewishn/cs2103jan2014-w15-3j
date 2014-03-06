@@ -5,26 +5,25 @@ public class DoThings {
 	private static final String MESSAGE_COMMAND = "Please enter a command: ";
 	
 	private static boolean exit;
-	private static Scanner userInput;
+	private static Scanner scanner;
 	
 	private DoThings() {
 		exit = false;
-		userInput = new Scanner(System.in);
-	}
-	
-	protected static void printFeedback(String message) {
-		System.out.print(message);
-	}
-	
-	protected static void printFeedbackLn(String message) {
-		System.out.println(message);
+		scanner = new Scanner(System.in);
 	}
 
+	private static void print(String messageToPrint) {
+		System.out.println(messageToPrint);
+	}
+	
 	private static void readCommand() {
-		printFeedback(MESSAGE_COMMAND);
-		String input = userInput.nextLine();
-		
-		exit = MainParser.parse(input);
+		print(MESSAGE_COMMAND);
+		String input = scanner.nextLine();
+		String message = Logic.firstStep(input);
+		print(message);
+		if(message.equals("exit")) {
+			exit=true;
+		}
 	}
 
 	public static void main(String[] args) throws Exception {
@@ -33,7 +32,7 @@ public class DoThings {
 	}
 	
 	public void run() throws Exception {
-		printFeedbackLn(MESSAGE_STARTUP);
+		print(MESSAGE_STARTUP);
 		while (exit == false) {
 			readCommand();
 		}
