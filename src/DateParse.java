@@ -57,7 +57,6 @@ public class DateParse{
 		}
 	}
 
-
 	protected static Boolean setDate(String input) {
 		int formatType = getDateFormatType(input);
 		DateTime date = new DateTime();

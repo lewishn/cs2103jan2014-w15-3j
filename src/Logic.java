@@ -1,10 +1,14 @@
 import java.text.Collator;
 import java.util.ArrayList;
-import java.util.Calendar;
 import java.util.Collections;
 import java.util.Stack;
 
 public class Logic{
+	private static Boolean hasTxtFile false;
+
+	/////////////////////////////////////////////////
+	/////////////////////////////////////////////////
+	/////////////////////////////////////////////////
 	private static final String MESSAGE_ADDED = "added to my %s: \"%s\"";
 	private static final String MESSAGE_SEARCH_FOUND = "\"%s\" found:\n%s";
 	private static final String MESSAGE_SEARCH_NOT_FOUND = "\"%s\" not found in %s";
@@ -93,8 +97,8 @@ public class Logic{
 		}
 	} 
 
-	protected static String firstStep (String userInput) {
-		String message;
+	protected static Boolean firstStep (String userInput) {
+		Boolean exit;
 		String cmd;
 		String[] infoFromParser = new String[2];
 		checkTxtFile();
@@ -102,42 +106,68 @@ public class Logic{
 
 		CommandType commandType = getCommandType(infoFromParser[0]);
 		String taskDescription = infoFromParser[1];
-		determineCommand(commandType, taskDescription);
-
-
-		return message;
+		exit = determineCommand(commandType, taskDescription);
+		return exit;
 	}
 
 	private static void checkTxtFile() {
+		// call DiskIO to check whether txt file exists
+		// if true set hasTxtFile to true
 	}
 
-	private static void determineCommand(CommandType commandType, String taskDescription) {
+	private static String determineCommand(CommandType commandType, String taskDescription) {
 		switch (commandType) {
 			case ADD:
-				String[]taskInformation = MainParser.determineTask(taskDescription);
+				Action.addTask(taskDescription);
+				return false;
 				break;
 			case LIST:
+				return false;
 				break;
 			case UPDATE:
-				//
+				return false;
 				break;
 			case DELETE:
+				return false;
 				break;
 			case HELP:
+				return false;
 				break;
 			case CUSTOM:
-				//
+				return false;
 				break;
 			case DELETE_CUSTOM:
 				//
+				/*
+				if (isInteger(command)) {
+					//Logic.deleteTask(Integer.parseInt(tokens.get(i));
+					DoThings.printFeedbackLn(MESSAGE_DELETE_SUCCESS + command);
+				} else {
+					DoThings.printFeedbackLn(command + MESSAGE_INVALID_DELETE);
+				}*/			
+				return false;
 				break;
 			case UNDO:
+				/*
+				if (command.equals("") || command == null) {
+					Logic.undoCommand();
+				} else if (isInteger(command)) {
+					for (int i = 0; i < Integer.parseInt(command); i++) {
+						Logic.undoCommand();
+					}
+				} else {
+					//error?
+				}*/		
+				return false;	
 				break;
 			case SEARCH:
 				//
+				return false;
 				break;
 			case EXIT:
+				return true;
 			default:
+				return false;
 	}
 
 

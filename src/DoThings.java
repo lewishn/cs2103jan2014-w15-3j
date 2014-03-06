@@ -12,18 +12,10 @@ public class DoThings {
 		scanner = new Scanner(System.in);
 	}
 
-	private static void print(String messageToPrint) {
-		System.out.println(messageToPrint);
-	}
-	
 	private static void readCommand() {
-		print(MESSAGE_COMMAND);
+		Printer.print(MESSAGE_COMMAND);
 		String input = scanner.nextLine();
-		String message = Logic.firstStep(input);
-		print(message);
-		if(message.equals("exit")) {
-			exit=true;
-		}
+		exit = Logic.firstStep(input);
 	}
 
 	public static void main(String[] args) throws Exception {
@@ -32,7 +24,7 @@ public class DoThings {
 	}
 	
 	public void run() throws Exception {
-		print(MESSAGE_STARTUP);
+		Printer.print(MESSAGE_STARTUP);
 		while (exit == false) {
 			readCommand();
 		}
