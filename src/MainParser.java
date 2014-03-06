@@ -1,8 +1,9 @@
-import java.util.*;
-
 //TODO : ADD, UPDATE, SEARCH, CUSTOM, HELP
 
 class MainParser {
+	private static final String FLOATING_TASK = "floating task";
+	private static final String NON_FLOATING_TASK = "non-floating task";
+
 	protected static String[] initialParse(String userInput) {
 		String[] userCommand =new String[2];
 		userCommand = userInput.split(" ", 2);
@@ -36,21 +37,11 @@ class MainParser {
 			}
 		}
 		if(numOfDates>0) {
-			information[0] = "non-floating task";
+			information[0] = NON_FLOATING_TASK;
 		} else {
-			information[0] = "floating task";
+			information[0] = FLOATING_TASK;
 		}
 
 		return information;
 	}
-	
-	public static boolean isInteger(String str) {
-		try {
-			Integer.parseInt(str);
-			return true;
-		} catch (NumberFormatException e) {
-			return false;
-		}
-	}
-	
 }
