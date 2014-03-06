@@ -43,26 +43,39 @@ public class DateParse{
 			DateTimeFormat.forPattern(DATE_FORMAT_13),
 			DateTimeFormat.forPattern(DATE_FORMAT_14)
 		));
-	
-	protected static void setDate(String input) {
+	protected static Boolean isDate(String input) {
+		int formatType = getDateFormatType(input);
+		
+		if (formatType == 0) {
+			return true;
+		} else if (formatType == 1) {
+			return true;
+		} else if (formatType == 2) {
+			return true;
+		} else {
+			return false;
+		}
+	}
+
+
+	protected static Boolean setDate(String input) {
 		int formatType = getDateFormatType(input);
 		DateTime date = new DateTime();
-		
 
 		if (formatType == 0) {
 			date = parseDateFormat0(input);
 			System.out.println(date);
-			Parser.setFloatingTaskFalse();
+			return true;
 		} else if (formatType == 1) {
 			date = parseDateFormat1(input, date);
 			System.out.println(date);
-			Parser.setFloatingTaskFalse();
+			return true;
 		} else if (formatType == 2) {
 			date = parseDateFormat2(input, date);
 			System.out.println(date);
-			Parser.setFloatingTaskFalse();
+			return true;
 		} else {
-			System.out.println("not a date");
+			return false;
 		}
 	}
 
