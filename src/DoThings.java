@@ -13,7 +13,7 @@ public class DoThings {
 	}
 
 	private static void readCommand() {
-		Printer.print(MESSAGE_COMMAND);
+		Printer.printNoLine(MESSAGE_COMMAND);
 		String input = scanner.nextLine();
 		exit = Logic.firstStep(input);
 	}

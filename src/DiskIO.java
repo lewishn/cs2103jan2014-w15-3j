@@ -39,7 +39,7 @@ class DiskIO {
 
 			bw.close();
 		} catch (IOException e) {
-			DoThings.printFeedbackLn(WRITE_ERROR);
+			Printer.print(WRITE_ERROR);
 		}
 	}
 	
@@ -53,7 +53,7 @@ class DiskIO {
 			}
 			return list;
 		} catch (IOException e) {
-			DoThings.printFeedbackLn(READ_ERROR);
+			Printer.print(READ_ERROR);
 			return null;
 		}
 	}	
@@ -72,7 +72,7 @@ class DiskIO {
 
 			bw.close();
 		} catch (IOException e) {
-			DoThings.printFeedbackLn(WRITE_ERROR);
+			Printer.print(WRITE_ERROR);
 		}
 	}
 	
