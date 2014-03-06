@@ -103,7 +103,16 @@ public class Logic{
 
 		CommandType commandType = getCommandType(infoFromParser.get(0));
 		String taskDescription = infoFromParser.get(1);
-		
+		determineCommand(commandType, taskDescription);
+
+
+		return message;
+	}
+
+	private static void checkTxtFile() {
+	}
+
+	private static void determineCommand(CommandType commandType, String taskDescription) {
 		switch (commandType) {
 			case ADD:
 				String[]taskInformation = determineTask(taskDescription);
@@ -131,15 +140,7 @@ public class Logic{
 			case EXIT:
 				return true;
 			default:
-
-
-		return message;
 	}
-
-	private static void checkTxtFile() {
-	}
-
-
 
 
 
