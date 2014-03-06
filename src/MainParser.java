@@ -5,15 +5,14 @@ import java.util.Date;
 //TODO : ADD, UPDATE, SEARCH, CUSTOM, HELP
 
 class MainParser {
-	protected static ArrayList<String> initialParse(String userInput) {
-		ArryaList<String> userCommand =new ArrayList<String>();
-		userCommand = Arrays.asList(userInput.split(" ", 2));
+	protected static String[] initialParse(String userInput) {
+		String[] userCommand =new String[2];
+		userCommand = userInput.split(" ", 2);
 		return userCommand;
 	}
 
 	protected static String[] determineTask (String userTaskDescription) {
-		Boolean floatingTask=true;
-		String[5] information;	// floatingTask, start Date, start time, end date, end time
+		String[] information = new String[5];	// floatingTask, start Date, start time, end date, end time
 		String upperCasedDescription = userTaskDescription.trim().toUpperCase();
 		String[] listOfUserInput = upperCasedDescription.split("");
 		int numOfWords = listOfUserInput.length;
@@ -39,12 +38,12 @@ class MainParser {
 			}
 		}
 		if(numOfDates>0) {
-			information[0] = "non-floating task"
+			information[0] = "non-floating task";
 		} else {
-			information[0] = "floating task"
+			information[0] = "floating task";
 		}
 
-		retrun information;
+		return information;
 	}
 
 

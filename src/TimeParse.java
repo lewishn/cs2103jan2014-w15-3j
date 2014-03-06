@@ -40,7 +40,7 @@ public class TimeParse{
 		}
 	}
 
-	private static boolean isValidFormat(String input) {
+	protected static boolean isValidFormat(String input) {
 		DateTime date;
 		int i = 0;
 		for ( ; i < timeFormats.size(); i++) {

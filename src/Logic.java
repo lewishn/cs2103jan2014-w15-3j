@@ -96,12 +96,12 @@ public class Logic{
 	protected static String firstStep (String userInput) {
 		String message;
 		String cmd;
-		ArrayList<String> infoFromParser = new ArrayList<String>();
+		String[] infoFromParser = new String[2];
 		checkTxtFile();
 		infoFromParser = MainParser.initialParse(userInput);
 
-		CommandType commandType = getCommandType(infoFromParser.get(0));
-		String taskDescription = infoFromParser.get(1);
+		CommandType commandType = getCommandType(infoFromParser[0]);
+		String taskDescription = infoFromParser[1];
 		determineCommand(commandType, taskDescription);
 
 
@@ -137,7 +137,6 @@ public class Logic{
 				//
 				break;
 			case EXIT:
-				return true;
 			default:
 	}
 
