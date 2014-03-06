@@ -62,7 +62,6 @@ public class Logic{
 	private static final String DEFAULT_EXIT = "\\exit";
 	private static final String DEFAULT_EXIT2 = "\\e";
 
-	public static final String MESSAGE_INVALID_DELETE = " is an invalid task number, cannot delete.";
 	public static final String MESSAGE_DELETE_SUCCESS = "Successfuly deleted task number ";
 		private enum CommandType {
 		ADD, DELETE, UPDATE, LIST, UNDO, SEARCH, CUSTOM, DELETE_CUSTOM, HELP, EXIT, INVALID;
@@ -115,7 +114,7 @@ public class Logic{
 	private static void determineCommand(CommandType commandType, String taskDescription) {
 		switch (commandType) {
 			case ADD:
-				String[]taskInformation = determineTask(taskDescription);
+				String[]taskInformation = MainParser.determineTask(taskDescription);
 				break;
 			case LIST:
 				break;

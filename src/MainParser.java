@@ -5,7 +5,7 @@ import java.util.Date;
 //TODO : ADD, UPDATE, SEARCH, CUSTOM, HELP
 
 class MainParser {
-	protected static ArrayList<String> initalParse(String userInput) {
+	protected static ArrayList<String> initialParse(String userInput) {
 		ArryaList<String> userCommand =new ArrayList<String>();
 		userCommand = Arrays.asList(userInput.split(" ", 2));
 		return userCommand;
