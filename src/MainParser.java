@@ -11,7 +11,7 @@ class MainParser {
 		return userCommand;
 	}
 
-	protected static void String[] determineTask (String userTaskDescription) {
+	protected static String[] determineTask (String userTaskDescription) {
 		Boolean floatingTask=true;
 		String[5] information;	// floatingTask, start Date, start time, end date, end time
 		String upperCasedDescription = userTaskDescription.trim().toUpperCase();
