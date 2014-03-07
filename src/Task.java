@@ -1,7 +1,5 @@
 import org.joda.time.DateTime;
 
-
-
 class Task implements Comparable<Task>{
 	private static final String DELIMITER = " ||| ";
 	private static final String NULL_START = "no_start_time";

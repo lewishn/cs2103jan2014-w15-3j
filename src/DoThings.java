@@ -1,4 +1,4 @@
-import java.util.*;
+import java.util.Scanner;
 
 public class DoThings {
 	private static final String MESSAGE_STARTUP = "Get ready to Do Things!";

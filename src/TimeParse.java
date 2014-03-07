@@ -1,6 +1,5 @@
 import java.util.ArrayList;
 import java.util.Arrays;
-import java.util.Scanner;
 
 import org.joda.time.DateTime;
 import org.joda.time.format.DateTimeFormat;
@@ -31,12 +30,12 @@ public class TimeParse{
 			DateTimeFormat.forPattern(TIME_FORMAT_8)
 		));
 	
-	protected static void setTime(DateTime date, String input) {
+	protected static DateTime setTime(DateTime date, String input) {
 		if (isValidFormat(input)) {
 			date = parseTimeFormat(date, input);
-			System.out.println(date);
+			return date;
 		} else {
-			System.out.println("error");
+			return date;
 		}
 	}
 

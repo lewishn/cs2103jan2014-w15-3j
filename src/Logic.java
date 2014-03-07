@@ -80,6 +80,7 @@ public class Logic{
 		} catch(IOException e) {
 			e.printStackTrace();
 		}
+
 		infoFromParser = MainParser.initialParse(userInput);
 
 		CommandType commandType = getCommandType(infoFromParser[0]);
@@ -141,7 +142,7 @@ public class Logic{
 				System.out.println("Search");
 				return false;
 			case EXIT:
-				System.out.println("Exit");
+				System.out.println("Goodbye~");
 				try {
 					DiskIO.closeWritersReaders();
 				} catch(IOException e) {

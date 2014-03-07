@@ -57,25 +57,23 @@ public class DateParse{
 		}
 	}
 
-	protected static Boolean setDate(String input) {
+	protected static DateTime setDate(String input) {
 		int formatType = getDateFormatType(input);
 		DateTime date = new DateTime();
 
 		if (formatType == 0) {
 			date = parseDateFormat0(input);
 			System.out.println(date);
-			return true;
+			return date;
 		} else if (formatType == 1) {
 			date = parseDateFormat1(input, date);
 			System.out.println(date);
-			return true;
-		} else if (formatType == 2) {
+			return date;
+		} else { //formatType == 2 
 			date = parseDateFormat2(input, date);
 			System.out.println(date);
-			return true;
-		} else {
-			return false;
-		}
+			return date;
+		} 
 	}
 
 	private static int getDateFormatType(String input) {

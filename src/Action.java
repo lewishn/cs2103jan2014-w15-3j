@@ -1,5 +1,8 @@
-import java.text.*;
-import java.util.*;
+import java.util.ArrayList;
+import java.util.Collections;
+import java.util.Stack;
+
+import org.joda.time.DateTime;
 
 class Action {
 	private static final String MESSAGE_ADDED_TASK = "Added \"%s\" ";
@@ -13,11 +16,15 @@ class Action {
 	private static final String MESSAGE_CUSTOM_DELETED = " has been successfully deleted from the command list.";
 	
 	private static final String MESSAGE_INVALID_ADD = "Missing task, please enter: add <sentence>";
+	private static final String MESSAGE_INVALID_ADD_TIME = "Missing timing, if you have entered two dates, you have to enter either no timings or two timings";
 	private static final String MESSAGE_INVALID_DELETE = "No such task, please enter: delete <number>";
 	private static final String MESSAGE_INVALID_DELETE_ENTER_NUMBER = "Error, please enter a number: delete <number>";
 
-	//private static final String FLOATING_TASK = "floating task";
-	private static final String NON_FLOATING_TASK = "non-floating task";
+	private static final String FLOATING_TASK = "floating task";
+	private static final String NON_FLOATING_TASK_SINGLE_DATE = "non-floating task with one date";
+	private static final String NON_FLOATING_TASK_SINGLE_DATE_NO_TIME = "non-floating task with one date and no time";
+	private static final String NON_FLOATING_TASK_DOUBLE_DATE = "non-floating task with two dates";
+	private static final String NON_FLOATING_TASK_DOUBLE_DATE_NO_TIME = "non-floating task with two dates and no time";
 
 	private static ArrayList<Task> taskList;
 	private static ArrayList<ArrayList<String>> customCommandList;
@@ -31,21 +38,55 @@ class Action {
 			// floatingTask, start Date, start time, end date, end time
 			Task userTask = new Task(taskDescription);	
 			// edit task object	
-			if(taskInformation[0].equals(NON_FLOATING_TASK)) {
-				pushUndoStack();
-				taskList=DiskIO.readTaskFromFile();
-				taskList.add(userTask);
-				sortTasks();
-			} else {
+			if(taskInformation[0].equals(NON_FLOATING_TASK_SINGLE_DATE)) {
+				DateTime endDate = DateParse.setDate(taskInformation[1]);
+				endDate = TimeParse.setTime(endDate, taskInformation[2]);
+				userTask.setEndDateTime(endDate);
+				
+				writeAddTask(userTask);
+			} else if(taskInformation[0].equals(NON_FLOATING_TASK_SINGLE_DATE_NO_TIME)) {
+				DateTime endDate = DateParse.setDate(taskInformation[1]);
+				endDate = TimeParse.setTime(endDate, "2359");
+				userTask.setEndDateTime(endDate);
+
+				writeAddTask(userTask);
+			} else if(taskInformation[0].equals(NON_FLOATING_TASK_DOUBLE_DATE)) {
+				DateTime startDate = DateParse.setDate(taskInformation[1]);
+				startDate = TimeParse.setTime(startDate, taskInformation[2]);
+				DateTime endDate = DateParse.setDate(taskInformation[1]);
+				endDate = TimeParse.setTime(endDate, taskInformation[2]);
+				userTask.setStartDateTime(startDate);
+				userTask.setEndDateTime(endDate);
+				
+				writeAddTask(userTask);
+			} else if (taskInformation[0].equals(NON_FLOATING_TASK_DOUBLE_DATE_NO_TIME)) {
+				DateTime startDate = DateParse.setDate(taskInformation[1]);
+				startDate = TimeParse.setTime(startDate, "2359");
+				DateTime endDate = DateParse.setDate(taskInformation[1]);
+				endDate = TimeParse.setTime(endDate, "2359");
+				userTask.setStartDateTime(startDate);
+				userTask.setEndDateTime(endDate);
+				
+				writeAddTask(userTask);
+			}	else if(taskInformation[0].equals(FLOATING_TASK)) {
 				// floating task
+				writeAddTask(userTask);
+			} else {
+				Printer.print(MESSAGE_INVALID_ADD_TIME);
 			}
 			DiskIO.writeTaskToFile(taskList);
-
 			Printer.print(String.format(MESSAGE_ADDED_TASK, taskDescription));
 		} else {
 			Printer.print(MESSAGE_INVALID_ADD);
 		}	
 	}
+	private static void writeAddTask(Task userTask) {
+		pushUndoStack();
+		taskList=DiskIO.readTaskFromFile();
+		taskList.add(userTask);
+		sortTasks();
+	}
+
 	private static boolean isNullString(String task) {
 		if (task == null) {
 			return true;
@@ -57,7 +98,7 @@ class Action {
 		}
 	}
 	private static void sortTasks() {
-		Collections.sort(taskList, Collator.getInstance());
+		Collections.sort(taskList);
 	}
 	
 	/* functions related to List task */
