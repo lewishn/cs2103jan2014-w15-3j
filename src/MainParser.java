@@ -43,7 +43,7 @@ class MainParser {
 		if(numOfDates==1 && numOfTime ==1) {
 			information[0] = NON_FLOATING_TASK_SINGLE_DATE;
 		} else if(numOfDates==1 && numOfTime==0) {
-			inofmation[0] = NON_FLOATING_TASK_SINGLE_DATE_NO_TIME;
+			information[0] = NON_FLOATING_TASK_SINGLE_DATE_NO_TIME;
 		}	else if(numOfDates>=2 && numOfTime==2) {
 			information[0] = NON_FLOATING_TASK_DOUBLE_DATE;
 		} else if(numOfDates==2 && numOfTime==0) {
