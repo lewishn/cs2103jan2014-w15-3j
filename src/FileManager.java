@@ -8,13 +8,7 @@ import java.io.IOException;
 import java.util.ArrayList;
 import java.util.Arrays;
 
-import org.joda.time.DateTime;
-
-
-
 class FileManager {
-	private static final String READ_ERROR = "Error, unable to read file.";
-	
 	private static final String FILE_TASK = "task.txt";
 	private static final String FILE_CUSTOM = "custom.txt";
 	
@@ -90,9 +84,9 @@ class FileManager {
 			return newList;
 		}
 	}
-	
+	/*
 	private static void main(String args[]) throws IOException {
-		/*
+		
 		ArrayList<ArrayList<String>> foo = new ArrayList<ArrayList<String>>();
 		foo.add(new ArrayList<String>());foo.add(new ArrayList<String>());foo.add(new ArrayList<String>());foo.add(new ArrayList<String>());
 		foo.get(0).add("[ADD]");foo.get(0).add("a");foo.get(0).add("b");foo.get(0).add("c");foo.get(0).add("d");
@@ -115,12 +109,11 @@ class FileManager {
 		list.add(new Task("yolooooooo", null, null));
 		list.add(new Task("bolocks", new DateTime("2004-12-13T21:39:45.618-08:00"), new DateTime("2050-12-13T21:39:45.618-08:00")));
 		writeTasksToFile(list);
-		*/
+		
 		
 		ArrayList<Task> list = readTasksFromFile();
 		for (int i = 0; i < list.size(); i++) {
 			System.out.println(list.get(i).toString());
 		}
-		
-	}
+	}*/
 }

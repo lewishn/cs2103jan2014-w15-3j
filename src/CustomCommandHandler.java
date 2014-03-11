@@ -50,11 +50,11 @@ class CustomCommandHandler {
 		}
 		return false;
 	}
-	
+	/*
 	private static void addToCustomList(String command, String type) {
 		
 	}
-	
+	*/
 	
 	protected static Feedback deleteCustomCommand(String userCommand) {
 		HistoryHandler.pushUndoStack();

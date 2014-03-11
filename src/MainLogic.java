@@ -1,5 +1,3 @@
-import java.util.ArrayList;
-
 public class MainLogic{
 	private static final String MESSAGE_EXIT = "Exiting...";
 	private static final String MESSAGE_INVALID = "Invalid command! Please try again.";
@@ -104,7 +102,7 @@ public class MainLogic{
 	
 	private static String getCustomHeader(String userInput) {
 		String command = CommandParser.getUserCommandType(userInput);
-		String commandDesc = CommandParser.getUserCommandDesc(userInput);
+		//String commandDesc = CommandParser.getUserCommandDesc(userInput);
 		
 		CommandType commandType = getCommandType(command);
 		

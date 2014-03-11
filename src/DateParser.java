@@ -73,6 +73,7 @@ public class DateParser{
 		return new DateTime();
 	}
 
+	@SuppressWarnings("unused")
 	private static int getDateFormatType(String input) {
 		DateTime date;
 		int i = 0;

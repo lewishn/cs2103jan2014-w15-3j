@@ -1,7 +1,6 @@
 import java.util.ArrayList;
 import java.util.Stack;
 
-
 public class HistoryHandler {
 	private static final String UNDO_SUCCESS = "Undo successful!";
 	private static final String UNDO_FAIL = "Nothing left to undo.";
@@ -20,6 +19,7 @@ public class HistoryHandler {
 		}
 	}
 
+	@SuppressWarnings("unchecked")
 	protected static void pushUndoStack() {
 		ArrayList<Task> taskList = (ArrayList<Task>) TaskHandler.getTaskList().clone();		
 		taskUndoStack.push(taskList);

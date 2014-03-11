@@ -1,6 +1,5 @@
 import java.util.ArrayList;
 import java.util.Arrays;
-
 import org.joda.time.DateTime;
 import org.joda.time.format.DateTimeFormat;
 import org.joda.time.format.DateTimeFormatter;
@@ -39,6 +38,7 @@ public class TimeParser{
 		}
 	}
 
+	@SuppressWarnings("unused")
 	protected static boolean isValidFormat(String input) {
 		DateTime date;
 		int i = 0;
