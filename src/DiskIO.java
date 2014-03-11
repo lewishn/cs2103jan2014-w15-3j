@@ -116,7 +116,7 @@ class DiskIO {
 				line = bufferReaderCustom.readLine();
 				list.add(new ArrayList<String>(Arrays.asList(line.split(" "))));
 			}
-		} catch (FileNotFoundException e) {
+		} catch (NullPointerException e) {
 			for (int i = 0; i < COMMAND_LIST_SIZE; i++) {
 				list.add(new ArrayList<String>());
 			}
