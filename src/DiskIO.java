@@ -69,7 +69,6 @@ class DiskIO {
 
 	protected static void writeTaskToFile(ArrayList<Task> list) {
 		try {
-
 			for (int i = 0; i < list.size(); i++) {
 				bufferWriterTask.write(list.get(i).toString() + "\r\n");
 				bufferWriterTask.flush();
@@ -77,6 +76,20 @@ class DiskIO {
 		} catch (IOException e) {
 			Printer.print(WRITE_ERROR);
 		}
+	}
+	
+	protected static ArrayList<String> readStringFromFile() {
+		ArrayList<String> listFromFile = new ArrayList<String>();
+		try {
+			String line= bufferReaderTask.readLine();
+			while (line!=null) {
+				listFromFile.add(line);
+				line=bufferReaderTask.readLine();
+			}
+		} catch (IOException e) {
+			Printer.print(READ_ERROR);
+		}
+		return listFromFile;
 	}
 	
 	protected static ArrayList<Task> readTaskFromFile() {

@@ -7,7 +7,7 @@ import org.joda.time.DateTime;
 class Action {
 	private static final String MESSAGE_ADDED_TASK = "Added \"%s\" ";
 	private static final String MESSAGE_EMPTY_TASKS = "You have no tasks scheduled.";
-	private static final String MESSAGE_LIST_NUMBER = "%d. %s";
+	//private static final String MESSAGE_LIST_NUMBER = "%d. %s";
 	private static final String MESSAGE_TASK_DELETED = "\"%s\" has been deleted from the task list.";
 	private static final String MESSAGE_TASK_DELETED_ALL = "All tasks have been deleted from the task list.";
 	private static final String MESSAGE_CUSTOM_DUPLICATE = "Sorry, but this word is already in use.";
@@ -86,20 +86,23 @@ class Action {
 	
 	/* functions related to List task */
 	protected static void listTasks() {
-		taskList=DiskIO.readTaskFromFile();
-		if (taskList.isEmpty()) {
+		ArrayList<String> stringTaskList=DiskIO.readStringFromFile();
+		if (stringTaskList.isEmpty()) {
 			Printer.print(MESSAGE_EMPTY_TASKS);
 		} else {
-			Printer.print(getContentToDisplay());
+			for(int i=0; i<stringTaskList.size(); i++) {
+				Printer.print(stringTaskList.get(i));
+			}
 		}
 	}
+	/*
 	private static String getContentToDisplay() {
 		String contentToDisplay="";
 		for (int i = 1; i <= taskList.size(); i++) {
 			contentToDisplay += String.format(MESSAGE_LIST_NUMBER, i, taskList.get(i-1).toString()) + "\r\n";
 		}
 		return contentToDisplay;
-	}
+	}*/
 
 	/* functions related to Delete task */
 	protected static void deleteTask(String taskNumber) {
