@@ -16,8 +16,8 @@ class DiskIO {
 	private static final String WRITE_ERROR = "Cannot write to file!";
 	private static final String READ_ERROR = "Cannot read from file!";
 	
-	private static File taskFile;
-	private static File customFile;
+	private static File taskFile= new File(FILE_TASKS);
+	private static File customFile= new File(FILE_CUSTOM);
 	private static FileWriter fileWriterTask;
 	private static FileWriter fileWriterCustom;
 	private static BufferedWriter bufferWriterTask;
@@ -27,34 +27,57 @@ class DiskIO {
 	private static BufferedReader bufferReaderTask;
 	private static BufferedReader bufferReaderCustom;
 
-	protected static Boolean txtFilesDoesNotExist() {
+	protected static void doesFilesExists() {
 		if(!taskFile.exists()) {
-			return true;
-		} else {
-			return false;
+			try{
+				taskFile.createNewFile();
+			} catch(IOException e) {
+				e.printStackTrace();
+			}
+		} 
+		if(!customFile.exists()) {
+			try{
+				customFile.createNewFile();
+			} catch(IOException e) {
+				e.printStackTrace();
+			}
+		}
+	}
+	protected static void firstTime() {
+		try{
+			initialiseIO();
+		} catch(IOException e) {
+			e.printStackTrace();
 		}
 	}
 
-	protected static void createFiles() throws IOException {
-		taskFile= new File(FILE_TASKS);
-		customFile= new File(FILE_CUSTOM);
-	}
-
-	protected static void initialiseIO() throws IOException{
+	private static void initialiseIO() throws IOException{
 		initialiseWriters();
 		initialiseReaders();
 	}
 
 	private static void initialiseWriters() throws IOException {
+		initialiseTaskWriters();
+		initialiseCustomWriters();
+	}
+	private static void initialiseTaskWriters() throws IOException {
 		fileWriterTask= new FileWriter(taskFile);
 		bufferWriterTask= new BufferedWriter(fileWriterTask);
+	}
+	private static void initialiseCustomWriters() throws IOException {
 		fileWriterCustom= new FileWriter(customFile);
 		bufferWriterCustom= new BufferedWriter(fileWriterCustom);
 	}
 
 	private static void initialiseReaders() throws IOException {
+		initialiseTaskReaders();
+		initialiseCustomReaders();
+	}
+	private static void initialiseTaskReaders() throws IOException {
 		fileReaderTask= new FileReader(taskFile);
 		bufferReaderTask= new BufferedReader(fileReaderTask);
+	}
+	private static void initialiseCustomReaders() throws IOException {
 		fileReaderCustom= new FileReader(customFile);
 		bufferReaderCustom= new BufferedReader(fileReaderCustom);
 	}
@@ -74,6 +97,7 @@ class DiskIO {
 
 	protected static void writeTaskToFile(ArrayList<Task> list) {
 		try {
+
 			for (int i = 0; i < list.size(); i++) {
 				bufferWriterTask.write(list.get(i).toString() + "\r\n");
 				bufferWriterTask.flush();
@@ -84,18 +108,18 @@ class DiskIO {
 	}
 	
 	protected static ArrayList<Task> readTaskFromFile() {
+		ArrayList<Task> list = new ArrayList<Task>();
 		try {
-			String line;
-			ArrayList<Task> list = new ArrayList<Task>();
-			while ((line = bufferReaderTask.readLine()) != null) {
+			String line= bufferReaderTask.readLine();
+			while (line!=null) {
 				list.add(Task.parseTaskFromString(line));
+				line=bufferReaderTask.readLine();
 			}
-			bufferReaderTask.close();
-			return list;
 		} catch (IOException e) {
 			Printer.print(READ_ERROR);
-			return null;
+			list= null;
 		}
+		return list;
 	}	
 
 	protected static void writeCustomCommands(ArrayList<ArrayList<String>> list) {
@@ -106,7 +130,6 @@ class DiskIO {
 				}
 				bufferWriterCustom.write("\r\n");
 			}
-
 			bufferWriterCustom.flush();
 		} catch (IOException e) {
 			Printer.print(WRITE_ERROR);

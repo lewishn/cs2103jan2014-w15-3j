@@ -26,7 +26,7 @@ class Action {
 	private static final String NON_FLOATING_TASK_DOUBLE_DATE = "non-floating task with two dates";
 	private static final String NON_FLOATING_TASK_DOUBLE_DATE_NO_TIME = "non-floating task with two dates and no time";
 
-	private static ArrayList<Task> taskList;
+	private static ArrayList<Task> taskList = new ArrayList<Task>();
 	private static ArrayList<ArrayList<String>> customCommandList;
 	private static Stack<ArrayList<Task>> taskUndoStack = new Stack<ArrayList<Task>>();
 	private static Stack<ArrayList<ArrayList<String>>> commandUndoStack = new Stack<ArrayList<ArrayList<String>>>();
@@ -42,7 +42,7 @@ class Action {
 				DateTime endDate = DateParse.setDate(taskInformation[1]);
 				endDate = TimeParse.setTime(endDate, taskInformation[2]);
 				userTask.setEndDateTime(endDate);
-				
+			
 				writeAddTask(userTask);
 			} else if(taskInformation[0].equals(NON_FLOATING_TASK_SINGLE_DATE_NO_TIME)) {
 				DateTime endDate = DateParse.setDate(taskInformation[1]);
@@ -74,6 +74,8 @@ class Action {
 			} else {
 				Printer.print(MESSAGE_INVALID_ADD_TIME);
 			}
+
+			
 			DiskIO.writeTaskToFile(taskList);
 			Printer.print(String.format(MESSAGE_ADDED_TASK, taskDescription));
 		} else {

@@ -2,7 +2,7 @@ import java.io.IOException;
 import java.util.ArrayList;
 
 public class Logic{
-	private static Boolean hasTxtFile=false;
+	private static Boolean firstTime=true;
 
 	private static final String DEFAULT_ADD = "add";
 	private static final String DEFAULT_ADD2 = "a";
@@ -72,20 +72,10 @@ public class Logic{
 		Boolean exit;
 		String[] infoFromParser = new String[2];
 		
-		if(!hasTxtFile) {
-			try {
-				DiskIO.createFiles();
-				DiskIO.initialiseIO();
-				hasTxtFile=true;
-			} catch(IOException e) {
-				e.printStackTrace();
-			}
-		} else {
-			try {
-				DiskIO.initialiseIO();
-			} catch(IOException e) {
-				e.printStackTrace();
-			}
+		DiskIO.doesFilesExists();
+		if(firstTime) {
+			DiskIO.firstTime();
+			firstTime=false;
 		}
 		infoFromParser = MainParser.initialParse(userInput);
 
