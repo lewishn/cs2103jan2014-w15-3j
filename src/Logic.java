@@ -75,11 +75,18 @@ public class Logic{
 		if(!hasTxtFile) {
 			try {
 				DiskIO.createFiles();
+				DiskIO.initialiseIO();
+				hasTxtFile=true;
+			} catch(IOException e) {
+				e.printStackTrace();
+			}
+		} else {
+			try {
+				DiskIO.initialiseIO();
 			} catch(IOException e) {
 				e.printStackTrace();
 			}
 		}
-
 		infoFromParser = MainParser.initialParse(userInput);
 
 		CommandType commandType = getCommandType(infoFromParser[0]);
