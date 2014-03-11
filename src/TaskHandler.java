@@ -1,7 +1,6 @@
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collections;
-import java.util.Stack;
 
 import org.joda.time.DateTime;
 
@@ -13,8 +12,6 @@ class TaskHandler {
 	private static final String MESSAGE_LIST_NUMBER = "%d. %s";
 	private static final String MESSAGE_TASK_DELETED = "\"%s\" has been deleted from the task list.";
 	private static final String MESSAGE_TASK_DELETED_ALL = "All tasks have been deleted from the task list.";
-	private static final String MESSAGE_INVALID_ADD = "Missing task, please enter: add <sentence>";
-	private static final String MESSAGE_INVALID_ADD_TIME = "Missing timing, if you have entered two dates, you have to enter either no timings or two timings";
 	private static final String MESSAGE_INVALID_DELETE = "No such task, please enter: delete <number>";
 	private static final String MESSAGE_INVALID_DELETE_ENTER_NUMBER = "Error, please enter a number: delete <number>";
 	
@@ -122,19 +119,17 @@ class TaskHandler {
 		if (taskList.isEmpty()) {
 			return new Feedback(MESSAGE_EMPTY_TASKS, false);
 		} else {
-			return new Feedback(getListOfTasks(), false);
+			return new Feedback(getListOfDescriptionTasks(), false);
 		}
 	}
-	
-	private static String getListOfTasks() {
+	private static String getListOfDescriptionTasks() {
 		taskList = FileManager.readTasksFromFile();
 		String list = "";
 		for (int i = 1; i <= taskList.size(); i++) {
-			list += String.format(MESSAGE_LIST_NUMBER, i, taskList.get(i-1).toString()) + "\r\n";
+			list += String.format(MESSAGE_LIST_NUMBER, i, taskList.get(i-1).toDescriptionString()) + "\r\n";
 		}
 		return list;
 	}
-
 	protected static Feedback deleteTask(String taskNumber) {
 		
 		if(isInteger(taskNumber)) {
