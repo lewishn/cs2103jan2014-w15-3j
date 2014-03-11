@@ -94,7 +94,6 @@ class DiskIO {
 			return list;
 		} catch (IOException e) {
 			Printer.print(READ_ERROR);
-			bufferReaderTask.close();
 			return null;
 		}
 	}	
@@ -123,6 +122,7 @@ class DiskIO {
 				line = bufferReaderCustom.readLine();
 				list.add(new ArrayList<String>(Arrays.asList(line.split(" "))));
 			}
+			bufferReaderCustom.close();
 		} catch (NullPointerException e) {
 			for (int i = 0; i < COMMAND_LIST_SIZE; i++) {
 				list.add(new ArrayList<String>());
@@ -130,7 +130,6 @@ class DiskIO {
 		} catch (IOException e) {
 			e.printStackTrace();
 		}
-		bufferReaderCustom.close();
 		return list;
 	}
 }
