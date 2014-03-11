@@ -73,12 +73,11 @@ public class Logic{
 		String[] infoFromParser = new String[2];
 		
 		if(!hasTxtFile) {
-			checkTxtFile();
-		}
-		try {
-			DiskIO.initialiseIO();
-		} catch(IOException e) {
-			e.printStackTrace();
+			try {
+				DiskIO.createFiles();
+			} catch(IOException e) {
+				e.printStackTrace();
+			}
 		}
 
 		infoFromParser = MainParser.initialParse(userInput);
@@ -92,7 +91,7 @@ public class Logic{
 		}
 		return exit;
 	}
-
+	/*
 	private static void checkTxtFile() {
 		if(DiskIO.txtFilesDoesNotExist()) {
 			try {
@@ -104,7 +103,7 @@ public class Logic{
 		} else{
 			hasTxtFile=true;
 		}
-	}
+	}*/
 
 	private static Boolean determineCommand(CommandType commandType, String taskDescription) {
 		switch (commandType) {
