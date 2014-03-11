@@ -49,20 +49,17 @@ class Action {
 				userTask.setStartDateTime(editTimeOfTask(taskInformation[1],DEFAULT_TIME));
 				userTask.setEndDateTime(editTimeOfTask(taskInformation[3],DEFAULT_TIME));
 			} else {
-			// All other format considered floating task
-			writeAddTask(userTask);
-			DiskIO.writeTaskToFile(taskList);
-			Printer.print(String.format(MESSAGE_ADDED_TASK, taskDescription));
+				// All other format considered floating task
+				pushUndoStack();
+				taskList=DiskIO.readTaskFromFile();
+				taskList.add(userTask);
+				sortTasks();
+				DiskIO.writeTaskToFile(taskList);
+				Printer.print(String.format(MESSAGE_ADDED_TASK, taskDescription));
 			}
 		} else {
 			Printer.print(MESSAGE_INVALID_ADD);
 		}	
-	}
-	private static void writeAddTask(Task userTask) {
-		pushUndoStack();
-		taskList=DiskIO.readTaskFromFile();
-		taskList.add(userTask);
-		sortTasks();
 	}
 	private static DateTime editTimeOfTask(String stringDate, String time) {
 		DateTime date = DateParse.setDate(stringDate);
