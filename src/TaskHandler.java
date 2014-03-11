@@ -13,10 +13,7 @@ class TaskHandler {
 	private static final String MESSAGE_LIST_NUMBER = "%d. %s";
 	private static final String MESSAGE_TASK_DELETED = "\"%s\" has been deleted from the task list.";
 	private static final String MESSAGE_TASK_DELETED_ALL = "All tasks have been deleted from the task list.";
-	private static final String MESSAGE_INVALID_ADD = "Missing task, please enter: add <sentence>";
-	private static final String MESSAGE_INVALID_ADD_TIME = "Missing timing, if you have entered two dates, you have to enter either no timings or two timings";
-	private static final String MESSAGE_INVALID_DELETE = "No such task, please enter: delete <number>";
-	private static final String MESSAGE_INVALID_DELETE_ENTER_NUMBER = "Error, please enter a number: delete <number>";
+	private static final String MESSAGE_INVALID_DELETE = "No such task, please enter a valid number to delete.";
 	
 	private static final String MINUTE_LAST = "23:59";
 	private static final String MINUTE_FIRST = "00:00";
@@ -138,20 +135,19 @@ class TaskHandler {
 	protected static Feedback deleteTask(String taskNumber) {
 		
 		if(isInteger(taskNumber)) {
-			int rowToDelete = Integer.parseInt(taskNumber);
+			int rowToDelete = Integer.parseInt(taskNumber) - 1;
 			if (isOutOfDeleteRange(rowToDelete)) {
-				return new Feedback(rowToDelete + MESSAGE_INVALID_DELETE, false);
+				return new Feedback(MESSAGE_INVALID_DELETE, false);
 			}
 
 			HistoryHandler.pushUndoStack();
-			rowToDelete--;
 			String deletedTask = taskList.get(rowToDelete).getDescription();
 			taskList.remove(rowToDelete);
 			FileManager.writeTasksToFile(taskList);
 			return new Feedback(String.format(MESSAGE_TASK_DELETED, deletedTask), false);
 		}
 			
-		return new Feedback(MESSAGE_INVALID_DELETE_ENTER_NUMBER, false);
+		return new Feedback(MESSAGE_INVALID_DELETE, false);
 	}
 	
 	protected static Feedback deleteAllTasks() {
