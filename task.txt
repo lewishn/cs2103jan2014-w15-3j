@@ -1,2 +1,7 @@
-no_start_time ~~ no_end_time ~~ yolo
-2014-03-11T13:00:00.000+08:00 ~~ 2014-03-11T13:00:00.000+08:00 ~~ dingdong 1pm
+no_start_time ~~ no_end_time ~~ list
+no_start_time ~~ no_end_time ~~ monkey
+no_start_time ~~ no_end_time ~~ moon
+no_start_time ~~ no_end_time ~~ zoo
+2014-03-02T00:00:00.000+08:00 ~~ 2014-03-02T23:59:00.000+08:00 ~~ 02-03-2014 apple pie
+2014-03-12T00:00:00.000+08:00 ~~ 2014-03-12T23:59:00.000+08:00 ~~ 12-03-2014 do this
+2014-03-12T20:14:00.000+08:00 ~~ no_end_time ~~ 12-03-2014 2014
