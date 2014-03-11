@@ -64,6 +64,9 @@ class Task implements Comparable<Task>{
 		String end = (endDateTime == null) ? NULL_END : endDateTime.toString();
 		
 		return start + DELIMITER + end + DELIMITER + description;
+	}	
+	public String toDescriptionString() {
+		return description;
 	}
 	
 	@Override
