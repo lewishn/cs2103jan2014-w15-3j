@@ -4,29 +4,39 @@ public class DoThings {
 	private static final String MESSAGE_STARTUP = "Get ready to Do Things!";
 	private static final String MESSAGE_COMMAND = "Please enter a command: ";
 	
-	private static boolean exit;
-	private static Scanner scanner;
+	private static Scanner scanUserInput;
 	
-	private DoThings() {
-		exit = false;
-		scanner = new Scanner(System.in);
+	private static void displayFeedback(String str) {
+		System.out.print(str);
 	}
-
-	private static void readCommand() {
-		Printer.printNoLine(MESSAGE_COMMAND);
-		String input = scanner.nextLine();
-		exit = Logic.firstStep(input);
+	
+	private static void displayFeedbackLn(String str) {
+		System.out.println(str);
 	}
-
-	public static void main(String[] args) throws Exception {
+	
+	private boolean readCommand() {
+		displayFeedback(MESSAGE_COMMAND);
+		String userInput = scanUserInput.nextLine();
+		Feedback feed = MainLogic.runLogic(userInput);
+		displayFeedbackLn(feed.toString());
+		
+		return feed.getExitFlag();
+	}
+	
+	public void run() {
+		scanUserInput = new Scanner(System.in);
+		System.out.println(MESSAGE_STARTUP);
+		
+		while (true) {
+			boolean feedback = readCommand();
+			if (feedback == true) {
+				System.exit(0);
+			}
+		}
+	}
+	
+	public static void main(String[] args) {
 		DoThings program = new DoThings();
 		program.run();
-	}
-	
-	public void run() throws Exception {
-		Printer.print(MESSAGE_STARTUP);
-		while (exit == false) {
-			readCommand();
-		}
 	}
 }

@@ -1,7 +1,13 @@
 import org.joda.time.DateTime;
 
 class Task implements Comparable<Task>{
-	private static final String DELIMITER = " ||| ";
+	protected static final int START_DATE = 0;
+	protected static final int START_TIME = 1;
+	protected static final int END_DATE = 2;
+	protected static final int END_TIME = 3;
+	protected static final int TASK_FIELD_SIZE = 4;
+	
+	private static final String DELIMITER = " ~~ ";
 	private static final String NULL_START = "no_start_time";
 	private static final String NULL_END = "no_end_time";
 	
@@ -72,77 +78,4 @@ class Task implements Comparable<Task>{
 			return this.description.compareTo(task.description);
 		}
 	}
-	
-	/*
-	protected void setStartDate(int date) {
-		this.startDateTime.set(DateTime.DAY_OF_MONTH, date);
-	}
-	protected void setStartMonth(int month) {
-		this.startDateTime.set(DateTime.MONTH, month);
-	}
-	protected void setStartYear(int year) {
-		this.startDateTime.set(DateTime.YEAR, year);
-	}
-	protected void setStartHour(int hour) {
-		this.startDateTime.set(DateTime.HOUR_OF_DAY, hour);
-	}
-	protected void setStartMinutes(int minutes) {
-		this.startDateTime.set(DateTime.MINUTE, minutes);
-	}
-	protected void setEndDate(int date) {
-		this.endDateTime.set(DateTime.DAY_OF_MONTH, date);
-	}
-	protected void setEndMonth(int month) {
-		this.endDateTime.set(DateTime.MONTH, month);
-	}
-	protected void setEndYear(int year) {
-		this.endDateTime.set(DateTime.YEAR, year);
-	}
-	protected void setEndHour(int hour) {
-		this.endDateTime.set(DateTime.HOUR_OF_DAY, hour);
-	}
-	protected void setEndMinutes(int minutes) {
-		this.startDateTime.set(DateTime.MINUTE, minutes);
-	}
-	
-	protected DateTime getStart() {
-		return this.startDateTime;
-	}
-	protected int getStartDate() {
-		return this.getStart().get(DateTime.DAY_OF_MONTH);
-	}
-	protected int getStartMonth() {
-		return this.getStart().get(DateTime.MONTH);
-	}
-	protected int getStartYear() {
-		return this.getStart().get(DateTime.YEAR);
-	}
-	protected int getStartDay() {
-		return this.getStart().get(DateTime.DAY_OF_WEEK);
-	}
-	protected int getStartHours() {
-		return this.getStart().get(DateTime.HOUR_OF_DAY);
-	}
-	protected DateTime getEnd() {
-		return this.endDateTime;
-	}
-	protected int getEndDate() {
-		return this.getEnd().get(DateTime.DAY_OF_MONTH);
-	}
-	protected int getEndMonth() {
-		return this.getEnd().get(DateTime.MONTH);
-	}
-	protected int getEndYear() {
-		return this.getEnd().get(DateTime.YEAR);
-	}
-	protected int getEndDay() {
-		return this.getEnd().get(DateTime.DAY_OF_WEEK);
-	}
-	protected int getEndHours() {
-		return this.getEnd().get(DateTime.HOUR_OF_DAY);
-	}
-	protected String getDescription() {
-		return this.description;
-	}
-	*/
 }

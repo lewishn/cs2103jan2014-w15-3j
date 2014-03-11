@@ -5,7 +5,7 @@ import org.joda.time.DateTime;
 import org.joda.time.format.DateTimeFormat;
 import org.joda.time.format.DateTimeFormatter;
 
-public class TimeParse{
+public class TimeParser{
 	private static final String TIME_FORMAT_0 = "HH:mm";
 	private static final String TIME_FORMAT_1 = "HHmm";
 	private static final String TIME_FORMAT_2 = "hh:mmaa";
@@ -14,7 +14,7 @@ public class TimeParse{
 	private static final String TIME_FORMAT_5 = "hhmm aa";
 	private static final String TIME_FORMAT_6 = "HH";
 	private static final String TIME_FORMAT_7 = "hhaa";
-	private static final String TIME_FORMAT_8 = "hh aa";
+	private static final String TIME_FORMAT_8 = "haa";
 	private static final int FORMAT_SIZE = 9;
 	
 	private static ArrayList<DateTimeFormatter> timeFormats = 
@@ -48,6 +48,8 @@ public class TimeParse{
 				break;
 			} catch (IllegalArgumentException e) {
 				continue;
+			} catch (NullPointerException e) {
+				continue;
 			}
 		}
 		
@@ -56,6 +58,10 @@ public class TimeParse{
 		} else {
 			return false;
 		}
+	}
+	
+	protected static boolean isTime(String input) {
+		return isValidFormat(input);
 	}
 	
 	private static DateTime parseTimeFormat(DateTime date, String input){

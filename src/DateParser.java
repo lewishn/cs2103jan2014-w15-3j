@@ -1,10 +1,11 @@
 import java.util.ArrayList;
 import java.util.Arrays;
+
 import org.joda.time.DateTime;
 import org.joda.time.format.DateTimeFormat;
 import org.joda.time.format.DateTimeFormatter;
 
-public class DateParse{
+public class DateParser{
 	private static final String DATE_FORMAT_0 = "dd/MM/YYYY";
 	private static final String DATE_FORMAT_1 = "dd-MM-YYYY";
 	private static final String DATE_FORMAT_2 = "dd.MM.YYYY";
@@ -42,19 +43,6 @@ public class DateParse{
 			DateTimeFormat.forPattern(DATE_FORMAT_13),
 			DateTimeFormat.forPattern(DATE_FORMAT_14)
 		));
-	protected static Boolean isDate(String input) {
-		int formatType = getDateFormatType(input);
-		
-		if (formatType == 0) {
-			return true;
-		} else if (formatType == 1) {
-			return true;
-		} else if (formatType == 2) {
-			return true;
-		} else {
-			return false;
-		}
-	}
 
 	protected static DateTime setDate(String input) {
 		int formatType = getDateFormatType(input);
@@ -73,6 +61,10 @@ public class DateParse{
 			System.out.println(date);
 			return date;
 		} 
+	}
+	
+	protected static DateTime setDate() {
+		return new DateTime();
 	}
 
 	private static int getDateFormatType(String input) {
@@ -95,6 +87,18 @@ public class DateParse{
 			return 2;
 		} else {
 			return -1;
+		}
+	}
+	
+	
+	protected static Boolean isDate(String input) {
+		int formatType = getDateFormatType(input);
+		assert(formatType >= -1 && formatType <=2);
+		
+		if (formatType == -1) {
+			return false;
+		} else {
+			return true;
 		}
 	}
 	
