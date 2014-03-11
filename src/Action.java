@@ -102,7 +102,8 @@ class Action {
 	}
 	
 	/* functions related to List task */
-	protected static void listTasks() {		
+	protected static void listTasks() {
+		taskList=DiskIO.readTaskFromFile();
 		if (taskList.isEmpty()) {
 			Printer.print(MESSAGE_EMPTY_TASKS);
 		} else {
@@ -226,12 +227,6 @@ class Action {
 		DiskIO.writeTaskToFile(taskList);
 	}
 
-
-
-
-
-
-
 	private static void pushUndoStack() {
 		taskUndoStack.push(taskList);
 		commandUndoStack.push(customCommandList);
@@ -242,4 +237,30 @@ class Action {
 		taskList = taskUndoStack.pop();
 		customCommandList = commandUndoStack.pop();
 	}
+	
+	
+	/* functions related to Update */
+	protected static void updateCommand(String description) {
+		String[] listOfUserInput = description.split("");
+		int processedIndex=0;
+		Task editedTask=taskList.get(Integer.parseInt(listOfUserInput[processedIndex]));
+		processedIndex++;
+		if (DateParse.isDate(listOfUserInput[processedIndex])) {
+			DateTime endDate=DateParse.setDate(listOfUserInput[processedIndex]);
+			endDate = TimeParse.setTime(endDate, "2359");
+			editedTask.setEndDateTime(endDate);
+			processedIndex++;
+		}
+		if (TimeParse.isValidFormat(listOfUserInput[processedIndex])) {
+			DateTime time=TimeParse.setTime(editedTask.getEndDateTime(), listOfUserInput[processedIndex]);
+			editedTask.setEndDateTime(time);
+			processedIndex++;
+		}
+		else {
+			editedTask.setDescription(listOfUserInput[processedIndex]);
+		}
+		
+		
+	}
+	
 }
