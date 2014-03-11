@@ -98,29 +98,14 @@ public class Logic{
 		}
 		return exit;
 	}
-	/*
-	private static void checkTxtFile() {
-		if(DiskIO.txtFilesDoesNotExist()) {
-			try {
-				DiskIO.createFiles();
-			} catch(IOException e) {
-				e.printStackTrace();
-			}
-			hasTxtFile=true;
-		} else{
-			hasTxtFile=true;
-		}
-	}*/
 
 	private static Boolean determineCommand(CommandType commandType, String taskDescription) {
 		switch (commandType) {
 			case ADD:
-				System.out.println("Add");
-				//Action.addTask(taskDescription);
+				Action.addTask(taskDescription);
 				return false;
 			case LIST:
-				System.out.println("list");
-				//Action.listTasks();
+				Action.listTasks();
 				return false;
 			case UPDATE:
 				System.out.println("Update");

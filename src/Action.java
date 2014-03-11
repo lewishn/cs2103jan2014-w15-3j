@@ -28,8 +28,8 @@ class Action {
 
 	private static ArrayList<Task> taskList;
 	private static ArrayList<ArrayList<String>> customCommandList;
-	private static Stack<ArrayList<Task>> taskUndoStack;
-	private static Stack<ArrayList<ArrayList<String>>> commandUndoStack;
+	private static Stack<ArrayList<Task>> taskUndoStack = new Stack<ArrayList<Task>>();
+	private static Stack<ArrayList<ArrayList<String>>> commandUndoStack = new Stack<ArrayList<ArrayList<String>>>();
 
 	/* functions related to Add task */
 	protected static void addTask(String taskDescription) {

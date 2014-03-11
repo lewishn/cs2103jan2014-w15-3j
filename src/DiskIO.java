@@ -60,8 +60,14 @@ class DiskIO {
 	}
 
 	protected static void closeWritersReaders() throws IOException {
+		closeWriters();
+		closeReaders();
+	}
+	private static void closeWriters() throws IOException {
 		bufferWriterTask.close();
 		bufferWriterCustom.close();
+	}
+	private static void closeReaders() throws IOException {
 		bufferReaderTask.close();
 		bufferReaderCustom.close();
 	}
@@ -70,8 +76,8 @@ class DiskIO {
 		try {
 			for (int i = 0; i < list.size(); i++) {
 				bufferWriterTask.write(list.get(i).toString() + "\r\n");
+				bufferWriterTask.flush();
 			}
-			bufferWriterTask.flush();
 		} catch (IOException e) {
 			Printer.print(WRITE_ERROR);
 		}
@@ -84,9 +90,11 @@ class DiskIO {
 			while ((line = bufferReaderTask.readLine()) != null) {
 				list.add(Task.parseTaskFromString(line));
 			}
+			bufferReaderTask.close();
 			return list;
 		} catch (IOException e) {
 			Printer.print(READ_ERROR);
+			bufferReaderTask.close();
 			return null;
 		}
 	}	
@@ -122,6 +130,7 @@ class DiskIO {
 		} catch (IOException e) {
 			e.printStackTrace();
 		}
+		bufferReaderCustom.close();
 		return list;
 	}
 }
