@@ -12,12 +12,8 @@ class TaskHandler {
 	private static final String MESSAGE_LIST_NUMBER = "%d. %s";
 	private static final String MESSAGE_TASK_DELETED = "\"%s\" has been deleted from the task list.";
 	private static final String MESSAGE_TASK_DELETED_ALL = "All tasks have been deleted from the task list.";
-<<<<<<< local
+
 	private static final String MESSAGE_INVALID_DELETE = "No such task, please enter: delete <number>";
-	private static final String MESSAGE_INVALID_DELETE_ENTER_NUMBER = "Error, please enter a number: delete <number>";
-=======
-	private static final String MESSAGE_INVALID_DELETE = "No such task, please enter a valid number to delete.";
->>>>>>> other
 	
 	private static final String MINUTE_LAST = "23:59";
 	private static final String MINUTE_FIRST = "00:00";

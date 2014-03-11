@@ -9,21 +9,24 @@ public class DateParser{
 	private static final String DATE_FORMAT_0 = "dd/MM/YYYY";
 	private static final String DATE_FORMAT_1 = "dd-MM-YYYY";
 	private static final String DATE_FORMAT_2 = "dd.MM.YYYY";
-	private static final String DATE_FORMAT_3 = "dd/MMM/YYYY";
-	private static final String DATE_FORMAT_4 = "dd-MMM-YYYY";
-	private static final String DATE_FORMAT_5 = "dd.MMM.YYYY";
-	private static final String DATE_FORMAT_6 = "dd MMM YYYY";
-	private static final String DATE_FORMAT_7 = "dd/MM";
-	private static final String DATE_FORMAT_8 = "dd-MM";
-	private static final String DATE_FORMAT_9 = "dd.MM";
-	private static final String DATE_FORMAT_10 = "dd/MMM";
-	private static final String DATE_FORMAT_11 = "dd-MMM";
-	private static final String DATE_FORMAT_12 = "dd.MMM";
-	private static final String DATE_FORMAT_13 = "dd MMM";
-	private static final String DATE_FORMAT_14 = "E";
-	private static final int FORMAT_TYPE_0_INDEX = 7;	//format 0 : full date, with year
-	private static final int FORMAT_TYPE_1_INDEX = 14;	//format 1 : with day and month only
-	private static final int FORMAT_TYPE_2_INDEX = 15;	//format 2 : day of the week, Friday, etc.
+	private static final String DATE_FORMAT_3 = "dd MM YYYY";
+	private static final String DATE_FORMAT_4 = "ddMMYYYY";
+	private static final String DATE_FORMAT_5 = "dd/MMM/YYYY";
+	private static final String DATE_FORMAT_6 = "dd-MMM-YYYY";
+	private static final String DATE_FORMAT_7 = "dd.MMM.YYYY";
+	private static final String DATE_FORMAT_8 = "dd MMM YYYY";
+	private static final String DATE_FORMAT_9 = "ddMMMYYYY";
+	private static final String DATE_FORMAT_10 = "dd/MM";
+	private static final String DATE_FORMAT_11 = "dd-MM";
+	private static final String DATE_FORMAT_12 = "dd.MM";
+	private static final String DATE_FORMAT_13 = "dd/MMM";
+	private static final String DATE_FORMAT_14 = "dd-MMM";
+	private static final String DATE_FORMAT_15 = "dd.MMM";
+	private static final String DATE_FORMAT_16 = "dd MMM";
+	private static final String DATE_FORMAT_17 = "E";
+	private static final int FORMAT_TYPE_0_INDEX = 10;	//format 0 : full date, with year
+	private static final int FORMAT_TYPE_1_INDEX = 17;	//format 1 : with day and month only
+	private static final int FORMAT_TYPE_2_INDEX = 18;	//format 2 : day of the week, Friday, etc.
 	
 	private static ArrayList<DateTimeFormatter> dateFormats = 
 		new ArrayList<DateTimeFormatter> (Arrays.asList( 
@@ -41,7 +44,10 @@ public class DateParser{
 			DateTimeFormat.forPattern(DATE_FORMAT_11), 
 			DateTimeFormat.forPattern(DATE_FORMAT_12), 
 			DateTimeFormat.forPattern(DATE_FORMAT_13),
-			DateTimeFormat.forPattern(DATE_FORMAT_14)
+			DateTimeFormat.forPattern(DATE_FORMAT_14),
+			DateTimeFormat.forPattern(DATE_FORMAT_15),
+			DateTimeFormat.forPattern(DATE_FORMAT_16),
+			DateTimeFormat.forPattern(DATE_FORMAT_17)
 		));
 
 	protected static DateTime setDate(String input) {
