@@ -9,10 +9,16 @@ class Task implements Comparable<Task>{
 	private DateTime endDateTime;
 	private String description;
 	
-	// For tasks with date ranges
+	// floating task
 	protected Task(String desc) {
 		description = desc;
 	}
+	// non-floating task with one date
+	protected Task(String desc, DateTime end) {
+		endDateTime = end;
+		description = desc;
+	}
+	// non-floating task with two dates
 	protected Task(String desc, DateTime start, DateTime end) {
 		startDateTime = start;
 		endDateTime = end;

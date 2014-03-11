@@ -55,10 +55,6 @@ class DiskIO {
 		bufferWriterTask= new BufferedWriter(fileWriterTask);
 		fileWriterCustom= new FileWriter(customFile);
 		bufferWriterCustom= new BufferedWriter(fileWriterCustom);
-		fileReaderTask= new FileReader(taskFile);
-		bufferReaderTask= new BufferedReader(fileReaderTask);
-		fileReaderCustom= new FileReader(customFile);
-		bufferReaderCustom= new BufferedReader(fileReaderCustom);
 	}
 	protected static void closeWritersReaders() throws IOException {
 		bufferWriterTask.close();
@@ -81,31 +77,19 @@ class DiskIO {
 	protected static ArrayList<String> readStringFromFile() {
 		ArrayList<String> listFromFile = new ArrayList<String>();
 		try {
+			fileReaderTask= new FileReader(taskFile.getAbsoluteFile());
+			bufferReaderTask= new BufferedReader(fileReaderTask);
 			String line= bufferReaderTask.readLine();
 			while (line!=null) {
 				listFromFile.add(line);
 				line=bufferReaderTask.readLine();
 			}
+			bufferReaderTask.close();
 		} catch (IOException e) {
 			Printer.print(READ_ERROR);
 		}
 		return listFromFile;
 	}
-	
-	protected static ArrayList<Task> readTaskFromFile() {
-		ArrayList<Task> list = new ArrayList<Task>();
-		try {
-			String line= bufferReaderTask.readLine();
-			while (line!=null) {
-				list.add(Task.parseTaskFromString(line));
-				line=bufferReaderTask.readLine();
-			}
-		} catch (IOException e) {
-			Printer.print(READ_ERROR);
-			list= null;
-		}
-		return list;
-	}	
 
 	protected static void writeCustomCommands(ArrayList<ArrayList<String>> list) {
 		try {
@@ -123,8 +107,9 @@ class DiskIO {
 	
 	protected static ArrayList<ArrayList<String>> readCustomCommands() {
 		ArrayList<ArrayList<String>> list = new ArrayList<ArrayList<String>>();
-		
 		try {
+			fileReaderCustom= new FileReader(customFile.getAbsoluteFile());
+			bufferReaderCustom= new BufferedReader(fileReaderCustom);
 			String line;
 			for (int i = 0; i < COMMAND_LIST_SIZE; i++) {
 				line = bufferReaderCustom.readLine();

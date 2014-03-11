@@ -27,13 +27,9 @@ class Action {
 	/* functions related to Add task */
 	protected static void addTask(String taskDescription) {
 		if(!isNullString(taskDescription)) {
-			String[]taskInformation = MainParser.determineTask(taskDescription);
-			// floatingTask, start Date, start time, end date, end time
-			Task userTask = new Task(taskDescription);	
-			// edit task object	
-			userTask=MainParser.processTaskInformation(userTask, taskInformation);
+			Task userTask =MainParser.determineTask(taskDescription);
 			pushUndoStack();
-			taskList=DiskIO.readTaskFromFile();
+			taskList=readTaskFromFile();
 			taskList.add(userTask);
 			sortTasks();
 			DiskIO.writeTaskToFile(taskList);
@@ -53,6 +49,16 @@ class Action {
 			return false;
 		}
 	}
+	private static ArrayList<Task> readTaskFromFile() {
+		ArrayList<Task> list = new ArrayList<Task>();
+		ArrayList<String> stringsFromFile = DiskIO.readStringFromFile();
+
+		for(int i=0; i<stringsFromFile.size(); i++) {
+			Task userTask = MainParser.determineTask(stringsFromFile.get(i));
+			list.add(userTask);
+		}
+		return list;
+	}	
 	private static void sortTasks() {
 		Collections.sort(taskList);
 	}

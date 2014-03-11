@@ -18,14 +18,15 @@ class MainParser {
 		return userCommand;
 	}
 
-	protected static String[] determineTask (String userTaskDescription) {
-		String[] information = new String[5];	// floatingTask, start Date, start time, end date, end time
+	protected static Task determineTask (String userTaskDescription) {
+		String[] information = new String[6];	// floatingTask, start Date, start time, end date, end time, original user input
+		information[5] = userTaskDescription;
 		String upperCasedDescription = userTaskDescription.trim().toUpperCase();
 		String[] listOfUserInput = upperCasedDescription.split("");
 		int numOfWords = listOfUserInput.length;
 		int numOfDates = 0;
 		int numOfTime = 0;
-
+		
 		for(int i=0; i<numOfWords; i++) {
 			if(DateParse.isDate(listOfUserInput[i])) {
 				numOfDates++;
@@ -58,24 +59,23 @@ class MainParser {
 			information[0] = ERROR_TASK;
 		}
 
-		return information;
+		return processTaskInformation(information);
 	}
 	
-	protected static Task processTaskInformation(Task userTask, String[] taskInformation) {
+	protected static Task processTaskInformation(String[] taskInformation) {
+		Task userTask;
 		String type = taskInformation[0];
 		
 		if(type.equals(NON_FLOATING_TASK_SINGLE_DATE)) {
-			userTask.setEndDateTime(editTimeOfTask(taskInformation[1],taskInformation[2]));
+			userTask = new Task (taskInformation[5], editTimeOfTask(taskInformation[1],taskInformation[2]));
 		} else if(type.equals(NON_FLOATING_TASK_SINGLE_DATE_NO_TIME)) {
-			userTask.setEndDateTime(editTimeOfTask(taskInformation[1],DEFAULT_TIME));
+			userTask = new Task (taskInformation[5], editTimeOfTask(taskInformation[1],DEFAULT_TIME));
 		} else if(type.equals(NON_FLOATING_TASK_DOUBLE_DATE)) {
-			userTask.setStartDateTime(editTimeOfTask(taskInformation[1],taskInformation[2]));
-			userTask.setEndDateTime(editTimeOfTask(taskInformation[3],taskInformation[4]));
+			userTask = new Task (taskInformation[5], editTimeOfTask(taskInformation[1],taskInformation[2]),editTimeOfTask(taskInformation[3],taskInformation[4]));
 		} else if (type.equals(NON_FLOATING_TASK_DOUBLE_DATE_NO_TIME)) {
-			userTask.setStartDateTime(editTimeOfTask(taskInformation[1],DEFAULT_TIME));
-			userTask.setEndDateTime(editTimeOfTask(taskInformation[3],DEFAULT_TIME));
+			userTask = new Task (taskInformation[5], editTimeOfTask(taskInformation[1],DEFAULT_TIME),editTimeOfTask(taskInformation[3],DEFAULT_TIME));
 		} else {
-			// All other format considered floating task
+			userTask = new Task(taskInformation[5]);
 		}
 		return userTask;
 	}
