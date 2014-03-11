@@ -50,38 +50,16 @@ class DiskIO {
 			e.printStackTrace();
 		}
 	}
-
 	private static void initialiseIO() throws IOException{
-		initialiseWriters();
-		initialiseReaders();
-	}
-
-	private static void initialiseWriters() throws IOException {
-		initialiseTaskWriters();
-		initialiseCustomWriters();
-	}
-	private static void initialiseTaskWriters() throws IOException {
 		fileWriterTask= new FileWriter(taskFile);
 		bufferWriterTask= new BufferedWriter(fileWriterTask);
-	}
-	private static void initialiseCustomWriters() throws IOException {
 		fileWriterCustom= new FileWriter(customFile);
 		bufferWriterCustom= new BufferedWriter(fileWriterCustom);
-	}
-
-	private static void initialiseReaders() throws IOException {
-		initialiseTaskReaders();
-		initialiseCustomReaders();
-	}
-	private static void initialiseTaskReaders() throws IOException {
 		fileReaderTask= new FileReader(taskFile);
 		bufferReaderTask= new BufferedReader(fileReaderTask);
-	}
-	private static void initialiseCustomReaders() throws IOException {
 		fileReaderCustom= new FileReader(customFile);
 		bufferReaderCustom= new BufferedReader(fileReaderCustom);
 	}
-
 	protected static void closeWritersReaders() throws IOException {
 		closeWriters();
 		closeReaders();
