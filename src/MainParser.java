@@ -1,3 +1,5 @@
+import org.joda.time.DateTime;
+
 //TODO : ADD, UPDATE, SEARCH, CUSTOM, HELP
 
 class MainParser {
@@ -8,6 +10,8 @@ class MainParser {
 	private static final String NON_FLOATING_TASK_DOUBLE_DATE_NO_TIME = "non-floating task with two dates and no time";
 	private static final String ERROR_TASK = "wrong format";
 
+	private static final String DEFAULT_TIME="2359";
+	
 	protected static String[] initialParse(String userInput) {
 		String[] userCommand =new String[2];
 		userCommand = userInput.split(" ", 2);
@@ -55,5 +59,29 @@ class MainParser {
 		}
 
 		return information;
+	}
+	
+	protected static Task processTaskInformation(Task userTask, String[] taskInformation) {
+		String type = taskInformation[0];
+		
+		if(type.equals(NON_FLOATING_TASK_SINGLE_DATE)) {
+			userTask.setEndDateTime(editTimeOfTask(taskInformation[1],taskInformation[2]));
+		} else if(type.equals(NON_FLOATING_TASK_SINGLE_DATE_NO_TIME)) {
+			userTask.setEndDateTime(editTimeOfTask(taskInformation[1],DEFAULT_TIME));
+		} else if(type.equals(NON_FLOATING_TASK_DOUBLE_DATE)) {
+			userTask.setStartDateTime(editTimeOfTask(taskInformation[1],taskInformation[2]));
+			userTask.setEndDateTime(editTimeOfTask(taskInformation[3],taskInformation[4]));
+		} else if (type.equals(NON_FLOATING_TASK_DOUBLE_DATE_NO_TIME)) {
+			userTask.setStartDateTime(editTimeOfTask(taskInformation[1],DEFAULT_TIME));
+			userTask.setEndDateTime(editTimeOfTask(taskInformation[3],DEFAULT_TIME));
+		} else {
+			// All other format considered floating task
+		}
+		return userTask;
+	}
+	private static DateTime editTimeOfTask(String stringDate, String time) {
+		DateTime date = DateParse.setDate(stringDate);
+		date = TimeParse.setTime(date, time);
+		return date;
 	}
 }

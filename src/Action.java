@@ -19,13 +19,6 @@ class Action {
 	private static final String MESSAGE_INVALID_DELETE = "No such task, please enter: delete <number>";
 	private static final String MESSAGE_INVALID_DELETE_ENTER_NUMBER = "Error, please enter a number: delete <number>";
 
-	private static final String NON_FLOATING_TASK_SINGLE_DATE = "non-floating task with one date";
-	private static final String NON_FLOATING_TASK_SINGLE_DATE_NO_TIME = "non-floating task with one date and no time";
-	private static final String NON_FLOATING_TASK_DOUBLE_DATE = "non-floating task with two dates";
-	private static final String NON_FLOATING_TASK_DOUBLE_DATE_NO_TIME = "non-floating task with two dates and no time";
-
-	private static final String DEFAULT_TIME="2359";
-
 	private static ArrayList<Task> taskList = new ArrayList<Task>();
 	private static ArrayList<ArrayList<String>> customCommandList;
 	private static Stack<ArrayList<Task>> taskUndoStack = new Stack<ArrayList<Task>>();
@@ -38,33 +31,16 @@ class Action {
 			// floatingTask, start Date, start time, end date, end time
 			Task userTask = new Task(taskDescription);	
 			// edit task object	
-			if(taskInformation[0].equals(NON_FLOATING_TASK_SINGLE_DATE)) {
-				userTask.setEndDateTime(editTimeOfTask(taskInformation[1],taskInformation[2]));
-			} else if(taskInformation[0].equals(NON_FLOATING_TASK_SINGLE_DATE_NO_TIME)) {
-				userTask.setEndDateTime(editTimeOfTask(taskInformation[1],DEFAULT_TIME));
-			} else if(taskInformation[0].equals(NON_FLOATING_TASK_DOUBLE_DATE)) {
-				userTask.setStartDateTime(editTimeOfTask(taskInformation[1],taskInformation[2]));
-				userTask.setEndDateTime(editTimeOfTask(taskInformation[3],taskInformation[4]));
-			} else if (taskInformation[0].equals(NON_FLOATING_TASK_DOUBLE_DATE_NO_TIME)) {
-				userTask.setStartDateTime(editTimeOfTask(taskInformation[1],DEFAULT_TIME));
-				userTask.setEndDateTime(editTimeOfTask(taskInformation[3],DEFAULT_TIME));
-			} else {
-				// All other format considered floating task
-				pushUndoStack();
-				taskList=DiskIO.readTaskFromFile();
-				taskList.add(userTask);
-				sortTasks();
-				DiskIO.writeTaskToFile(taskList);
-				Printer.print(String.format(MESSAGE_ADDED_TASK, taskDescription));
-			}
+			userTask=MainParser.processTaskInformation(userTask, taskInformation);
+			pushUndoStack();
+			taskList=DiskIO.readTaskFromFile();
+			taskList.add(userTask);
+			sortTasks();
+			DiskIO.writeTaskToFile(taskList);
+			Printer.print(String.format(MESSAGE_ADDED_TASK, taskDescription));
 		} else {
 			Printer.print(MESSAGE_INVALID_ADD);
 		}	
-	}
-	private static DateTime editTimeOfTask(String stringDate, String time) {
-		DateTime date = DateParse.setDate(stringDate);
-		date = TimeParse.setTime(date, time);
-		return date;
 	}
 
 	private static boolean isNullString(String task) {
@@ -80,6 +56,8 @@ class Action {
 	private static void sortTasks() {
 		Collections.sort(taskList);
 	}
+
+	
 	
 	/* functions related to List task */
 	protected static void listTasks() {
