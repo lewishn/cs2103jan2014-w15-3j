@@ -61,14 +61,8 @@ class DiskIO {
 		bufferReaderCustom= new BufferedReader(fileReaderCustom);
 	}
 	protected static void closeWritersReaders() throws IOException {
-		closeWriters();
-		closeReaders();
-	}
-	private static void closeWriters() throws IOException {
 		bufferWriterTask.close();
 		bufferWriterCustom.close();
-	}
-	private static void closeReaders() throws IOException {
 		bufferReaderTask.close();
 		bufferReaderCustom.close();
 	}
