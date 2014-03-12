@@ -39,7 +39,7 @@ class TaskHandler {
 		taskList.add(newTask);
 		sortTasks();
 		FileManager.writeTasksToFile(taskList);
-		return new Feedback(String.format(MESSAGE_ADDED_TASK, userInput), false);
+		return new Feedback(String.format(MESSAGE_ADDED_TASK, userInput) + "\n", false);
 	}
 	
 	private static Task createTask(String[] fields, String input) {
@@ -107,17 +107,17 @@ class TaskHandler {
 			HistoryHandler.pushUndoStack();
 			taskList.remove(index - 1);
 			addTask(updateDesc);
-			return new Feedback(MESSAGE_UPDATE_TASK, false);
+			return new Feedback(MESSAGE_UPDATE_TASK + "\n", false);
 		}
 		
-		return new Feedback(MESSAGE_UPDATE_FAIL, false);
+		return new Feedback(MESSAGE_UPDATE_FAIL + "\n", false);
 	}
 	
 	
 	protected static Feedback listTasks() {
 		sortTasks();
 		if (taskList.isEmpty()) {
-			return new Feedback(MESSAGE_EMPTY_TASKS, false);
+			return new Feedback(MESSAGE_EMPTY_TASKS + "\n", false);
 		} else {
 			return new Feedback(getListOfTasks(), false);
 		}
@@ -137,14 +137,14 @@ class TaskHandler {
 		if(isInteger(taskNumber)) {
 			int rowToDelete = Integer.parseInt(taskNumber) - 1;
 			if (isOutOfDeleteRange(rowToDelete)) {
-				return new Feedback(MESSAGE_INVALID_DELETE, false);
+				return new Feedback(MESSAGE_INVALID_DELETE + "\n", false);
 			}
 
 			HistoryHandler.pushUndoStack();
 			String deletedTask = taskList.get(rowToDelete).getDescription();
 			taskList.remove(rowToDelete);
 			FileManager.writeTasksToFile(taskList);
-			return new Feedback(String.format(MESSAGE_TASK_DELETED, deletedTask), false);
+			return new Feedback(String.format(MESSAGE_TASK_DELETED, deletedTask) + "\n", false);
 		}
 			
 		return new Feedback(MESSAGE_INVALID_DELETE, false);
@@ -154,7 +154,7 @@ class TaskHandler {
 		HistoryHandler.pushUndoStack();
 		taskList = new ArrayList<Task>();
 		//FileManager.writeTaskToFile(taskList);
-		return new Feedback(MESSAGE_TASK_DELETED_ALL, false);
+		return new Feedback(MESSAGE_TASK_DELETED_ALL + "\n", false);
 	}
 	
 	private static boolean isOutOfDeleteRange(int index) {

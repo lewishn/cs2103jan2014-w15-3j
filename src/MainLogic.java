@@ -95,10 +95,10 @@ public class MainLogic{
 				//
 				
 			case EXIT:
-				return new Feedback(MESSAGE_EXIT, true);
+				return new Feedback(MESSAGE_EXIT + "\n", true);
 				
 			default:
-				return new Feedback(MESSAGE_INVALID, false);
+				return new Feedback(MESSAGE_INVALID + "\n", false);
 		}
 	}
 	

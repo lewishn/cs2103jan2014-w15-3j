@@ -14,6 +14,7 @@ class Task implements Comparable<Task>{
 	private DateTime startDateTime;
 	private DateTime endDateTime;
 	private String description;
+	private boolean completed;
 	
 	// For tasks with date ranges
 	protected Task(String desc) {

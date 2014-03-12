@@ -14,9 +14,9 @@ public class HistoryHandler {
 		if(tryUndo) {
 			FileManager.writeCustomCommandsToFile(CustomCommandHandler.customCommandList);
 			FileManager.writeTasksToFile(TaskHandler.getTaskList());
-			return new Feedback(UNDO_SUCCESS, false);
+			return new Feedback(UNDO_SUCCESS + "\n", false);
 		} else {
-			return new Feedback(UNDO_FAIL, false);
+			return new Feedback(UNDO_FAIL + "\n", false);
 		}
 	}
 
