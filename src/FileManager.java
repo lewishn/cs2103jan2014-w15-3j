@@ -10,14 +10,7 @@ import java.util.Arrays;
 
 import org.joda.time.DateTime;
 
-
-
 class FileManager {
-	private static final String READ_ERROR = "Error, unable to read file.";
-	
-	private static final String FILE_TASK = "task.txt";
-	private static final String FILE_CUSTOM = "custom.txt";
-	
 	private static BufferedReader getReader(String fileName) throws FileNotFoundException {
 		File file = new File(fileName);
 		BufferedReader bw = new BufferedReader(new FileReader(file));
@@ -30,64 +23,32 @@ class FileManager {
 		return bw;
 	}
 	
-	protected static void writeTasksToFile(ArrayList<Task> list) {
+	protected static ArrayList<String> readFromFile(String fileName) {
+		ArrayList<String> list = new ArrayList<String>();
+		
 		try {
-			BufferedWriter writer = getWriter(FILE_TASK);
+			BufferedReader reader = getReader(fileName);
+			String line;
+			while ((line = reader.readLine()) != null) {
+				list.add(line);
+			}
+		} catch (IOException e) {
+			
+		}
+		
+		return list;
+	}
+	
+	protected static void writeToFile(String fileName, ArrayList<String> list) {
+		try {
+			BufferedWriter writer = getWriter(fileName);
 			for(int i = 0; i < list.size(); i++) {
-				writer.write(list.get(i).toString() + "\r\n");
+				writer.write(list.get(i) + System.getProperty("line.separator"));
 			}
 			writer.flush();
 			writer.close();
 		} catch (IOException e) {
 			
-		}
-	}
-	
-	protected static ArrayList<Task> readTasksFromFile() {
-		ArrayList<Task> list = new ArrayList<Task>();
-		try {
-			BufferedReader reader = getReader(FILE_TASK);
-			String line;
-			while ((line = reader.readLine()) != null) {
-				list.add(Task.parseTaskFromString(line));
-			}
-			reader.close();
-			return list;
-		} catch (IOException e){
-			return list;
-		}
-	}
-	
-	protected static void writeCustomCommandsToFile(ArrayList<ArrayList<String>> list) {
-		try {
-			BufferedWriter writer = getWriter(FILE_CUSTOM);
-			for(int i = 0; i < list.size(); i++) {
-				for (int j = 0; j < list.get(i).size(); j++) {
-					writer.write(list.get(i).get(j) + " ");
-				}
-				writer.write("\r\n");
-			}
-			writer.flush();
-			writer.close();
-		} catch (IOException e) {
-			
-		}
-	}
-	
-	protected static ArrayList<ArrayList<String>> readCustomCommandsFromFile(){
-		ArrayList<ArrayList<String>> newList = new ArrayList<ArrayList<String>>();
-		try {
-			BufferedReader reader = getReader(FILE_CUSTOM);
-			String line;
-			while ((line = reader.readLine()) != null) {
-				String[] customTokens = line.split(" ");
-				ArrayList<String> customList = new ArrayList<String>(Arrays.asList(customTokens));
-				newList.add(customList);
-			}
-			reader.close();
-			return newList;
-		} catch (IOException e) {
-			return newList;
 		}
 	}
 }

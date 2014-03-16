@@ -1,6 +1,11 @@
+import java.util.ArrayList;
+import java.util.Collections;
+
 import org.joda.time.DateTime;
 
 class Task implements Comparable<Task>{
+	private static final String FILE_TASK = "tasks.txt";
+	
 	protected static final int START_DATE = 0;
 	protected static final int START_TIME = 1;
 	protected static final int END_DATE = 2;
@@ -11,12 +16,13 @@ class Task implements Comparable<Task>{
 	private static final String NULL_START = "no_start_time";
 	private static final String NULL_END = "no_end_time";
 	
+	private static ArrayList<Task> taskList = loadTasks();
+	
 	private DateTime startDateTime;
 	private DateTime endDateTime;
 	private String description;
 	private boolean completed;
 	
-	// For tasks with date ranges
 	protected Task(String desc) {
 		description = desc;
 	}
@@ -59,6 +65,18 @@ class Task implements Comparable<Task>{
 		return endDateTime;
 	}
 	
+	protected static ArrayList<Task> getList() {
+		return taskList;
+	}
+	
+	protected static void setList(ArrayList<Task> list) {
+		taskList = list;
+	}
+	
+	protected static void sortList() {
+		Collections.sort(taskList);
+	}	
+	
 	@Override
 	public String toString() {
 		String start = (startDateTime == null) ? NULL_START : startDateTime.toString();
@@ -78,5 +96,27 @@ class Task implements Comparable<Task>{
 		} else {
 			return this.description.compareTo(task.description);
 		}
+	}
+	
+	protected static void saveTasks() {
+		ArrayList<String> listToSave = new ArrayList<String>();
+		for (int i = 0; i < taskList.size(); i++) {
+			String taskStringForm = taskList.get(i).toString();
+			listToSave.add(taskStringForm);
+		}
+		
+		FileManager.writeToFile(FILE_TASK, listToSave);
+	}
+	
+	protected static ArrayList<Task> loadTasks() {
+		ArrayList<Task> listOfTasks = new ArrayList<Task>();
+		ArrayList<String> list = FileManager.readFromFile(FILE_TASK);
+		
+		for (int i = 0; i < list.size(); i++) {
+			String line = list.get(i);
+			listOfTasks.add(parseTaskFromString(line));
+		}
+		
+		return listOfTasks;
 	}
 }

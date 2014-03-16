@@ -12,8 +12,8 @@ public class HistoryHandler {
 	protected static Feedback undoCommand() {
 		boolean tryUndo = popUndoStack();
 		if(tryUndo) {
-			FileManager.writeCustomCommandsToFile(CustomCommandHandler.customCommandList);
-			FileManager.writeTasksToFile(TaskHandler.getTaskList());
+			CustomCommandHandler.saveCustomCommands();
+			Task.saveTasks();
 			return new Feedback(UNDO_SUCCESS + "\n", false);
 		} else {
 			return new Feedback(UNDO_FAIL + "\n", false);
@@ -21,7 +21,7 @@ public class HistoryHandler {
 	}
 
 	protected static void pushUndoStack() {
-		ArrayList<Task> taskList = (ArrayList<Task>) TaskHandler.getTaskList().clone();		
+		ArrayList<Task> taskList = (ArrayList<Task>) Task.getList().clone();		
 		taskUndoStack.push(taskList);
 		
 		commandUndoStack.push(CustomCommandHandler.customCommandList);
@@ -30,7 +30,7 @@ public class HistoryHandler {
 	private static boolean popUndoStack() {
 		if (taskUndoStack.size() > 0) {
 			ArrayList<Task> taskList = taskUndoStack.pop();
-			TaskHandler.setTaskList(taskList);
+			Task.setList(taskList);
 			CustomCommandHandler.customCommandList = commandUndoStack.pop();
 			return true;
 		} else {

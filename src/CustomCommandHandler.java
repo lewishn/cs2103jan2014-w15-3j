@@ -1,7 +1,12 @@
+import java.io.BufferedReader;
+import java.io.IOException;
 import java.util.ArrayList;
+import java.util.Arrays;
 
 
 class CustomCommandHandler {
+	private static final String FILE_CUSTOM = "custom.txt";
+	
 	protected static final String HEADER_ADD = "[ADD]";
 	protected static final String HEADER_READ = "[READ]";
 	protected static final String HEADER_UPDATE = "[UPDATE]";
@@ -19,7 +24,7 @@ class CustomCommandHandler {
 	private static final String MESSAGE_CUSTOM_NONEXISTANT = "Error deleting. There is no such word in the command list.";
 	private static final String MESSAGE_CUSTOM_DELETED = " has been successfully deleted from the command list.";
 	
-	protected static ArrayList<ArrayList<String>> customCommandList = FileManager.readCustomCommandsFromFile();
+	protected static ArrayList<ArrayList<String>> customCommandList = loadCustomCommands();
 	
 	protected static boolean isCustomCommand(String keyword, String commandType) {
 		for (int i = 0; i < customCommandList.size(); i++) {
@@ -38,7 +43,7 @@ class CustomCommandHandler {
 		
 		HistoryHandler.pushUndoStack();
 		//customCommandList.get(index).add(command);
-		FileManager.writeCustomCommandsToFile(customCommandList);
+		saveCustomCommands();
 		return new Feedback(MESSAGE_CUSTOM_SUCCESS, false);
 	}
 
@@ -60,11 +65,38 @@ class CustomCommandHandler {
 		HistoryHandler.pushUndoStack();
 		for (int i = 0; i < customCommandList.size(); i++) {
 			if (customCommandList.remove(userCommand)) {
-				FileManager.writeCustomCommandsToFile(customCommandList);
+				saveCustomCommands();
 				return new Feedback(userCommand + MESSAGE_CUSTOM_DELETED, false);
 			}
 		}
 		
 		return new Feedback(MESSAGE_CUSTOM_NONEXISTANT, false);
+	}
+	
+	protected static ArrayList<ArrayList<String>> loadCustomCommands() {
+		ArrayList<ArrayList<String>> commandList = new ArrayList<ArrayList<String>>();
+		ArrayList<String> loadedCommands = FileManager.readFromFile(FILE_CUSTOM);
+		
+		for (int i = 0; i < loadedCommands.size(); i++) {
+			String[] tokens = loadedCommands.get(i).split(" ");
+			ArrayList<String> tempList = new ArrayList<String>(Arrays.asList(tokens));
+			commandList.add(tempList);
+		}
+		
+		return commandList;
+	}
+	
+	protected static void saveCustomCommands() {
+		ArrayList<String> listToSave = new ArrayList<String>();
+		
+		for (int i = 0; i < customCommandList.size(); i++) {
+			String line = "";
+			for (int j = 0; j < customCommandList.get(i).size(); j++) {
+				line += (customCommandList.get(j) + " ");
+			}
+			listToSave.add(line + System.getProperty("line.separator"));
+		}
+		
+		FileManager.writeToFile(FILE_CUSTOM, listToSave);
 	}
 }

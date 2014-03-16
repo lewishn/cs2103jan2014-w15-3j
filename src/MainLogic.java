@@ -5,13 +5,13 @@ public class MainLogic{
 	private static final String MESSAGE_INVALID = "Invalid command! Please try again.";
 	
 	private static final String DEFAULT_ADD = "add";
-	private static final String DEFAULT_ADD2 = "a";
+	private static final String DEFAULT_ADD2 = "+";
 	private static final String DEFAULT_UPDATE = "update";
-	private static final String DEFAULT_UPDATE2 = "u";
+	private static final String DEFAULT_UPDATE2 = "edit";
 	private static final String DEFAULT_DELETE = "delete";
-	private static final String DEFAULT_DELETE2 = "d";
+	private static final String DEFAULT_DELETE2 = "remove";
 	private static final String DEFAULT_LIST = "list";
-	private static final String DEFAULT_LIST2 = "l";
+	private static final String DEFAULT_LIST2 = "display";
 	private static final String DEFAULT_UNDO = "undo";
 	private static final String DEFAULT_UNDO2 = "un";
 	private static final String DEFAULT_CUSTOM = "custom";

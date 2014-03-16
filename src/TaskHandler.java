@@ -18,16 +18,6 @@ class TaskHandler {
 	private static final String MINUTE_LAST = "23:59";
 	private static final String MINUTE_FIRST = "00:00";
 	
-	private static ArrayList<Task> taskList = FileManager.readTasksFromFile();
-
-	protected static ArrayList<Task> getTaskList() {
-		return taskList;
-	}
-	
-	protected static void setTaskList(ArrayList<Task> list) {
-		taskList = list;
-	}
-	
 	protected static Feedback addTask(String userInput) {
 		String[] inputTokens = userInput.split(" ");
 		ArrayList<String> input = new ArrayList<String>(Arrays.asList(inputTokens));
@@ -36,9 +26,9 @@ class TaskHandler {
 		Task newTask = createTask(fields, userInput);
 		
 		HistoryHandler.pushUndoStack();
-		taskList.add(newTask);
-		sortTasks();
-		FileManager.writeTasksToFile(taskList);
+		Task.getList().add(newTask);
+		Task.sortList();
+		Task.saveTasks();
 		return new Feedback(String.format(MESSAGE_ADDED_TASK, userInput) + "\n", false);
 	}
 	
@@ -105,7 +95,7 @@ class TaskHandler {
 		if (isInteger(updateNumber)) {
 			Integer index = Integer.parseInt(updateNumber);
 			HistoryHandler.pushUndoStack();
-			taskList.remove(index - 1);
+			Task.getList().remove(index - 1);
 			addTask(updateDesc);
 			return new Feedback(MESSAGE_UPDATE_TASK + "\n", false);
 		}
@@ -115,8 +105,8 @@ class TaskHandler {
 	
 	
 	protected static Feedback listTasks() {
-		sortTasks();
-		if (taskList.isEmpty()) {
+		Task.sortList();
+		if (Task.getList().isEmpty()) {
 			return new Feedback(MESSAGE_EMPTY_TASKS + "\n", false);
 		} else {
 			return new Feedback(getListOfTasks(), false);
@@ -124,12 +114,12 @@ class TaskHandler {
 	}
 	
 	private static String getListOfTasks() {
-		taskList = FileManager.readTasksFromFile();
-		String list = "";
-		for (int i = 1; i <= taskList.size(); i++) {
-			list += String.format(MESSAGE_LIST_NUMBER, i, taskList.get(i-1).toString()) + "\r\n";
+		ArrayList<Task> list = Task.loadTasks();
+		String stringList = "";
+		for (int i = 1; i <= list.size(); i++) {
+			stringList += String.format(MESSAGE_LIST_NUMBER, i, list.get(i-1).toString()) + "\n";
 		}
-		return list;
+		return stringList;
 	}
 
 	protected static Feedback deleteTask(String taskNumber) {
@@ -141,24 +131,17 @@ class TaskHandler {
 			}
 
 			HistoryHandler.pushUndoStack();
-			String deletedTask = taskList.get(rowToDelete).getDescription();
-			taskList.remove(rowToDelete);
-			FileManager.writeTasksToFile(taskList);
+			String deletedTask = Task.getList().get(rowToDelete).getDescription();
+			Task.getList().remove(rowToDelete);
+			Task.saveTasks();
 			return new Feedback(String.format(MESSAGE_TASK_DELETED, deletedTask) + "\n", false);
 		}
 			
 		return new Feedback(MESSAGE_INVALID_DELETE, false);
 	}
 	
-	protected static Feedback deleteAllTasks() {
-		HistoryHandler.pushUndoStack();
-		taskList = new ArrayList<Task>();
-		//FileManager.writeTaskToFile(taskList);
-		return new Feedback(MESSAGE_TASK_DELETED_ALL + "\n", false);
-	}
-	
 	private static boolean isOutOfDeleteRange(int index) {
-		if (index >= 0 && index < taskList.size()) {
+		if (index >= 0 && index < Task.getList().size()) {
 			return false;
 		} else {
 			return true;
@@ -173,12 +156,6 @@ class TaskHandler {
 			return false;
 		}
 	}
-	
-	
-	
-	private static void sortTasks() {
-		Collections.sort(taskList);
-	}	
 	
 	//search
 }

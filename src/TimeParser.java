@@ -12,10 +12,9 @@ public class TimeParser{
 	private static final String TIME_FORMAT_3 = "hh:mm aa";
 	private static final String TIME_FORMAT_4 = "hhmmaa";
 	private static final String TIME_FORMAT_5 = "hhmm aa";
-	private static final String TIME_FORMAT_6 = "HH";
-	private static final String TIME_FORMAT_7 = "hhaa";
-	private static final String TIME_FORMAT_8 = "haa";
-	private static final int FORMAT_SIZE = 9;
+	private static final String TIME_FORMAT_6 = "hhaa";
+	private static final String TIME_FORMAT_7 = "haa";
+	private static final int FORMAT_SIZE = 8;
 	
 	private static ArrayList<DateTimeFormatter> timeFormats = 
 		new ArrayList<DateTimeFormatter> (Arrays.asList( 
@@ -26,8 +25,7 @@ public class TimeParser{
 			DateTimeFormat.forPattern(TIME_FORMAT_4), 
 			DateTimeFormat.forPattern(TIME_FORMAT_5), 
 			DateTimeFormat.forPattern(TIME_FORMAT_6),
-			DateTimeFormat.forPattern(TIME_FORMAT_7),
-			DateTimeFormat.forPattern(TIME_FORMAT_8)
+			DateTimeFormat.forPattern(TIME_FORMAT_7)
 		));
 	
 	protected static DateTime setTime(DateTime date, String input) {
