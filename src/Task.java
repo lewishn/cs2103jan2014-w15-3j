@@ -85,6 +85,27 @@ class Task implements Comparable<Task>{
 		return start + DELIMITER + end + DELIMITER + description;
 	}
 	
+	public String toDisplayString() {
+		String start, end;
+		String display = "";
+		
+		if (startDateTime != null) {
+			display += getDateString(startDateTime);
+		}
+		if (endDateTime != null) {
+			display += getDateString(startDateTime);
+		}
+		
+		return display + " " + description;
+	}
+	
+	private String getDateString(DateTime date) {
+		String time = date.getHourOfDay() + ":" + date.getMinuteOfHour();
+		String dt = date.getDayOfMonth() + "/" + date.getMonthOfYear() + "/" + date.getYear();
+		
+		return "[" + time + "|" + dt + "]";
+	}
+	
 	@Override
 	public int compareTo(Task task) {
 		if (this.startDateTime != null && task.startDateTime != null) {

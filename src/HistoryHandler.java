@@ -9,6 +9,10 @@ public class HistoryHandler {
 	private static Stack<ArrayList<Task>> taskUndoStack = new Stack<ArrayList<Task>>();
 	private static Stack<ArrayList<ArrayList<String>>> commandUndoStack = new Stack<ArrayList<ArrayList<String>>>();
 	
+	/**
+	 * The previous action by the user which manipulates the taskList or customCommandList will be undone
+	 * @return a Feedback object to be shown to the user, indicating success or failure in undoing
+	 */
 	protected static Feedback undoCommand() {
 		boolean tryUndo = popUndoStack();
 		if(tryUndo) {
@@ -20,6 +24,9 @@ public class HistoryHandler {
 		}
 	}
 
+	/**
+	 * Pushes a copy of the taskList into the undo stack.
+	 */
 	protected static void pushUndoStack() {
 		ArrayList<Task> taskList = (ArrayList<Task>) Task.getList().clone();		
 		taskUndoStack.push(taskList);
@@ -27,6 +34,10 @@ public class HistoryHandler {
 		commandUndoStack.push(CustomCommandHandler.customCommandList);
 	}
 	
+	/**
+	 * Get the top of the undo stack
+	 * @return true if stack size is greater than zero, false otherwise
+	 */
 	private static boolean popUndoStack() {
 		if (taskUndoStack.size() > 0) {
 			ArrayList<Task> taskList = taskUndoStack.pop();

@@ -1,5 +1,3 @@
-import java.io.BufferedReader;
-import java.io.IOException;
 import java.util.ArrayList;
 import java.util.Arrays;
 
@@ -26,6 +24,12 @@ class CustomCommandHandler {
 	
 	protected static ArrayList<ArrayList<String>> customCommandList = loadCustomCommands();
 	
+	/**
+	 * Returns true if the keyword is a valid keyword of the commandType.
+	 * @param keyword
+	 * @param commandType
+	 * @return true if the keyword is a valid keyword of the commandType.
+	 */
 	protected static boolean isCustomCommand(String keyword, String commandType) {
 		for (int i = 0; i < customCommandList.size(); i++) {
 			if (customCommandList.get(i).get(0).equals(commandType)) {
@@ -36,6 +40,13 @@ class CustomCommandHandler {
 		return false;
 	}
 	
+	/**
+	 * Adds a custom command to the current list of custom commands and saves the
+	 * list to the file.
+	 * @param userCommand
+	 * @param commandType
+	 * @return a Feedback object containing the message that is to be shown to the user
+	 */
 	protected static Feedback addCustomCommand(String userCommand, String commandType) {
 		if (isDuplicateCommand(userCommand)) {
 			return new Feedback(MESSAGE_CUSTOM_DUPLICATE, false);
@@ -47,6 +58,11 @@ class CustomCommandHandler {
 		return new Feedback(MESSAGE_CUSTOM_SUCCESS, false);
 	}
 
+	/**
+	 * Finds out if the input custom command is already in use
+	 * @param command
+	 * @return true if the command is already in use.
+	 */
 	private static boolean isDuplicateCommand(String command) {
 		for (int i = 0; i < customCommandList.size(); i++) {
 			if (customCommandList.get(i).contains(command)) {
@@ -60,7 +76,12 @@ class CustomCommandHandler {
 		
 	}
 	
-	
+	/**
+	 * Deletes a custom command from the list of custom commands 
+	 * and saves the list to the file.
+	 * @param userCommand
+	 * @return a Feedback object containing the message that is to be shown to the user
+	 */
 	protected static Feedback deleteCustomCommand(String userCommand) {
 		HistoryHandler.pushUndoStack();
 		for (int i = 0; i < customCommandList.size(); i++) {
@@ -73,6 +94,10 @@ class CustomCommandHandler {
 		return new Feedback(MESSAGE_CUSTOM_NONEXISTANT, false);
 	}
 	
+	/**
+	 * Reads custom commands from the "custom.txt" file
+	 * @return list of custom commands
+	 */
 	protected static ArrayList<ArrayList<String>> loadCustomCommands() {
 		ArrayList<ArrayList<String>> commandList = new ArrayList<ArrayList<String>>();
 		ArrayList<String> loadedCommands = FileManager.readFromFile(FILE_CUSTOM);
@@ -86,6 +111,9 @@ class CustomCommandHandler {
 		return commandList;
 	}
 	
+	/**
+	 * Saves the list of custom commands to the "customs.txt" file
+	 */
 	protected static void saveCustomCommands() {
 		ArrayList<String> listToSave = new ArrayList<String>();
 		

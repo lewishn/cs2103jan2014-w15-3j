@@ -14,10 +14,16 @@ class TaskHandler {
 	private static final String MESSAGE_TASK_DELETED = "\"%s\" has been deleted from the task list.";
 	private static final String MESSAGE_TASK_DELETED_ALL = "All tasks have been deleted from the task list.";
 	private static final String MESSAGE_INVALID_DELETE = "No such task, please enter a valid number to delete.";
+	private static final String MESSAGE_DISPLAY_HEADER = "[No.][Start Time][End Time][Task Description]";
 	
 	private static final String MINUTE_LAST = "23:59";
 	private static final String MINUTE_FIRST = "00:00";
 	
+	/**
+	 * Add a task using the user input
+	 * @param userInput
+	 * @return a Feedback object to be shown to the user
+	 */
 	protected static Feedback addTask(String userInput) {
 		String[] inputTokens = userInput.split(" ");
 		ArrayList<String> input = new ArrayList<String>(Arrays.asList(inputTokens));
@@ -32,6 +38,12 @@ class TaskHandler {
 		return new Feedback(String.format(MESSAGE_ADDED_TASK, userInput) + "\n", false);
 	}
 	
+	/**
+	 * Reads the user input and time fields and creates a Task object
+	 * @param fields
+	 * @param input
+	 * @return Task object
+	 */
 	private static Task createTask(String[] fields, String input) {
 		DateTime start = null;
 		DateTime end = null;
@@ -87,7 +99,11 @@ class TaskHandler {
 		return new Task(input, start, end);
 	}
 	
-	
+	/**
+	 * Updates a task entirely
+	 * @param update
+	 * @return a Feedback object to be shown to the user
+	 */
 	protected static Feedback updateTask(String update) {
 		String updateNumber = CommandParser.getUserCommandType(update);
 		String updateDesc = CommandParser.getUserCommandDesc(update);
@@ -103,7 +119,10 @@ class TaskHandler {
 		return new Feedback(MESSAGE_UPDATE_FAIL + "\n", false);
 	}
 	
-	
+	/**
+	 * Displays all the tasks in order
+	 * @return a Feedback Object to be shown to the user
+	 */
 	protected static Feedback listTasks() {
 		Task.sortList();
 		if (Task.getList().isEmpty()) {
@@ -115,13 +134,18 @@ class TaskHandler {
 	
 	private static String getListOfTasks() {
 		ArrayList<Task> list = Task.loadTasks();
-		String stringList = "";
+		String stringList = MESSAGE_DISPLAY_HEADER + "\n";
 		for (int i = 1; i <= list.size(); i++) {
-			stringList += String.format(MESSAGE_LIST_NUMBER, i, list.get(i-1).toString()) + "\n";
+			stringList += String.format(MESSAGE_LIST_NUMBER, i, list.get(i-1).toDisplayString()) + "\n";
 		}
 		return stringList;
 	}
 
+	/**
+	 * Removes a task from the taskList
+	 * @param taskNumber
+	 * @return a Feedback object to be shown to the user
+	 */
 	protected static Feedback deleteTask(String taskNumber) {
 		
 		if(isInteger(taskNumber)) {

@@ -29,6 +29,11 @@ public class MainLogic{
 		ADD, DELETE, UPDATE, LIST, UNDO, SEARCH, CUSTOM, DELETE_CUSTOM, HELP, EXIT, INVALID;
 	}	
 
+	/**
+	 * Get the CommandType from the user input
+	 * @param com
+	 * @return a CommandType enum indicating the command type
+	 */
 	private static CommandType getCommandType(String com) {
 		
 		if (com.equals(DEFAULT_ADD) || com.equals(DEFAULT_ADD2) || CustomCommandHandler.isCustomCommand(com, CustomCommandHandler.HEADER_ADD)) {
@@ -56,6 +61,11 @@ public class MainLogic{
 		}
 	} 
 
+	/**
+	 * Takes in the user input and executes the relevant methods in the TaskHandler/CustomCommandHandler/HistoryHandler
+	 * @param userInput
+	 * @return a Feedback object containing a String to be shown to the user
+	 */
 	protected static Feedback runLogic(String userInput) {
 		String command = CommandParser.getUserCommandType(userInput);
 		String commandDesc = CommandParser.getUserCommandDesc(userInput);
@@ -102,6 +112,11 @@ public class MainLogic{
 		}
 	}
 	
+	/**
+	 * Get the header for the custom command from th user input
+	 * @param userInput
+	 * @return a string containing the custom command header
+	 */
 	private static String getCustomHeader(String userInput) {
 		String command = CommandParser.getUserCommandType(userInput);
 		String commandDesc = CommandParser.getUserCommandDesc(userInput);

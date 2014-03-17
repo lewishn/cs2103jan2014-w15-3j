@@ -28,6 +28,12 @@ public class TimeParser{
 			DateTimeFormat.forPattern(TIME_FORMAT_7)
 		));
 	
+	/**
+	 * Alters the time component of the input DateTime object with the input time string
+	 * @param date
+	 * @param input
+	 * @return a DateTime object with date and time already set
+	 */
 	protected static DateTime setTime(DateTime date, String input) {
 		if (isValidFormat(input)) {
 			date = parseTimeFormat(date, input);
@@ -37,6 +43,11 @@ public class TimeParser{
 		}
 	}
 
+	/**
+	 * Checks if the input string is a valid date format
+	 * @param input
+	 * @return true if valid, false otherwise
+	 */
 	protected static boolean isValidFormat(String input) {
 		DateTime date;
 		int i = 0;
@@ -58,6 +69,11 @@ public class TimeParser{
 		}
 	}
 	
+	/**
+	 * Checks wheter the input string is a time
+	 * @param input
+	 * @return true if string is a time, false otherwise
+	 */
 	protected static boolean isTime(String input) {
 		return isValidFormat(input);
 	}
