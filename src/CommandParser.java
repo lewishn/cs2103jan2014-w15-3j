@@ -29,7 +29,7 @@ class CommandParser {
 		if (tokens.length < 2) {
 			return null;
 		}
-		return tokens[2];
+		return tokens[1];
 	}
 	
 	/**
