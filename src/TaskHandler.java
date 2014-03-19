@@ -6,7 +6,7 @@ import java.util.Stack;
 import org.joda.time.DateTime;
 
 class TaskHandler {
-	private static final String MESSAGE_ADDED_TASK = "Added \"%s\" ";
+	private static final String MESSAGE_ADDED_TASK = "Added \"%s\".";
 	private static final String MESSAGE_EMPTY_TASKS = "You have no tasks scheduled.";
 	private static final String MESSAGE_UPDATE_TASK = "Task has been updated";
 	private static final String MESSAGE_UPDATE_FAIL = "Error, please enter a valid task number to update";
@@ -201,7 +201,7 @@ class TaskHandler {
 	//search
 	
 	//test functions
-	private static String testAdd(String command) {
+	public static String testAdd(String command) {
 		ArrayList<Task> list= new ArrayList<Task>();		
 		return addTask(command).toString();
 	}
