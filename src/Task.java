@@ -31,7 +31,13 @@ class Task implements Comparable<Task>{
 		endDateTime = end;
 		description = desc;
 	}
-	
+	/*
+	protected static Task(Task previousTask, DateTime newStartTime) {
+		startDateTime=newStartTime;
+		endDateTime=previousTask.getEndDateTime();
+		description=previousTask.getDescription();
+	}
+	*/
 	protected static Task parseTaskFromString(String line) {
 		String[] tokens = line.split(DELIMITER);
 		DateTime start = (tokens[0].equals(NULL_START)) ? null : new DateTime(tokens[0]);

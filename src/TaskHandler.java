@@ -100,19 +100,36 @@ class TaskHandler {
 	}
 	
 	/**
-	 * Updates a task entirely
+	 * Updates a task in the specified field
 	 * @param update
 	 * @return a Feedback object to be shown to the user
 	 */
 	protected static Feedback updateTask(String update) {
 		String updateNumber = CommandParser.getUserCommandType(update);
+		String updateField = CommandParser.getUserCommandField(update);
 		String updateDesc = CommandParser.getUserCommandDesc(update);
-		
+		Task newTask;
 		if (isInteger(updateNumber)) {
 			Integer index = Integer.parseInt(updateNumber);
 			HistoryHandler.pushUndoStack();
+			Task updatedTask=Task.getList().get(index-1);
 			Task.getList().remove(index - 1);
-			addTask(updateDesc);
+			if (updateField=="start") {
+				DateTime start=DateParser.setDate(updateDesc);
+				start=TimeParser.setTime(start, updateDesc);
+				newTask=new Task(updatedTask.getDescription(), start, updatedTask.getEndDateTime());
+			}
+			else if (updateField=="end") {
+				DateTime end=DateParser.setDate(updateDesc);
+				end=TimeParser.setTime(end	, updateDesc);
+				newTask=new Task(updatedTask.getDescription(), updatedTask.getStartDateTime(), end);
+			}
+			else {
+				newTask=new Task(updateDesc, updatedTask.getStartDateTime(), updatedTask.getEndDateTime());
+			}
+			Task.getList().add(newTask);
+			Task.sortList();
+			Task.saveTasks();
 			return new Feedback(MESSAGE_UPDATE_TASK + "\n", false);
 		}
 		
@@ -182,4 +199,11 @@ class TaskHandler {
 	}
 	
 	//search
+	
+	//test functions
+	private static String testAdd(String command) {
+		ArrayList<Task> list= new ArrayList<Task>();		
+		return addTask(command).toString();
+	}
+		
 }
