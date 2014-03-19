@@ -26,7 +26,7 @@ class FileManager {
 	}
 	
 	protected static ArrayList<String> readFromFile(String fileName) {
-		LOGGER.info("Reading from file " + fileName);
+		//LOGGER.info("Reading from file " + fileName);
 		ArrayList<String> list = new ArrayList<String>();
 		
 		try {
@@ -43,7 +43,7 @@ class FileManager {
 	}
 	
 	protected static void writeToFile(String fileName, ArrayList<String> list) {
-		LOGGER.info("Writing to file " + fileName);
+		//LOGGER.info("Writing to file " + fileName);
 		try {
 			BufferedWriter writer = getWriter(fileName);
 			for(int i = 0; i < list.size(); i++) {

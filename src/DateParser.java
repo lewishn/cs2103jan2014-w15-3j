@@ -55,16 +55,15 @@ public class DateParser{
 		if (formatType == 0) {
 			date = parseDateFormat0(input);
 			//System.out.println(date);
-			return date;
 		} else if (formatType == 1) {
 			date = parseDateFormat1(input, date);
 			//System.out.println(date);
-			return date;
-		} else { //formatType == 2 
+		} else if (formatType == 2) { 
 			date = parseDateFormat2(input, date);
 			//System.out.println(date);
-			return date;
 		} 
+		
+		return date;
 	}
 	
 	/**

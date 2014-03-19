@@ -49,47 +49,48 @@ class TaskHandler {
 		DateTime end = null;
 	
 		if (fields[Task.START_DATE] == null) {
-			if (fields[Task.START_TIME] == null) {
-				//floating task
-				
-			} else if (fields[Task.END_DATE] == null) {
+			if (fields[Task.START_TIME] != null) {
 				start = DateParser.setDate();
 				start = TimeParser.setTime(start, fields[Task.START_TIME]);
 				
-				//Task with today's date, with start and end time. Otherwise, no end time
-				if (fields[Task.START_TIME] != null) {
+				// If null, "Deadline" Task with today's date
+				// Else, Timed Task with today's date
+				if (fields[Task.END_TIME] != null) {
 					end = DateParser.setDate();
 					end = TimeParser.setTime(start, fields[Task.END_TIME]);
 				} 
 			}
 		} else {
 			start = DateParser.setDate(fields[Task.START_DATE]);
+			
 			if (fields[Task.START_TIME] == null) {
 				if (fields[Task.END_DATE] == null) {
-					//task with start date and end date set sa the same day
-					start = TimeParser.setTime(start, MINUTE_FIRST);
-					end = DateParser.setDate(fields[Task.START_DATE]);
-					end = TimeParser.setTime(end, MINUTE_LAST);
-				} else {
-					// task with start date only
+					// "Deadline" Task with only start date
 					start = TimeParser.setTime(start, MINUTE_LAST);
+				} else {
+					// Timed Task with start and end dates but no time
+					start = TimeParser.setTime(start, MINUTE_FIRST);
+					end = DateParser.setDate(fields[Task.END_DATE]);
+					end = TimeParser.setTime(end, MINUTE_LAST);
 				}
+				
 			} else {
 				start = TimeParser.setTime(start, fields[Task.START_TIME]);
+				
 				if (fields[Task.END_DATE] == null) {
-					// task with same end and start dates, with different start and end times.
 					if (fields[Task.END_TIME] != null) {
+						// Timed Task with start and end times within one specific date
 						end = DateParser.setDate(fields[Task.START_DATE]);
 						end = TimeParser.setTime(end, fields[Task.END_TIME]);
 					}
 				} else {
+					end = DateParser.setDate(fields[Task.END_DATE]);
+					
 					if (fields[Task.END_TIME] == null) {
-						// task with start and end dates, start time , but no specific end time.
-						end = DateParser.setDate(fields[Task.END_DATE]);
+						// Timed Task with start time, start and end dates, but no end time
 						end = TimeParser.setTime(end, MINUTE_LAST);
 					} else {
-						// full task with start and end time/dates
-						end = DateParser.setDate(fields[Task.END_DATE]);
+						// Timed Task with start and end time/dates
 						end = TimeParser.setTime(end, fields[Task.END_TIME]);
 					}
 				}
@@ -118,13 +119,11 @@ class TaskHandler {
 				DateTime start=DateParser.setDate(updateDesc);
 				start=TimeParser.setTime(start, updateDesc);
 				newTask=new Task(updatedTask.getDescription(), start, updatedTask.getEndDateTime());
-			}
-			else if (updateField=="end") {
+			} else if (updateField=="end") {
 				DateTime end=DateParser.setDate(updateDesc);
 				end=TimeParser.setTime(end	, updateDesc);
 				newTask=new Task(updatedTask.getDescription(), updatedTask.getStartDateTime(), end);
-			}
-			else {
+			} else {
 				newTask=new Task(updateDesc, updatedTask.getStartDateTime(), updatedTask.getEndDateTime());
 			}
 			Task.getList().add(newTask);
@@ -137,7 +136,7 @@ class TaskHandler {
 	}
 	
 	/**
-	 * Displays all the tasks in order
+	 * Displays all the tasks in order of date
 	 * @return a Feedback Object to be shown to the user
 	 */
 	protected static Feedback listTasks() {

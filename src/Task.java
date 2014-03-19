@@ -99,7 +99,7 @@ class Task implements Comparable<Task>{
 			display += getDateString(startDateTime);
 		}
 		if (endDateTime != null) {
-			display += getDateString(startDateTime);
+			display += getDateString(endDateTime);
 		}
 		
 		return display + " " + description;
