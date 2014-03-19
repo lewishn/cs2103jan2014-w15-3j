@@ -24,6 +24,10 @@ public class DateParser{
 	private static final int FORMAT_TYPE_1_INDEX = 13;	//format 1 : with day and month only
 	private static final int FORMAT_TYPE_2_INDEX = 14;	//format 2 : day of the week, Friday, etc.
 	
+	private static final String DATE_TODAY = "today";
+	private static final String DATE_TOMORROW = "tomorrow";
+	private static final String DATE_YESTERDAY = "yesterday";
+	
 	private static ArrayList<DateTimeFormatter> dateFormats = 
 		new ArrayList<DateTimeFormatter> (Arrays.asList( 
 			DateTimeFormat.forPattern(DATE_FORMAT_0), 
@@ -54,14 +58,13 @@ public class DateParser{
 
 		if (formatType == 0) {
 			date = parseDateFormat0(input);
-			//System.out.println(date);
 		} else if (formatType == 1) {
 			date = parseDateFormat1(input, date);
-			//System.out.println(date);
 		} else if (formatType == 2) { 
 			date = parseDateFormat2(input, date);
-			//System.out.println(date);
-		} 
+		} else if (formatType == 3) {
+			date = parseDateFormat3(input);
+		}
 		
 		return date;
 	}
@@ -78,7 +81,8 @@ public class DateParser{
 	 * Get the date format type of the input.
 	 * returns 0 if date contains day, month and year
 	 * returns 1 if date contains day and month only
-	 * returns 2 if date is written in english (Tuesday, today, etc)
+	 * returns 2 if date is written in english (Tuesday, wed etc)
+	 * returns 3 if date is yesterday/today/tomorrow
 	 * returns -1 if invalid
 	 * @param input
 	 * @return the format of the input date
@@ -101,9 +105,15 @@ public class DateParser{
 			return 1;
 		} else if (i < FORMAT_TYPE_2_INDEX) {
 			return 2;
-		} else {
-			return -1;
+		} else if (isFormat3(input)) {
+			return 3;
 		}
+			
+		return -1;
+	}
+	
+	private static boolean isFormat3(String input) {
+		return input.equalsIgnoreCase(DATE_TODAY) || input.equalsIgnoreCase(DATE_TOMORROW) || input.equalsIgnoreCase(DATE_YESTERDAY);
 	}
 	
 	/**
@@ -113,7 +123,7 @@ public class DateParser{
 	 */
 	protected static Boolean isDate(String input) {
 		int formatType = getDateFormatType(input);
-		assert(formatType >= -1 && formatType <=2);
+		assert(formatType >= -1 && formatType <=3);
 		
 		if (formatType == -1) {
 			return false;
@@ -172,14 +182,27 @@ public class DateParser{
 	 */
 	private static DateTime parseDateFormat2(String input, DateTime date) {
 		DateTime tempDate = dateFormats.get(FORMAT_TYPE_2_INDEX - 1).parseDateTime(input);
-		int targetDay = tempDate.getDayOfWeek();
-		int currentDay = date.getDayOfWeek();
+		int targetDayOfWeek = tempDate.getDayOfWeek();
+		int currentDayOfWeek = date.getDayOfWeek();
 		
-		if (targetDay < currentDay) {
-			date.plusWeeks(1);
+		if (targetDayOfWeek < currentDayOfWeek) {
+			date = date.plusWeeks(1);
 		} 
-		date = date.withDayOfWeek(targetDay);
+		
+		date = date.withDayOfWeek(targetDayOfWeek);
 		return date;
+	}
+	
+	private static DateTime parseDateFormat3(String input) {
+		DateTime today = new DateTime();
+		
+		if (input.equalsIgnoreCase(DATE_YESTERDAY)) {
+			return today.minusDays(1);
+		} else if (input.equalsIgnoreCase(DATE_TOMORROW)) {
+			return today.plusDays(1);
+		}
+		
+		return today;
 	}
 	
 	/**
