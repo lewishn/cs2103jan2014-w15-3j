@@ -3,12 +3,16 @@ import java.util.Stack;
 
 
 public class HistoryHandler {
+	private static final String FILE_UNDO = "undo.txt";
+	private static final String DELIMITER = "!@#$%^&*()";
+	private static final int MAXIMUM_STACK_SIZE = 10;
+	
 	private static final String UNDO_SUCCESS = "Undo successful!";
 	private static final String UNDO_FAIL = "Nothing left to undo.";
 	private static final String REDO_SUCCESS = "Redo successful!";
 	private static final String REDO_FAIL = "Nothing left to redo.";
 	
-	private static Stack<ArrayList<Task>> taskUndoStack = new Stack<ArrayList<Task>>();
+	private static Stack<ArrayList<Task>> taskUndoStack = loadUndoStack();
 	private static Stack<ArrayList<Task>> taskRedoStack = new Stack<ArrayList<Task>>();
 	
 	/**
@@ -41,6 +45,7 @@ public class HistoryHandler {
 	protected static void pushUndoStack() {
 		ArrayList<Task> taskNewList = (ArrayList<Task>) Task.getList().clone();		
 		taskUndoStack.push(taskNewList);
+		saveUndoStack();
 	}
 	
 	private static void pushRedoStack() {
@@ -69,6 +74,7 @@ public class HistoryHandler {
 	 */
 	private static boolean popRedoStack() {
 		if (taskRedoStack.size() > 0) {
+			pushUndoStack();
 			ArrayList<Task> taskList = taskRedoStack.pop();
 			Task.setList(taskList);
 			return true;
@@ -80,4 +86,40 @@ public class HistoryHandler {
 	protected static void purgeRedoStack() {
 		taskRedoStack = new Stack<ArrayList<Task>>();
 	}
+	
+	private static void saveUndoStack() {
+		Stack<ArrayList<Task>> undoStack = (Stack<ArrayList<Task>>) taskUndoStack.clone();
+		ArrayList<String> saveList = new ArrayList<String>();
+		
+		for (int i = 0; i < MAXIMUM_STACK_SIZE; i++) {
+			if (undoStack.size() > 0) {
+				ArrayList<Task> stackEntry = undoStack.pop();
+				for (int j = 0; j < stackEntry.size(); j++) {
+					saveList.add(stackEntry.get(j).toString());
+				}
+				saveList.add(DELIMITER);
+			}
+		}
+		
+		FileManager.writeToFile(FILE_UNDO, saveList);
+	}
+	
+	private static Stack<ArrayList<Task>> loadUndoStack() {
+		ArrayList<String> list = FileManager.readFromFile(FILE_UNDO);
+		Stack<ArrayList<Task>> undoStack = new Stack<ArrayList<Task>>();
+		ArrayList<Task> stackEntry = new ArrayList<Task>();
+		
+		for (int i = 0; i < list.size(); i++) {
+			if (list.get(i).equals(DELIMITER)) {
+				undoStack.push(stackEntry);
+				stackEntry = new ArrayList<Task>();
+				continue;
+			}
+			
+			stackEntry.add(Task.parseTaskFromString(list.get(i)));
+		}
+		
+		return undoStack;
+	}
+	
 }
