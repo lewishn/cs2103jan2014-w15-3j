@@ -53,11 +53,36 @@ class CustomCommandHandler {
 		}
 		
 		HistoryHandler.pushUndoStack();
-		//customCommandList.get(index).add(command);
+		int index = getCommandIndex(commandType);
+		System.out.println(index);
+		
+		if (index >= 0) {
+			customCommandList.get(index).add(userCommand);
+		} else {
+			ArrayList<String> newCommandEntry = new ArrayList<String>();
+			newCommandEntry.add(commandType);
+			newCommandEntry.add(userCommand);
+			customCommandList.add(newCommandEntry);
+		}
+		
 		saveCustomCommands();
 		return new Feedback(MESSAGE_CUSTOM_SUCCESS, false);
 	}
 
+	/**
+	 * Get the index of the specific command type in the customCommandList
+	 * @return index of the specifc command
+	 */
+	private static int getCommandIndex(String commandType) {
+		for (int i = 0; i < customCommandList.size(); i++) {
+			if (customCommandList.get(i).get(0).equals(commandType)) {
+				return i;
+			}
+		}
+		
+		return -1;
+	}
+	
 	/**
 	 * Finds out if the input custom command is already in use
 	 * @param command
@@ -70,10 +95,6 @@ class CustomCommandHandler {
 			}
 		}
 		return false;
-	}
-	
-	private static void addToCustomList(String command, String type) {
-		
 	}
 	
 	/**
@@ -120,7 +141,7 @@ class CustomCommandHandler {
 		for (int i = 0; i < customCommandList.size(); i++) {
 			String line = "";
 			for (int j = 0; j < customCommandList.get(i).size(); j++) {
-				line += (customCommandList.get(j) + " ");
+				line += (customCommandList.get(i).get(j) + " ");
 			}
 			listToSave.add(line + System.getProperty("line.separator"));
 		}

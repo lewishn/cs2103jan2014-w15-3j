@@ -25,12 +25,15 @@ class Task implements Comparable<Task>{
 	
 	protected Task(String desc) {
 		description = desc;
+		completed = false;
 	}
 	protected Task(String desc, DateTime start, DateTime end) {
 		startDateTime = start;
 		endDateTime = end;
 		description = desc;
+		completed = false;
 	}
+	
 	/*
 	protected static Task(Task previousTask, DateTime newStartTime) {
 		startDateTime=newStartTime;
@@ -38,6 +41,7 @@ class Task implements Comparable<Task>{
 		description=previousTask.getDescription();
 	}
 	*/
+	
 	protected static Task parseTaskFromString(String line) {
 		String[] tokens = line.split(DELIMITER);
 		DateTime start = (tokens[0].equals(NULL_START)) ? null : new DateTime(tokens[0]);
@@ -92,7 +96,6 @@ class Task implements Comparable<Task>{
 	}
 	
 	public String toDisplayString() {
-		String start, end;
 		String display = "";
 		
 		if (startDateTime != null) {
@@ -117,11 +120,11 @@ class Task implements Comparable<Task>{
 		if (this.startDateTime != null && task.startDateTime != null) {
 			return this.startDateTime.compareTo(task.startDateTime);
 		} else if (this.startDateTime == null && task.startDateTime != null) {
-			return -1;
-		} else if (this.startDateTime != null && task.startDateTime == null) {
 			return 1;
+		} else if (this.startDateTime != null && task.startDateTime == null) {
+			return -1;
 		} else {
-			return this.description.compareTo(task.description);
+			return this.description.compareToIgnoreCase(task.description);
 		}
 	}
 	
