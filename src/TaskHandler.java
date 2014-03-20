@@ -35,6 +35,7 @@ class TaskHandler {
 		Task.getList().add(newTask);
 		Task.sortList();
 		Task.saveTasks();
+		HistoryHandler.purgeRedoStack();
 		return new Feedback(String.format(MESSAGE_ADDED_TASK, userInput) + "\n", false);
 	}
 	
@@ -174,6 +175,7 @@ class TaskHandler {
 			String deletedTask = Task.getList().get(rowToDelete).getDescription();
 			Task.getList().remove(rowToDelete);
 			Task.saveTasks();
+			HistoryHandler.purgeRedoStack();
 			return new Feedback(String.format(MESSAGE_TASK_DELETED, deletedTask) + "\n", false);
 		}
 			

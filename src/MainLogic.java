@@ -14,6 +14,8 @@ public class MainLogic{
 	private static final String DEFAULT_LIST2 = "display";
 	private static final String DEFAULT_UNDO = "undo";
 	private static final String DEFAULT_UNDO2 = "un";
+	private static final String DEFAULT_REDO = "redo";
+	private static final String DEFAULT_REDO2 = "re";
 	private static final String DEFAULT_CUSTOM = "custom";
 	private static final String DEFAULT_CUSTOM2 = "cc";
 	private static final String DEFAULT_DELETE_CUSTOM = "dcustom";
@@ -26,7 +28,7 @@ public class MainLogic{
 	private static final String DEFAULT_EXIT2 = "e";
 	
 	private enum CommandType {
-		ADD, DELETE, UPDATE, LIST, UNDO, SEARCH, CUSTOM, DELETE_CUSTOM, HELP, EXIT, INVALID;
+		ADD, DELETE, UPDATE, LIST, UNDO, REDO, SEARCH, CUSTOM, DELETE_CUSTOM, HELP, EXIT, INVALID;
 	}	
 
 	/**
@@ -46,6 +48,8 @@ public class MainLogic{
 			return CommandType.DELETE;
 		} else if (com.equals(DEFAULT_UNDO) || com.equals(DEFAULT_UNDO2) || CustomCommandHandler.isCustomCommand(com, CustomCommandHandler.HEADER_UNDO)) {
 			return CommandType.UNDO;
+		} else if (com.equals(DEFAULT_REDO) || com.equals(DEFAULT_REDO2) || CustomCommandHandler.isCustomCommand(com, CustomCommandHandler.HEADER_REDO)) {
+			return CommandType.REDO;
 		} else if (com.equals(DEFAULT_CUSTOM) || com.equals(DEFAULT_CUSTOM2) || CustomCommandHandler.isCustomCommand(com, CustomCommandHandler.HEADER_CUSTOM)) {
 			return CommandType.CUSTOM;
 		} else if (com.equals(DEFAULT_DELETE_CUSTOM) || com.equals(DEFAULT_DELETE_CUSTOM2) || CustomCommandHandler.isCustomCommand(com, CustomCommandHandler.HEADER_DELETE_CUSTOM)) {
@@ -99,6 +103,9 @@ public class MainLogic{
 				
 			case UNDO:
 				return HistoryHandler.undoCommand();
+			
+			case REDO:
+				return HistoryHandler.redoCommand();
 				
 			case SEARCH:
 				//System.out.println("Search");
