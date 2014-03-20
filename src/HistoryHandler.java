@@ -9,9 +9,7 @@ public class HistoryHandler {
 	private static final String REDO_FAIL = "Nothing left to redo.";
 	
 	private static Stack<ArrayList<Task>> taskUndoStack = new Stack<ArrayList<Task>>();
-	private static Stack<ArrayList<ArrayList<String>>> commandUndoStack = new Stack<ArrayList<ArrayList<String>>>();
 	private static Stack<ArrayList<Task>> taskRedoStack = new Stack<ArrayList<Task>>();
-	private static Stack<ArrayList<ArrayList<String>>> commandRedoStack = new Stack<ArrayList<ArrayList<String>>>();
 	
 	/**
 	 * The previous action by the user which manipulates the taskList or customCommandList will be undone
@@ -20,7 +18,6 @@ public class HistoryHandler {
 	protected static Feedback undoCommand() {
 		boolean tryUndo = popUndoStack();
 		if(tryUndo) {
-			CustomCommandHandler.saveCustomCommands();
 			Task.saveTasks();
 			return new Feedback(UNDO_SUCCESS + "\n", false);
 		} else {
@@ -31,7 +28,6 @@ public class HistoryHandler {
 	protected static Feedback redoCommand() {
 		boolean tryRedo = popRedoStack();
 		if(tryRedo) {
-			CustomCommandHandler.saveCustomCommands();
 			Task.saveTasks();
 			return new Feedback(REDO_SUCCESS + "\n", false);
 		} else {
@@ -45,15 +41,11 @@ public class HistoryHandler {
 	protected static void pushUndoStack() {
 		ArrayList<Task> taskNewList = (ArrayList<Task>) Task.getList().clone();		
 		taskUndoStack.push(taskNewList);
-		ArrayList<ArrayList<String>>  customNewList = (ArrayList<ArrayList<String>>) CustomCommandHandler.customCommandList.clone();
-		commandUndoStack.push(CustomCommandHandler.customCommandList);
 	}
 	
 	private static void pushRedoStack() {
 		ArrayList<Task> taskNewList = (ArrayList<Task>) Task.getList().clone();		
 		taskRedoStack.push(taskNewList);
-		ArrayList<ArrayList<String>>  customNewList = (ArrayList<ArrayList<String>>) CustomCommandHandler.customCommandList.clone();
-		commandRedoStack.push(CustomCommandHandler.customCommandList);
 	}
 	
 	/**
@@ -65,7 +57,6 @@ public class HistoryHandler {
 			pushRedoStack();
 			ArrayList<Task> taskList = taskUndoStack.pop();
 			Task.setList(taskList);
-			CustomCommandHandler.customCommandList = commandUndoStack.pop();
 			return true;
 		} else {
 			return false;
@@ -80,7 +71,6 @@ public class HistoryHandler {
 		if (taskRedoStack.size() > 0) {
 			ArrayList<Task> taskList = taskRedoStack.pop();
 			Task.setList(taskList);
-			CustomCommandHandler.customCommandList = commandRedoStack.pop();
 			return true;
 		} else {
 			return false;
@@ -89,6 +79,5 @@ public class HistoryHandler {
 	
 	protected static void purgeRedoStack() {
 		taskRedoStack = new Stack<ArrayList<Task>>();
-		commandRedoStack = new Stack<ArrayList<ArrayList<String>>>();
 	}
 }

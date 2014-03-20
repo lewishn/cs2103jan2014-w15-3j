@@ -17,10 +17,11 @@ class CustomCommandHandler {
 	protected static final String HEADER_HELP = "[HELP]";
 	protected static final String HEADER_EXIT = "[EXIT]";
 
-	private static final String MESSAGE_CUSTOM_DUPLICATE = "Sorry, but this word is already in use.";
-	private static final String MESSAGE_CUSTOM_SUCCESS = " has been successfully added to the command list.";
-	private static final String MESSAGE_CUSTOM_NONEXISTANT = "Error deleting. There is no such word in the command list.";
-	private static final String MESSAGE_CUSTOM_DELETED = " has been successfully deleted from the command list.";
+	private static final String MESSAGE_CUSTOM_DUPLICATE = "Sorry, but this word is already in use.\n";
+	private static final String MESSAGE_CUSTOM_WHITESPACE = "Whitespace is not accepted as a custom command. Please enter a different word.\n";
+	private static final String MESSAGE_CUSTOM_SUCCESS = " has been successfully added to the command list.\n";
+	private static final String MESSAGE_CUSTOM_NONEXISTANT = "Error deleting. There is no such word in the command list.\n";
+	private static final String MESSAGE_CUSTOM_DELETED = " has been successfully deleted from the command list.\n";
 	
 	protected static ArrayList<ArrayList<String>> customCommandList = loadCustomCommands();
 	
@@ -51,11 +52,19 @@ class CustomCommandHandler {
 		if (isDuplicateCommand(userCommand)) {
 			return new Feedback(MESSAGE_CUSTOM_DUPLICATE, false);
 		}
+		if (isWhiteSpace(userCommand)){
+			return new Feedback(MESSAGE_CUSTOM_WHITESPACE, false);
+		}
 		
 		HistoryHandler.pushUndoStack();
-		int index = getCommandIndex(commandType);
-		System.out.println(index);
-		
+		addCommandToList(userCommand, commandType);
+		HistoryHandler.purgeRedoStack();
+		saveCustomCommands();
+		return new Feedback(userCommand + MESSAGE_CUSTOM_SUCCESS, false);
+	}
+	
+	private static void addCommandToList(String userCommand, String commandType) {
+		int index = getCommandHeaderIndex(commandType);
 		if (index >= 0) {
 			customCommandList.get(index).add(userCommand);
 		} else {
@@ -64,16 +73,14 @@ class CustomCommandHandler {
 			newCommandEntry.add(userCommand);
 			customCommandList.add(newCommandEntry);
 		}
-		
-		saveCustomCommands();
-		return new Feedback(MESSAGE_CUSTOM_SUCCESS, false);
 	}
 
 	/**
-	 * Get the index of the specific command type in the customCommandList
-	 * @return index of the specifc command
+	 * Get the index of the specific command header in the customCommandList
+	 * Returns -1 if not found.
+	 * @return index of the specific command header
 	 */
-	private static int getCommandIndex(String commandType) {
+	private static int getCommandHeaderIndex(String commandType) {
 		for (int i = 0; i < customCommandList.size(); i++) {
 			if (customCommandList.get(i).get(0).equals(commandType)) {
 				return i;
@@ -97,6 +104,17 @@ class CustomCommandHandler {
 		return false;
 	}
 	
+	private static boolean isWhiteSpace(String str) {
+		if (str == null || str.equals("") || str.length() == 0) {
+			return true;
+		}
+		if (str.equals("\n") || str.equals("\t")) {
+			return true;
+		}
+		
+		return false;
+	}
+	
 	/**
 	 * Deletes a custom command from the list of custom commands 
 	 * and saves the list to the file.
@@ -104,16 +122,19 @@ class CustomCommandHandler {
 	 * @return a Feedback object containing the message that is to be shown to the user
 	 */
 	protected static Feedback deleteCustomCommand(String userCommand) {
-		HistoryHandler.pushUndoStack();
 		for (int i = 0; i < customCommandList.size(); i++) {
-			if (customCommandList.remove(userCommand)) {
-				saveCustomCommands();
-				return new Feedback(userCommand + MESSAGE_CUSTOM_DELETED, false);
+			for (int j = 0; j < customCommandList.get(i).size(); j++) {
+				if (customCommandList.get(i).get(j).equals(userCommand)) {
+					HistoryHandler.pushUndoStack();
+					customCommandList.get(i).remove(j);
+					HistoryHandler.purgeRedoStack();
+					saveCustomCommands();
+					return new Feedback(userCommand + MESSAGE_CUSTOM_DELETED, false);
+				}
 			}
 		}
-		
 		return new Feedback(MESSAGE_CUSTOM_NONEXISTANT, false);
-	}
+	}	
 	
 	/**
 	 * Reads custom commands from the "custom.txt" file
@@ -132,6 +153,7 @@ class CustomCommandHandler {
 		return commandList;
 	}
 	
+	
 	/**
 	 * Saves the list of custom commands to the "customs.txt" file
 	 */
@@ -143,7 +165,7 @@ class CustomCommandHandler {
 			for (int j = 0; j < customCommandList.get(i).size(); j++) {
 				line += (customCommandList.get(i).get(j) + " ");
 			}
-			listToSave.add(line + System.getProperty("line.separator"));
+			listToSave.add(line);
 		}
 		
 		FileManager.writeToFile(FILE_CUSTOM, listToSave);
