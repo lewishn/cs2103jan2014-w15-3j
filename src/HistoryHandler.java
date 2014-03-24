@@ -1,3 +1,4 @@
+import java.util.ArrayDeque;
 import java.util.ArrayList;
 import java.util.Stack;
 
@@ -12,8 +13,8 @@ public class HistoryHandler {
 	private static final String REDO_SUCCESS = "Redo successful!";
 	private static final String REDO_FAIL = "Nothing left to redo.";
 	
-	private static Stack<ArrayList<Task>> taskUndoStack = loadUndoStack();
-	private static Stack<ArrayList<Task>> taskRedoStack = new Stack<ArrayList<Task>>();
+	private static ArrayDeque<ArrayList<Task>> taskUndoStack = loadUndoStack();
+	private static ArrayDeque<ArrayList<Task>> taskRedoStack = new ArrayDeque<ArrayList<Task>>();
 	
 	/**
 	 * The previous action by the user which manipulates the taskList or customCommandList will be undone
@@ -44,13 +45,13 @@ public class HistoryHandler {
 	 */
 	protected static void pushUndoStack() {
 		ArrayList<Task> taskNewList = (ArrayList<Task>) Task.getList().clone();		
-		taskUndoStack.push(taskNewList);
+		taskUndoStack.add(taskNewList);
 		saveUndoStack();
 	}
 	
 	private static void pushRedoStack() {
 		ArrayList<Task> taskNewList = (ArrayList<Task>) Task.getList().clone();		
-		taskRedoStack.push(taskNewList);
+		taskRedoStack.add(taskNewList);
 	}
 	
 	/**
@@ -60,7 +61,7 @@ public class HistoryHandler {
 	private static boolean popUndoStack() {
 		if (taskUndoStack.size() > 0) {
 			pushRedoStack();
-			ArrayList<Task> taskList = taskUndoStack.pop();
+			ArrayList<Task> taskList = taskUndoStack.pollLast();
 			Task.setList(taskList);
 			return true;
 		} else {
@@ -75,7 +76,7 @@ public class HistoryHandler {
 	private static boolean popRedoStack() {
 		if (taskRedoStack.size() > 0) {
 			pushUndoStack();
-			ArrayList<Task> taskList = taskRedoStack.pop();
+			ArrayList<Task> taskList = taskRedoStack.pollLast();
 			Task.setList(taskList);
 			return true;
 		} else {
@@ -84,11 +85,11 @@ public class HistoryHandler {
 	}
 	
 	protected static void purgeRedoStack() {
-		taskRedoStack = new Stack<ArrayList<Task>>();
+		taskRedoStack = new ArrayDeque<ArrayList<Task>>();
 	}
 	
 	private static void saveUndoStack() {
-		Stack<ArrayList<Task>> undoStack = (Stack<ArrayList<Task>>) taskUndoStack.clone();
+		ArrayDeque<ArrayList<Task>> undoStack = (ArrayDeque<ArrayList<Task>>) taskUndoStack.clone();
 		ArrayList<String> saveList = new ArrayList<String>();
 		
 		for (int i = 0; i < MAXIMUM_STACK_SIZE; i++) {
@@ -104,14 +105,14 @@ public class HistoryHandler {
 		FileManager.writeToFile(FILE_UNDO, saveList);
 	}
 	
-	private static Stack<ArrayList<Task>> loadUndoStack() {
+	private static ArrayDeque<ArrayList<Task>> loadUndoStack() {
 		ArrayList<String> list = FileManager.readFromFile(FILE_UNDO);
-		Stack<ArrayList<Task>> undoStack = new Stack<ArrayList<Task>>();
+		ArrayDeque<ArrayList<Task>> undoStack = new ArrayDeque<ArrayList<Task>>();
 		ArrayList<Task> stackEntry = new ArrayList<Task>();
 		
 		for (int i = 0; i < list.size(); i++) {
 			if (list.get(i).equals(DELIMITER)) {
-				undoStack.push(stackEntry);
+				undoStack.add(stackEntry);
 				stackEntry = new ArrayList<Task>();
 				continue;
 			}

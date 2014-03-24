@@ -1,3 +1,0 @@
-[CUSTOM] yolo boo 
-[ADD] new add remove asd dsa qwert 
-[DELETE_CUSTOM] 

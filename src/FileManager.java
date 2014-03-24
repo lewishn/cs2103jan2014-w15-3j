@@ -6,10 +6,7 @@ import java.io.FileReader;
 import java.io.FileWriter;
 import java.io.IOException;
 import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.logging.Logger;
-
-import org.joda.time.DateTime;
 
 class FileManager {
 	private static Logger LOGGER = Logger.getLogger(FileManager.class.getName());

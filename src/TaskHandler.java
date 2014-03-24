@@ -27,6 +27,7 @@ class TaskHandler {
 	protected static Feedback addTask(String userInput) {
 		String[] inputTokens = userInput.split(" ");
 		ArrayList<String> input = new ArrayList<String>(Arrays.asList(inputTokens));
+		userInput = CommandParser.removeDateTimeFromString(userInput);
 		
 		String[] fields = CommandParser.getTaskFields(input);
 		Task newTask = createTask(fields, userInput);

@@ -100,4 +100,46 @@ class CommandParser {
 		
 		return fields;
 	}
+	
+	protected static String removeDateTimeFromString(String s) {
+		String[] tokens = s.split(" ");
+		
+		for(int i = 0; i < tokens.length; i++) {
+			if (DateParser.isDate(tokens[i]) || TimeParser.isTime(tokens[i])) {
+				int j = i - 1;
+				while (j >= 0 && isDateTimeIdentifier(tokens[j])) {
+					tokens[j--] = null;
+				}
+				tokens[i] = null;
+			}
+		}
+		
+		return arrayToString(tokens);
+	}
+	
+	private static boolean isDateTimeIdentifier(String s) {
+		String[] identifierList = {"at", "@", "by", "from", "to", "on", "before", "until", "end", "start", "-", ","};
+		
+		if (s == null)
+			return false;
+		
+		for(String identifier: identifierList) {
+			if (s.equals(identifier)) return true;
+		}
+		
+		return false;
+	}
+	
+	protected static String arrayToString(String[] s) {
+		String r = "";
+		for (int i = 0; i < s.length; i++) {
+			if (s[i] == null) continue;
+			if (i == s.length) {
+				r = r + s[i];
+			} else {
+				r = r + s[i] + " ";
+			}
+		}
+		return r;
+	}
 }
