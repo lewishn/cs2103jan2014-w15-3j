@@ -6,7 +6,8 @@ import java.util.Stack;
 public class HistoryHandler {
 	private static final String FILE_UNDO = "undo.txt";
 	private static final String DELIMITER = "!@#$%^&*()";
-	private static final int MAXIMUM_STACK_SIZE = 10;
+	private static final int MAXIMUM_UNDO_STEPS = 1000;
+	private static final int MAXIMUM_SAVE_STACK_SIZE = 10;
 	
 	private static final String UNDO_SUCCESS = "Undo successful!";
 	private static final String UNDO_FAIL = "Nothing left to undo.";
@@ -46,7 +47,14 @@ public class HistoryHandler {
 	protected static void pushUndoStack() {
 		ArrayList<Task> taskNewList = (ArrayList<Task>) Task.getList().clone();		
 		taskUndoStack.add(taskNewList);
+		reduceStackSize();
 		saveUndoStack();
+	}
+	
+	private static void reduceStackSize() {
+		while (taskUndoStack.size() > MAXIMUM_UNDO_STEPS) {
+			taskUndoStack.pollFirst();
+		}
 	}
 	
 	private static void pushRedoStack() {
@@ -92,7 +100,7 @@ public class HistoryHandler {
 		ArrayDeque<ArrayList<Task>> undoStack = (ArrayDeque<ArrayList<Task>>) taskUndoStack.clone();
 		ArrayList<String> saveList = new ArrayList<String>();
 		
-		for (int i = 0; i < MAXIMUM_STACK_SIZE; i++) {
+		for (int i = 0; i < MAXIMUM_SAVE_STACK_SIZE; i++) {
 			if (undoStack.size() > 0) {
 				ArrayList<Task> stackEntry = undoStack.pop();
 				for (int j = 0; j < stackEntry.size(); j++) {
