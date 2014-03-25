@@ -1,5 +1,8 @@
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.Collections;
+import java.util.regex.Matcher;
+import java.util.regex.Pattern;
 
 import org.joda.time.DateTime;
 
@@ -13,6 +16,7 @@ class Task implements Comparable<Task>{
 	protected static final int TASK_FIELD_SIZE = 4;
 	
 	private static final String DELIMITER = " ~~ ";
+	private static final String TAG_IDENTIFIER = "#";
 	private static final String NULL_START = "no_start_time";
 	private static final String NULL_END = "no_end_time";
 	
@@ -22,6 +26,7 @@ class Task implements Comparable<Task>{
 	private DateTime endDateTime;
 	private String description;
 	private boolean completed;
+	private ArrayList<String> tags;
 	
 	protected Task(String desc) {
 		description = desc;
@@ -30,17 +35,8 @@ class Task implements Comparable<Task>{
 	protected Task(String desc, DateTime start, DateTime end) {
 		startDateTime = start;
 		endDateTime = end;
-		description = desc;
 		completed = false;
 	}
-	
-	/*
-	protected static Task(Task previousTask, DateTime newStartTime) {
-		startDateTime=newStartTime;
-		endDateTime=previousTask.getEndDateTime();
-		description=previousTask.getDescription();
-	}
-	*/
 	
 	protected static Task parseTaskFromString(String line) {
 		String[] tokens = line.split(DELIMITER);

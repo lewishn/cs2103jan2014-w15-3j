@@ -49,7 +49,10 @@ class CustomCommandHandler {
 	 * @return a Feedback object containing the message that is to be shown to the user
 	 */
 	protected static Feedback addCustomCommand(String userCommand, String commandType) {
-		if (isDuplicateCommand(userCommand)) {
+		// if user inputs a white space between two or more words, take only the first
+		userCommand = userCommand.split(" ")[0];
+		
+		if (isDuplicateCommand(userCommand) || MainLogic.isDefaultCommand(userCommand)) {
 			return new Feedback(MESSAGE_CUSTOM_DUPLICATE, false);
 		}
 		if (isWhiteSpace(userCommand)){

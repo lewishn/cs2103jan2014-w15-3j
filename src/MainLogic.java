@@ -21,11 +21,9 @@ public class MainLogic{
 	private static final String DEFAULT_DELETE_CUSTOM = "dcustom";
 	private static final String DEFAULT_DELETE_CUSTOM2 = "dc";
 	private static final String DEFAULT_HELP = "help";
-	private static final String DEFAULT_HELP2 = "h";
 	private static final String DEFAULT_SEARCH = "search";
-	private static final String DEFAULT_SEARCH2 = "s";
+	private static final String DEFAULT_SEARCH2 = "find";
 	private static final String DEFAULT_EXIT = "exit";
-	private static final String DEFAULT_EXIT2 = "e";
 	
 	private enum CommandType {
 		ADD, DELETE, UPDATE, LIST, UNDO, REDO, SEARCH, CUSTOM, DELETE_CUSTOM, HELP, EXIT, INVALID;
@@ -54,9 +52,9 @@ public class MainLogic{
 			return CommandType.CUSTOM;
 		} else if (com.equals(DEFAULT_DELETE_CUSTOM) || com.equals(DEFAULT_DELETE_CUSTOM2) || CustomCommandHandler.isCustomCommand(com, CustomCommandHandler.HEADER_DELETE_CUSTOM)) {
 			return CommandType.DELETE_CUSTOM;
-		} else if (com.equals(DEFAULT_HELP) || com.equals(DEFAULT_HELP2) || CustomCommandHandler.isCustomCommand(com, CustomCommandHandler.HEADER_HELP)) {
+		} else if (com.equals(DEFAULT_HELP) || CustomCommandHandler.isCustomCommand(com, CustomCommandHandler.HEADER_HELP)) {
 			return CommandType.HELP;
-		} else if (com.equals(DEFAULT_EXIT) || com.equals(DEFAULT_EXIT2) || CustomCommandHandler.isCustomCommand(com, CustomCommandHandler.HEADER_EXIT)) {
+		} else if (com.equals(DEFAULT_EXIT) || CustomCommandHandler.isCustomCommand(com, CustomCommandHandler.HEADER_EXIT)) {
 			return CommandType.EXIT;
 		} else if (com.equals(DEFAULT_SEARCH) || com.equals(DEFAULT_SEARCH2) || CustomCommandHandler.isCustomCommand(com, CustomCommandHandler.HEADER_SEARCH)) {
 			return CommandType.SEARCH;
@@ -126,7 +124,6 @@ public class MainLogic{
 	 */
 	private static String getCustomHeader(String userInput) {
 		String command = CommandParser.getUserCommandType(userInput);
-		String commandDesc = CommandParser.getUserCommandDesc(userInput);
 		
 		CommandType commandType = getCommandType(command);
 		
@@ -163,6 +160,29 @@ public class MainLogic{
 			default:
 				return null;
 		}
+	}
+	
+	protected static boolean isDefaultCommand(String s) {
+		String[] defaultCommandList = {
+				DEFAULT_ADD, DEFAULT_ADD2, 
+				DEFAULT_UPDATE, DEFAULT_UPDATE2,
+				DEFAULT_DELETE, DEFAULT_DELETE2,
+				DEFAULT_LIST, DEFAULT_LIST2,
+				DEFAULT_UNDO, DEFAULT_UNDO2,
+				DEFAULT_REDO, DEFAULT_REDO2,
+				DEFAULT_CUSTOM, DEFAULT_CUSTOM2,
+				DEFAULT_DELETE_CUSTOM, DEFAULT_DELETE_CUSTOM2, 
+				DEFAULT_SEARCH, DEFAULT_SEARCH2,
+				DEFAULT_HELP, DEFAULT_EXIT
+		};
+		
+		for (int i = 0; i < defaultCommandList.length; i++) {
+			if (s.equals(defaultCommandList[i])) {
+				return true;
+			}
+		}
+		
+		return false;
 	}
 }
 
