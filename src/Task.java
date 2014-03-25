@@ -36,6 +36,7 @@ class Task implements Comparable<Task>{
 		startDateTime = start;
 		endDateTime = end;
 		completed = false;
+		description = desc;
 	}
 	
 	protected static Task parseTaskFromString(String line) {
