@@ -151,6 +151,5 @@ public class TestParser {
 		dt = TimeParser.setTime(dt, "1am");
 		assertEquals("01:00", dt.toString("HH:mm"));
 	}
-	
 }
 
