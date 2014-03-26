@@ -45,8 +45,8 @@ class CommandParser {
 	
 	/**
 	 * Returns an array of string of length 4 containing the start and end
-	 * dates and times of the input. Index 0 and 2 contains the start date
-	 * and time respectively. Index 1 and 3 contains the end date and time.
+	 * dates and times of the input. Index 0 and 1 contains the start date
+	 * and time respectively. Index 2 and 3 contains the end date and time.
 	 * @param input
 	 * @return a String array containing start and end date/times
 	 */
@@ -64,7 +64,7 @@ class CommandParser {
 	 * @param fields
 	 * @return a String array containing the start and end date
 	 */
-	protected static String[] getDateFields(ArrayList<String> input, String[] fields) {
+	private static String[] getDateFields(ArrayList<String> input, String[] fields) {
 		for (int i = 0; i < input.size(); i++) {
 			if (DateParser.isDate(input.get(i))) {
 				if (fields[Task.START_DATE] == null) {
@@ -86,7 +86,7 @@ class CommandParser {
 	 * @param fields
 	 * @return a String array containing the start and end date
 	 */
-	protected static String[] getTimeFields(ArrayList<String> input, String[] fields) {
+	private static String[] getTimeFields(ArrayList<String> input, String[] fields) {
 		for (int i = 0; i < input.size(); i++) {
 			if (TimeParser.isTime(input.get(i))) {
 				if (fields[Task.START_TIME] == null) {
