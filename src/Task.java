@@ -1,3 +1,4 @@
+import java.text.DecimalFormat;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collections;
@@ -25,17 +26,17 @@ class Task implements Comparable<Task>{
 	private DateTime startDateTime;
 	private DateTime endDateTime;
 	private String description;
-	private boolean completed;
+	private boolean status;
 	private ArrayList<String> tags;
 	
 	protected Task(String desc) {
 		description = desc;
-		completed = false;
+		status = false;
 	}
 	protected Task(String desc, DateTime start, DateTime end) {
 		startDateTime = start;
 		endDateTime = end;
-		completed = false;
+		status = false;
 		description = desc;
 	}
 	
@@ -60,6 +61,10 @@ class Task implements Comparable<Task>{
 		endDateTime = end; 
 	}
 	
+	protected void setCompleted(boolean stat) {
+		status = stat;
+	}
+	
 	protected String getDescription() {
 		return description;
 	}
@@ -70,6 +75,10 @@ class Task implements Comparable<Task>{
 	
 	protected DateTime getEndDateTime() {
 		return endDateTime;
+	}
+	
+	protected boolean getStatus() {
+		return status;
 	}
 	
 	protected static ArrayList<Task> getList() {
@@ -106,8 +115,10 @@ class Task implements Comparable<Task>{
 	}
 	
 	private String getDateString(DateTime date) {
-		String time = date.getHourOfDay() + ":" + date.getMinuteOfHour();
-		String dt = date.getDayOfMonth() + "/" + date.getMonthOfYear() + "/" + date.getYear();
+		DecimalFormat df = new DecimalFormat("00");
+		
+		String time = df.format(date.getHourOfDay()) + ":" + df.format(date.getMinuteOfHour());
+		String dt = date.toString("dd/MMM/YYYY");
 		
 		return "[" + time + "|" + dt + "]";
 	}
