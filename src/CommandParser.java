@@ -117,6 +117,28 @@ class CommandParser {
 		return arrayToString(tokens);
 	}
 	
+	protected static String removeAliasFromDescription(String desc) {
+		String[] tokens = desc.split(" ");
+		for (int i = 0; i < tokens.length; i++) {
+			if (tokens[i].contains("alias:")) {
+				tokens[i] = null;
+			}
+		}
+		
+		return arrayToString(tokens);
+	}
+	
+	protected static String getAliasFromDescription(String desc) {
+		String[] tokens = desc.split(" ");
+		for (int i = 0; i < tokens.length; i++) {
+			if (tokens[i].contains("alias:")) {
+				return tokens[i].substring("alias:".length());
+			}
+		}
+		
+		return null;
+	}
+	
 	private static boolean isDateTimeIdentifier(String s) {
 		String[] identifierList = {"at", "@", "by", "from", "to", "on", "before", "until", "end", "start", "-", ","};
 		

@@ -27,10 +27,14 @@ class TaskHandler {
 	protected static Feedback addTask(String userInput) {
 		String[] inputTokens = userInput.split(" ");
 		ArrayList<String> input = new ArrayList<String>(Arrays.asList(inputTokens));
+		String alias = CommandParser.getAliasFromDescription(userInput);
 		userInput = CommandParser.removeDateTimeFromString(userInput);
+		userInput = CommandParser.removeAliasFromDescription(userInput);
 		
 		String[] fields = CommandParser.getTaskFields(input);
-		Task newTask = createTask(fields, userInput);
+		Task newTask = createTask(fields, userInput, alias);
+		
+		
 		
 		HistoryHandler.pushUndoStack();
 		Task.getList().add(newTask);
@@ -44,9 +48,9 @@ class TaskHandler {
 	 * Reads the user input and time fields and creates a Task object
 	 * @param fields
 	 * @param input
-	 * @return Task object
+	 * @return Task object	
 	 */
-	private static Task createTask(String[] fields, String input) {
+	private static Task createTask(String[] fields, String input, String alias) {
 		DateTime start = null;
 		DateTime end = null;
 	
@@ -99,7 +103,7 @@ class TaskHandler {
 			}
 		}
 
-		return new Task(input, start, end);
+		return new Task(input, start, end, alias);
 	}
 	
 	/**
@@ -109,26 +113,31 @@ class TaskHandler {
 	 */
 	protected static Feedback updateTask(String update) {
 		String updateNumber = CommandParser.getUserCommandType(update);
-		String updateField = CommandParser.getUserCommandField(update);
 		String updateDesc = CommandParser.getUserCommandDesc(update);
-		Task newTask;
+		String updateField = CommandParser.getUserCommandType(updateDesc);
+		System.out.println(updateDesc);
+		
+		
 		if (isInteger(updateNumber)) {
 			Integer index = Integer.parseInt(updateNumber);
 			HistoryHandler.pushUndoStack();
-			Task updatedTask=Task.getList().get(index-1);
+			Task updatedTask = Task.getList().get(index-1);
 			Task.getList().remove(index - 1);
-			if (updateField=="start") {
-				DateTime start=DateParser.setDate(updateDesc);
-				start=TimeParser.setTime(start, updateDesc);
-				newTask=new Task(updatedTask.getDescription(), start, updatedTask.getEndDateTime());
-			} else if (updateField=="end") {
-				DateTime end=DateParser.setDate(updateDesc);
-				end=TimeParser.setTime(end	, updateDesc);
-				newTask=new Task(updatedTask.getDescription(), updatedTask.getStartDateTime(), end);
+			if (updateField.equals("start")) {
+				DateTime start = DateParser.setDate(updateDesc);
+				start = TimeParser.setTime(start, updateDesc);
+				updatedTask.setStartDateTime(start);
+			
+			} else if (updateField.equals("end")) {
+				DateTime end = DateParser.setDate(updateDesc);
+				end = TimeParser.setTime(end, updateDesc);
+				updatedTask.setEndDateTime(end);
+			
 			} else {
-				newTask=new Task(updateDesc, updatedTask.getStartDateTime(), updatedTask.getEndDateTime());
+				updatedTask = new Task(updateDesc, updatedTask.getStartDateTime(), updatedTask.getEndDateTime(), null);
 			}
-			Task.getList().add(newTask);
+			
+			Task.getList().add(updatedTask);
 			Task.sortList();
 			Task.saveTasks();
 			return new Feedback(MESSAGE_UPDATE_TASK + "\n", false);
@@ -158,7 +167,7 @@ class TaskHandler {
 		}
 		return stringList;
 	}
-
+//test
 	/**
 	 * Removes a task from the taskList
 	 * @param taskNumber

@@ -20,6 +20,7 @@ class Task implements Comparable<Task>{
 	private static final String TAG_IDENTIFIER = "#";
 	private static final String NULL_START = "no_start_time";
 	private static final String NULL_END = "no_end_time";
+	private static final String NULL_ALIAS = "no_alias";
 	
 	private static ArrayList<Task> taskList = loadTasks();
 	
@@ -27,26 +28,28 @@ class Task implements Comparable<Task>{
 	private DateTime endDateTime;
 	private String description;
 	private boolean status;
-	private ArrayList<String> tags;
+	private String alias;
 	
 	protected Task(String desc) {
 		description = desc;
 		status = false;
 	}
-	protected Task(String desc, DateTime start, DateTime end) {
+	protected Task(String desc, DateTime start, DateTime end, String name) {
 		startDateTime = start;
 		endDateTime = end;
 		status = false;
 		description = desc;
+		alias = name;
 	}
 	
 	protected static Task parseTaskFromString(String line) {
 		String[] tokens = line.split(DELIMITER);
 		DateTime start = (tokens[0].equals(NULL_START)) ? null : new DateTime(tokens[0]);
 		DateTime end = (tokens[1].equals(NULL_END)) ? null : new DateTime(tokens[1]);
-		String desc = tokens[2];
+		String name = (tokens[2].equals(NULL_ALIAS)) ? null : tokens[2]; 
+		String desc = tokens[3];
 		
-		return new Task(desc, start, end);
+		return new Task(desc, start, end, name);
 	}
 	
 	protected void setDescription(String desc) {
@@ -98,7 +101,7 @@ class Task implements Comparable<Task>{
 		String start = (startDateTime == null) ? NULL_START : startDateTime.toString();
 		String end = (endDateTime == null) ? NULL_END : endDateTime.toString();
 		
-		return start + DELIMITER + end + DELIMITER + description;
+		return start + DELIMITER + end + DELIMITER + alias + DELIMITER + description;
 	}
 	
 	public String toDisplayString() {
@@ -109,6 +112,9 @@ class Task implements Comparable<Task>{
 		}
 		if (endDateTime != null) {
 			display += getDateString(endDateTime);
+		}
+		if (alias != null && !alias.equals("")) {
+			display += "[alias:" + alias + "]";
 		}
 		
 		return display + " " + description;
