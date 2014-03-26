@@ -20,6 +20,10 @@ class Feedback {
 		exit = x;
 	}
 	
+	public String getDesc() {
+		return this.description;
+	}
+	
 	public boolean getExitFlag() {
 		return exit;
 	}
@@ -31,5 +35,9 @@ class Feedback {
 	@Override
 	public String toString(){
 		return description;
+	}
+	
+	public boolean equals(String string){
+		return string.equals(description);
 	}
 }
