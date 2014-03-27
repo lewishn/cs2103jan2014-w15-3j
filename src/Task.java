@@ -54,8 +54,12 @@ class Task implements Comparable<Task>{
 		endDateTime = end; 
 	}
 	
-	protected void setCompleted(boolean stat) {
+	protected void setStatus(boolean stat) {
 		status = stat;
+	}
+	
+	protected void setAlias(String alias) {	
+		this.alias = alias;
 	}
 	
 	protected String getDescription() {
@@ -72,6 +76,10 @@ class Task implements Comparable<Task>{
 	
 	protected boolean getStatus() {
 		return status;
+	}
+	
+	protected String getAlias() {
+		return alias;
 	}
 	
 	protected static ArrayList<Task> getList() {
@@ -134,23 +142,51 @@ class Task implements Comparable<Task>{
 	public int compareTo(Task task) {
 		if (this.startDateTime != null && task.startDateTime != null) {
 			return this.startDateTime.compareTo(task.startDateTime);
+			
 		} else if (this.startDateTime == null && task.startDateTime != null) {
+			if(this.endDateTime != null) {
+				return this.endDateTime.compareTo(task.startDateTime);
+			}
 			return 1;
+			
 		} else if (this.startDateTime != null && task.startDateTime == null) {
+			if(task.endDateTime != null) {
+				return this.startDateTime.compareTo(task.endDateTime);
+			}
 			return -1;
+			
 		} else {
-			return this.description.compareToIgnoreCase(task.description);
+			if (this.endDateTime == null && task.endDateTime == null) {
+				return this.description.compareToIgnoreCase(task.description);
+			} else if (this.endDateTime != null && task.endDateTime == null) {
+				return -1;
+			} else if (this.endDateTime == null && task.endDateTime != null) {
+				return 1;
+			} else {
+				return this.endDateTime.compareTo(task.endDateTime);
+			}
 		}
 	}
 	
 	protected static boolean isAliasInUse(String alias) {
+		if (getTaskIndexFromAlias(alias) == -1) {
+			return false;
+		}
+		
+		return true;
+	}
+	
+	protected static int getTaskIndexFromAlias(String alias) {
 		for (int i = 0; i < taskList.size(); i++) {
-			if (alias.equals(taskList.get(i).alias)) {
-				return true;
+			if (taskList.get(i).getAlias() == null) {
+				continue;
+			}
+			if (alias.equals(taskList.get(i).getAlias())) {
+				return i;
 			}
 		}
 		
-		return false;
+		return -1;
 	}
 	
 	protected static void saveTasks() {

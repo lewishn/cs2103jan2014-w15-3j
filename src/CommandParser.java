@@ -10,15 +10,7 @@ class CommandParser {
 		String[] tokens = userInput.split(" ", 2);
 		return tokens[0];
 	}
-	/**
-	 * Returns the field portion of the string
-	 * @param userInput
-	 * @return command type portion of the input
-	 */
-	protected static String getUserCommandField(String userInput) {
-		String[] tokens = userInput.split(" ", 2);
-		return tokens[1];
-	}
+
 	/**
 	 * Returns the description portion of the string
 	 * @param userInput
