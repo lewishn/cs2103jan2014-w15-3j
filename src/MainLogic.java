@@ -118,7 +118,7 @@ public class MainLogic{
 	}
 	
 	/**
-	 * Get the header for the custom command from th user input
+	 * Get the header for the custom command from the user input
 	 * @param userInput
 	 * @return a string containing the custom command header
 	 */

@@ -42,16 +42,6 @@ class Task implements Comparable<Task>{
 		alias = name;
 	}
 	
-	protected static Task parseTaskFromString(String line) {
-		String[] tokens = line.split(DELIMITER);
-		DateTime start = (tokens[0].equals(NULL_START)) ? null : new DateTime(tokens[0]);
-		DateTime end = (tokens[1].equals(NULL_END)) ? null : new DateTime(tokens[1]);
-		String name = (tokens[2].equals(NULL_ALIAS)) ? null : tokens[2]; 
-		String desc = tokens[3];
-		
-		return new Task(desc, start, end, name);
-	}
-	
 	protected void setDescription(String desc) {
 		description = desc;
 	}
@@ -96,12 +86,23 @@ class Task implements Comparable<Task>{
 		Collections.sort(taskList);
 	}	
 	
+	protected static Task parseTaskFromString(String line) {
+		String[] tokens = line.split(DELIMITER);
+		DateTime start = (tokens[0].equals(NULL_START)) ? null : new DateTime(tokens[0]);
+		DateTime end = (tokens[1].equals(NULL_END)) ? null : new DateTime(tokens[1]);
+		String name = (tokens[2].equals(NULL_ALIAS)) ? null : tokens[2]; 
+		String desc = tokens[3];
+		
+		return new Task(desc, start, end, name);
+	}
+	
 	@Override
 	public String toString() {
 		String start = (startDateTime == null) ? NULL_START : startDateTime.toString();
 		String end = (endDateTime == null) ? NULL_END : endDateTime.toString();
+		String taskAlias = (alias == null) ? NULL_ALIAS : alias;
 		
-		return start + DELIMITER + end + DELIMITER + alias + DELIMITER + description;
+		return start + DELIMITER + end + DELIMITER + taskAlias + DELIMITER + description;
 	}
 	
 	public String toDisplayString() {
@@ -113,7 +114,7 @@ class Task implements Comparable<Task>{
 		if (endDateTime != null) {
 			display += getDateString(endDateTime);
 		}
-		if (alias != null && !alias.equals("")) {
+		if (alias != null) {
 			display += "[alias:" + alias + "]";
 		}
 		
@@ -140,6 +141,16 @@ class Task implements Comparable<Task>{
 		} else {
 			return this.description.compareToIgnoreCase(task.description);
 		}
+	}
+	
+	protected static boolean isAliasInUse(String alias) {
+		for (int i = 0; i < taskList.size(); i++) {
+			if (alias.equals(taskList.get(i).alias)) {
+				return true;
+			}
+		}
+		
+		return false;
 	}
 	
 	protected static void saveTasks() {

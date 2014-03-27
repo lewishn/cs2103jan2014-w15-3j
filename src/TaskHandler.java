@@ -27,13 +27,14 @@ class TaskHandler {
 	protected static Feedback addTask(String userInput) {
 		String[] inputTokens = userInput.split(" ");
 		ArrayList<String> input = new ArrayList<String>(Arrays.asList(inputTokens));
+		
 		String alias = CommandParser.getAliasFromDescription(userInput);
+		alias = (Task.isAliasInUse(alias)) ? null : alias;
 		userInput = CommandParser.removeDateTimeFromString(userInput);
 		userInput = CommandParser.removeAliasFromDescription(userInput);
 		
 		String[] fields = CommandParser.getTaskFields(input);
 		Task newTask = createTask(fields, userInput, alias);
-		
 		
 		
 		HistoryHandler.pushUndoStack();
@@ -167,7 +168,7 @@ class TaskHandler {
 		}
 		return stringList;
 	}
-//test
+
 	/**
 	 * Removes a task from the taskList
 	 * @param taskNumber
