@@ -1,6 +1,8 @@
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collections;
+import java.util.HashSet;
+import java.util.Set;
 import java.util.Stack;
 
 import org.joda.time.DateTime;
@@ -13,6 +15,7 @@ class TaskHandler {
 	private static final String MESSAGE_UPDATE_NO_SUCH_TASK = "Error, please enter a valid task number to update.\n";
 	private static final String MESSAGE_UPDATE_ARGUMENT_ERROR = "Error, incorrect update format.\n";
 	private static final String MESSAGE_LIST_NUMBER = "%d. %s";
+	private static final String MESSAGE_DELETE_EMPTY = "Error, please indicate a task number or alias to delete.\n";
 	private static final String MESSAGE_DELETE_ARGUMENT_ERROR = "Error, incorrect delete format.\n";
 	private static final String MESSAGE_TASK_DELETED = "\"%s\" has been deleted from the task list.\n";
 	private static final String MESSAGE_TASK_DELETED_ALL = "All tasks have been deleted from the task list.\n";
@@ -265,28 +268,55 @@ class TaskHandler {
 		int index = -1;
 		
 		if (taskID.equalsIgnoreCase("completed")) {
-			return new Feedback("Not yet implemented");
+			HistoryHandler.pushUndoStack();
+			deleteCompleted();
+			Task.saveTasks();
+			HistoryHandler.purgeRedoStack();
+			return new Feedback("All completed tasks have been deleted.\n");
+			
+		} else if (taskID.equalsIgnoreCase("all")) {
+			HistoryHandler.pushUndoStack();
+			deleteAll();
+			Task.saveTasks();
+			HistoryHandler.purgeRedoStack();
+			return new Feedback("All tasks have been deleted.\n");
 		} else {
-			if (isInteger(taskID)) {
-				index = Integer.parseInt(taskID) - 1;
-				if (isOutOfDeleteRange(index)) {
-					return new Feedback(MESSAGE_INVALID_DELETE);
-				}
-			} else if (Task.isAliasValid(taskID)) {
-				index = Task.getTaskIndexFromAlias(taskID);
-			} 
-
-			if (index == -1) {
-				return new Feedback(MESSAGE_INVALID_DELETE);
+			ArrayList<Integer> listToDelete = getListToDelete(taskID);
+			
+			if (listToDelete.size() == 0) {
+				return new Feedback("No such tasks.\n");
 			}
 			
 			HistoryHandler.pushUndoStack();
-			String deletedTask = Task.getList().get(index).getDescription();
-			Task.getList().remove(index);
+			deleteList(listToDelete);
 			Task.saveTasks();
 			HistoryHandler.purgeRedoStack();
-			return new Feedback(String.format(MESSAGE_TASK_DELETED, deletedTask), false);
+			return new Feedback("All specified tasks have been deleted.\n");
 		}
+		
+	}
+	
+	private static void deleteList(ArrayList<Integer> list) {
+		ArrayList<Task> taskList = Task.getList();
+		for (int i = 0; i < list.size(); i++) {
+			taskList.remove((int)list.get(i));
+		}
+		Task.setList(taskList);
+	}
+	
+	private static void deleteCompleted() {
+		ArrayList<Task> taskList = Task.getList();
+		
+		for (int i = 0; i < taskList.size(); i++) {
+			if (taskList.get(i).getStatus()) {
+				taskList.remove(i);
+				i--;
+			}
+		}
+	}
+	
+	private static void deleteAll() {
+		Task.setList(new ArrayList<Task>());
 	}
 	
 	private static boolean isOutOfDeleteRange(int index) {
@@ -295,6 +325,32 @@ class TaskHandler {
 		} else {
 			return true;
 		}
+	}
+	
+	private static ArrayList<Integer> getListToDelete(String list) {
+		String[] tempList = list.split("\\s+");
+		Set<Integer> deleteList = new HashSet<Integer>();
+		
+		for (int i = 0; i < tempList.length; i++) {
+			int index = -1;
+			
+			if (isInteger(tempList[i])) {
+				index = Integer.parseInt(tempList[i]) - 1;
+			} else if (Task.isAliasValid(tempList[i])) {
+				index = Task.getTaskIndexFromAlias(tempList[i]);
+			} 
+			
+			if (!isOutOfDeleteRange(index)) {
+				deleteList.add(index);
+			}
+			
+		}
+		
+		ArrayList<Integer> dList = new ArrayList<Integer>(deleteList);
+		Collections.sort(dList);
+		Collections.reverse(dList);
+		
+		return dList;
 	}
 	
 	private static boolean isInteger(String str) {

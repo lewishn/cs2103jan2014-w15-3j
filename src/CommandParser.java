@@ -125,7 +125,7 @@ class CommandParser {
 	}
 	
 	protected static String getAliasFromDescription(String desc) {
-		String[] tokens = desc.split(" ");
+		String[] tokens = desc.split("\\s+");
 		for (int i = 0; i < tokens.length; i++) {
 			if (tokens[i].contains("alias:")) {
 				return tokens[i].substring("alias:".length());

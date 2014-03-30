@@ -169,6 +169,10 @@ class Task implements Comparable<Task>{
 	}
 	
 	protected static boolean isAliasValid(String alias) {
+		if (alias == null || alias.length() == 0 || alias.equals("")) {
+			return false;
+		}
+		
 		if (getTaskIndexFromAlias(alias) < 0) {
 			return false;
 		}
