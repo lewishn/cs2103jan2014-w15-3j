@@ -7,7 +7,7 @@ class CommandParser {
 	 * @return command type portion of the input
 	 */
 	protected static String getUserCommandType(String userInput) {
-		String[] tokens = userInput.split(" ", 2);
+		String[] tokens = userInput.split("\\s+", 2);
 		return tokens[0];
 	}
 
@@ -17,7 +17,7 @@ class CommandParser {
 	 * @return description portion of the input
 	 */
 	protected static String getUserCommandDesc(String userInput) {
-		String[] tokens = userInput.split(" ", 2);
+		String[] tokens = userInput.split("\\s+", 2);
 		if (tokens.length < 2) {
 			return null;
 		}
@@ -30,9 +30,13 @@ class CommandParser {
 	 * @param userInput
 	 * @return true if the command is at least 2 words long, false otherwise
 	 */
-	protected static boolean isValidCommand(String userInput) {
-		String[] tokens = userInput.split(" ", 2);
-		return tokens.length == 2;
+	protected static boolean isInputValid(String userInput, int length) {
+		if (userInput == null || userInput.length() == 0 || userInput.equals("")) {
+			return false;
+		}
+		
+		String[] tokens = userInput.split("\\s+");
+		return tokens.length >= length;
 	}
 	
 	/**
@@ -94,7 +98,7 @@ class CommandParser {
 	}
 	
 	protected static String removeDateTimeFromString(String s) {
-		String[] tokens = s.split(" ");
+		String[] tokens = s.split("\\s+");
 		
 		for(int i = 0; i < tokens.length; i++) {
 			if (DateParser.isDate(tokens[i]) || TimeParser.isTime(tokens[i])) {
@@ -110,7 +114,7 @@ class CommandParser {
 	}
 	
 	protected static String removeAliasFromDescription(String desc) {
-		String[] tokens = desc.split(" ");
+		String[] tokens = desc.split("\\s+");
 		for (int i = 0; i < tokens.length; i++) {
 			if (tokens[i].contains("alias:")) {
 				tokens[i] = null;
@@ -132,7 +136,7 @@ class CommandParser {
 	}
 	
 	private static boolean isDateTimeIdentifier(String s) {
-		String[] identifierList = {"at", "@", "by", "from", "to", "on", "before", "until", "end", "start", "-", ","};
+		String[] identifierList = {"at", "@", "by", "from", "for", "to", "on", "before", "until", "end", "start", "-", ","};
 		
 		if (s == null)
 			return false;
@@ -154,6 +158,7 @@ class CommandParser {
 				r = r + s[i] + " ";
 			}
 		}
-		return r;
+		
+		return r.trim();
 	}
 }

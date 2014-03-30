@@ -5,24 +5,15 @@ public class MainLogic{
 	private static final String MESSAGE_INVALID = "Invalid command! Please try again.";
 	
 	private static final String DEFAULT_ADD = "add";
-	private static final String DEFAULT_ADD2 = "+";
 	private static final String DEFAULT_UPDATE = "update";
-	private static final String DEFAULT_UPDATE2 = "edit";
 	private static final String DEFAULT_DELETE = "delete";
-	private static final String DEFAULT_DELETE2 = "remove";
 	private static final String DEFAULT_LIST = "list";
-	private static final String DEFAULT_LIST2 = "display";
 	private static final String DEFAULT_UNDO = "undo";
-	private static final String DEFAULT_UNDO2 = "un";
 	private static final String DEFAULT_REDO = "redo";
-	private static final String DEFAULT_REDO2 = "re";
 	private static final String DEFAULT_CUSTOM = "custom";
-	private static final String DEFAULT_CUSTOM2 = "cc";
 	private static final String DEFAULT_DELETE_CUSTOM = "dcustom";
-	private static final String DEFAULT_DELETE_CUSTOM2 = "dc";
 	private static final String DEFAULT_HELP = "help";
 	private static final String DEFAULT_SEARCH = "search";
-	private static final String DEFAULT_SEARCH2 = "find";
 	private static final String DEFAULT_EXIT = "exit";
 	
 	private enum CommandType {
@@ -36,27 +27,27 @@ public class MainLogic{
 	 */
 	private static CommandType getCommandType(String com) {
 		
-		if (com.equals(DEFAULT_ADD) || com.equals(DEFAULT_ADD2) || CustomCommandHandler.isCustomCommand(com, CustomCommandHandler.HEADER_ADD)) {
+		if (com.equals(DEFAULT_ADD) || CustomCommandHandler.isCustomCommand(com, CustomCommandHandler.HEADER_ADD)) {
 			return CommandType.ADD;
-		} else if (com.equals(DEFAULT_LIST) || com.equals(DEFAULT_LIST2) || CustomCommandHandler.isCustomCommand(com, CustomCommandHandler.HEADER_READ)) {
+		} else if (com.equals(DEFAULT_LIST) || CustomCommandHandler.isCustomCommand(com, CustomCommandHandler.HEADER_READ)) {
 			return CommandType.LIST;
-		} else if (com.equals(DEFAULT_UPDATE) || com.equals(DEFAULT_UPDATE2) || CustomCommandHandler.isCustomCommand(com, CustomCommandHandler.HEADER_UPDATE)) {
+		} else if (com.equals(DEFAULT_UPDATE) || CustomCommandHandler.isCustomCommand(com, CustomCommandHandler.HEADER_UPDATE)) {
 			return CommandType.UPDATE;
-		} else if (com.equals(DEFAULT_DELETE) || com.equals(DEFAULT_DELETE2) || CustomCommandHandler.isCustomCommand(com, CustomCommandHandler.HEADER_DELETE)) {
+		} else if (com.equals(DEFAULT_DELETE) || CustomCommandHandler.isCustomCommand(com, CustomCommandHandler.HEADER_DELETE)) {
 			return CommandType.DELETE;
-		} else if (com.equals(DEFAULT_UNDO) || com.equals(DEFAULT_UNDO2) || CustomCommandHandler.isCustomCommand(com, CustomCommandHandler.HEADER_UNDO)) {
+		} else if (com.equals(DEFAULT_UNDO) || CustomCommandHandler.isCustomCommand(com, CustomCommandHandler.HEADER_UNDO)) {
 			return CommandType.UNDO;
-		} else if (com.equals(DEFAULT_REDO) || com.equals(DEFAULT_REDO2) || CustomCommandHandler.isCustomCommand(com, CustomCommandHandler.HEADER_REDO)) {
+		} else if (com.equals(DEFAULT_REDO) || CustomCommandHandler.isCustomCommand(com, CustomCommandHandler.HEADER_REDO)) {
 			return CommandType.REDO;
-		} else if (com.equals(DEFAULT_CUSTOM) || com.equals(DEFAULT_CUSTOM2) || CustomCommandHandler.isCustomCommand(com, CustomCommandHandler.HEADER_CUSTOM)) {
+		} else if (com.equals(DEFAULT_CUSTOM) || CustomCommandHandler.isCustomCommand(com, CustomCommandHandler.HEADER_CUSTOM)) {
 			return CommandType.CUSTOM;
-		} else if (com.equals(DEFAULT_DELETE_CUSTOM) || com.equals(DEFAULT_DELETE_CUSTOM2) || CustomCommandHandler.isCustomCommand(com, CustomCommandHandler.HEADER_DELETE_CUSTOM)) {
+		} else if (com.equals(DEFAULT_DELETE_CUSTOM) || CustomCommandHandler.isCustomCommand(com, CustomCommandHandler.HEADER_DELETE_CUSTOM)) {
 			return CommandType.DELETE_CUSTOM;
 		} else if (com.equals(DEFAULT_HELP) || CustomCommandHandler.isCustomCommand(com, CustomCommandHandler.HEADER_HELP)) {
 			return CommandType.HELP;
 		} else if (com.equals(DEFAULT_EXIT) || CustomCommandHandler.isCustomCommand(com, CustomCommandHandler.HEADER_EXIT)) {
 			return CommandType.EXIT;
-		} else if (com.equals(DEFAULT_SEARCH) || com.equals(DEFAULT_SEARCH2) || CustomCommandHandler.isCustomCommand(com, CustomCommandHandler.HEADER_SEARCH)) {
+		} else if (com.equals(DEFAULT_SEARCH) || CustomCommandHandler.isCustomCommand(com, CustomCommandHandler.HEADER_SEARCH)) {
 			return CommandType.SEARCH;
 		} else {
 			return CommandType.INVALID;
@@ -130,6 +121,7 @@ public class MainLogic{
 		switch (commandType) {
 			case ADD:
 				return CustomCommandHandler.HEADER_ADD;
+				
 			case LIST:
 				return CustomCommandHandler.HEADER_READ;
 				
@@ -164,16 +156,17 @@ public class MainLogic{
 	
 	protected static boolean isDefaultCommand(String s) {
 		String[] defaultCommandList = {
-				DEFAULT_ADD, DEFAULT_ADD2, 
-				DEFAULT_UPDATE, DEFAULT_UPDATE2,
-				DEFAULT_DELETE, DEFAULT_DELETE2,
-				DEFAULT_LIST, DEFAULT_LIST2,
-				DEFAULT_UNDO, DEFAULT_UNDO2,
-				DEFAULT_REDO, DEFAULT_REDO2,
-				DEFAULT_CUSTOM, DEFAULT_CUSTOM2,
-				DEFAULT_DELETE_CUSTOM, DEFAULT_DELETE_CUSTOM2, 
-				DEFAULT_SEARCH, DEFAULT_SEARCH2,
-				DEFAULT_HELP, DEFAULT_EXIT
+				DEFAULT_ADD,
+				DEFAULT_UPDATE,
+				DEFAULT_DELETE,
+				DEFAULT_LIST,
+				DEFAULT_UNDO,
+				DEFAULT_REDO,
+				DEFAULT_CUSTOM,
+				DEFAULT_DELETE_CUSTOM,  
+				DEFAULT_SEARCH,
+				DEFAULT_HELP, 
+				DEFAULT_EXIT
 		};
 		
 		for (int i = 0; i < defaultCommandList.length; i++) {

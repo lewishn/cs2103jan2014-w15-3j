@@ -168,10 +168,14 @@ class Task implements Comparable<Task>{
 		}
 	}
 	
-	protected static boolean isAliasInUse(String alias) {
-		if (getTaskIndexFromAlias(alias) == -1) {
+	protected static boolean isAliasValid(String alias) {
+		if (getTaskIndexFromAlias(alias) < 0) {
 			return false;
 		}
+		if (alias.equalsIgnoreCase("completed") || alias.equalsIgnoreCase("all")) {
+			return false;
+		}
+		
 		
 		return true;
 	}

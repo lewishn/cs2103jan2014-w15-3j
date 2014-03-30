@@ -50,7 +50,7 @@ class CustomCommandHandler {
 	 */
 	protected static Feedback addCustomCommand(String userCommand, String commandType) {
 		// if user inputs a white space between two or more words, take only the first
-		userCommand = userCommand.split(" ")[0];
+		userCommand = userCommand.split("\\s+")[0];
 		
 		if (isDuplicateCommand(userCommand) || MainLogic.isDefaultCommand(userCommand)) {
 			return new Feedback(MESSAGE_CUSTOM_DUPLICATE, false);

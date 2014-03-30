@@ -6,15 +6,17 @@ import java.util.Stack;
 import org.joda.time.DateTime;
 
 class TaskHandler {
-	private static final String MESSAGE_ADDED_TASK = "Added \"%s\".";
-	private static final String MESSAGE_EMPTY_TASKS = "You have no tasks scheduled.";
-	private static final String MESSAGE_UPDATE_TASK = "Task has been updated";
-	private static final String MESSAGE_UPDATE_FAIL = "Error, please enter a valid task number to update";
+	private static final String MESSAGE_ADD_EMPTY = "Error, please add a task description.\n";
+	private static final String MESSAGE_ADDED_TASK = "Added \"%s\".\n";
+	private static final String MESSAGE_EMPTY_TASKS = "You have no tasks scheduled.\n";
+	private static final String MESSAGE_UPDATE_TASK = "Task has been updated.\n";
+	private static final String MESSAGE_UPDATE_NO_SUCH_TASK = "Error, please enter a valid task number to update.\n";
+	private static final String MESSAGE_UPDATE_ARGUMENT_ERROR = "Error, incorrect update format.\n";
 	private static final String MESSAGE_LIST_NUMBER = "%d. %s";
-	private static final String MESSAGE_TASK_DELETED = "\"%s\" has been deleted from the task list.";
-	private static final String MESSAGE_TASK_DELETED_ALL = "All tasks have been deleted from the task list.";
-	private static final String MESSAGE_INVALID_DELETE = "No such task, please enter a valid number to delete.";
-	private static final String MESSAGE_DISPLAY_HEADER = "[No.][Start Time][End Time][Task Description]";
+	private static final String MESSAGE_DELETE_ARGUMENT_ERROR = "Error, incorrect delete format.\n";
+	private static final String MESSAGE_TASK_DELETED = "\"%s\" has been deleted from the task list.\n";
+	private static final String MESSAGE_TASK_DELETED_ALL = "All tasks have been deleted from the task list.\n";
+	private static final String MESSAGE_INVALID_DELETE = "No such task, please enter a valid number to delete.\n";
 	
 	private static final String MINUTE_LAST = "23:59";
 	private static final String MINUTE_FIRST = "00:00";
@@ -25,6 +27,10 @@ class TaskHandler {
 	 * @return a Feedback object to be shown to the user
 	 */
 	protected static Feedback addTask(String userInput) {
+		if (!CommandParser.isInputValid(userInput, 1)) {
+			return new Feedback(MESSAGE_ADD_EMPTY);
+		}
+		
 		Task newTask = createTask(userInput);
 		
 		HistoryHandler.pushUndoStack();
@@ -32,16 +38,16 @@ class TaskHandler {
 		Task.sortList();
 		Task.saveTasks();
 		HistoryHandler.purgeRedoStack();
-		return new Feedback(String.format(MESSAGE_ADDED_TASK, userInput) + "\n", false);
+		return new Feedback(String.format(MESSAGE_ADDED_TASK, userInput));
 	}
 	
 	
 	protected static Task createTask(String userInput) {
-		String[] inputTokens = userInput.split(" ");
+		String[] inputTokens = userInput.split("\\s+");
 		ArrayList<String> input = new ArrayList<String>(Arrays.asList(inputTokens));
 		
 		String alias = CommandParser.getAliasFromDescription(userInput);		
-		alias = (Task.isAliasInUse(alias) || isInteger(alias)) ? null : alias;
+		alias = (Task.isAliasValid(alias) || isInteger(alias)) ? null : alias;
 		userInput = CommandParser.removeDateTimeFromString(userInput);
 		userInput = CommandParser.removeAliasFromDescription(userInput);
 		
@@ -120,6 +126,10 @@ class TaskHandler {
 	 * @return a Feedback object to be shown to the user
 	 */
 	protected static Feedback updateTask(String update) {	
+		if (!CommandParser.isInputValid(update, 2)) {
+			return new Feedback(MESSAGE_UPDATE_ARGUMENT_ERROR);
+		}
+		
 		String taskID = CommandParser.getUserCommandType(update);
 		String updateStringWithoutID = CommandParser.getUserCommandDesc(update);
 		String updateField = CommandParser.getUserCommandType(updateStringWithoutID);
@@ -128,25 +138,37 @@ class TaskHandler {
 		Task taskToUpdate = getTaskToUpdate(taskID);
 		
 		if (taskToUpdate == null) {
-			return new Feedback(MESSAGE_UPDATE_FAIL, false);
+			return new Feedback(MESSAGE_UPDATE_NO_SUCH_TASK);
 		}
 		
 		if (updateField.equalsIgnoreCase("start") || updateField.equalsIgnoreCase("end") || updateField.equalsIgnoreCase("time")) {
+			if (!CommandParser.isInputValid(updateDesc, 1)) {
+				return new Feedback(MESSAGE_UPDATE_ARGUMENT_ERROR);
+			}
 			taskToUpdate = updateTaskTime(taskToUpdate, updateField, updateDesc);
+			
 		} else if (updateField.equals("alias")) {
-			String[] tokens = updateDesc.split(" ");
+			String[] tokens = updateDesc.split("\\s+");
 			if (tokens.length <= 0) {
-				return new Feedback("Invalid alias", false);
+				// since the task is previously removed, it needs to be put back in in the event of an error
+				Task.getList().add(taskToUpdate);
+				return new Feedback("Invalid alias");
 			}
 			
 			String alias = tokens[0];	
-			if (Task.isAliasInUse(alias) || isInteger(alias)) {
-				return new Feedback("Alias is already in use", false);
+			if (Task.isAliasValid(alias) || isInteger(alias)) {
+				Task.getList().add(taskToUpdate);
+				return new Feedback("Alias is already in use");
+			
 			} else {
 				taskToUpdate.setAlias(alias);
 			}
 			
 		} else if (updateField.equals("desc") || updateField.equals("description")) {
+			if (!CommandParser.isInputValid(updateDesc, 1)) {
+				return new Feedback(MESSAGE_UPDATE_ARGUMENT_ERROR);
+			}
+			
 			taskToUpdate.setDescription(updateDesc);
 		} else {
 			taskToUpdate = createTask(updateStringWithoutID);
@@ -155,11 +177,11 @@ class TaskHandler {
 		Task.getList().add(taskToUpdate);
 		Task.sortList();
 		Task.saveTasks();
-		return new Feedback(MESSAGE_UPDATE_TASK + "\n", false);
+		return new Feedback(MESSAGE_UPDATE_TASK);
 	}
 	
 	private static Task updateTaskTime(Task task, String field, String update) {
-		ArrayList<String> updateTokens = new ArrayList<String>(Arrays.asList(update.split(" ")));
+		ArrayList<String> updateTokens = new ArrayList<String>(Arrays.asList(update.split("\\s+")));
 		String[] timeFields = CommandParser.getTaskFields(updateTokens);
 		
 		if (field.equalsIgnoreCase("time")) {
@@ -191,52 +213,21 @@ class TaskHandler {
 		Task taskToUpdate = null;
 		int index = -1;
 		
-		if(isInteger(taskID)) {
+		if (isInteger(taskID)) {
 			index = Integer.parseInt(taskID) - 1;
-		} else if (Task.isAliasInUse(taskID)) {
+		} else if (Task.isAliasValid(taskID)) {
 			index = Task.getTaskIndexFromAlias(taskID);
 		}
 		
-		assert(index >= 0);
+		if (index < 0 || index >= Task.getList().size()) {
+			return null;
+		}
+		
+		
 		taskToUpdate = Task.getList().get(index);
 		Task.getList().remove(index);
 		
 		return taskToUpdate;
-	}
-	
-	protected static Feedback updateTask2(String update) {
-		String updateNumber = CommandParser.getUserCommandType(update);
-		String updateDesc = CommandParser.getUserCommandDesc(update);
-		String updateField = CommandParser.getUserCommandType(updateDesc);
-		System.out.println(updateDesc);
-		
-		
-		if (isInteger(updateNumber)) {
-			Integer index = Integer.parseInt(updateNumber);
-			HistoryHandler.pushUndoStack();
-			Task updatedTask = Task.getList().get(index-1);
-			Task.getList().remove(index - 1);
-			if (updateField.equals("start")) {
-				DateTime start = DateParser.setDate(updateDesc);
-				start = TimeParser.setTime(start, updateDesc);
-				updatedTask.setStartDateTime(start);
-			
-			} else if (updateField.equals("end")) {
-				DateTime end = DateParser.setDate(updateDesc);
-				end = TimeParser.setTime(end, updateDesc);
-				updatedTask.setEndDateTime(end);
-			
-			} else {
-				updatedTask = new Task(updateDesc, updatedTask.getStartDateTime(), updatedTask.getEndDateTime(), null);
-			}
-			
-			Task.getList().add(updatedTask);
-			Task.sortList();
-			Task.saveTasks();
-			return new Feedback(MESSAGE_UPDATE_TASK + "\n", false);
-		}
-		
-		return new Feedback(MESSAGE_UPDATE_FAIL + "\n", false);
 	}
 	
 	/**
@@ -246,7 +237,7 @@ class TaskHandler {
 	protected static Feedback listTasks() {
 		Task.sortList();
 		if (Task.getList().isEmpty()) {
-			return new Feedback(MESSAGE_EMPTY_TASKS + "\n", false);
+			return new Feedback(MESSAGE_EMPTY_TASKS);
 		} else {
 			return new Feedback(getListOfTasks(), false);
 		}
@@ -254,7 +245,7 @@ class TaskHandler {
 	
 	private static String getListOfTasks() {
 		ArrayList<Task> list = Task.loadTasks();
-		String stringList = MESSAGE_DISPLAY_HEADER + "\n";
+		String stringList = "";
 		for (int i = 1; i <= list.size(); i++) {
 			stringList += String.format(MESSAGE_LIST_NUMBER, i, list.get(i-1).toDisplayString()) + "\n";
 		}
@@ -263,26 +254,39 @@ class TaskHandler {
 
 	/**
 	 * Removes a task from the taskList
-	 * @param taskNumber
+	 * @param taskID
 	 * @return a Feedback object to be shown to the user
 	 */
-	protected static Feedback deleteTask(String taskNumber) {
+	protected static Feedback deleteTask(String taskID) {
+		if (!CommandParser.isInputValid(taskID, 1)) {
+			return new Feedback(MESSAGE_DELETE_ARGUMENT_ERROR);
+		}
 		
-		if(isInteger(taskNumber)) {
-			int rowToDelete = Integer.parseInt(taskNumber) - 1;
-			if (isOutOfDeleteRange(rowToDelete)) {
-				return new Feedback(MESSAGE_INVALID_DELETE + "\n", false);
-			}
+		int index = -1;
+		
+		if (taskID.equalsIgnoreCase("completed")) {
+			return new Feedback("Not yet implemented");
+		} else {
+			if (isInteger(taskID)) {
+				index = Integer.parseInt(taskID) - 1;
+				if (isOutOfDeleteRange(index)) {
+					return new Feedback(MESSAGE_INVALID_DELETE);
+				}
+			} else if (Task.isAliasValid(taskID)) {
+				index = Task.getTaskIndexFromAlias(taskID);
+			} 
 
+			if (index == -1) {
+				return new Feedback(MESSAGE_INVALID_DELETE);
+			}
+			
 			HistoryHandler.pushUndoStack();
-			String deletedTask = Task.getList().get(rowToDelete).getDescription();
-			Task.getList().remove(rowToDelete);
+			String deletedTask = Task.getList().get(index).getDescription();
+			Task.getList().remove(index);
 			Task.saveTasks();
 			HistoryHandler.purgeRedoStack();
-			return new Feedback(String.format(MESSAGE_TASK_DELETED, deletedTask) + "\n", false);
+			return new Feedback(String.format(MESSAGE_TASK_DELETED, deletedTask), false);
 		}
-			
-		return new Feedback(MESSAGE_INVALID_DELETE, false);
 	}
 	
 	private static boolean isOutOfDeleteRange(int index) {
@@ -303,11 +307,5 @@ class TaskHandler {
 	}
 	
 	//search
-	
-	//test functions
-	public static String testAdd(String command) {
-		ArrayList<Task> list= new ArrayList<Task>();		
-		return addTask(command).toString();
-	}
 		
 }
