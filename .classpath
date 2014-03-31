@@ -4,5 +4,8 @@
 	<classpathentry kind="con" path="org.eclipse.jdt.launching.JRE_CONTAINER/org.eclipse.jdt.internal.debug.ui.launcher.StandardVMType/JavaSE-1.7"/>
 	<classpathentry kind="lib" path="libs/joda-time-2.3.jar"/>
 	<classpathentry kind="con" path="org.eclipse.jdt.junit.JUNIT_CONTAINER/4"/>
+	<classpathentry kind="lib" path="X:/Program Files/eclipse/plugins/org.eclipse.ui.forms_3.6.1.v20130822-1117.jar" sourcepath="X:/Program Files/eclipse/plugins/org.eclipse.ui.forms.source_3.6.1.v20130822-1117.jar"/>
+	<classpathentry kind="lib" path="X:/Program Files/eclipse/plugins/org.eclipse.swt.win32.win32.x86_64_3.102.1.v20130827-2048.jar" sourcepath="X:/Program Files/eclipse/plugins/org.eclipse.swt.win32.win32.x86_64.source_3.102.1.v20130827-2048.jar"/>
+	<classpathentry kind="lib" path="X:/Program Files/eclipse/plugins/org.eclipse.jface.text_3.8.101.v20130802-1147.jar" sourcepath="X:/Program Files/eclipse/plugins/org.eclipse.jface.text.source_3.8.101.v20130802-1147.jar"/>
 	<classpathentry kind="output" path="bin"/>
 </classpath>
