@@ -2,7 +2,7 @@ import java.util.ArrayList;
 
 public class MainLogic{
 	private static final String MESSAGE_EXIT = "Exiting...";
-	private static final String MESSAGE_INVALID = "Invalid command! Please try again.";
+	private static final String MESSAGE_INVALID = "Invalid command! Please try again.\n";
 	
 	private static final String DEFAULT_ADD = "add";
 	private static final String DEFAULT_UPDATE = "update";
@@ -83,7 +83,15 @@ public class MainLogic{
 				//
 				
 			case CUSTOM:
+				if (!CommandParser.isInputValid(commandDesc, 2)) {
+					return new Feedback("Invalid custom command format");
+				}
+				
 				String type = getCustomHeader(commandDesc);
+				
+				if (type == null) {
+					return new Feedback("Invalid custom command format");
+				}
 				String customToBeAdded = CommandParser.getUserCommandDesc(commandDesc);
 				return CustomCommandHandler.addCustomCommand(customToBeAdded, type);
 				
@@ -104,7 +112,7 @@ public class MainLogic{
 				return new Feedback(MESSAGE_EXIT + "\n", true);
 				
 			default:
-				return new Feedback(MESSAGE_INVALID + "\n", false);
+				return new Feedback(MESSAGE_INVALID);
 		}
 	}
 	

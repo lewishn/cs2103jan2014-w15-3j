@@ -9,10 +9,10 @@ public class HistoryHandler {
 	private static final int MAXIMUM_UNDO_STEPS = 1000;
 	private static final int MAXIMUM_SAVE_STACK_SIZE = 10;
 	
-	private static final String UNDO_SUCCESS = "Undo successful!";
-	private static final String UNDO_FAIL = "Nothing left to undo.";
-	private static final String REDO_SUCCESS = "Redo successful!";
-	private static final String REDO_FAIL = "Nothing left to redo.";
+	private static final String UNDO_SUCCESS = "Undo successful!\n";
+	private static final String UNDO_FAIL = "Nothing left to undo.\n";
+	private static final String REDO_SUCCESS = "Redo successful!\n";
+	private static final String REDO_FAIL = "Nothing left to redo.\n";
 	
 	private static ArrayDeque<ArrayList<Task>> taskUndoStack = loadUndoStack();
 	private static ArrayDeque<ArrayList<Task>> taskRedoStack = new ArrayDeque<ArrayList<Task>>();
@@ -25,9 +25,9 @@ public class HistoryHandler {
 		boolean tryUndo = popUndoStack();
 		if(tryUndo) {
 			Task.saveTasks();
-			return new Feedback(UNDO_SUCCESS + "\n", false);
+			return new Feedback(UNDO_SUCCESS);
 		} else {
-			return new Feedback(UNDO_FAIL + "\n", false);
+			return new Feedback(UNDO_FAIL);
 		}
 	}
 	
@@ -35,9 +35,9 @@ public class HistoryHandler {
 		boolean tryRedo = popRedoStack();
 		if(tryRedo) {
 			Task.saveTasks();
-			return new Feedback(REDO_SUCCESS + "\n", false);
+			return new Feedback(REDO_SUCCESS);
 		} else {
-			return new Feedback(REDO_FAIL + "\n", false);
+			return new Feedback(REDO_FAIL);
 		}
 	}
 

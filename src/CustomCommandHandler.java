@@ -6,7 +6,7 @@ class CustomCommandHandler {
 	private static final String FILE_CUSTOM = "custom.txt";
 	
 	protected static final String HEADER_ADD = "[ADD]";
-	protected static final String HEADER_READ = "[READ]";
+	protected static final String HEADER_READ = "[LIST]";
 	protected static final String HEADER_UPDATE = "[UPDATE]";
 	protected static final String HEADER_DELETE = "[DELETE]";
 	protected static final String HEADER_SEARCH = "[SEARCH]";
@@ -53,10 +53,7 @@ class CustomCommandHandler {
 		userCommand = userCommand.split("\\s+")[0];
 		
 		if (isDuplicateCommand(userCommand) || MainLogic.isDefaultCommand(userCommand)) {
-			return new Feedback(MESSAGE_CUSTOM_DUPLICATE, false);
-		}
-		if (isWhiteSpace(userCommand)){
-			return new Feedback(MESSAGE_CUSTOM_WHITESPACE, false);
+			return new Feedback(MESSAGE_CUSTOM_DUPLICATE);
 		}
 		
 		HistoryHandler.pushUndoStack();
@@ -104,17 +101,6 @@ class CustomCommandHandler {
 				return true;
 			}
 		}
-		return false;
-	}
-	
-	private static boolean isWhiteSpace(String str) {
-		if (str == null || str.equals("") || str.length() == 0) {
-			return true;
-		}
-		if (str.equals("\n") || str.equals("\t")) {
-			return true;
-		}
-		
 		return false;
 	}
 	

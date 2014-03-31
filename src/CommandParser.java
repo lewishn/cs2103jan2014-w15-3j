@@ -7,7 +7,7 @@ class CommandParser {
 	 * @return command type portion of the input
 	 */
 	protected static String getUserCommandType(String userInput) {
-		String[] tokens = userInput.split("\\s+", 2);
+		String[] tokens = userInput.split("\\s+");
 		return tokens[0];
 	}
 
