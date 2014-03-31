@@ -6,7 +6,7 @@ import java.util.Stack;
 public class HistoryHandler {
 	private static final String FILE_UNDO = "undo.txt";
 	private static final String DELIMITER = "!@#$%^&*()";
-	private static final int MAXIMUM_UNDO_STEPS = 1000;
+	private static final int MAXIMUM_UNDO_STEPS = 100;
 	private static final int MAXIMUM_SAVE_STACK_SIZE = 10;
 	
 	private static final String UNDO_SUCCESS = "Undo successful!\n";

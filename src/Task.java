@@ -17,10 +17,9 @@ class Task implements Comparable<Task>{
 	protected static final int TASK_FIELD_SIZE = 4;
 	
 	private static final String DELIMITER = " ~~ ";
-	private static final String TAG_IDENTIFIER = "#";
-	private static final String NULL_START = "no_start_time";
-	private static final String NULL_END = "no_end_time";
-	private static final String NULL_ALIAS = "no_alias";
+	private static final String NULL_START = "NO_START_TIME";
+	private static final String NULL_END = "NO_END_TIME";
+	private static final String NULL_ALIAS = "NO_ALIAS";
 	
 	private static ArrayList<Task> taskList = loadTasks();
 	

@@ -14,7 +14,7 @@ class TaskHandler {
 	private static final String MESSAGE_UPDATE_TASK = "Task has been updated.\n";
 	private static final String MESSAGE_UPDATE_NO_SUCH_TASK = "Error, please enter a valid task number to update.\n";
 	private static final String MESSAGE_UPDATE_ARGUMENT_ERROR = "Error, incorrect update format.\n";
-	private static final String MESSAGE_LIST_NUMBER = "%d. %s";
+	private static final String MESSAGE_LIST_NUMBER = "%d. %s\n";
 	private static final String MESSAGE_DELETE_EMPTY = "Error, please indicate a task number or alias to delete.\n";
 	private static final String MESSAGE_DELETE_ARGUMENT_ERROR = "Error, incorrect delete format.\n";
 	private static final String MESSAGE_TASK_DELETED = "\"%s\" has been deleted from the task list.\n";
@@ -23,6 +23,9 @@ class TaskHandler {
 	
 	private static final String MINUTE_LAST = "23:59";
 	private static final String MINUTE_FIRST = "00:00";
+	
+	
+	//////////ADD Functionality//////////
 	
 	/**
 	 * Add a task using the user input
@@ -121,6 +124,9 @@ class TaskHandler {
 
 		return new Task(input, start, end, alias);
 	}
+	
+	
+	//////////UPDATE Functionality//////////
 	
 	/**
 	 * Updates a task in the specified field
@@ -233,28 +239,122 @@ class TaskHandler {
 		return taskToUpdate;
 	}
 	
+	
+	//////////READ Functionality//////////
+	
+	protected static Feedback listTasks(String userInput) {
+		Task.sortList();
+		ArrayList<Task> taskList = Task.getList();
+		ArrayList<Integer> numberList;
+		
+		if (userInput == null) {
+			numberList = getListOfAllTasks();
+		} else {
+			if (userInput.equals("incomplete")) {
+				numberList = getListOfTaskWithStatus(false);
+			} else if (userInput.equals("completed")) {
+				numberList = getListOfTaskWithStatus(true);
+			} else if (userInput.equals("overdue")) {
+				numberList = getListOfOverdueTask();
+			} else if (DateParser.isDate(userInput)) {
+				numberList = getListOfTaskWithDate(userInput);
+			} else {
+				numberList = getListOfAllTasks();
+			}
+		}
+		
+		if (numberList.size() == 0) {
+			return new Feedback(MESSAGE_EMPTY_TASKS);
+		}
+		
+		String feedback = "";
+		for (int i = 0; i < numberList.size(); i++) {
+			int index = (int) numberList.get(i);
+			feedback = feedback + String.format(MESSAGE_LIST_NUMBER, index, taskList.get(i).toDisplayString());
+		}
+		return new Feedback(feedback);
+	}
+	
 	/**
 	 * Displays all the tasks in order of date
 	 * @return a Feedback Object to be shown to the user
 	 */
-	protected static Feedback listTasks() {
-		Task.sortList();
-		if (Task.getList().isEmpty()) {
-			return new Feedback(MESSAGE_EMPTY_TASKS);
-		} else {
-			return new Feedback(getListOfTasks(), false);
+	private static ArrayList<Integer> getListOfAllTasks() {
+		ArrayList<Integer> numberList = new ArrayList<Integer>();
+		if (!Task.getList().isEmpty()) {
+			for (int i = 0; i < Task.getList().size(); i++) {
+				numberList.add(i);
+			}
 		}
+		return numberList;
 	}
 	
-	private static String getListOfTasks() {
+	private static ArrayList<Integer> getListOfTaskWithStatus(boolean completed) {
 		ArrayList<Task> list = Task.loadTasks();
-		String stringList = "";
-		for (int i = 1; i <= list.size(); i++) {
-			stringList += String.format(MESSAGE_LIST_NUMBER, i, list.get(i-1).toDisplayString()) + "\n";
+		ArrayList<Integer> numberList = new ArrayList<Integer>();
+		
+		for (int i = 0; i < list.size(); i++) {
+			if (list.get(i).getStatus() == completed) {
+				numberList.add(i);
+			}
 		}
-		return stringList;
+		
+		return numberList;
 	}
-
+	
+	private static ArrayList<Integer> getListOfOverdueTask() {
+		ArrayList<Task> list = Task.loadTasks();
+		ArrayList<Integer> numberList = new ArrayList<Integer>();
+		
+		for (int i = 0; i < list.size(); i++) {
+			DateTime start = list.get(i).getStartDateTime();
+			DateTime end = list.get(i).getEndDateTime();
+			
+			if (start != null && end != null) { 
+				if (start.isBeforeNow() || end.isBeforeNow() && list.get(i).getStatus() == false) {
+					numberList.add(i);
+				} 
+			} else if (start != null && start.isBeforeNow() && list.get(i).getStatus() == false) {
+					numberList.add(i);
+			} else if (end != null && end.isBeforeNow() && list.get(i).getStatus() == false) {
+					numberList.add(i);
+			}
+		}
+		
+		return numberList;
+	}
+	
+	private static ArrayList<Integer> getListOfTaskWithDate(String input) {
+		DateTime date = DateParser.setDate(input);
+		
+		ArrayList<Task> list = Task.loadTasks();
+		ArrayList<Integer> numberList = new ArrayList<Integer>();
+		
+		for (int i = 0; i < list.size(); i++) {
+			DateTime start = list.get(i).getStartDateTime();
+			DateTime end = list.get(i).getEndDateTime();
+			
+			if (start != null && end != null) { 
+				if (DateParser.isSameDate(start, date) || DateParser.isSameDate(end, date)) {
+					numberList.add(i);
+				} 
+			} else if (start != null) {
+				if (DateParser.isSameDate(start, date)) {
+					numberList.add(i);
+				}
+			} else if (end != null) {
+				if (DateParser.isSameDate(end, date)) {
+					numberList.add(i);
+				}
+			}
+			
+		}
+		
+		return numberList;
+	}
+	
+	//////////DELETE Functionality//////////
+	
 	/**
 	 * Removes a task from the taskList
 	 * @param taskID
@@ -264,8 +364,6 @@ class TaskHandler {
 		if (!CommandParser.isInputValid(taskID, 1)) {
 			return new Feedback(MESSAGE_DELETE_ARGUMENT_ERROR);
 		}
-		
-		int index = -1;
 		
 		if (taskID.equalsIgnoreCase("completed")) {
 			HistoryHandler.pushUndoStack();

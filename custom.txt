@@ -1,1 +1,2 @@
-[READ] display 
+[ADD] new + insert 
+[LIST] display 

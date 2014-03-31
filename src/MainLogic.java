@@ -70,7 +70,7 @@ public class MainLogic{
 				return TaskHandler.addTask(commandDesc);
 				
 			case LIST:
-				return TaskHandler.listTasks();
+				return TaskHandler.listTasks(commandDesc);
 				
 			case UPDATE:
 				return TaskHandler.updateTask(commandDesc);	
