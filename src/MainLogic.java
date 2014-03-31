@@ -12,12 +12,13 @@ public class MainLogic{
 	private static final String DEFAULT_REDO = "redo";
 	private static final String DEFAULT_CUSTOM = "custom";
 	private static final String DEFAULT_DELETE_CUSTOM = "dcustom";
+	private static final String DEFAULT_MARK = "mark";
 	private static final String DEFAULT_HELP = "help";
 	private static final String DEFAULT_SEARCH = "search";
 	private static final String DEFAULT_EXIT = "exit";
 	
 	private enum CommandType {
-		ADD, DELETE, UPDATE, LIST, UNDO, REDO, SEARCH, CUSTOM, DELETE_CUSTOM, HELP, EXIT, INVALID;
+		ADD, DELETE, UPDATE, LIST, UNDO, REDO, SEARCH, CUSTOM, DELETE_CUSTOM, MARK, HELP, EXIT, INVALID;
 	}	
 
 	/**
@@ -49,6 +50,8 @@ public class MainLogic{
 			return CommandType.EXIT;
 		} else if (com.equals(DEFAULT_SEARCH) || CustomCommandHandler.isCustomCommand(com, CustomCommandHandler.HEADER_SEARCH)) {
 			return CommandType.SEARCH;
+		} else if (com.equals(DEFAULT_MARK) || CustomCommandHandler.isCustomCommand(com, CustomCommandHandler.HEADER_MARK)) {
+			return CommandType.MARK;
 		} else {
 			return CommandType.INVALID;
 		}
@@ -107,6 +110,9 @@ public class MainLogic{
 			case SEARCH:
 				//System.out.println("Search");
 				//
+			
+			case MARK:
+				return TaskHandler.markTask(commandDesc);
 				
 			case EXIT:
 				return new Feedback(MESSAGE_EXIT + "\n", true);
@@ -153,6 +159,9 @@ public class MainLogic{
 				
 			case SEARCH:
 				return CustomCommandHandler.HEADER_SEARCH;
+			
+			case MARK:
+				return CustomCommandHandler.HEADER_MARK;
 				
 			case EXIT:
 				return CustomCommandHandler.HEADER_EXIT;
@@ -173,6 +182,7 @@ public class MainLogic{
 				DEFAULT_CUSTOM,
 				DEFAULT_DELETE_CUSTOM,  
 				DEFAULT_SEARCH,
+				DEFAULT_MARK,
 				DEFAULT_HELP, 
 				DEFAULT_EXIT
 		};

@@ -15,10 +15,10 @@ class CustomCommandHandler {
 	protected static final String HEADER_CUSTOM = "[CUSTOM]";
 	protected static final String HEADER_DELETE_CUSTOM = "[DELETE_CUSTOM]";
 	protected static final String HEADER_HELP = "[HELP]";
+	protected static final String HEADER_MARK = "[MARK]";
 	protected static final String HEADER_EXIT = "[EXIT]";
 
 	private static final String MESSAGE_CUSTOM_DUPLICATE = "Sorry, but this word is already in use.\n";
-	private static final String MESSAGE_CUSTOM_WHITESPACE = "Whitespace is not accepted as a custom command. Please enter a different word.\n";
 	private static final String MESSAGE_CUSTOM_SUCCESS = " has been successfully added to the command list.\n";
 	private static final String MESSAGE_CUSTOM_NONEXISTANT = "Error deleting. There is no such word in the command list.\n";
 	private static final String MESSAGE_CUSTOM_DELETED = " has been successfully deleted from the command list.\n";

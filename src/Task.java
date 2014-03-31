@@ -20,6 +20,7 @@ class Task implements Comparable<Task>{
 	private static final String NULL_START = "NO_START_TIME";
 	private static final String NULL_END = "NO_END_TIME";
 	private static final String NULL_ALIAS = "NO_ALIAS";
+	private static final String STRING_FORMAT = "%19s %19s %15s %s %s";
 	
 	private static ArrayList<Task> taskList = loadTasks();
 	
@@ -53,8 +54,8 @@ class Task implements Comparable<Task>{
 		endDateTime = end; 
 	}
 	
-	protected void setStatus(boolean stat) {
-		status = stat;
+	protected void toggleStatus() {
+		status = !status;
 	}
 	
 	protected void setAlias(String alias) {	
@@ -113,19 +114,12 @@ class Task implements Comparable<Task>{
 	}
 	
 	public String toDisplayString() {
-		String display = "";
+		String start = (startDateTime != null) ? getDateString(startDateTime) : "";
+		String end = (endDateTime != null) ? getDateString(startDateTime) : "";
+		String stat = "[" + status + "]";
+		String name = (alias != null) ? "[name:" + alias + "]" : "";
 		
-		if (startDateTime != null) {
-			display += getDateString(startDateTime);
-		}
-		if (endDateTime != null) {
-			display += getDateString(endDateTime);
-		}
-		if (alias != null) {
-			display += "[alias:" + alias + "]";
-		}
-		
-		return display + " " + description;
+		return String.format(STRING_FORMAT, start, end, name, stat, description);
 	}
 	
 	private String getDateString(DateTime date) {

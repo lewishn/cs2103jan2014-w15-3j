@@ -189,6 +189,20 @@ class TaskHandler {
 		return new Feedback(MESSAGE_UPDATE_TASK);
 	}
 	
+	protected static Feedback markTask(String taskID) {
+		ArrayList<Integer> listToMark = getTaskIdFromString(taskID);
+		
+		if(listToMark.size() == 0) {
+			return new Feedback("Nothing to mark.");
+		}
+		
+		for (int i = 0; i < listToMark.size(); i++) {
+			Task.getList().get((int)listToMark.get(i)).toggleStatus();
+		}
+		
+		return new Feedback("Tasks have been marked.");
+	}
+	
 	private static Task updateTaskTime(Task task, String field, String update) {
 		ArrayList<String> updateTokens = new ArrayList<String>(Arrays.asList(update.split("\\s+")));
 		String[] timeFields = CommandParser.getTaskFields(updateTokens);
@@ -270,7 +284,7 @@ class TaskHandler {
 		String feedback = "";
 		for (int i = 0; i < numberList.size(); i++) {
 			int index = (int) numberList.get(i);
-			feedback = feedback + String.format(MESSAGE_LIST_NUMBER, index, taskList.get(i).toDisplayString());
+			feedback = feedback + String.format(MESSAGE_LIST_NUMBER, index + 1, taskList.get(i).toDisplayString());
 		}
 		return new Feedback(feedback);
 	}
@@ -379,7 +393,7 @@ class TaskHandler {
 			HistoryHandler.purgeRedoStack();
 			return new Feedback("All tasks have been deleted.\n");
 		} else {
-			ArrayList<Integer> listToDelete = getListToDelete(taskID);
+			ArrayList<Integer> listToDelete = getTaskIdFromString(taskID);
 			
 			if (listToDelete.size() == 0) {
 				return new Feedback("No such tasks.\n");
@@ -425,7 +439,7 @@ class TaskHandler {
 		}
 	}
 	
-	private static ArrayList<Integer> getListToDelete(String list) {
+	private static ArrayList<Integer> getTaskIdFromString(String list) {
 		String[] tempList = list.split("\\s+");
 		Set<Integer> deleteList = new HashSet<Integer>();
 		
