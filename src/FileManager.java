@@ -5,10 +5,15 @@ import java.io.FileNotFoundException;
 import java.io.FileReader;
 import java.io.FileWriter;
 import java.io.IOException;
+import java.net.URLDecoder;
 import java.util.ArrayList;
 import java.util.logging.Logger;
 
 class FileManager {
+	
+	@SuppressWarnings("deprecation")
+	public static final String filepath = new File(URLDecoder.decode(DoThings.class.getProtectionDomain().getCodeSource().getLocation().getPath())).getParent() + System.getProperty("file.separator");
+	
 	private static Logger LOGGER = Logger.getLogger(FileManager.class.getName());
 	private static BufferedReader getReader(String fileName) throws FileNotFoundException {
 		File file = new File(fileName);
@@ -27,7 +32,7 @@ class FileManager {
 		ArrayList<String> list = new ArrayList<String>();
 		
 		try {
-			BufferedReader reader = getReader(fileName);
+			BufferedReader reader = getReader(filepath + fileName);
 			String line;
 			while ((line = reader.readLine()) != null) {
 				list.add(line);
@@ -42,7 +47,7 @@ class FileManager {
 	protected static void writeToFile(String fileName, ArrayList<String> list) {
 		//LOGGER.info("Writing to file " + fileName);
 		try {
-			BufferedWriter writer = getWriter(fileName);
+			BufferedWriter writer = getWriter(filepath + fileName);
 			for(int i = 0; i < list.size(); i++) {
 				writer.write(list.get(i) + System.getProperty("line.separator"));
 			}
@@ -50,6 +55,7 @@ class FileManager {
 			writer.close();
 		} catch (IOException e) {
 			LOGGER.info("Error writing to file " + fileName);
+			e.printStackTrace();
 		}
 	}
 }

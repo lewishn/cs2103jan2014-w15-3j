@@ -1,3 +1,5 @@
+import java.net.URLDecoder;
+import java.net.URLEncoder;
 import java.util.Scanner;
 
 public class DoThings {
@@ -29,6 +31,7 @@ public class DoThings {
 		
 		while (true) {
 			boolean feedback = readCommand();
+			System.out.println(FileManager.filepath);
 			if (feedback == true) {
 				System.exit(0);
 			}
