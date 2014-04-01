@@ -6,10 +6,13 @@ import java.awt.Font;
 import java.awt.TextField;
 import java.awt.event.KeyAdapter;
 import java.awt.event.KeyEvent;
+
 import javax.swing.JFrame;
 import javax.swing.JPanel;
 import javax.swing.JScrollPane;
 import javax.swing.JTextArea;
+import javax.swing.JTextField;
+import javax.swing.ScrollPaneConstants;
 
 
 public class DoThingsGUI extends JFrame {
@@ -20,7 +23,7 @@ public class DoThingsGUI extends JFrame {
 	private static final String COMMAND_HIDE = "hide";
 	
 	private JPanel contentPane;
-	private TextField textField;
+	private JTextField textField;
 	private JTextArea textArea;
 
 	/**
@@ -60,13 +63,16 @@ public class DoThingsGUI extends JFrame {
 		contentPane.setLayout(new BorderLayout(0, 0));
 		setContentPane(contentPane);
 		
-		textField = new TextField();
+		textField = new JTextField();
+		textField.setBorder(null);
 		textField.setBackground(new Color(255, 102, 51));
 		textField.setForeground(new Color(0, 0, 0));
 		textField.setFont(new Font("Pluto Sans ExtraLight", Font.PLAIN, 16));
 		contentPane.add(textField, BorderLayout.SOUTH);
 		
 		textArea = new JTextArea();
+		textArea.setBorder(null);
+		textArea.setLineWrap(true);
 		textArea.setFocusTraversalKeysEnabled(false);
 		textArea.setFocusable(false);
 		textArea.setForeground(Color.WHITE);
@@ -76,7 +82,8 @@ public class DoThingsGUI extends JFrame {
 		textArea.setEditable(false);
 		//textArea.setWrapStyleWord(true);
 		JScrollPane textAreaJScrollPane = new JScrollPane(textArea);
-		textAreaJScrollPane.setVerticalScrollBarPolicy(JScrollPane.VERTICAL_SCROLLBAR_NEVER);
+		textAreaJScrollPane.setBorder(null);
+		textAreaJScrollPane.setHorizontalScrollBarPolicy(ScrollPaneConstants.HORIZONTAL_SCROLLBAR_NEVER);
 		contentPane.add(textAreaJScrollPane, BorderLayout.CENTER);
 		
 			
