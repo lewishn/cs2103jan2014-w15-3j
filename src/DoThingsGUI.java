@@ -65,9 +65,7 @@ public class DoThingsGUI extends JFrame {
 	 * Create the frame.
 	 */
 	public DoThingsGUI() {
-		
 		setUndecorated(true);
-		setType(Type.UTILITY);
 		setForeground(Color.BLACK);
 		setFont(new Font("Consolas", Font.BOLD, 14));
 		setTitle("Do-things");

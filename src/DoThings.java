@@ -28,6 +28,8 @@ public class DoThings {
 	protected static String run(String userInput) {
 		//scanUserInput = new Scanner(System.in);
 		System.out.println(MESSAGE_STARTUP);
+		
+		
 		return readCommand(userInput);
 	}
 	/*
