@@ -3,15 +3,13 @@ import java.awt.Color;
 import java.awt.Cursor;
 import java.awt.EventQueue;
 import java.awt.Font;
-import java.awt.TextArea;
 import java.awt.TextField;
 import java.awt.event.KeyAdapter;
 import java.awt.event.KeyEvent;
-
 import javax.swing.JFrame;
 import javax.swing.JPanel;
-import javax.swing.border.EmptyBorder;
-import java.awt.Rectangle;
+import javax.swing.JScrollPane;
+import javax.swing.JTextArea;
 
 
 public class DoThingsGUI extends JFrame {
@@ -23,7 +21,7 @@ public class DoThingsGUI extends JFrame {
 	
 	private JPanel contentPane;
 	private TextField textField;
-	private TextArea textArea;
+	private JTextArea textArea;
 
 	/**
 	 * Launch the application.
@@ -54,6 +52,7 @@ public class DoThingsGUI extends JFrame {
 		setBackground(Color.BLACK);
 		setBounds(100, 100, 750, 500);
 		contentPane = new JPanel();
+		contentPane.setAutoscrolls(true);
 		contentPane.setToolTipText("");
 		contentPane.setBackground(Color.BLACK);
 		contentPane.setForeground(Color.BLACK);
@@ -67,17 +66,20 @@ public class DoThingsGUI extends JFrame {
 		textField.setFont(new Font("Pluto Sans Cond ExLight", Font.PLAIN, 16));
 		contentPane.add(textField, BorderLayout.SOUTH);
 		
-		textArea = new TextArea();
+		textArea = new JTextArea();
 		textArea.setFocusTraversalKeysEnabled(false);
 		textArea.setFocusable(false);
 		textArea.setForeground(Color.WHITE);
 		textArea.setFont(new Font("Pluto Sans Cond ExLight", Font.PLAIN, 16));
 		textArea.setCursor(Cursor.getPredefinedCursor(Cursor.DEFAULT_CURSOR));
-		textArea.setBackground(new Color(255, 204, 51));
+		textArea.setBackground(new Color(102, 102, 102));
 		textArea.setEditable(false);
-		contentPane.add(textArea, BorderLayout.CENTER);
+		//textArea.setWrapStyleWord(true);
+		JScrollPane textAreaJScrollPane = new JScrollPane(textArea);
+		textAreaJScrollPane.setVerticalScrollBarPolicy(JScrollPane.VERTICAL_SCROLLBAR_NEVER);
+		contentPane.add(textAreaJScrollPane, BorderLayout.CENTER);
 		
-		
+			
 		textField.addKeyListener(new KeyAdapter() {
 			@Override
 			public void keyReleased(KeyEvent arg0){
@@ -95,12 +97,12 @@ public class DoThingsGUI extends JFrame {
 						textField.selectAll();
 						textArea.append(doThingsFeedback);
 					}else{ 
-						textArea.setCaretPosition(textArea.getParent().getWidth());
 						textArea.append(doThingsFeedback);
 						textField.setText("");  
 					}
 				}
 			}
 		});
+		
 	}
 }
