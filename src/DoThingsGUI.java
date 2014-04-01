@@ -11,6 +11,7 @@ import java.awt.event.KeyEvent;
 import javax.swing.JFrame;
 import javax.swing.JPanel;
 import javax.swing.border.EmptyBorder;
+import java.awt.Rectangle;
 
 
 public class DoThingsGUI extends JFrame {
@@ -56,21 +57,23 @@ public class DoThingsGUI extends JFrame {
 		contentPane.setToolTipText("");
 		contentPane.setBackground(Color.BLACK);
 		contentPane.setForeground(Color.BLACK);
-		contentPane.setBorder(new EmptyBorder(0, 0, 0, 0));
+		contentPane.setBorder(null);
 		contentPane.setLayout(new BorderLayout(0, 0));
 		setContentPane(contentPane);
 		
 		textField = new TextField();
-		textField.setFont(new Font("Consolas", Font.PLAIN, 14));
+		textField.setBackground(new Color(255, 102, 51));
+		textField.setForeground(new Color(0, 0, 0));
+		textField.setFont(new Font("Pluto Sans Cond ExLight", Font.PLAIN, 16));
 		contentPane.add(textField, BorderLayout.SOUTH);
 		
 		textArea = new TextArea();
 		textArea.setFocusTraversalKeysEnabled(false);
 		textArea.setFocusable(false);
 		textArea.setForeground(Color.WHITE);
-		textArea.setFont(new Font("Pluto Sans Cond ExLight", Font.BOLD, 15));
+		textArea.setFont(new Font("Pluto Sans Cond ExLight", Font.PLAIN, 16));
 		textArea.setCursor(Cursor.getPredefinedCursor(Cursor.DEFAULT_CURSOR));
-		textArea.setBackground(Color.BLACK);
+		textArea.setBackground(new Color(255, 204, 51));
 		textArea.setEditable(false);
 		contentPane.add(textArea, BorderLayout.CENTER);
 		
@@ -82,21 +85,15 @@ public class DoThingsGUI extends JFrame {
 				
 				if(key == KeyEvent.VK_ENTER){
 					String text = textField.getText();
-					
 					String doThingsFeedback = DoThings.readCommand(text);
 					
 					if(doThingsFeedback.equalsIgnoreCase(COMMAND_EXIT)){
 						System.exit(0);
-					}
-					
-					if(text.equalsIgnoreCase(COMMAND_HIDE)){
+					} else if(doThingsFeedback.equalsIgnoreCase(COMMAND_HIDE)) {
 						
-					}
-					
-					String feedback = text + "\n";
-					
-					if(feedback.substring(0, 5).equals("ERROR")){
-					    textField.selectAll();
+					} else if(doThingsFeedback.contains("ERROR")) {
+						textField.selectAll();
+						textArea.append(doThingsFeedback);
 					}else{ 
 						textArea.setCaretPosition(textArea.getParent().getWidth());
 						textArea.append(doThingsFeedback);
