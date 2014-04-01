@@ -42,6 +42,8 @@ public class DoThingsGUI extends JFrame {
 
 	private static final String MESSAGE_STARTUP = "Get ready to Do Things!\n";
 	private static final String MESSAGE_COMMAND = "Please enter a command: ";
+	private static final String COMMAND_EXIT = "exit";
+	private static final String COMMAND_HIDE = "hide";
 	
 	private JPanel contentPane;
 	private TextField textField;
@@ -108,11 +110,11 @@ public class DoThingsGUI extends JFrame {
 					
 					String doThingsFeedback = DoThings.readCommand(text);
 					
-					if(text.equalsIgnoreCase("exit")){
+					if(text.equalsIgnoreCase(COMMAND_EXIT)){
 						System.exit(0);
 					}
 					
-					if(text.equalsIgnoreCase("hide")){
+					if(text.equalsIgnoreCase(COMMAND_HIDE)){
 						
 					}
 					
