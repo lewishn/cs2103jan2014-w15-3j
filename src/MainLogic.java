@@ -26,29 +26,29 @@ public class MainLogic{
 	 */
 	private static CommandType getCommandType(String com) {
 		
-		if (com.equals(DEFAULT_ADD) || CustomCommandHandler.isCustomCommand(com, CustomCommandHandler.HEADER_ADD)) {
+		if (com.equalsIgnoreCase(DEFAULT_ADD) || CustomCommandHandler.isCustomCommand(com, CustomCommandHandler.HEADER_ADD)) {
 			return CommandType.ADD;
-		} else if (com.equals(DEFAULT_LIST) || CustomCommandHandler.isCustomCommand(com, CustomCommandHandler.HEADER_READ)) {
+		} else if (com.equalsIgnoreCase(DEFAULT_LIST) || CustomCommandHandler.isCustomCommand(com, CustomCommandHandler.HEADER_READ)) {
 			return CommandType.LIST;
-		} else if (com.equals(DEFAULT_UPDATE) || CustomCommandHandler.isCustomCommand(com, CustomCommandHandler.HEADER_UPDATE)) {
+		} else if (com.equalsIgnoreCase(DEFAULT_UPDATE) || CustomCommandHandler.isCustomCommand(com, CustomCommandHandler.HEADER_UPDATE)) {
 			return CommandType.UPDATE;
-		} else if (com.equals(DEFAULT_DELETE) || CustomCommandHandler.isCustomCommand(com, CustomCommandHandler.HEADER_DELETE)) {
+		} else if (com.equalsIgnoreCase(DEFAULT_DELETE) || CustomCommandHandler.isCustomCommand(com, CustomCommandHandler.HEADER_DELETE)) {
 			return CommandType.DELETE;
-		} else if (com.equals(DEFAULT_UNDO) || CustomCommandHandler.isCustomCommand(com, CustomCommandHandler.HEADER_UNDO)) {
+		} else if (com.equalsIgnoreCase(DEFAULT_UNDO) || CustomCommandHandler.isCustomCommand(com, CustomCommandHandler.HEADER_UNDO)) {
 			return CommandType.UNDO;
-		} else if (com.equals(DEFAULT_REDO) || CustomCommandHandler.isCustomCommand(com, CustomCommandHandler.HEADER_REDO)) {
+		} else if (com.equalsIgnoreCase(DEFAULT_REDO) || CustomCommandHandler.isCustomCommand(com, CustomCommandHandler.HEADER_REDO)) {
 			return CommandType.REDO;
-		} else if (com.equals(DEFAULT_CUSTOM) || CustomCommandHandler.isCustomCommand(com, CustomCommandHandler.HEADER_CUSTOM)) {
+		} else if (com.equalsIgnoreCase(DEFAULT_CUSTOM) || CustomCommandHandler.isCustomCommand(com, CustomCommandHandler.HEADER_CUSTOM)) {
 			return CommandType.CUSTOM;
-		} else if (com.equals(DEFAULT_DELETE_CUSTOM) || CustomCommandHandler.isCustomCommand(com, CustomCommandHandler.HEADER_DELETE_CUSTOM)) {
+		} else if (com.equalsIgnoreCase(DEFAULT_DELETE_CUSTOM) || CustomCommandHandler.isCustomCommand(com, CustomCommandHandler.HEADER_DELETE_CUSTOM)) {
 			return CommandType.DELETE_CUSTOM;
-		} else if (com.equals(DEFAULT_HELP) || CustomCommandHandler.isCustomCommand(com, CustomCommandHandler.HEADER_HELP)) {
+		} else if (com.equalsIgnoreCase(DEFAULT_HELP) || CustomCommandHandler.isCustomCommand(com, CustomCommandHandler.HEADER_HELP)) {
 			return CommandType.HELP;
-		} else if (com.equals(DEFAULT_EXIT) || CustomCommandHandler.isCustomCommand(com, CustomCommandHandler.HEADER_EXIT)) {
+		} else if (com.equalsIgnoreCase(DEFAULT_EXIT) || CustomCommandHandler.isCustomCommand(com, CustomCommandHandler.HEADER_EXIT)) {
 			return CommandType.EXIT;
-		} else if (com.equals(DEFAULT_SEARCH) || CustomCommandHandler.isCustomCommand(com, CustomCommandHandler.HEADER_SEARCH)) {
+		} else if (com.equalsIgnoreCase(DEFAULT_SEARCH) || CustomCommandHandler.isCustomCommand(com, CustomCommandHandler.HEADER_SEARCH)) {
 			return CommandType.SEARCH;
-		} else if (com.equals(DEFAULT_MARK) || CustomCommandHandler.isCustomCommand(com, CustomCommandHandler.HEADER_MARK)) {
+		} else if (com.equalsIgnoreCase(DEFAULT_MARK) || CustomCommandHandler.isCustomCommand(com, CustomCommandHandler.HEADER_MARK)) {
 			return CommandType.MARK;
 		} else {
 			return CommandType.INVALID;

@@ -63,14 +63,14 @@ public class DoThingsGUI extends JFrame {
 		textField = new TextField();
 		textField.setBackground(new Color(255, 102, 51));
 		textField.setForeground(new Color(0, 0, 0));
-		textField.setFont(new Font("Pluto Sans Cond ExLight", Font.PLAIN, 16));
+		textField.setFont(new Font("Pluto Sans ExtraLight", Font.PLAIN, 16));
 		contentPane.add(textField, BorderLayout.SOUTH);
 		
 		textArea = new JTextArea();
 		textArea.setFocusTraversalKeysEnabled(false);
 		textArea.setFocusable(false);
 		textArea.setForeground(Color.WHITE);
-		textArea.setFont(new Font("Pluto Sans Cond ExLight", Font.PLAIN, 16));
+		textArea.setFont(new Font("Pluto Sans ExtraLight", Font.PLAIN, 16));
 		textArea.setCursor(Cursor.getPredefinedCursor(Cursor.DEFAULT_CURSOR));
 		textArea.setBackground(new Color(102, 102, 102));
 		textArea.setEditable(false);
