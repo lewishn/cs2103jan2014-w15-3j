@@ -40,6 +40,9 @@ import java.awt.event.WindowStateListener;
 
 public class DoThingsGUI extends JFrame {
 
+	private static final String MESSAGE_STARTUP = "Get ready to Do Things!\n";
+	private static final String MESSAGE_COMMAND = "Please enter a command: ";
+	
 	private JPanel contentPane;
 	private TextField textField;
 	private TextArea textArea;
@@ -53,7 +56,7 @@ public class DoThingsGUI extends JFrame {
 				try {
 					DoThingsGUI frame = new DoThingsGUI();
 					frame.setVisible(true);
-					
+					frame.textArea.setText(MESSAGE_STARTUP);  
 				} catch (Exception e) {
 					e.printStackTrace();
 				}
@@ -103,7 +106,7 @@ public class DoThingsGUI extends JFrame {
 				if(key == KeyEvent.VK_ENTER){
 					String text = textField.getText();
 					
-					String doThingsFeedback = DoThings.run(text);
+					String doThingsFeedback = DoThings.readCommand(text);
 					
 					if(text.equalsIgnoreCase("exit")){
 						System.exit(0);
