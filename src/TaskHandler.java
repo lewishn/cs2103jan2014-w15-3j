@@ -193,14 +193,14 @@ class TaskHandler {
 		ArrayList<Integer> listToMark = getTaskIdFromString(taskID);
 		
 		if(listToMark.size() == 0) {
-			return new Feedback("Nothing to mark.");
+			return new Feedback("Nothing to mark.\n");
 		}
 		
 		for (int i = 0; i < listToMark.size(); i++) {
 			Task.getList().get((int)listToMark.get(i)).toggleStatus();
 		}
 		
-		return new Feedback("Tasks have been marked.");
+		return new Feedback("Tasks have been marked.\n");
 	}
 	
 	private static Task updateTaskTime(Task task, String field, String update) {

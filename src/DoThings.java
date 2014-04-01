@@ -31,7 +31,6 @@ public class DoThings {
 		
 		while (true) {
 			boolean feedback = readCommand();
-			System.out.println(FileManager.filepath);
 			if (feedback == true) {
 				System.exit(0);
 			}

@@ -20,7 +20,7 @@ class Task implements Comparable<Task>{
 	private static final String NULL_START = "NO_START_TIME";
 	private static final String NULL_END = "NO_END_TIME";
 	private static final String NULL_ALIAS = "NO_ALIAS";
-	private static final String STRING_FORMAT = "%19s %19s %15s %s %s";
+	private static final String STRING_FORMAT = "%s%s%s%s %s";
 	
 	private static ArrayList<Task> taskList = loadTasks();
 	
@@ -34,10 +34,19 @@ class Task implements Comparable<Task>{
 		description = desc;
 		status = false;
 	}
+	
 	protected Task(String desc, DateTime start, DateTime end, String name) {
 		startDateTime = start;
 		endDateTime = end;
 		status = false;
+		description = desc;
+		alias = name;
+	}
+	
+	protected Task(String desc, DateTime start, DateTime end, String name, boolean stat) {
+		startDateTime = start;
+		endDateTime = end;
+		status = stat;
 		description = desc;
 		alias = name;
 	}
@@ -99,9 +108,10 @@ class Task implements Comparable<Task>{
 		DateTime start = (tokens[0].equals(NULL_START)) ? null : new DateTime(tokens[0]);
 		DateTime end = (tokens[1].equals(NULL_END)) ? null : new DateTime(tokens[1]);
 		String name = (tokens[2].equals(NULL_ALIAS)) ? null : tokens[2]; 
+		boolean stat = (tokens[3].equals("true")) ? true : false;
 		String desc = tokens[3];
 		
-		return new Task(desc, start, end, name);
+		return new Task(desc, start, end, name , stat);
 	}
 	
 	@Override
@@ -110,16 +120,16 @@ class Task implements Comparable<Task>{
 		String end = (endDateTime == null) ? NULL_END : endDateTime.toString();
 		String taskAlias = (alias == null) ? NULL_ALIAS : alias;
 		
-		return start + DELIMITER + end + DELIMITER + taskAlias + DELIMITER + description;
+		return start + DELIMITER + end + DELIMITER + taskAlias + DELIMITER + status + DELIMITER + description;
 	}
 	
 	public String toDisplayString() {
 		String start = (startDateTime != null) ? getDateString(startDateTime) : "";
-		String end = (endDateTime != null) ? getDateString(startDateTime) : "";
-		String stat = "[" + status + "]";
+		String end = (endDateTime != null) ? getDateString(endDateTime) : "";
+		String stat = (status == true) ? "[completed]" : "[incomplete]";
 		String name = (alias != null) ? "[name:" + alias + "]" : "";
 		
-		return String.format(STRING_FORMAT, start, end, name, stat, description);
+		return String.format(STRING_FORMAT, start, end, stat, name, description);
 	}
 	
 	private String getDateString(DateTime date) {
