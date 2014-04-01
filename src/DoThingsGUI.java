@@ -17,7 +17,7 @@ public class DoThingsGUI extends JFrame {
 
 	private static final String MESSAGE_STARTUP = "Get ready to Do Things!\n";
 	private static final String MESSAGE_COMMAND = "Please enter a command: ";
-	private static final String MESSAGE_EXIT = "Goodbye Commander :)";
+	private static final String MESSAGE_EXIT = "Goodbye :)";
 	
 	private JPanel contentPane;
 	private TextField textField;
