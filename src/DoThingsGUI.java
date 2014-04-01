@@ -67,7 +67,7 @@ public class DoThingsGUI extends JFrame {
 		textField.setBorder(null);
 		textField.setBackground(new Color(255, 102, 51));
 		textField.setForeground(new Color(0, 0, 0));
-		textField.setFont(new Font("Pluto Sans ExtraLight", Font.PLAIN, 16));
+		textField.setFont(new Font("Pluto Sans ExtraLight", Font.PLAIN, 23));
 		contentPane.add(textField, BorderLayout.SOUTH);
 		
 		textArea = new JTextArea();
@@ -76,12 +76,13 @@ public class DoThingsGUI extends JFrame {
 		textArea.setFocusTraversalKeysEnabled(false);
 		textArea.setFocusable(false);
 		textArea.setForeground(Color.WHITE);
-		textArea.setFont(new Font("Pluto Sans ExtraLight", Font.PLAIN, 16));
+		textArea.setFont(new Font("Pluto Sans ExtraLight", Font.PLAIN, 20));
 		textArea.setCursor(Cursor.getPredefinedCursor(Cursor.DEFAULT_CURSOR));
 		textArea.setBackground(new Color(102, 102, 102));
 		textArea.setEditable(false);
 		//textArea.setWrapStyleWord(true);
 		JScrollPane textAreaJScrollPane = new JScrollPane(textArea);
+		textAreaJScrollPane.setFont(new Font("Pluto Sans ExtraLight", Font.PLAIN, 23));
 		textAreaJScrollPane.setBorder(null);
 		textAreaJScrollPane.setHorizontalScrollBarPolicy(ScrollPaneConstants.HORIZONTAL_SCROLLBAR_NEVER);
 		contentPane.add(textAreaJScrollPane, BorderLayout.CENTER);
