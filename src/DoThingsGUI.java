@@ -1,41 +1,16 @@
 import java.awt.BorderLayout;
+import java.awt.Color;
+import java.awt.Cursor;
 import java.awt.EventQueue;
+import java.awt.Font;
+import java.awt.TextArea;
+import java.awt.TextField;
+import java.awt.event.KeyAdapter;
+import java.awt.event.KeyEvent;
 
 import javax.swing.JFrame;
 import javax.swing.JPanel;
 import javax.swing.border.EmptyBorder;
-import javax.swing.JTextPane;
-import javax.swing.JTextField;
-import javax.swing.UIManager;
-
-import java.awt.Color;
-import java.awt.Window.Type;
-import java.awt.Font;
-import java.awt.Dialog.ModalExclusionType;
-
-import javax.swing.JTextArea;
-
-import java.awt.*;
-import java.awt.event.*;
-import java.awt.AWTException;
-import java.awt.Frame;
-import java.awt.ComponentOrientation;
-import java.awt.Image;
-import java.awt.MenuItem;
-import java.awt.PopupMenu;
-import java.awt.SystemTray;
-import java.awt.TextField;
-import java.awt.TextArea;
-import java.awt.Cursor;
-import java.awt.Toolkit;
-import java.awt.TrayIcon;
-import java.awt.event.ActionEvent;
-import java.awt.event.ActionListener;
-import java.awt.event.KeyAdapter;
-import java.awt.event.KeyEvent;
-import java.awt.event.WindowAdapter;
-import java.awt.event.WindowEvent;
-import java.awt.event.WindowStateListener;
 
 
 public class DoThingsGUI extends JFrame {
@@ -93,7 +68,7 @@ public class DoThingsGUI extends JFrame {
 		textArea.setFocusTraversalKeysEnabled(false);
 		textArea.setFocusable(false);
 		textArea.setForeground(Color.WHITE);
-		textArea.setFont(new Font("Consolas", Font.BOLD, 14));
+		textArea.setFont(new Font("Pluto Sans Cond ExLight", Font.BOLD, 15));
 		textArea.setCursor(Cursor.getPredefinedCursor(Cursor.DEFAULT_CURSOR));
 		textArea.setBackground(Color.BLACK);
 		textArea.setEditable(false);
@@ -110,7 +85,7 @@ public class DoThingsGUI extends JFrame {
 					
 					String doThingsFeedback = DoThings.readCommand(text);
 					
-					if(text.equalsIgnoreCase(COMMAND_EXIT)){
+					if(doThingsFeedback.equalsIgnoreCase(COMMAND_EXIT)){
 						System.exit(0);
 					}
 					

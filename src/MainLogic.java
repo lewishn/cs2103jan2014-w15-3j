@@ -1,5 +1,5 @@
 public class MainLogic{
-	private static final String MESSAGE_EXIT = "Exiting...";
+	private static final String MESSAGE_EXIT = "exit";
 	private static final String MESSAGE_INVALID = "Invalid command! Please try again.\n";
 	
 	private static final String DEFAULT_ADD = "add";
@@ -113,7 +113,7 @@ public class MainLogic{
 				return TaskHandler.markTask(commandDesc);
 				
 			case EXIT:
-				return new Feedback(MESSAGE_EXIT + "\n", true);
+				return new Feedback(MESSAGE_EXIT, true);
 				
 			default:
 				return new Feedback(MESSAGE_INVALID);
