@@ -17,10 +17,10 @@ class Task implements Comparable<Task>{
 	protected static final int TASK_FIELD_SIZE = 4;
 	
 	private static final String DELIMITER = " ~~ ";
-	private static final String TAG_IDENTIFIER = "#";
-	private static final String NULL_START = "no_start_time";
-	private static final String NULL_END = "no_end_time";
-	private static final String NULL_ALIAS = "no_alias";
+	private static final String NULL_START = "NO_START_TIME";
+	private static final String NULL_END = "NO_END_TIME";
+	private static final String NULL_ALIAS = "NO_ALIAS";
+	private static final String STRING_FORMAT = "%s%s%s%s %s";
 	
 	private static ArrayList<Task> taskList = loadTasks();
 	
@@ -34,6 +34,7 @@ class Task implements Comparable<Task>{
 		description = desc;
 		status = false;
 	}
+	
 	protected Task(String desc, DateTime start, DateTime end, String name) {
 		startDateTime = start;
 		endDateTime = end;
@@ -42,14 +43,12 @@ class Task implements Comparable<Task>{
 		alias = name;
 	}
 	
-	protected static Task parseTaskFromString(String line) {
-		String[] tokens = line.split(DELIMITER);
-		DateTime start = (tokens[0].equals(NULL_START)) ? null : new DateTime(tokens[0]);
-		DateTime end = (tokens[1].equals(NULL_END)) ? null : new DateTime(tokens[1]);
-		String name = (tokens[2].equals(NULL_ALIAS)) ? null : tokens[2]; 
-		String desc = tokens[3];
-		
-		return new Task(desc, start, end, name);
+	protected Task(String desc, DateTime start, DateTime end, String name, boolean stat) {
+		startDateTime = start;
+		endDateTime = end;
+		status = stat;
+		description = desc;
+		alias = name;
 	}
 	
 	protected void setDescription(String desc) {
@@ -64,8 +63,12 @@ class Task implements Comparable<Task>{
 		endDateTime = end; 
 	}
 	
-	protected void setCompleted(boolean stat) {
-		status = stat;
+	protected void toggleStatus() {
+		status = !status;
+	}
+	
+	protected void setAlias(String alias) {	
+		this.alias = alias;
 	}
 	
 	protected String getDescription() {
@@ -84,6 +87,10 @@ class Task implements Comparable<Task>{
 		return status;
 	}
 	
+	protected String getAlias() {
+		return alias;
+	}
+	
 	protected static ArrayList<Task> getList() {
 		return taskList;
 	}
@@ -96,28 +103,33 @@ class Task implements Comparable<Task>{
 		Collections.sort(taskList);
 	}	
 	
+	protected static Task parseTaskFromString(String line) {
+		String[] tokens = line.split(DELIMITER);
+		DateTime start = (tokens[0].equals(NULL_START)) ? null : new DateTime(tokens[0]);
+		DateTime end = (tokens[1].equals(NULL_END)) ? null : new DateTime(tokens[1]);
+		String name = (tokens[2].equals(NULL_ALIAS)) ? null : tokens[2]; 
+		boolean stat = (tokens[3].equals("true")) ? true : false;
+		String desc = tokens[3];
+		
+		return new Task(desc, start, end, name , stat);
+	}
+	
 	@Override
 	public String toString() {
 		String start = (startDateTime == null) ? NULL_START : startDateTime.toString();
 		String end = (endDateTime == null) ? NULL_END : endDateTime.toString();
+		String taskAlias = (alias == null) ? NULL_ALIAS : alias;
 		
-		return start + DELIMITER + end + DELIMITER + alias + DELIMITER + description;
+		return start + DELIMITER + end + DELIMITER + taskAlias + DELIMITER + status + DELIMITER + description;
 	}
 	
 	public String toDisplayString() {
-		String display = "";
+		String start = (startDateTime != null) ? getDateString(startDateTime) : "";
+		String end = (endDateTime != null) ? getDateString(endDateTime) : "";
+		String stat = (status == true) ? "[completed]" : "[incomplete]";
+		String name = (alias != null) ? "[name:" + alias + "]" : "";
 		
-		if (startDateTime != null) {
-			display += getDateString(startDateTime);
-		}
-		if (endDateTime != null) {
-			display += getDateString(endDateTime);
-		}
-		if (alias != null && !alias.equals("")) {
-			display += "[alias:" + alias + "]";
-		}
-		
-		return display + " " + description;
+		return String.format(STRING_FORMAT, start, end, stat, name, description);
 	}
 	
 	private String getDateString(DateTime date) {
@@ -133,13 +145,59 @@ class Task implements Comparable<Task>{
 	public int compareTo(Task task) {
 		if (this.startDateTime != null && task.startDateTime != null) {
 			return this.startDateTime.compareTo(task.startDateTime);
+			
 		} else if (this.startDateTime == null && task.startDateTime != null) {
+			if(this.endDateTime != null) {
+				return this.endDateTime.compareTo(task.startDateTime);
+			}
 			return 1;
+			
 		} else if (this.startDateTime != null && task.startDateTime == null) {
+			if(task.endDateTime != null) {
+				return this.startDateTime.compareTo(task.endDateTime);
+			}
 			return -1;
+			
 		} else {
-			return this.description.compareToIgnoreCase(task.description);
+			if (this.endDateTime == null && task.endDateTime == null) {
+				return this.description.compareToIgnoreCase(task.description);
+			} else if (this.endDateTime != null && task.endDateTime == null) {
+				return -1;
+			} else if (this.endDateTime == null && task.endDateTime != null) {
+				return 1;
+			} else {
+				return this.endDateTime.compareTo(task.endDateTime);
+			}
 		}
+	}
+	
+	protected static boolean isAliasValid(String alias) {
+		if (alias == null || alias.length() == 0 || alias.equals("")) {
+			return false;
+		}
+		
+		if (getTaskIndexFromAlias(alias) < 0) {
+			return false;
+		}
+		if (alias.equalsIgnoreCase("completed") || alias.equalsIgnoreCase("all")) {
+			return false;
+		}
+		
+		
+		return true;
+	}
+	
+	protected static int getTaskIndexFromAlias(String alias) {
+		for (int i = 0; i < taskList.size(); i++) {
+			if (taskList.get(i).getAlias() == null) {
+				continue;
+			}
+			if (alias.equals(taskList.get(i).getAlias())) {
+				return i;
+			}
+		}
+		
+		return -1;
 	}
 	
 	protected static void saveTasks() {

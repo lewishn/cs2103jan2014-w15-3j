@@ -117,7 +117,7 @@ public class DateParser{
 	 * @param input
 	 * @return true if the input string is a valid date
 	 */
-	protected static Boolean isDate(String input) {
+	protected static boolean isDate(String input) {
 		int formatType = getDateFormatType(input);
 		assert(formatType >= -1 && formatType <=3);
 		
@@ -126,6 +126,10 @@ public class DateParser{
 		} else {
 			return true;
 		}
+	}
+	
+	protected static boolean isSameDate(DateTime date1, DateTime date2) {
+		return (date1.getYear() == date2.getYear()) && (date1.getDayOfYear() == date2.getDayOfYear());
 	}
 	
 	/**

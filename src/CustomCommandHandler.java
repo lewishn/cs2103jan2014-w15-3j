@@ -6,7 +6,7 @@ class CustomCommandHandler {
 	private static final String FILE_CUSTOM = "custom.txt";
 	
 	protected static final String HEADER_ADD = "[ADD]";
-	protected static final String HEADER_READ = "[READ]";
+	protected static final String HEADER_READ = "[LIST]";
 	protected static final String HEADER_UPDATE = "[UPDATE]";
 	protected static final String HEADER_DELETE = "[DELETE]";
 	protected static final String HEADER_SEARCH = "[SEARCH]";
@@ -15,10 +15,10 @@ class CustomCommandHandler {
 	protected static final String HEADER_CUSTOM = "[CUSTOM]";
 	protected static final String HEADER_DELETE_CUSTOM = "[DELETE_CUSTOM]";
 	protected static final String HEADER_HELP = "[HELP]";
+	protected static final String HEADER_MARK = "[MARK]";
 	protected static final String HEADER_EXIT = "[EXIT]";
 
 	private static final String MESSAGE_CUSTOM_DUPLICATE = "Sorry, but this word is already in use.\n";
-	private static final String MESSAGE_CUSTOM_WHITESPACE = "Whitespace is not accepted as a custom command. Please enter a different word.\n";
 	private static final String MESSAGE_CUSTOM_SUCCESS = " has been successfully added to the command list.\n";
 	private static final String MESSAGE_CUSTOM_NONEXISTANT = "Error deleting. There is no such word in the command list.\n";
 	private static final String MESSAGE_CUSTOM_DELETED = " has been successfully deleted from the command list.\n";
@@ -50,13 +50,10 @@ class CustomCommandHandler {
 	 */
 	protected static Feedback addCustomCommand(String userCommand, String commandType) {
 		// if user inputs a white space between two or more words, take only the first
-		userCommand = userCommand.split(" ")[0];
+		userCommand = userCommand.split("\\s+")[0];
 		
 		if (isDuplicateCommand(userCommand) || MainLogic.isDefaultCommand(userCommand)) {
-			return new Feedback(MESSAGE_CUSTOM_DUPLICATE, false);
-		}
-		if (isWhiteSpace(userCommand)){
-			return new Feedback(MESSAGE_CUSTOM_WHITESPACE, false);
+			return new Feedback(MESSAGE_CUSTOM_DUPLICATE);
 		}
 		
 		HistoryHandler.pushUndoStack();
@@ -104,17 +101,6 @@ class CustomCommandHandler {
 				return true;
 			}
 		}
-		return false;
-	}
-	
-	private static boolean isWhiteSpace(String str) {
-		if (str == null || str.equals("") || str.length() == 0) {
-			return true;
-		}
-		if (str.equals("\n") || str.equals("\t")) {
-			return true;
-		}
-		
 		return false;
 	}
 	

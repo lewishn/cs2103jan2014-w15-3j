@@ -13,15 +13,14 @@ public class TestParser {
 	@Test 
 	public void testGetUserCommand() {
 		assertEquals("add", CommandParser.getUserCommandType("add meeting with john"));
-		assertEquals("meeting with jack", CommandParser.getUserCommandField("add meeting with jack"));
 		assertEquals("meeting with jack", CommandParser.getUserCommandDesc("add meeting with jack"));
 		assertNull(CommandParser.getUserCommandDesc("add"));
 	}
 	
 	@Test
 	public void testIsValidCommand() {
-		assertTrue(CommandParser.isValidCommand("add yolo"));
-		assertFalse(CommandParser.isValidCommand("add"));
+		//assertTrue(CommandParser.isValidCommand("add yolo"));
+		//assertFalse(CommandParser.isValidCommand("add"));
 		//assertFalse(CommandParser.isValidCommand("add "));
 		//assertFalse(CommandParser.isValidCommand(" add yolo"));
 	}
