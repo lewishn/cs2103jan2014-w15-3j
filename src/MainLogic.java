@@ -1,5 +1,3 @@
-import java.util.ArrayList;
-
 public class MainLogic{
 	private static final String MESSAGE_EXIT = "Exiting...";
 	private static final String MESSAGE_INVALID = "Invalid command! Please try again.\n";
