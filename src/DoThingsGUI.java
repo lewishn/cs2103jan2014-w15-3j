@@ -1,47 +1,23 @@
 import java.awt.BorderLayout;
+import java.awt.Color;
+import java.awt.Cursor;
 import java.awt.EventQueue;
+import java.awt.Font;
+import java.awt.TextArea;
+import java.awt.TextField;
+import java.awt.event.KeyAdapter;
+import java.awt.event.KeyEvent;
 
 import javax.swing.JFrame;
 import javax.swing.JPanel;
 import javax.swing.border.EmptyBorder;
-import javax.swing.JTextPane;
-import javax.swing.JTextField;
-import javax.swing.UIManager;
-
-import java.awt.Color;
-import java.awt.Window.Type;
-import java.awt.Font;
-import java.awt.Dialog.ModalExclusionType;
-
-import javax.swing.JTextArea;
-
-import java.awt.*;
-import java.awt.event.*;
-import java.awt.AWTException;
-import java.awt.Frame;
-import java.awt.ComponentOrientation;
-import java.awt.Image;
-import java.awt.MenuItem;
-import java.awt.PopupMenu;
-import java.awt.SystemTray;
-import java.awt.TextField;
-import java.awt.TextArea;
-import java.awt.Cursor;
-import java.awt.Toolkit;
-import java.awt.TrayIcon;
-import java.awt.event.ActionEvent;
-import java.awt.event.ActionListener;
-import java.awt.event.KeyAdapter;
-import java.awt.event.KeyEvent;
-import java.awt.event.WindowAdapter;
-import java.awt.event.WindowEvent;
-import java.awt.event.WindowStateListener;
 
 
 public class DoThingsGUI extends JFrame {
 
 	private static final String MESSAGE_STARTUP = "Get ready to Do Things!\n";
 	private static final String MESSAGE_COMMAND = "Please enter a command: ";
+	private static final String MESSAGE_EXIT = "Goodbye Commander :)";
 	
 	private JPanel contentPane;
 	private TextField textField;
@@ -56,7 +32,8 @@ public class DoThingsGUI extends JFrame {
 				try {
 					DoThingsGUI frame = new DoThingsGUI();
 					frame.setVisible(true);
-					frame.textArea.setText(MESSAGE_STARTUP);  
+					frame.textArea.setText(MESSAGE_STARTUP);
+					frame.textArea.append(MESSAGE_COMMAND);
 				} catch (Exception e) {
 					e.printStackTrace();
 				}
@@ -100,30 +77,36 @@ public class DoThingsGUI extends JFrame {
 		
 		textField.addKeyListener(new KeyAdapter() {
 			@Override
-			public void keyReleased(KeyEvent arg0){
+			public void keyReleased(KeyEvent arg0) {
 				int key = arg0.getKeyCode();
 				
-				if(key == KeyEvent.VK_ENTER){
-					String text = textField.getText();
-					
+				if(key == KeyEvent.VK_ENTER) {
+					String text = textField.getText();			
 					String doThingsFeedback = DoThings.readCommand(text);
-					
-					if(text.equalsIgnoreCase("exit")){
+
+					if(text.equalsIgnoreCase("exit")) {
+						textArea.append(MESSAGE_EXIT);
+						try {
+							Thread.sleep(1000);
+						} catch (InterruptedException e) {
+							System.exit(0);
+						}
 						System.exit(0);
 					}
 					
-					if(text.equalsIgnoreCase("hide")){
+					if(text.equalsIgnoreCase("hide")) {
 						
 					}
 					
 					String feedback = text + "\n";
 					
-					if(feedback.substring(0, 5).equals("ERROR")){
+					if(feedback.substring(0, 5).equals("ERROR")) {
 					    textField.selectAll();
-					}else{ 
+					} else { 
 						textArea.setCaretPosition(textArea.getParent().getWidth());
 						textArea.append(doThingsFeedback);
-						textField.setText("");  
+						textArea.append(MESSAGE_COMMAND);
+						textField.setText("");
 					}
 				}
 			}
