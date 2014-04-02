@@ -109,7 +109,7 @@ class Task implements Comparable<Task>{
 		DateTime end = (tokens[1].equals(NULL_END)) ? null : new DateTime(tokens[1]);
 		String name = (tokens[2].equals(NULL_ALIAS)) ? null : tokens[2]; 
 		boolean stat = (tokens[3].equals("true")) ? true : false;
-		String desc = tokens[3];
+		String desc = tokens[4];
 		
 		return new Task(desc, start, end, name , stat);
 	}

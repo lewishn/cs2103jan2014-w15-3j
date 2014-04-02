@@ -95,19 +95,25 @@ public class DoThingsGUI extends JFrame {
 				
 				if(key == KeyEvent.VK_ENTER){
 					String text = textField.getText();
-					String doThingsFeedback = DoThings.readCommand(text);
+					Feedback feedback = DoThings.readCommand(text);
 					
-					if(doThingsFeedback.equalsIgnoreCase(COMMAND_EXIT)){
+					
+					if(feedback.getExitFlag()){
 						System.exit(0);
-					} else if(doThingsFeedback.equalsIgnoreCase(COMMAND_HIDE)) {
+					} 
+					/*
+					else if(doThingsFeedback.equalsIgnoreCase(COMMAND_HIDE)) {
 						
 					} else if(doThingsFeedback.contains("ERROR")) {
 						textField.selectAll();
 						textArea.append(doThingsFeedback);
-					}else{ 
-						textArea.append(doThingsFeedback);
+					}
+					*/
+					else{ 
+						textArea.append(feedback.toString());
 						textField.setText("");  
 					}
+					
 				}
 			}
 		});
