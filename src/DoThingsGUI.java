@@ -1,23 +1,28 @@
 import java.awt.Color;
+import java.awt.Dimension;
 import java.awt.EventQueue;
 import java.awt.Font;
-import java.awt.Label;
 import java.awt.SystemColor;
 import java.awt.event.KeyAdapter;
 import java.awt.event.KeyEvent;
 import java.util.ArrayList;
 
+import javax.swing.GroupLayout;
+import javax.swing.GroupLayout.Alignment;
 import javax.swing.JFrame;
 import javax.swing.JLabel;
 import javax.swing.JPanel;
+import javax.swing.JScrollPane;
 import javax.swing.JTextArea;
 import javax.swing.JTextField;
+import javax.swing.ScrollPaneConstants;
 import javax.swing.SwingConstants;
 import javax.swing.border.EmptyBorder;
 import javax.swing.border.LineBorder;
-import javax.swing.JScrollPane;
-import javax.swing.ScrollPaneConstants;
-import java.awt.ScrollPane;
+
+import com.jgoodies.forms.layout.FormLayout;
+import com.jgoodies.forms.layout.ColumnSpec;
+import com.jgoodies.forms.layout.RowSpec;
 
 
 public class DoThingsGUI extends JFrame {
@@ -30,7 +35,10 @@ public class DoThingsGUI extends JFrame {
 	private JPanel textPanel;
 	private JLabel feedbackLabel;
 	private ArrayList<String>input = new ArrayList<String>();
-	private JScrollPane taskPanel;
+	private JScrollPane taskPanelScroll;
+	private JPanel taskPanel;
+	private int TEXTAREAHEIGHT = 120;
+	private int CHARPERLINE = 20;
 	/**
 	 * Launch the application.
 	 */
@@ -97,12 +105,30 @@ public class DoThingsGUI extends JFrame {
 		textPanel.setBounds(0, 75, 320, 41);
 		contentPane.add(textPanel);
 		
-		taskPanel = new JScrollPane();
+		
+		
+		taskPanel = new JPanel();
+		taskPanel.setBounds(0, 0, 171, 485);
 		taskPanel.setOpaque(false);
-		taskPanel.setBounds(0, 115, 320, 485);
+		taskPanel.setBackground(new Color(255, 204, 51));
 		contentPane.add(taskPanel);
 		
-		
+		taskPanelScroll = new JScrollPane(taskPanel);
+		GroupLayout gl_taskPanel = new GroupLayout(taskPanel);
+		gl_taskPanel.setHorizontalGroup(
+			gl_taskPanel.createParallelGroup(Alignment.LEADING)
+				.addGap(0, 320, Short.MAX_VALUE)
+		);
+		gl_taskPanel.setVerticalGroup(
+			gl_taskPanel.createParallelGroup(Alignment.LEADING)
+				.addGap(0, 485, Short.MAX_VALUE)
+		);
+		taskPanel.setLayout(gl_taskPanel);
+		taskPanelScroll.setOpaque(false);
+		taskPanelScroll.setHorizontalScrollBarPolicy(ScrollPaneConstants.HORIZONTAL_SCROLLBAR_NEVER);
+		taskPanelScroll.setBorder(null);
+		taskPanelScroll.setBounds(0, 115, 320, 485);
+		contentPane.add(taskPanelScroll);
 		
 		JPanel backgroundPanel = new JPanel();
 		backgroundPanel.setBackground(SystemColor.windowBorder);
@@ -122,51 +148,53 @@ public class DoThingsGUI extends JFrame {
 					input.add(userInput);
 					inputField.setText("");  
 					JPanel messagePanel[] = new JPanel[input.size()];
-					Label startDate[] = new Label[input.size()];
-					Label startTime[] = new Label[input.size()];
-					Label endDate[] = new Label[input.size()];
-					Label endTime[] = new Label[input.size()];
+					JTextArea startDate[] = new JTextArea[input.size()];
+					JTextArea startTime[] = new JTextArea[input.size()];
+					JTextArea endDate[] = new JTextArea[input.size()];
+					JTextArea endTime[] = new JTextArea[input.size()];
 					JTextArea taskDescription[] = new JTextArea[input.size()];
 					int change=0;
 					for(int i=0; i<input.size(); i++) {	
 						//----- one task ----//
+												
 						messagePanel[i] = new JPanel();
-						messagePanel[i].setBorder(new LineBorder(new Color(153, 153, 204)));
 						messagePanel[i].setBackground(new Color(255, 255, 255));
 						messagePanel[i].setBounds(0, 0+change, 320, 116);
-						taskPanel.add(messagePanel[i]);
 						messagePanel[i].setLayout(null);
-						
-						startDate[i] = new Label("22/04/2014");
-						startDate[i].setFont(new Font("Pluto Sans Cond ExLight", Font.PLAIN, 16));
-						startDate[i].setBounds(222, 10, 88, 27);
-						messagePanel[i].add(startDate[i]);
-						
-						startTime[i] = new Label("StartTime");
+						taskPanel.add(messagePanel[i]);
+						taskPanel.revalidate();
+						taskPanel.repaint();
+
+						startTime[i] = new JTextArea("StartTime");
 						startTime[i].setFont(new Font("Pluto Sans Cond ExLight", Font.PLAIN, 12));
-						startTime[i].setBounds(222, 32, 88, 22);
+						startTime[i].setBounds(200, 32, 88, 22);
 						messagePanel[i].add(startTime[i]);
 						
-						endDate[i] = new Label("22/04/2014");
-						endDate[i].setFont(new Font("Pluto Sans Cond ExLight", Font.PLAIN, 16));
-						endDate[i].setBounds(222, 60, 88, 27);
-						messagePanel[i].add(endDate[i]);
-						
-						endTime[i] = new Label("End Time");
+						startDate[i] = new JTextArea("22/04/2014");
+						startDate[i].setFont(new Font("Pluto Sans Cond ExLight", Font.PLAIN, 16));
+						startDate[i].setBounds(200, 10, 88, 27);
+						messagePanel[i].add(startDate[i]);
+
+						endTime[i] = new JTextArea("End Time");
 						endTime[i].setFont(new Font("Pluto Sans Cond ExLight", Font.PLAIN, 12));
-						endTime[i].setBounds(222, 84, 88, 22);
+						endTime[i].setBounds(200, 84, 88, 22);
 						messagePanel[i].add(endTime[i]);
 						
+						endDate[i] = new JTextArea("22/04/2014");
+						endDate[i].setFont(new Font("Pluto Sans Cond ExLight", Font.PLAIN, 16));
+						endDate[i].setBounds(200, 60, 88, 27);
+						messagePanel[i].add(endDate[i]);
 						taskDescription[i] = new JTextArea();
 						taskDescription[i].setFont(new Font("Pluto Sans Thin", Font.PLAIN, 14));
+						taskDescription[i].setBounds(10,11, 185,95);
 						taskDescription[i].setLineWrap(true);
 						taskDescription[i].setWrapStyleWord(true);
-						taskDescription[i].setBounds(10, 11, 206, 95);
-						messagePanel[i].add(taskDescription[i]);
 						taskDescription[i].setEditable(false);
+						messagePanel[i].add(taskDescription[i]);
 						//----------//
+						change += 116;
 						taskDescription[i].append(input.get(i));
-						change +=116;
+						taskPanel.setPreferredSize(new Dimension(320,change));
 					}
 					//String text = textField.getText();
 					//taskDescription.append(text);
