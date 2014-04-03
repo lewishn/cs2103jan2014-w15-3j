@@ -24,7 +24,7 @@ import org.jnativehook.keyboard.NativeKeyEvent;
 import org.jnativehook.keyboard.NativeKeyListener;
 
 
-public class DoThingsGUI extends JFrame {
+public class DoThingsGUI extends JFrame  {
 
 	private static final String MESSAGE_STARTUP = "Get ready to Do Things!\n";
 	private static final String MESSAGE_COMMAND = "Please enter a command: ";
@@ -62,7 +62,8 @@ public class DoThingsGUI extends JFrame {
 	/**
 	 * Create the frame.
 	 */
-	public DoThingsGUI() {
+	public DoThingsGUI () {
+		
 		setUndecorated(true);
 		setForeground(Color.BLACK);
 		setFont(new Font("Consolas", Font.BOLD, 14));
@@ -153,6 +154,29 @@ public class DoThingsGUI extends JFrame {
 			
 			public void keyPressed(KeyEvent arg0){
 
+			}
+		});
+		
+		addKeyListener(new KeyAdapter() {
+			@Override
+			public void keyReleased(KeyEvent arg0) {
+				int key = arg0.getKeyCode();
+				switch(key){
+				case COMMAND_SHIFT_WINDOW_UP:
+					setLocation(getX(),getY()-50);
+					break;
+				case COMMAND_SHIFT_WINDOW_DOWN:
+					setLocation(getX(),getY()+50);
+					break;
+				case COMMAND_SHIFT_WINDOW_LEFT:
+					setLocation(getX()-50,getY());
+					break;
+				case COMMAND_SHIFT_WINDOW_RIGHT:
+					setLocation(getX()+50,getY());
+					break;
+				default:
+					break;	
+				}
 			}
 		});
 		
