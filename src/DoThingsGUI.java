@@ -37,9 +37,8 @@ public class DoThingsGUI extends JFrame {
 	private JPanel contentPane;
 	private JTextField textField;
 	private JTextArea textArea;
+	private GlobalKeyPress globalKeyPress; // To toggle visibility of frame upon pressing hotkey
 	
-	// To toggle visibility of frame upon pressing hotkey
-	private GlobalKeyPress globalKeyPress;
 
 	/**
 	 * Launch the application.
@@ -49,6 +48,7 @@ public class DoThingsGUI extends JFrame {
 			public void run() {
 				try {
 					DoThingsGUI frame = new DoThingsGUI();
+					frame.setLocationRelativeTo(null);
 					frame.setVisible(true);
 					frame.textArea.setText(MESSAGE_STARTUP);  
 				} catch (Exception e) {
