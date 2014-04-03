@@ -6,6 +6,7 @@ import java.awt.Font;
 import java.awt.TextField;
 import java.awt.event.KeyAdapter;
 import java.awt.event.KeyEvent;
+import java.awt.Component;
 
 import javax.swing.JFrame;
 import javax.swing.JPanel;
@@ -29,17 +30,17 @@ public class DoThingsGUI extends JFrame {
 	private static final String MESSAGE_COMMAND = "Please enter a command: ";
 	private static final String COMMAND_EXIT = "exit";
 	private static final int COMMAND_HIDE = NativeKeyEvent.VK_F8;
-	private static final int COMMAND_SHIFT_WINDOW_LEFT = KeyEvent.VK_CONTROL + KeyEvent.VK_A;
-	private static final int COMMAND_SHIFT_WINDOW_RIGHT = KeyEvent.VK_CONTROL + KeyEvent.VK_D;
-	private static final int COMMAND_SHIFT_WINDOW_UP = KeyEvent.VK_CONTROL + KeyEvent.VK_W;
-	private static final int COMMAND_SHIFT_WINDOW_DOWN = KeyEvent.VK_CONTROL + KeyEvent.VK_S;
+	private static final int COMMAND_SHIFT_WINDOW_LEFT = KeyEvent.VK_F11;
+	private static final int COMMAND_SHIFT_WINDOW_RIGHT = KeyEvent.VK_F12;
+	private static final int COMMAND_SHIFT_WINDOW_UP = KeyEvent.VK_F9;
+	private static final int COMMAND_SHIFT_WINDOW_DOWN = KeyEvent.VK_F10;
 			
 	private JPanel contentPane;
 	private JTextField textField;
 	private JTextArea textArea;
 	private GlobalKeyPress globalKeyPress; // To toggle visibility of frame upon pressing hotkey
 	
-
+	
 	/**
 	 * Launch the application.
 	 */
@@ -113,8 +114,7 @@ public class DoThingsGUI extends JFrame {
 				if(key == KeyEvent.VK_ENTER){
 					String text = textField.getText();
 					Feedback feedback = DoThings.readCommand(text);
-					
-					
+						
 					if(feedback.getExitFlag()){
 						System.exit(0);
 					} 
@@ -130,26 +130,29 @@ public class DoThingsGUI extends JFrame {
 						textArea.append(feedback.toString());
 						textField.setText("");  
 					}
-					
 				}
+				
+				switch(key){
+				case COMMAND_SHIFT_WINDOW_UP:
+					setLocation(getX(),getY()-50);
+					break;
+				case COMMAND_SHIFT_WINDOW_DOWN:
+					setLocation(getX(),getY()+50);
+					break;
+				case COMMAND_SHIFT_WINDOW_LEFT:
+					setLocation(getX()-50,getY());
+					break;
+				case COMMAND_SHIFT_WINDOW_RIGHT:
+					setLocation(getX()+50,getY());
+					break;
+				default:
+					break;	
+				}
+				
 			}
 			
 			public void keyPressed(KeyEvent arg0){
-				int key = arg0.getKeyCode();
-				
-				
-				if(key == COMMAND_SHIFT_WINDOW_LEFT){
-					
-				}
-				if(key == COMMAND_SHIFT_WINDOW_RIGHT){
-					
-				}
-				if(key == COMMAND_SHIFT_WINDOW_UP){
-					
-				}
-				if(key == COMMAND_SHIFT_WINDOW_DOWN){
-					
-				}
+
 			}
 		});
 		
@@ -203,10 +206,15 @@ public class DoThingsGUI extends JFrame {
 
 		@Override
 		public void nativeKeyPressed(NativeKeyEvent e) {
+	
+		}
+
+		@Override
+		public void nativeKeyReleased(NativeKeyEvent e) {
 			int keyCode = e.getKeyCode();
-			if ( keyCode == COMMAND_HIDE) {
-				SwingUtilities.invokeLater(new Runnable() {
-					public void run() {
+			if (keyCode == COMMAND_HIDE) {
+			//	SwingUtilities.invokeLater(new Runnable() {
+				//	public void run() {
 						//JOptionPane.showMessageDialog(null, "This will run on Swing's Event Dispatch Thread.");
 						if (isVisible == true) {
 							textField.requestFocus();
@@ -218,12 +226,8 @@ public class DoThingsGUI extends JFrame {
 							isVisible = true;
 						}
 					}
-				});
-			}
-		}
-
-		@Override
-		public void nativeKeyReleased(NativeKeyEvent e) {
+				//});
+			//}
 		}
 
 		@Override
