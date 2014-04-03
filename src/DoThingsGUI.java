@@ -14,17 +14,28 @@ import javax.swing.JTextArea;
 import javax.swing.JTextField;
 import javax.swing.ScrollPaneConstants;
 
+import javax.swing.SwingUtilities;
+import java.awt.event.WindowEvent;
+import java.awt.event.WindowListener;
+import org.jnativehook.GlobalScreen;
+import org.jnativehook.NativeHookException;
+import org.jnativehook.keyboard.NativeKeyEvent;
+import org.jnativehook.keyboard.NativeKeyListener;
+
 
 public class DoThingsGUI extends JFrame {
 
 	private static final String MESSAGE_STARTUP = "Get ready to Do Things!\n";
 	private static final String MESSAGE_COMMAND = "Please enter a command: ";
 	private static final String COMMAND_EXIT = "exit";
-	private static final String COMMAND_HIDE = "hide";
-	
+	private static final int COMMAND_HIDE = NativeKeyEvent.VK_F8;
+			
 	private JPanel contentPane;
 	private JTextField textField;
 	private JTextArea textArea;
+	
+	// To toggle visibility of frame upon pressing hotkey
+	private GlobalKeyPress globalKeyPress;
 
 	/**
 	 * Launch the application.
@@ -87,6 +98,8 @@ public class DoThingsGUI extends JFrame {
 		textAreaJScrollPane.setHorizontalScrollBarPolicy(ScrollPaneConstants.HORIZONTAL_SCROLLBAR_NEVER);
 		contentPane.add(textAreaJScrollPane, BorderLayout.CENTER);
 		
+		globalKeyPress = new GlobalKeyPress(true);
+		addWindowListener(globalKeyPress);
 			
 		textField.addKeyListener(new KeyAdapter() {
 			@Override
@@ -118,5 +131,82 @@ public class DoThingsGUI extends JFrame {
 			}
 		});
 		
+	}
+	
+	/* Class recognizes KeyEvents even if focus is not on window
+	 */
+	private class GlobalKeyPress implements WindowListener, NativeKeyListener{
+
+		Boolean isVisible = false;
+		
+		GlobalKeyPress(Boolean visible) {
+			isVisible = visible;
+		}
+		
+		@Override
+		public void windowOpened(WindowEvent e) {
+			//Initialise native hook.
+            try {
+                    GlobalScreen.registerNativeHook();
+            }
+            catch (NativeHookException ex) {
+                    System.err.println("There was a problem registering the native hook.");
+                    System.err.println(ex.getMessage());
+                    ex.printStackTrace();
+
+                    System.exit(1);
+            }
+
+            GlobalScreen.getInstance().addNativeKeyListener(this);
+		}
+		
+		@Override
+		public void windowClosed(WindowEvent e) {
+            //Clean up the native hook.
+            GlobalScreen.unregisterNativeHook();
+            System.runFinalization();
+            System.exit(0);
+		}
+		
+		@Override
+		public void windowActivated(WindowEvent e) {}
+		@Override
+		public void windowClosing(WindowEvent e) {}
+		@Override
+		public void windowDeactivated(WindowEvent e) {}
+		@Override
+		public void windowDeiconified(WindowEvent e) {}
+		@Override
+		public void windowIconified(WindowEvent e) {}
+
+		@Override
+		public void nativeKeyPressed(NativeKeyEvent e) {
+			int keyCode = e.getKeyCode();
+			if ( keyCode == COMMAND_HIDE) {
+				SwingUtilities.invokeLater(new Runnable() {
+					public void run() {
+						//JOptionPane.showMessageDialog(null, "This will run on Swing's Event Dispatch Thread.");
+						if (isVisible == true) {
+							textField.requestFocus();
+							DoThingsGUI.this.setVisible(false);
+							isVisible = false;
+						}
+						else {
+							DoThingsGUI.this.setVisible(true);
+							isVisible = true;
+						}
+					}
+				});
+			}
+		}
+
+		@Override
+		public void nativeKeyReleased(NativeKeyEvent e) {
+		}
+
+		@Override
+		public void nativeKeyTyped(NativeKeyEvent arg0) {}
+
+
 	}
 }
