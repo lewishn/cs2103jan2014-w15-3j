@@ -15,6 +15,9 @@ import javax.swing.JTextField;
 import javax.swing.SwingConstants;
 import javax.swing.border.EmptyBorder;
 import javax.swing.border.LineBorder;
+import javax.swing.JScrollPane;
+import javax.swing.ScrollPaneConstants;
+import java.awt.ScrollPane;
 
 
 public class DoThingsGUI extends JFrame {
@@ -26,7 +29,8 @@ public class DoThingsGUI extends JFrame {
 	private JLabel headingLabel;
 	private JPanel textPanel;
 	private JLabel feedbackLabel;
-	private final JPanel taskPanel = new JPanel();
+	private ArrayList<String>input = new ArrayList<String>();
+	private JScrollPane taskPanel;
 	/**
 	 * Launch the application.
 	 */
@@ -87,15 +91,16 @@ public class DoThingsGUI extends JFrame {
 		inputField.setForeground(new Color(0, 0, 0));
 		inputField.setFont(new Font("Pluto Sans ExtraLight", Font.PLAIN, 23));
 		contentPane.add(inputField);
-		
+
 		textPanel = new JPanel();
 		textPanel.setBackground(SystemColor.window);
 		textPanel.setBounds(0, 75, 320, 41);
 		contentPane.add(textPanel);
-		taskPanel.setBounds(0, 116, 320, 484);
-		contentPane.add(taskPanel);
+		
+		taskPanel = new JScrollPane();
 		taskPanel.setOpaque(false);
-		taskPanel.setLayout(null);
+		taskPanel.setBounds(0, 115, 320, 485);
+		contentPane.add(taskPanel);
 		
 		
 		
@@ -112,49 +117,56 @@ public class DoThingsGUI extends JFrame {
 				int key = arg0.getKeyCode();
 				
 				if(key == KeyEvent.VK_ENTER){
-					ArrayList<String>input = new ArrayList<String>();
-					input.add("hello");
-					JPanel messagePanel[] = new JPanel[input.size()];
-					for(int i=0; i<input.size(); i++) {
-											
-												
-						//----- one task ----//
 					
-						messagePanel.clone()[.setBorder(new LineBorder(new Color(153, 153, 204)));
-						messagePanel.setBackground(new Color(255, 255, 255));
-						messagePanel.setBounds(0, 0, 320, 116);
-						taskPanel.add(messagePanel);
-						messagePanel.setLayout(null);
+					String userInput = inputField.getText();
+					input.add(userInput);
+					inputField.setText("");  
+					JPanel messagePanel[] = new JPanel[input.size()];
+					Label startDate[] = new Label[input.size()];
+					Label startTime[] = new Label[input.size()];
+					Label endDate[] = new Label[input.size()];
+					Label endTime[] = new Label[input.size()];
+					JTextArea taskDescription[] = new JTextArea[input.size()];
+					int change=0;
+					for(int i=0; i<input.size(); i++) {	
+						//----- one task ----//
+						messagePanel[i] = new JPanel();
+						messagePanel[i].setBorder(new LineBorder(new Color(153, 153, 204)));
+						messagePanel[i].setBackground(new Color(255, 255, 255));
+						messagePanel[i].setBounds(0, 0+change, 320, 116);
+						taskPanel.add(messagePanel[i]);
+						messagePanel[i].setLayout(null);
 						
-						Label startDate = new Label("22/04/2014");
-						startDate.setFont(new Font("Pluto Sans Cond ExLight", Font.PLAIN, 16));
-						startDate.setBounds(222, 10, 88, 27);
-						messagePanel.add(startDate);
+						startDate[i] = new Label("22/04/2014");
+						startDate[i].setFont(new Font("Pluto Sans Cond ExLight", Font.PLAIN, 16));
+						startDate[i].setBounds(222, 10, 88, 27);
+						messagePanel[i].add(startDate[i]);
 						
-						Label startTime = new Label("StartTime");
-						startTime.setFont(new Font("Pluto Sans Cond ExLight", Font.PLAIN, 12));
-						startTime.setBounds(222, 32, 88, 22);
-						messagePanel.add(startTime);
+						startTime[i] = new Label("StartTime");
+						startTime[i].setFont(new Font("Pluto Sans Cond ExLight", Font.PLAIN, 12));
+						startTime[i].setBounds(222, 32, 88, 22);
+						messagePanel[i].add(startTime[i]);
 						
-						Label endDate = new Label("22/04/2014");
-						endDate.setFont(new Font("Pluto Sans Cond ExLight", Font.PLAIN, 16));
-						endDate.setBounds(222, 60, 88, 27);
-						messagePanel.add(endDate);
+						endDate[i] = new Label("22/04/2014");
+						endDate[i].setFont(new Font("Pluto Sans Cond ExLight", Font.PLAIN, 16));
+						endDate[i].setBounds(222, 60, 88, 27);
+						messagePanel[i].add(endDate[i]);
 						
-						Label endTime = new Label("End Time");
-						endTime.setFont(new Font("Pluto Sans Cond ExLight", Font.PLAIN, 12));
-						endTime.setBounds(222, 84, 88, 22);
-						messagePanel.add(endTime);
+						endTime[i] = new Label("End Time");
+						endTime[i].setFont(new Font("Pluto Sans Cond ExLight", Font.PLAIN, 12));
+						endTime[i].setBounds(222, 84, 88, 22);
+						messagePanel[i].add(endTime[i]);
 						
-						JTextArea taskDescription = new JTextArea();
-						taskDescription.setFont(new Font("Pluto Sans Thin", Font.PLAIN, 14));
-						taskDescription.setLineWrap(true);
-						taskDescription.setWrapStyleWord(true);
-						taskDescription.setBounds(10, 11, 206, 95);
-						messagePanel.add(taskDescription);
-						taskDescription.setEditable(false);
+						taskDescription[i] = new JTextArea();
+						taskDescription[i].setFont(new Font("Pluto Sans Thin", Font.PLAIN, 14));
+						taskDescription[i].setLineWrap(true);
+						taskDescription[i].setWrapStyleWord(true);
+						taskDescription[i].setBounds(10, 11, 206, 95);
+						messagePanel[i].add(taskDescription[i]);
+						taskDescription[i].setEditable(false);
 						//----------//
-						taskDescription.append(input.get(i));
+						taskDescription[i].append(input.get(i));
+						change +=116;
 					}
 					//String text = textField.getText();
 					//taskDescription.append(text);
