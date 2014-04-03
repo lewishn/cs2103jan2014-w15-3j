@@ -13,18 +13,22 @@ import javax.swing.JScrollPane;
 import javax.swing.JTextArea;
 import javax.swing.JTextField;
 import javax.swing.ScrollPaneConstants;
+import java.awt.Rectangle;
+import javax.swing.JLabel;
+import java.awt.Component;
+import javax.swing.SwingConstants;
+import java.awt.SystemColor;
+import javax.swing.border.EmptyBorder;
 
 
 public class DoThingsGUI extends JFrame {
 
 	private static final String MESSAGE_STARTUP = "Get ready to Do Things!\n";
-	private static final String MESSAGE_COMMAND = "Please enter a command: ";
-	private static final String COMMAND_EXIT = "exit";
-	private static final String COMMAND_HIDE = "hide";
 	
 	private JPanel contentPane;
 	private JTextField textField;
-	private JTextArea textArea;
+	private JLabel headingLabel;
+	private JPanel textPanel;
 
 	/**
 	 * Launch the application.
@@ -47,45 +51,57 @@ public class DoThingsGUI extends JFrame {
 	 * Create the frame.
 	 */
 	public DoThingsGUI() {
-		setUndecorated(true);
 		setForeground(Color.BLACK);
 		setFont(new Font("Consolas", Font.BOLD, 14));
 		setTitle("Do-things");
 		setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
 		setBackground(Color.BLACK);
-		setBounds(100, 100, 750, 500);
+		setBounds(100, 100, 320, 600);
+		setUndecorated(true);
 		contentPane = new JPanel();
 		contentPane.setAutoscrolls(true);
 		contentPane.setToolTipText("");
 		contentPane.setBackground(Color.BLACK);
 		contentPane.setForeground(Color.BLACK);
 		contentPane.setBorder(null);
-		contentPane.setLayout(new BorderLayout(0, 0));
 		setContentPane(contentPane);
+		contentPane.setLayout(null);
+		
+		headingLabel = new JLabel("Do-Things");
+		headingLabel.setBorder(new EmptyBorder(10, 10, 10, 10));
+		headingLabel.setOpaque(true);
+		headingLabel.setBackground(new Color(255, 204, 0));
+		headingLabel.setFont(new Font("Pluto Sans ExtraLight", Font.PLAIN, 22));
+		headingLabel.setHorizontalAlignment(SwingConstants.CENTER);
+		headingLabel.setBounds(0, 0, 320, 76);
+		contentPane.add(headingLabel);
 		
 		textField = new JTextField();
+		textField.setOpaque(false);
+		textField.setBounds(10, 75, 300, 41);
 		textField.setBorder(null);
-		textField.setBackground(new Color(255, 102, 51));
+		textField.setBackground(new Color(255, 255, 255));
 		textField.setForeground(new Color(0, 0, 0));
 		textField.setFont(new Font("Pluto Sans ExtraLight", Font.PLAIN, 23));
-		contentPane.add(textField, BorderLayout.SOUTH);
+		contentPane.add(textField);
 		
-		textArea = new JTextArea();
-		textArea.setBorder(null);
-		textArea.setLineWrap(true);
-		textArea.setFocusTraversalKeysEnabled(false);
-		textArea.setFocusable(false);
-		textArea.setForeground(Color.WHITE);
-		textArea.setFont(new Font("Pluto Sans ExtraLight", Font.PLAIN, 20));
-		textArea.setCursor(Cursor.getPredefinedCursor(Cursor.DEFAULT_CURSOR));
-		textArea.setBackground(new Color(102, 102, 102));
-		textArea.setEditable(false);
-		//textArea.setWrapStyleWord(true);
-		JScrollPane textAreaJScrollPane = new JScrollPane(textArea);
-		textAreaJScrollPane.setFont(new Font("Pluto Sans ExtraLight", Font.PLAIN, 23));
-		textAreaJScrollPane.setBorder(null);
-		textAreaJScrollPane.setHorizontalScrollBarPolicy(ScrollPaneConstants.HORIZONTAL_SCROLLBAR_NEVER);
-		contentPane.add(textAreaJScrollPane, BorderLayout.CENTER);
+		textPanel = new JPanel();
+		textPanel.setBackground(SystemColor.window);
+		textPanel.setBounds(0, 75, 320, 41);
+		contentPane.add(textPanel);
+		
+		JScrollPane scrollPane = new JScrollPane();
+		scrollPane.setOpaque(false);
+		scrollPane.setViewportBorder(null);
+		scrollPane.setBorder(null);
+		scrollPane.setBackground(Color.WHITE);
+		scrollPane.setBounds(0, 115, 320, 485);
+		contentPane.add(scrollPane);
+		
+		JPanel backgroundPanel = new JPanel();
+		backgroundPanel.setBackground(SystemColor.windowBorder);
+		backgroundPanel.setBounds(0, 0, 320, 600);
+		contentPane.add(backgroundPanel);
 		
 			
 		textField.addKeyListener(new KeyAdapter() {
