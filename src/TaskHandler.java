@@ -39,6 +39,14 @@ class TaskHandler {
 		
 		Task newTask = createTask(userInput);
 		
+		if (newTask == null) {
+			return new Feedback("Error, start time cannot be after end time.");
+		}
+		
+		if (newTask.getDescription().trim().length() == 0) {
+			return new Feedback("Error, task description cannot be empty.");
+		}
+		
 		HistoryHandler.pushUndoStack();
 		Task.getList().add(newTask);
 		Task.sortList();
@@ -55,7 +63,7 @@ class TaskHandler {
 		String alias = CommandParser.getAliasFromDescription(userInput);		
 		alias = (Task.isAliasValid(alias) || isInteger(alias)) ? null : alias;
 		userInput = CommandParser.removeDateTimeFromString(userInput);
-		userInput = CommandParser.removeAliasFromDescription(userInput);
+		userInput = CommandParser.removeAliasAndEscapeChar(userInput);
 		
 		String[] fields = CommandParser.getTaskFields(input);
 		Task newTask = createTaskFromFields(fields, userInput, alias);
@@ -121,7 +129,11 @@ class TaskHandler {
 				}
 			}
 		}
-
+		
+		if (start != null && end != null && start.isAfter(end)) {
+			return null;
+		}
+		
 		return new Task(input, start, end, alias);
 	}
 	
@@ -152,9 +164,15 @@ class TaskHandler {
 		
 		if (updateField.equalsIgnoreCase("start") || updateField.equalsIgnoreCase("end") || updateField.equalsIgnoreCase("time")) {
 			if (!CommandParser.isInputValid(updateDesc, 1)) {
+				Task.getList().add(taskToUpdate);
 				return new Feedback(MESSAGE_UPDATE_ARGUMENT_ERROR);
 			}
 			taskToUpdate = updateTaskTime(taskToUpdate, updateField, updateDesc);
+			
+			if (taskToUpdate == null) {
+				Task.getList().add(taskToUpdate);
+				return new Feedback("Error, start time cannot be after end time");
+			}
 			
 		} else if (updateField.equals("alias")) {
 			String[] tokens = updateDesc.split("\\s+");
@@ -175,9 +193,9 @@ class TaskHandler {
 			
 		} else if (updateField.equals("desc") || updateField.equals("description")) {
 			if (!CommandParser.isInputValid(updateDesc, 1)) {
+				Task.getList().add(taskToUpdate);
 				return new Feedback(MESSAGE_UPDATE_ARGUMENT_ERROR);
 			}
-			
 			taskToUpdate.setDescription(updateDesc);
 		} else {
 			taskToUpdate = createTask(updateStringWithoutID);
@@ -209,6 +227,9 @@ class TaskHandler {
 		
 		if (field.equalsIgnoreCase("time")) {
 			Task tempTask = createTask(update);
+			if (tempTask == null) {
+				return null;
+			}
 			task.setStartDateTime(tempTask.getStartDateTime());
 			task.setEndDateTime(tempTask.getEndDateTime());
 		} else {
@@ -226,6 +247,10 @@ class TaskHandler {
 				task.setStartDateTime(date);
 			} else {
 				task.setEndDateTime(date);
+			}
+			
+			if (task.getStartDateTime().isAfter(task.getEndDateTime())) {
+				return null;
 			}
 		}
 		
