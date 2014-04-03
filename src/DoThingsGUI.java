@@ -29,6 +29,10 @@ public class DoThingsGUI extends JFrame {
 	private static final String MESSAGE_COMMAND = "Please enter a command: ";
 	private static final String COMMAND_EXIT = "exit";
 	private static final int COMMAND_HIDE = NativeKeyEvent.VK_F8;
+	private static final int COMMAND_SHIFT_WINDOW_LEFT = KeyEvent.VK_SHIFT + KeyEvent.VK_LEFT;
+	private static final int COMMAND_SHIFT_WINDOW_RIGHT = KeyEvent.VK_SHIFT + KeyEvent.VK_RIGHT;
+	private static final int COMMAND_SHIFT_WINDOW_UP = KeyEvent.VK_SHIFT + KeyEvent.VK_UP;
+	private static final int COMMAND_SHIFT_WINDOW_DOWN = KeyEvent.VK_SHIFT + KeyEvent.VK_DOWN;
 			
 	private JPanel contentPane;
 	private JTextField textField;
@@ -126,6 +130,24 @@ public class DoThingsGUI extends JFrame {
 						textArea.append(feedback.toString());
 						textField.setText("");  
 					}
+					
+				}
+			}
+			
+			public void keyPressed(KeyEvent arg0){
+				int key = arg0.getKeyCode();
+				
+				
+				if(key == COMMAND_SHIFT_WINDOW_LEFT){
+					
+				}
+				if(key == COMMAND_SHIFT_WINDOW_RIGHT){
+					
+				}
+				if(key == COMMAND_SHIFT_WINDOW_UP){
+					
+				}
+				if(key == COMMAND_SHIFT_WINDOW_DOWN){
 					
 				}
 			}
