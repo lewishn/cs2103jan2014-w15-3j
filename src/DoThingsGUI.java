@@ -29,10 +29,10 @@ public class DoThingsGUI extends JFrame {
 	private static final String MESSAGE_COMMAND = "Please enter a command: ";
 	private static final String COMMAND_EXIT = "exit";
 	private static final int COMMAND_HIDE = NativeKeyEvent.VK_F8;
-	private static final int COMMAND_SHIFT_WINDOW_LEFT = KeyEvent.VK_SHIFT + KeyEvent.VK_LEFT;
-	private static final int COMMAND_SHIFT_WINDOW_RIGHT = KeyEvent.VK_SHIFT + KeyEvent.VK_RIGHT;
-	private static final int COMMAND_SHIFT_WINDOW_UP = KeyEvent.VK_SHIFT + KeyEvent.VK_UP;
-	private static final int COMMAND_SHIFT_WINDOW_DOWN = KeyEvent.VK_SHIFT + KeyEvent.VK_DOWN;
+	private static final int COMMAND_SHIFT_WINDOW_LEFT = KeyEvent.VK_CONTROL + KeyEvent.VK_A;
+	private static final int COMMAND_SHIFT_WINDOW_RIGHT = KeyEvent.VK_CONTROL + KeyEvent.VK_D;
+	private static final int COMMAND_SHIFT_WINDOW_UP = KeyEvent.VK_CONTROL + KeyEvent.VK_W;
+	private static final int COMMAND_SHIFT_WINDOW_DOWN = KeyEvent.VK_CONTROL + KeyEvent.VK_S;
 			
 	private JPanel contentPane;
 	private JTextField textField;
