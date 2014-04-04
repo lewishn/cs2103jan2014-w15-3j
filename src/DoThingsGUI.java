@@ -65,7 +65,7 @@ public class DoThingsGUI extends JFrame {
 		setTitle("Do-things");
 		setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
 		setBackground(Color.BLACK);
-		setBounds(100, 100, 400, 600);
+		setBounds(100, 25, 400, 700);
 		setUndecorated(true);
 		contentPane = new JPanel();
 		contentPane.setAutoscrolls(true);
@@ -76,74 +76,14 @@ public class DoThingsGUI extends JFrame {
 		setContentPane(contentPane);
 		contentPane.setLayout(null);
 		
-		feedbackLabel = new JLabel("");
-		feedbackLabel.setForeground(Color.GRAY);
-		feedbackLabel.setFont(new Font("Pluto Sans ExtraLight", Font.PLAIN, 14));
-		feedbackLabel.setHorizontalAlignment(SwingConstants.CENTER);
-		feedbackLabel.setBounds(0, 30, 400, 33);
-		contentPane.add(feedbackLabel);
-		
-		headingLabel = new JLabel("Do-Things");
-		headingLabel.setForeground(Color.GRAY);
-		headingLabel.setVerticalAlignment(SwingConstants.TOP);
-		headingLabel.setVerticalTextPosition(SwingConstants.TOP);
-		headingLabel.setBorder(new EmptyBorder(10, 10, 10, 10));
-		headingLabel.setOpaque(true);
-		headingLabel.setBackground(new Color(255, 255, 51));
-		headingLabel.setFont(new Font("Pluto Sans Medium", Font.PLAIN, 22));
-		headingLabel.setHorizontalAlignment(SwingConstants.CENTER);
-		headingLabel.setBounds(0, 0, 400, 63);
-		contentPane.add(headingLabel);
-		
 		inputField = new JTextField();
-		inputField.setOpaque(false);
-		inputField.setBounds(10, 64, 380, 33);
+		inputField.setBounds(10, 57, 380, 33);
 		inputField.setBorder(null);
-		inputField.setBackground(new Color(255, 255, 51));
-		inputField.setForeground(Color.LIGHT_GRAY);
+		inputField.setBackground(new Color(153,204,255));
+		inputField.setForeground(Color.BLACK);
 		inputField.setFont(new Font("Pluto Sans ExtraLight", Font.PLAIN, 23));
+		
 		contentPane.add(inputField);
-
-		textPanel = new JPanel();
-		textPanel.setBackground(Color.DARK_GRAY);
-		textPanel.setBounds(0, 62, 400, 35);
-		contentPane.add(textPanel);
-		
-		
-		
-		taskPanel = new JPanel();
-		taskPanel.setBounds(0, 0, 171, 485);
-		taskPanel.setOpaque(false);
-		taskPanel.setBackground(new Color(255, 204, 51));
-		contentPane.add(taskPanel);
-		
-		taskPanelScroll = new JScrollPane(taskPanel);
-		GroupLayout gl_taskPanel = new GroupLayout(taskPanel);
-		gl_taskPanel.setHorizontalGroup(
-			gl_taskPanel.createParallelGroup(Alignment.LEADING)
-				.addGap(0, 320, Short.MAX_VALUE)
-		);
-		gl_taskPanel.setVerticalGroup(
-			gl_taskPanel.createParallelGroup(Alignment.LEADING)
-				.addGap(0, 485, Short.MAX_VALUE)
-		);
-		taskPanel.setLayout(gl_taskPanel);
-		taskPanelScroll.setOpaque(false);
-		taskPanelScroll.setHorizontalScrollBarPolicy(ScrollPaneConstants.HORIZONTAL_SCROLLBAR_NEVER);
-		taskPanelScroll.setBorder(null);
-		taskPanelScroll.setBounds(0, 97, 400, 503);
-		contentPane.add(taskPanelScroll);
-		
-
-		
-		
-		
-		
-		JPanel backgroundPanel = new JPanel();
-		backgroundPanel.setBackground(SystemColor.windowBorder);
-		backgroundPanel.setBounds(0, 0, 400, 600);
-		contentPane.add(backgroundPanel);
-		backgroundPanel.setLayout(null);
 		
 			
 		inputField.addKeyListener(new KeyAdapter() {
@@ -165,10 +105,7 @@ public class DoThingsGUI extends JFrame {
 					int change=0;
 					for(int i=0; i<input.size(); i++) {	
 						//----- one task ----//
-												
 						messagePanel[i] = new JPanel();
-						messagePanel[i].setBackground(new Color(102, 153, 0));
-						//messagePanel[i].setBackground(new Color(255, 255, 255));
 						messagePanel[i].setBounds(0, 0+change, 400, 70);
 						messagePanel[i].setLayout(null);
 						taskPanel.add(messagePanel[i]);
@@ -199,16 +136,67 @@ public class DoThingsGUI extends JFrame {
 						endDate[i].setOpaque(false);
 						messagePanel[i].add(endDate[i]);
 						taskDescription[i] = new JTextArea();
-						taskDescription[i].setFont(new Font("Pluto Sans Thin", Font.PLAIN, 18));
-						taskDescription[i].setBounds(10,10, 380,60); //55 characters
+						taskDescription[i].setFont(new Font("Pluto Sans Medium", Font.PLAIN, 18));
+						taskDescription[i].setBounds(10,10, 375,60); //55 characters
 						taskDescription[i].setLineWrap(true);
 						taskDescription[i].setWrapStyleWord(true);
 						taskDescription[i].setEditable(false);
 						taskDescription[i].setOpaque(false);
-						taskDescription[i].setForeground(Color.WHITE);
 						messagePanel[i].add(taskDescription[i]);
+						
+						if(i%4==0) {
+							//green
+							messagePanel[i].setBackground(new Color(153, 204, 102));
+							taskDescription[i].setForeground(Color.WHITE);
+							startDate[i].setForeground(Color.WHITE);
+							startTime[i].setForeground(Color.WHITE);
+							endDate[i].setForeground(Color.WHITE);
+							endTime[i].setForeground(Color.WHITE);
+						} else if(i%4==1) {
+							//yellow
+							messagePanel[i].setBackground(new Color(255,255,51));
+							taskDescription[i].setForeground(new Color(102,102,102));
+							startDate[i].setForeground(new Color(102,102,102));
+							startTime[i].setForeground(new Color(102,102,102));
+							endDate[i].setForeground(new Color(102,102,102));
+							endTime[i].setForeground(new Color(102,102,102));
+						} else if(i%4==2) {
+							// red
+							messagePanel[i].setBackground(new Color(255, 153, 153));
+							taskDescription[i].setForeground(Color.WHITE);
+							startDate[i].setForeground(Color.WHITE);
+							startTime[i].setForeground(Color.WHITE);
+							endDate[i].setForeground(Color.WHITE);
+							endTime[i].setForeground(Color.WHITE);
+						} else {
+							//light grey
+							messagePanel[i].setBackground(new Color(204, 204, 204));
+							taskDescription[i].setForeground(new Color(153,153,153));
+							startDate[i].setForeground(new Color(153,153,153));
+							startTime[i].setForeground(new Color(153,153,153));
+							endDate[i].setForeground(new Color(153,153,153));
+							endTime[i].setForeground(new Color(153,153,153));
+						}
+						
+						/*else {
+							//dark grey
+							messagePanel[i].setBackground(new Color(153, 153, 153));
+							taskDescription[i].setForeground(new Color(102,102,102));
+							startDate[i].setForeground(new Color(102,102,102));
+							startTime[i].setForeground(new Color(102,102,102));
+							endDate[i].setForeground(new Color(102,102,102));
+							endTime[i].setForeground(new Color(102,102,102));
+						}*/
+						//messagePanel[i].setBackground(new Color(255, 255, 255));
+						
+						
 						//----------//
-						change += 70;
+						
+						
+						
+						
+						
+						change += 72;
 						taskDescription[i].append(input.get(i));
 						taskPanel.setPreferredSize(new Dimension(320,change));
 					}
@@ -236,6 +224,59 @@ public class DoThingsGUI extends JFrame {
 				}
 			}
 		});
+		
+		feedbackLabel = new JLabel("");
+		feedbackLabel.setForeground(Color.GRAY);
+		feedbackLabel.setFont(new Font("Pluto Sans ExtraLight", Font.PLAIN, 14));
+		feedbackLabel.setHorizontalAlignment(SwingConstants.CENTER);
+		feedbackLabel.setBounds(0, 30, 400, 33);
+		contentPane.add(feedbackLabel);
+		
+		headingLabel = new JLabel("Do-Things");
+		headingLabel.setForeground(Color.GRAY);
+		headingLabel.setVerticalAlignment(SwingConstants.TOP);
+		headingLabel.setVerticalTextPosition(SwingConstants.TOP);
+		headingLabel.setBorder(new EmptyBorder(10, 10, 10, 10));
+		headingLabel.setOpaque(true);
+		headingLabel.setBackground(new Color(255, 255, 255));
+		headingLabel.setFont(new Font("Pluto Sans Cond Light", Font.PLAIN, 22));
+		headingLabel.setHorizontalAlignment(SwingConstants.CENTER);
+		headingLabel.setBounds(0, 0, 400, 63);
+		contentPane.add(headingLabel);
+
+		textPanel = new JPanel();
+		textPanel.setBackground(new Color(255, 255, 255));
+		textPanel.setBounds(0, 62, 400, 35);
+		contentPane.add(textPanel);
+			
+		taskPanel = new JPanel();
+		taskPanel.setBounds(0, 0, 171, 485);
+		taskPanel.setOpaque(false);
+		taskPanel.setBackground(new Color(255, 204, 51));
+		contentPane.add(taskPanel);
+		
+		taskPanelScroll = new JScrollPane(taskPanel);
+		GroupLayout gl_taskPanel = new GroupLayout(taskPanel);
+		gl_taskPanel.setHorizontalGroup(
+			gl_taskPanel.createParallelGroup(Alignment.LEADING)
+				.addGap(0, 320, Short.MAX_VALUE)
+		);
+		gl_taskPanel.setVerticalGroup(
+			gl_taskPanel.createParallelGroup(Alignment.LEADING)
+				.addGap(0, 485, Short.MAX_VALUE)
+		);
+		taskPanel.setLayout(gl_taskPanel);
+		taskPanelScroll.setOpaque(false);
+		taskPanelScroll.setHorizontalScrollBarPolicy(ScrollPaneConstants.HORIZONTAL_SCROLLBAR_NEVER);
+		taskPanelScroll.setBorder(null);
+		taskPanelScroll.setBounds(0, 97, 400, 603);
+		contentPane.add(taskPanelScroll);
+		
+		JPanel backgroundPanel = new JPanel();
+		backgroundPanel.setBackground(SystemColor.windowBorder);
+		backgroundPanel.setBounds(0, 0, 400, 600);
+		contentPane.add(backgroundPanel);
+		backgroundPanel.setLayout(null);
 		
 	}
 }
