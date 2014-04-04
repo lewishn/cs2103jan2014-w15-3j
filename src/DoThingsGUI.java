@@ -50,6 +50,8 @@ public class DoThingsGUI extends JFrame  {
 	
 	private int xCoordOfFrame;
 	private int yCoordOfFrame;
+
+	     
 	
 	// Launch application
 	public static void main(String[] args) {
@@ -119,7 +121,7 @@ public class DoThingsGUI extends JFrame  {
 		addWindowListener(globalKeyPress);	
 		textField.addKeyListener(triggerOnKeyReleased);
 		addMouseListener(triggerOnMouseAction);
-		addMouseMotionListener(triggerOnMouseAction);
+		textArea.addMouseMotionListener(triggerOnMouseAction);
 	}
 	
 	// Class recognizes KeyEvents even if focus is not on window
@@ -237,29 +239,27 @@ public class DoThingsGUI extends JFrame  {
 	}
 	
 	private class TriggerOnMouseAction implements MouseListener, MouseMotionListener{
-
-		@Override
-		public void mouseClicked(MouseEvent arg0) {}
-		@Override
-		public void mouseEntered(MouseEvent arg0) {}
-		@Override
-		public void mouseExited(MouseEvent arg0) {}
 		
 		@Override
 		public void mousePressed(MouseEvent arg0) {	 
 	         // Get x,y and store them
 	         xCoordOfFrame=getX();
 	         yCoordOfFrame=getY();
-	       
 		}
-
-		@Override
-		public void mouseReleased(MouseEvent arg0) {}
+		
 		@Override
 		public void mouseDragged(MouseEvent arg0) {
 			setLocation(getLocation().x+arg0.getX()-xCoordOfFrame,getLocation().y+arg0.getY()-yCoordOfFrame);
-		}
+		 }
 		
+		@Override
+		public void mouseClicked(MouseEvent arg0) {}
+		@Override
+		public void mouseEntered(MouseEvent arg0) {}
+		@Override
+		public void mouseExited(MouseEvent arg0) {}
+		@Override
+		public void mouseReleased(MouseEvent arg0) {}
 		@Override
 		public void mouseMoved(MouseEvent arg0) {}
 	}
