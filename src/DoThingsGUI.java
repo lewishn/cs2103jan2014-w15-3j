@@ -6,6 +6,7 @@ import java.awt.Font;
 import java.awt.TextField;
 import java.awt.event.KeyAdapter;
 import java.awt.event.KeyEvent;
+import java.awt.event.KeyListener;
 import java.awt.Component;
 
 import javax.swing.JFrame;
@@ -14,10 +15,11 @@ import javax.swing.JScrollPane;
 import javax.swing.JTextArea;
 import javax.swing.JTextField;
 import javax.swing.ScrollPaneConstants;
-
 import javax.swing.SwingUtilities;
+
 import java.awt.event.WindowEvent;
 import java.awt.event.WindowListener;
+
 import org.jnativehook.GlobalScreen;
 import org.jnativehook.NativeHookException;
 import org.jnativehook.keyboard.NativeKeyEvent;
@@ -39,6 +41,7 @@ public class DoThingsGUI extends JFrame  {
 	private JTextField textField;
 	private JTextArea textArea;
 	private GlobalKeyPress globalKeyPress; // To toggle visibility of frame upon pressing hotkey
+	private TriggerOnKeyReleased triggerOnKeyReleased;
 	
 	
 	/**
@@ -64,6 +67,9 @@ public class DoThingsGUI extends JFrame  {
 	 */
 	public DoThingsGUI () {
 		
+		globalKeyPress = new GlobalKeyPress(true);
+		triggerOnKeyReleased = new TriggerOnKeyReleased();
+		
 		setUndecorated(true);
 		setForeground(Color.BLACK);
 		setFont(new Font("Consolas", Font.BOLD, 14));
@@ -71,6 +77,7 @@ public class DoThingsGUI extends JFrame  {
 		setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
 		setBackground(Color.BLACK);
 		setBounds(100, 100, 750, 500);
+		
 		contentPane = new JPanel();
 		contentPane.setAutoscrolls(true);
 		contentPane.setToolTipText("");
@@ -85,7 +92,6 @@ public class DoThingsGUI extends JFrame  {
 		textField.setBackground(new Color(255, 102, 51));
 		textField.setForeground(new Color(0, 0, 0));
 		textField.setFont(new Font("Pluto Sans ExtraLight", Font.PLAIN, 23));
-		contentPane.add(textField, BorderLayout.SOUTH);
 		
 		textArea = new JTextArea();
 		textArea.setBorder(null);
@@ -97,93 +103,20 @@ public class DoThingsGUI extends JFrame  {
 		textArea.setCursor(Cursor.getPredefinedCursor(Cursor.DEFAULT_CURSOR));
 		textArea.setBackground(new Color(102, 102, 102));
 		textArea.setEditable(false);
-		//textArea.setWrapStyleWord(true);
+	
 		JScrollPane textAreaJScrollPane = new JScrollPane(textArea);
 		textAreaJScrollPane.setFont(new Font("Pluto Sans ExtraLight", Font.PLAIN, 23));
 		textAreaJScrollPane.setBorder(null);
 		textAreaJScrollPane.setHorizontalScrollBarPolicy(ScrollPaneConstants.HORIZONTAL_SCROLLBAR_NEVER);
+		
+		contentPane.add(textField, BorderLayout.SOUTH);
 		contentPane.add(textAreaJScrollPane, BorderLayout.CENTER);
 		
-		globalKeyPress = new GlobalKeyPress(true);
-		addWindowListener(globalKeyPress);
-			
-		textField.addKeyListener(new KeyAdapter() {
-			@Override
-			public void keyReleased(KeyEvent arg0){
-				int key = arg0.getKeyCode();
-				
-				if(key == KeyEvent.VK_ENTER){
-					String text = textField.getText();
-					Feedback feedback = DoThings.readCommand(text);
-						
-					if(feedback.getExitFlag()){
-						System.exit(0);
-					} 
-					/*
-					else if(doThingsFeedback.equalsIgnoreCase(COMMAND_HIDE)) {
-						
-					} else if(doThingsFeedback.contains("ERROR")) {
-						textField.selectAll();
-						textArea.append(doThingsFeedback);
-					}
-					*/
-					else{ 
-						textArea.append(feedback.toString());
-						textField.setText("");  
-					}
-				}
-				
-				switch(key){
-				case COMMAND_SHIFT_WINDOW_UP:
-					setLocation(getX(),getY()-50);
-					break;
-				case COMMAND_SHIFT_WINDOW_DOWN:
-					setLocation(getX(),getY()+50);
-					break;
-				case COMMAND_SHIFT_WINDOW_LEFT:
-					setLocation(getX()-50,getY());
-					break;
-				case COMMAND_SHIFT_WINDOW_RIGHT:
-					setLocation(getX()+50,getY());
-					break;
-				default:
-					break;	
-				}
-				
-			}
-			
-			public void keyPressed(KeyEvent arg0){
-
-			}
-		});
-		
-		addKeyListener(new KeyAdapter() {
-			@Override
-			public void keyReleased(KeyEvent arg0) {
-				int key = arg0.getKeyCode();
-				switch(key){
-				case COMMAND_SHIFT_WINDOW_UP:
-					setLocation(getX(),getY()-50);
-					break;
-				case COMMAND_SHIFT_WINDOW_DOWN:
-					setLocation(getX(),getY()+50);
-					break;
-				case COMMAND_SHIFT_WINDOW_LEFT:
-					setLocation(getX()-50,getY());
-					break;
-				case COMMAND_SHIFT_WINDOW_RIGHT:
-					setLocation(getX()+50,getY());
-					break;
-				default:
-					break;	
-				}
-			}
-		});
-		
+		addWindowListener(globalKeyPress);	
+		textField.addKeyListener(triggerOnKeyReleased);
 	}
 	
-	/* Class recognizes KeyEvents even if focus is not on window
-	 */
+	// Class recognizes KeyEvents even if focus is not on window
 	private class GlobalKeyPress implements WindowListener, NativeKeyListener{
 
 		Boolean isVisible = false;
@@ -227,12 +160,8 @@ public class DoThingsGUI extends JFrame  {
 		public void windowDeiconified(WindowEvent e) {}
 		@Override
 		public void windowIconified(WindowEvent e) {}
-
 		@Override
-		public void nativeKeyPressed(NativeKeyEvent e) {
-	
-		}
-
+		public void nativeKeyPressed(NativeKeyEvent e) {}
 		@Override
 		public void nativeKeyReleased(NativeKeyEvent e) {
 			int keyCode = e.getKeyCode();
@@ -253,9 +182,51 @@ public class DoThingsGUI extends JFrame  {
 				//});
 			//}
 		}
-
 		@Override
 		public void nativeKeyTyped(NativeKeyEvent arg0) {}
+	}
+	
+	private class TriggerOnKeyReleased implements KeyListener{
+		
+		@Override
+		public void keyReleased(KeyEvent e) {
+			int key = e.getKeyCode();
+			
+			switch(key){
+			case COMMAND_SHIFT_WINDOW_UP:
+				setLocation(getX(),getY()-50);
+				break;
+			case COMMAND_SHIFT_WINDOW_DOWN:
+				setLocation(getX(),getY()+50);
+				break;
+			case COMMAND_SHIFT_WINDOW_LEFT:
+				setLocation(getX()-50,getY());
+				break;
+			case COMMAND_SHIFT_WINDOW_RIGHT:
+				setLocation(getX()+50,getY());
+				break;
+			case KeyEvent.VK_ENTER:
+				String text = textField.getText();
+				Feedback feedback = DoThings.readCommand(text);
+					
+				if(feedback.getExitFlag()){
+					System.exit(0);
+				}else if(feedback.toString().contains("Invalid")) {
+					textField.selectAll();
+					textArea.append(feedback.toString());
+				}else{ 
+					textArea.append(feedback.toString());
+					textField.setText("");  
+				}
+			default:
+				break;	
+			}	
+		}
+
+		@Override
+		public void keyPressed(KeyEvent e) {}
+		@Override
+		public void keyTyped(KeyEvent e) {}
 
 
 	}
