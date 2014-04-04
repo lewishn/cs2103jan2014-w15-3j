@@ -7,6 +7,9 @@ import java.awt.TextField;
 import java.awt.event.KeyAdapter;
 import java.awt.event.KeyEvent;
 import java.awt.event.KeyListener;
+import java.awt.event.MouseEvent;
+import java.awt.event.MouseListener;
+import java.awt.event.MouseMotionListener;
 import java.awt.Component;
 
 import javax.swing.JFrame;
@@ -31,6 +34,7 @@ public class DoThingsGUI extends JFrame  {
 	private static final String MESSAGE_STARTUP = "Get ready to Do Things!\n";
 	private static final String MESSAGE_COMMAND = "Please enter a command: ";
 	private static final String COMMAND_EXIT = "exit";
+	private static final int COMMAND_ENTER = KeyEvent.VK_ENTER;
 	private static final int COMMAND_HIDE = NativeKeyEvent.VK_F8;
 	private static final int COMMAND_SHIFT_WINDOW_LEFT = KeyEvent.VK_F11;
 	private static final int COMMAND_SHIFT_WINDOW_RIGHT = KeyEvent.VK_F12;
@@ -40,13 +44,14 @@ public class DoThingsGUI extends JFrame  {
 	private JPanel contentPane;
 	private JTextField textField;
 	private JTextArea textArea;
-	private GlobalKeyPress globalKeyPress; // To toggle visibility of frame upon pressing hotkey
+	private GlobalKeyPress globalKeyPress; 
 	private TriggerOnKeyReleased triggerOnKeyReleased;
+	private TriggerOnMouseAction triggerOnMouseAction;
 	
+	private int xCoordOfFrame;
+	private int yCoordOfFrame;
 	
-	/**
-	 * Launch the application.
-	 */
+	// Launch application
 	public static void main(String[] args) {
 		EventQueue.invokeLater(new Runnable() {
 			public void run() {
@@ -62,13 +67,12 @@ public class DoThingsGUI extends JFrame  {
 		});
 	}
 
-	/**
-	 * Create the frame.
-	 */
+	// Creates frame
 	public DoThingsGUI () {
 		
 		globalKeyPress = new GlobalKeyPress(true);
 		triggerOnKeyReleased = new TriggerOnKeyReleased();
+		triggerOnMouseAction = new TriggerOnMouseAction();
 		
 		setUndecorated(true);
 		setForeground(Color.BLACK);
@@ -114,6 +118,8 @@ public class DoThingsGUI extends JFrame  {
 		
 		addWindowListener(globalKeyPress);	
 		textField.addKeyListener(triggerOnKeyReleased);
+		addMouseListener(triggerOnMouseAction);
+		addMouseMotionListener(triggerOnMouseAction);
 	}
 	
 	// Class recognizes KeyEvents even if focus is not on window
@@ -175,6 +181,7 @@ public class DoThingsGUI extends JFrame  {
 							isVisible = false;
 						}
 						else {
+							textField.requestFocus();
 							DoThingsGUI.this.setVisible(true);
 							isVisible = true;
 						}
@@ -205,7 +212,7 @@ public class DoThingsGUI extends JFrame  {
 			case COMMAND_SHIFT_WINDOW_RIGHT:
 				setLocation(getX()+50,getY());
 				break;
-			case KeyEvent.VK_ENTER:
+			case COMMAND_ENTER:
 				String text = textField.getText();
 				Feedback feedback = DoThings.readCommand(text);
 					
@@ -227,7 +234,33 @@ public class DoThingsGUI extends JFrame  {
 		public void keyPressed(KeyEvent e) {}
 		@Override
 		public void keyTyped(KeyEvent e) {}
+	}
+	
+	private class TriggerOnMouseAction implements MouseListener, MouseMotionListener{
 
+		@Override
+		public void mouseClicked(MouseEvent arg0) {}
+		@Override
+		public void mouseEntered(MouseEvent arg0) {}
+		@Override
+		public void mouseExited(MouseEvent arg0) {}
+		
+		@Override
+		public void mousePressed(MouseEvent arg0) {	 
+	         // Get x,y and store them
+	         xCoordOfFrame=getX();
+	         yCoordOfFrame=getY();
+	       
+		}
 
+		@Override
+		public void mouseReleased(MouseEvent arg0) {}
+		@Override
+		public void mouseDragged(MouseEvent arg0) {
+			setLocation(getLocation().x+arg0.getX()-xCoordOfFrame,getLocation().y+arg0.getY()-yCoordOfFrame);
+		}
+		
+		@Override
+		public void mouseMoved(MouseEvent arg0) {}
 	}
 }
