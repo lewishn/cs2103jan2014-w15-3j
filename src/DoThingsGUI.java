@@ -32,8 +32,7 @@ import org.jnativehook.keyboard.NativeKeyListener;
 public class DoThingsGUI extends JFrame  {
 
 	private static final String MESSAGE_STARTUP = "Get ready to Do Things!\n";
-	private static final String MESSAGE_COMMAND = "Please enter a command: ";
-	private static final String COMMAND_EXIT = "exit";
+	private static final String MESSAGE_COMMAND = "Please enter a command:\n";
 	private static final int COMMAND_ENTER = KeyEvent.VK_ENTER;
 	private static final int COMMAND_HIDE = NativeKeyEvent.VK_F8;
 	private static final int COMMAND_SHIFT_WINDOW_LEFT = KeyEvent.VK_F11;
@@ -51,7 +50,6 @@ public class DoThingsGUI extends JFrame  {
 	private int xCoordOfFrame;
 	private int yCoordOfFrame;
 
-	     
 	
 	// Launch application
 	public static void main(String[] args) {
@@ -59,9 +57,8 @@ public class DoThingsGUI extends JFrame  {
 			public void run() {
 				try {
 					DoThingsGUI frame = new DoThingsGUI();
-					frame.setLocationRelativeTo(null);
 					frame.setVisible(true);
-					frame.textArea.setText(MESSAGE_STARTUP);  
+
 				} catch (Exception e) {
 					e.printStackTrace();
 				}
@@ -83,6 +80,7 @@ public class DoThingsGUI extends JFrame  {
 		setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
 		setBackground(Color.BLACK);
 		setBounds(100, 100, 750, 500);
+		
 		
 		contentPane = new JPanel();
 		contentPane.setAutoscrolls(true);
@@ -109,7 +107,7 @@ public class DoThingsGUI extends JFrame  {
 		textArea.setCursor(Cursor.getPredefinedCursor(Cursor.DEFAULT_CURSOR));
 		textArea.setBackground(new Color(102, 102, 102));
 		textArea.setEditable(false);
-	
+
 		JScrollPane textAreaJScrollPane = new JScrollPane(textArea);
 		textAreaJScrollPane.setFont(new Font("Pluto Sans ExtraLight", Font.PLAIN, 23));
 		textAreaJScrollPane.setBorder(null);
@@ -117,6 +115,10 @@ public class DoThingsGUI extends JFrame  {
 		
 		contentPane.add(textField, BorderLayout.SOUTH);
 		contentPane.add(textAreaJScrollPane, BorderLayout.CENTER);
+		
+		textArea.setText(MESSAGE_STARTUP);  
+		textArea.append(MESSAGE_COMMAND);
+		setLocationRelativeTo(null);
 		
 		addWindowListener(globalKeyPress);	
 		textField.addKeyListener(triggerOnKeyReleased);
@@ -243,13 +245,13 @@ public class DoThingsGUI extends JFrame  {
 		@Override
 		public void mousePressed(MouseEvent arg0) {	 
 	         // Get x,y and store them
-	         xCoordOfFrame=getX();
-	         yCoordOfFrame=getY();
+	         xCoordOfFrame=arg0.getXOnScreen();
+	         yCoordOfFrame=arg0.getYOnScreen();
 		}
 		
 		@Override
 		public void mouseDragged(MouseEvent arg0) {
-			setLocation(getLocation().x+arg0.getX()-xCoordOfFrame,getLocation().y+arg0.getY()-yCoordOfFrame);
+			setLocation(getX()+arg0.getX()-xCoordOfFrame,getY()+arg0.getY()-yCoordOfFrame);
 		 }
 		
 		@Override
