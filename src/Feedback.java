@@ -3,26 +3,36 @@ import java.util.ArrayList;
 
 class Feedback {
 	private String description;
+	private ArrayList<Integer> indexList;
 	private boolean exit;
+	private boolean error;
 	
 	public Feedback(String desc) {
 		description = desc;
+		error = false;
 		exit = false;
+		indexList = TaskHandler.getListOfTaskWithStatus(false);
 	}
 	
-	public Feedback(ArrayList<String> desc) {
-		String tempDesc = "";
-		for (int i = 0; i < desc.size(); i++) {
-			tempDesc += (desc.get(i) + "\n");
-		}
-		
-		description = tempDesc;
-		exit = false;
-	}
-	
-	public Feedback(String desc, boolean x) {
+	public Feedback(String desc, boolean isError) {
 		description = desc;
-		exit = x;
+		error = isError;
+		exit = false;
+		indexList = null;
+	}
+	
+	public Feedback(String desc, boolean isError, boolean isExit) {
+		description = desc;
+		error = isError;
+		exit = isExit;
+		indexList = null;
+	}
+	
+	public Feedback(String desc, ArrayList<Integer> list) {
+		description = desc;
+		error = false;
+		exit = false;
+		indexList = list;
 	}
 	
 	public String getDesc() {
@@ -31,6 +41,14 @@ class Feedback {
 	
 	public boolean getExitFlag() {
 		return exit;
+	}
+	
+	public ArrayList<Integer> getIndexList() {
+		return indexList;
+	}
+	
+	public boolean getErrorFlag() {
+		return error;
 	}
 	
 	public void setDescription(String desc) {
@@ -42,7 +60,21 @@ class Feedback {
 		return description;
 	}
 	
-	public boolean equals(String string){
-		return string.equals(description);
+	public boolean equals(Feedback other){
+		if (!description.equals(other.getDesc())) {
+			return false;
+		}
+		if (exit != other.getExitFlag()) {
+			return false;
+		}
+		if (error != other.getErrorFlag()) {
+			return false;
+		}
+		if (indexList.equals(other.getIndexList())) {
+			return false;
+		}
+		
+		return true;
+		
 	}
 }
