@@ -1,3 +1,5 @@
+import java.util.ArrayList;
+
 public class MainLogic{
 	private static final String MESSAGE_EXIT = "exit";
 	private static final String MESSAGE_INVALID = "Invalid command! Please try again.\n";
@@ -24,6 +26,7 @@ public class MainLogic{
 	 * @param com
 	 * @return a CommandType enum indicating the command type
 	 */
+	//@author: Lewis
 	private static CommandType getCommandType(String com) {
 		
 		if (com.equalsIgnoreCase(DEFAULT_ADD) || CustomCommandHandler.isCustomCommand(com, CustomCommandHandler.HEADER_ADD)) {
@@ -60,6 +63,7 @@ public class MainLogic{
 	 * @param userInput
 	 * @return a Feedback object containing a String to be shown to the user
 	 */
+	//@author: John & Lewis
 	protected static Feedback runLogic(String userInput) {
 		String command = CommandParser.getUserCommandType(userInput);
 		String commandDesc = CommandParser.getUserCommandDesc(userInput);
@@ -192,6 +196,10 @@ public class MainLogic{
 		}
 		
 		return false;
+	}
+	
+	protected static ArrayList<Task> getTaskList() {
+		return Task.getList();
 	}
 }
 

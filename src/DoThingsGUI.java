@@ -29,7 +29,7 @@ import org.jnativehook.NativeHookException;
 import org.jnativehook.keyboard.NativeKeyEvent;
 import org.jnativehook.keyboard.NativeKeyListener;
 
-
+//@author: John
 public class DoThingsGUI extends JFrame  {
 
 	private static final String MESSAGE_STARTUP = "Get ready to Do Things!\n";
@@ -59,7 +59,7 @@ public class DoThingsGUI extends JFrame  {
 	private int xCoordOfFrame;
 	private int yCoordOfFrame;
 
-	
+	private ArrayList<Task> taskList;
 	// Launch application
 	public static void main(String[] args) {
 		EventQueue.invokeLater(new Runnable() {
@@ -67,7 +67,6 @@ public class DoThingsGUI extends JFrame  {
 				try {
 					DoThingsGUI frame = new DoThingsGUI();
 					frame.setVisible(true);
-
 				} catch (Exception e) {
 					e.printStackTrace();
 				}
@@ -106,6 +105,7 @@ public class DoThingsGUI extends JFrame  {
 		contentPane.add(inputField);
 		
 		feedbackLabel = new JLabel(MESSAGE_STARTUP);
+		feedbackLabel.setFocusable(false);
 		feedbackLabel.setForeground(Color.GRAY);
 		feedbackLabel.setFont(new Font("Pluto Sans ExtraLight", Font.PLAIN, 14));
 		feedbackLabel.setHorizontalAlignment(SwingConstants.CENTER);
@@ -125,17 +125,20 @@ public class DoThingsGUI extends JFrame  {
 		contentPane.add(headingLabel);
 
 		textPanel = new JPanel();
+		textPanel.setFocusable(false);
 		textPanel.setBackground(new Color(255, 255, 255));
 		textPanel.setBounds(0, 62, FRAME_WIDTH, 35);
 		contentPane.add(textPanel);
 			
 		taskPanel = new JPanel();
+		taskPanel.setFocusable(false);
 		taskPanel.setBounds(0, 0, 171, 485);
 		taskPanel.setOpaque(false);
 		taskPanel.setBackground(new Color(255, 204, 51));
 		contentPane.add(taskPanel);
 		
 		taskPanelScroll = new JScrollPane(taskPanel);
+		taskPanelScroll.setFocusable(false);
 		GroupLayout gl_taskPanel = new GroupLayout(taskPanel);
 		gl_taskPanel.setHorizontalGroup(
 			gl_taskPanel.createParallelGroup(Alignment.LEADING)
@@ -153,11 +156,11 @@ public class DoThingsGUI extends JFrame  {
 		contentPane.add(taskPanelScroll);
 		
 		JPanel backgroundPanel = new JPanel();
+		backgroundPanel.setFocusable(false);
 		backgroundPanel.setBackground(SystemColor.windowBorder);
 		backgroundPanel.setBounds(0, 0, FRAME_WIDTH, FRAME_HEIGHT);
 		contentPane.add(backgroundPanel);
 		backgroundPanel.setLayout(null);
-		
 		
 		setLocationRelativeTo(null);
 		
@@ -167,7 +170,7 @@ public class DoThingsGUI extends JFrame  {
 		headingLabel.addMouseMotionListener(triggerOnMouseAction);
 	}
 	
-	// Class recognizes KeyEvents even if focus is not on window
+	// Class recognizes KeyEvents even if focus is not on window @author: Jiajie 
 	private class GlobalKeyPress implements WindowListener, NativeKeyListener{
 
 		Boolean isVisible = false;
@@ -239,7 +242,7 @@ public class DoThingsGUI extends JFrame  {
 	}
 	
 	private class TriggerOnKeyReleased implements KeyListener{
-		
+		//@author: john
 		@Override
 		public void keyReleased(KeyEvent e) {
 			int key = e.getKeyCode();
@@ -247,6 +250,9 @@ public class DoThingsGUI extends JFrame  {
 			switch(key){
 			case COMMAND_ENTER:
 				String userInput = inputField.getText();
+				Feedback feed = MainLogic.runLogic(userInput);
+				taskList = MainLogic.getTaskList();
+				
 				input.add(userInput);
 				inputField.setText("");  
 				JPanel messagePanel[] = new JPanel[input.size()];
@@ -330,7 +336,6 @@ public class DoThingsGUI extends JFrame  {
 						endDate[i].setForeground(new Color(153,153,153));
 						endTime[i].setForeground(new Color(153,153,153));
 					}
-					
 					change += TASK_OBJECT_FRAME_HEIGHT;
 					taskDescription[i].append(input.get(i));
 					taskPanel.setPreferredSize(new Dimension(FRAME_WIDTH,change));
@@ -340,7 +345,7 @@ public class DoThingsGUI extends JFrame  {
 				break;	
 			}	
 		}
-
+		//@author: Jiajie
 		@Override
 		public void keyPressed(KeyEvent e) {
 			int key = e.getKeyCode();
