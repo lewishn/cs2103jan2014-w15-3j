@@ -167,7 +167,7 @@ class TaskHandler {
 				Task.getList().add(taskToUpdate);
 				return new Feedback(MESSAGE_UPDATE_ARGUMENT_ERROR);
 			}
-			tempTask = updateTaskTime(taskToUpdate, updateField, updateDesc);
+			Task tempTask = updateTaskTime(taskToUpdate, updateField, updateDesc);
 			
 			if (taskToUpdate == null) {
 				Task.getList().add(taskToUpdate);
@@ -210,15 +210,15 @@ class TaskHandler {
 	
 	protected static Feedback markTask(String taskID) {
 		ArrayList<Integer> listToMark = getTaskIdFromString(taskID);
-		
+		ArrayList<Task> taskList = Task.getList();
 		if(listToMark.size() == 0) {
 			return new Feedback("Nothing to mark.\n", true);
 		}
 		
 		for (int i = 0; i < listToMark.size(); i++) {
-			Task.getList().get((int)listToMark.get(i)).toggleStatus();
+			taskList.get((int)listToMark.get(i)).toggleStatus();
 		}
-		
+		Task.setList(taskList);
 		return new Feedback("Tasks have been marked.\n");
 	}
 	
@@ -307,7 +307,7 @@ class TaskHandler {
 			}
 		}
 		
-		return new Feedback("Showing " + feedback " tasks" , indexList);
+		return new Feedback("Showing " + feedback + " tasks" , indexList);
 	}
 	
 	/**
@@ -324,7 +324,7 @@ class TaskHandler {
 		return indexList;
 	}
 	
-	private static ArrayList<Integer> getListOfTaskWithStatus(boolean completed) {
+	protected static ArrayList<Integer> getListOfTaskWithStatus(boolean completed) {
 		ArrayList<Task> list = Task.loadTasks();
 		ArrayList<Integer> indexList = new ArrayList<Integer>();
 		

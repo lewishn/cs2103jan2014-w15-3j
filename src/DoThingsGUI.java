@@ -246,53 +246,66 @@ public class DoThingsGUI extends JFrame  {
 			case COMMAND_ENTER:
 				String userInput = inputField.getText();
 				Feedback feed = MainLogic.runLogic(userInput);
-				ArrayList<Task>taskList = MainLogic.getTaskList();
-				ArrayList<Integer> numberList;
-				//input.add(userInput);
-				inputField.setText("");  
+				taskPanel.removeAll();
+				taskPanel.updateUI();
 				
-				JPanel messagePanel[] = new JPanel[numberList.size()];
-				JTextArea dateTime[] = new JTextArea[numberList.size()];
-				JTextArea alias[] = new JTextArea[numberList.size()];
-				JTextArea taskDescription[] = new JTextArea[numberList.size()];
-				heightChange=0;
-				for(int i=0; i<numberList.size(); i++) {	
-					//----- one task ----//
-					createTaskObject(messagePanel, dateTime, alias,
-							taskDescription, heightChange, i);
+				if(feed.getExitFlag()) {
+					System.exit(0);
+				} else if(feed.getErrorFlag()) {
+					feedbackLabel.setText(feed.getDesc());
+					inputField.selectAll();
+				} else {
+					ArrayList<Task>taskList = MainLogic.getTaskList();
+					ArrayList<Integer> numberList = feed.getIndexList();
+					//input.add(userInput);
+					inputField.setText("");  
 					
-					if(i%4==0) {
-						//green
-						messagePanel[i].setBackground(new Color(153, 204, 102));
-						taskDescription[i].setForeground(Color.WHITE);
-						alias[i].setForeground(Color.WHITE);
-						dateTime[i].setForeground(Color.WHITE);
-					} else if(i%4==1) {
-						//yellow
-						messagePanel[i].setBackground(new Color(255,255,51));
-						taskDescription[i].setForeground(new Color(102,102,102));
-						dateTime[i].setForeground(new Color(102,102,102));
-						alias[i].setForeground(new Color(102,102,102));
-					} else if(i%4==2) {
-						// red
-						messagePanel[i].setBackground(new Color(255, 153, 153));
-						taskDescription[i].setForeground(Color.WHITE);
-						alias[i].setForeground(Color.WHITE);
-						dateTime[i].setForeground(Color.WHITE);
-					} else {
-						//light grey
-						messagePanel[i].setBackground(new Color(204, 204, 204));
-						taskDescription[i].setForeground(new Color(153,153,153));
-						alias[i].setForeground(new Color(153,153,153));
-						dateTime[i].setForeground(new Color(153,153,153));
+					
+					
+					JPanel messagePanel[] = new JPanel[numberList.size()];
+					JTextArea dateTime[] = new JTextArea[numberList.size()];
+					JTextArea alias[] = new JTextArea[numberList.size()];
+					JTextArea taskDescription[] = new JTextArea[numberList.size()];
+					heightChange=0;
+					for(int i=0; i<numberList.size(); i++) {	
+						//----- one task ----//
+						createTaskObject(messagePanel, dateTime, alias,
+								taskDescription, heightChange, i);
+						
+						if(i%4==0) {
+							//green
+							messagePanel[i].setBackground(new Color(153, 204, 102));
+							taskDescription[i].setForeground(Color.WHITE);
+							alias[i].setForeground(Color.WHITE);
+							dateTime[i].setForeground(Color.WHITE);
+						} else if(i%4==1) {
+							//yellow
+							messagePanel[i].setBackground(new Color(255,255,51));
+							taskDescription[i].setForeground(new Color(102,102,102));
+							dateTime[i].setForeground(new Color(102,102,102));
+							alias[i].setForeground(new Color(102,102,102));
+						} else if(i%4==2) {
+							// red
+							messagePanel[i].setBackground(new Color(255, 153, 153));
+							taskDescription[i].setForeground(Color.WHITE);
+							alias[i].setForeground(Color.WHITE);
+							dateTime[i].setForeground(Color.WHITE);
+						} else {
+							//light grey
+							messagePanel[i].setBackground(new Color(204, 204, 204));
+							taskDescription[i].setForeground(new Color(153,153,153));
+							alias[i].setForeground(new Color(153,153,153));
+							dateTime[i].setForeground(new Color(153,153,153));
+						}
+						heightChange += TASK_OBJECT_FRAME_HEIGHT;
+						dateTime[i].setText("12:09");
+						alias[i].setText(taskList.get(numberList.get(i)).getAlias());
+						taskDescription[i].append(taskList.get(numberList.get(i)).getDescription());
+						taskPanel.setPreferredSize(new Dimension(FRAME_WIDTH,heightChange));
+						feedbackLabel.setText(feed.getDesc());
 					}
-					heightChange += TASK_OBJECT_FRAME_HEIGHT;
-					dateTime[i].setText("");
-					alias[i].setText("");
-					taskDescription[i].append(input.get(i));
-					taskPanel.setPreferredSize(new Dimension(FRAME_WIDTH,heightChange));
+					break;
 				}
-				break;
 			default:
 				break;	
 			}	
