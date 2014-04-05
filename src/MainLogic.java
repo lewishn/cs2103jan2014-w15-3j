@@ -117,7 +117,7 @@ public class MainLogic{
 				return TaskHandler.markTask(commandDesc);
 				
 			case EXIT:
-				return new Feedback(MESSAGE_EXIT, true);
+				return new Feedback(MESSAGE_EXIT, false, true);
 				
 			default:
 				return new Feedback(MESSAGE_INVALID);
