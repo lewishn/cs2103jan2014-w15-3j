@@ -116,13 +116,13 @@ class CommandParser {
 	protected static String removeAliasAndEscapeChar(String desc) {
 		String[] tokens = desc.split("\\s+");
 		for (int i = 0; i < tokens.length; i++) {
-			if (tokens[i].contains("alias:")) {
-				tokens[i] = null;
-			}
 			
 			if (tokens[i].startsWith("\\")) {
 				tokens[i] = tokens[i].substring(1);
 			}
+			if (tokens[i].contains("alias:")) {
+				tokens[i] = null;
+			}	
 		}
 		
 		return arrayToString(tokens);
