@@ -244,10 +244,12 @@ public class DoThingsGUI extends JFrame  {
 			
 			switch(key){
 			case COMMAND_ENTER:
+				taskPanel.setPreferredSize(new Dimension(FRAME_WIDTH,FRAME_HEIGHT));
 				String userInput = inputField.getText();
 				Feedback feed = MainLogic.runLogic(userInput);
 				taskPanel.removeAll();
 				taskPanel.updateUI();
+
 				
 				if(feed.getExitFlag()) {
 					System.exit(0);
@@ -265,7 +267,6 @@ public class DoThingsGUI extends JFrame  {
 					JTextArea alias[] = new JTextArea[numberList.size()];
 					JTextArea taskDescription[] = new JTextArea[numberList.size()];
 					heightChange=0;
-					taskPanel.setPreferredSize(new Dimension(FRAME_WIDTH,FRAME_HEIGHT));
 					for(int i=0; i<numberList.size(); i++) {	
 						//----- one task ----//
 						createTaskObject(messagePanel, dateTime, alias,

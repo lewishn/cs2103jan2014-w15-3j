@@ -169,7 +169,7 @@ class TaskHandler {
 			}
 			Task tempTask = updateTaskTime(taskToUpdate, updateField, updateDesc);
 			
-			if (taskToUpdate == null) {
+			if (tempTask == null) {
 				Task.getList().add(taskToUpdate);
 				return new Feedback("Error, start time cannot be after end time", true);
 			}
@@ -219,6 +219,7 @@ class TaskHandler {
 			taskList.get((int)listToMark.get(i)).toggleStatus();
 		}
 		Task.setList(taskList);
+		Task.saveTasks();
 		return new Feedback("Tasks have been marked.\n");
 	}
 	
