@@ -500,5 +500,24 @@ class TaskHandler {
 	}
 	
 	//search
+	
+	private static Feedback searchTasks(String searchKey) {
+		String[] keys = searchKey.split("\\s+");
+		if (keys.length == 0) {
+			return new Feedback("Error, please enter a search key.");
+		}
+		ArrayList<Task> taskList = Task.getList();
+		ArrayList<Integer> indexList = new ArrayList<Integer>();
 		
+		for (int i = 0; i < taskList.size(); i++) {
+			for (int j = 0; j < keys.length; j++) {
+				if (taskList.get(i).getDescription().contains(keys[j])) {
+					indexList.add(i);
+					break;
+				}
+			}
+		}
+		
+		return new Feedback("");
+	}
 }
