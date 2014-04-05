@@ -247,18 +247,6 @@ public class DoThingsGUI extends JFrame  {
 			int key = e.getKeyCode();
 			
 			switch(key){
-			case COMMAND_SHIFT_WINDOW_UP:
-				setLocation(getX(),getY()-FRAME_MOVEMENT);
-				break;
-			case COMMAND_SHIFT_WINDOW_DOWN:
-				setLocation(getX(),getY()+FRAME_MOVEMENT);
-				break;
-			case COMMAND_SHIFT_WINDOW_LEFT:
-				setLocation(getX()-FRAME_MOVEMENT,getY());
-				break;
-			case COMMAND_SHIFT_WINDOW_RIGHT:
-				setLocation(getX()+FRAME_MOVEMENT,getY());
-				break;
 			case COMMAND_ENTER:
 				String userInput = inputField.getText();
 				input.add(userInput);
@@ -358,7 +346,24 @@ public class DoThingsGUI extends JFrame  {
 		}
 
 		@Override
-		public void keyPressed(KeyEvent e) {}
+		public void keyPressed(KeyEvent e) {
+			int key = e.getKeyCode();
+			
+			switch(key){
+			case COMMAND_SHIFT_WINDOW_UP:
+				setLocation(getX(),getY()-FRAME_MOVEMENT);
+				break;
+			case COMMAND_SHIFT_WINDOW_DOWN:
+				setLocation(getX(),getY()+FRAME_MOVEMENT);
+				break;
+			case COMMAND_SHIFT_WINDOW_LEFT:
+				setLocation(getX()-FRAME_MOVEMENT,getY());
+				break;
+			case COMMAND_SHIFT_WINDOW_RIGHT:
+				setLocation(getX()+FRAME_MOVEMENT,getY());
+				break;
+			}
+		}
 		@Override
 		public void keyTyped(KeyEvent e) {}
 	}
