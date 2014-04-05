@@ -33,6 +33,7 @@ import org.jnativehook.keyboard.NativeKeyListener;
 public class DoThingsGUI extends JFrame  {
 
 	private static final String MESSAGE_STARTUP = "Get ready to Do Things!\n";
+	private static final String STARTUP_COMMAND = "list";
 	private static final int COMMAND_ENTER = KeyEvent.VK_ENTER;
 	private static final int COMMAND_HIDE = NativeKeyEvent.VK_F8;
 	private static final int COMMAND_SHIFT_WINDOW_LEFT = KeyEvent.VK_F11;
@@ -43,6 +44,7 @@ public class DoThingsGUI extends JFrame  {
 	private static final int FRAME_MOVEMENT = 10;		
 	private static final int FRAME_WIDTH = 400;
 	private static final int FRAME_HEIGHT = 700;
+	private static int heightChange =0;
 	
 	private JPanel contentPane;
 	private JTextField inputField;
@@ -59,7 +61,6 @@ public class DoThingsGUI extends JFrame  {
 	private int xCoordOfFrame;
 	private int yCoordOfFrame;
 
-	private ArrayList<Task> taskList;
 	// Launch application
 	public static void main(String[] args) {
 		EventQueue.invokeLater(new Runnable() {
@@ -67,6 +68,7 @@ public class DoThingsGUI extends JFrame  {
 				try {
 					DoThingsGUI frame = new DoThingsGUI();
 					frame.setVisible(true);
+					MainLogic.runLogic(STARTUP_COMMAND);
 				} catch (Exception e) {
 					e.printStackTrace();
 				}
@@ -154,13 +156,6 @@ public class DoThingsGUI extends JFrame  {
 		taskPanelScroll.setBorder(null);
 		taskPanelScroll.setBounds(0, 97, FRAME_WIDTH, 603);
 		contentPane.add(taskPanelScroll);
-		
-		JPanel backgroundPanel = new JPanel();
-		backgroundPanel.setFocusable(false);
-		backgroundPanel.setBackground(SystemColor.windowBorder);
-		backgroundPanel.setBounds(0, 0, FRAME_WIDTH, FRAME_HEIGHT);
-		contentPane.add(backgroundPanel);
-		backgroundPanel.setLayout(null);
 		
 		setLocationRelativeTo(null);
 		
@@ -251,99 +246,87 @@ public class DoThingsGUI extends JFrame  {
 			case COMMAND_ENTER:
 				String userInput = inputField.getText();
 				Feedback feed = MainLogic.runLogic(userInput);
-				taskList = MainLogic.getTaskList();
-				
-				input.add(userInput);
+				ArrayList<Task>taskList = MainLogic.getTaskList();
+				ArrayList<Integer> numberList;
+				//input.add(userInput);
 				inputField.setText("");  
-				JPanel messagePanel[] = new JPanel[input.size()];
-				JTextArea startDate[] = new JTextArea[input.size()];
-				JTextArea startTime[] = new JTextArea[input.size()];
-				JTextArea endDate[] = new JTextArea[input.size()];
-				JTextArea endTime[] = new JTextArea[input.size()];
-				JTextArea taskDescription[] = new JTextArea[input.size()];
-				int change=0;
-				for(int i=0; i<input.size(); i++) {	
+				
+				JPanel messagePanel[] = new JPanel[numberList.size()];
+				JTextArea dateTime[] = new JTextArea[numberList.size()];
+				JTextArea alias[] = new JTextArea[numberList.size()];
+				JTextArea taskDescription[] = new JTextArea[numberList.size()];
+				heightChange=0;
+				for(int i=0; i<numberList.size(); i++) {	
 					//----- one task ----//
-					messagePanel[i] = new JPanel();
-					messagePanel[i].setBounds(0, 0+change, FRAME_WIDTH, 70);
-					messagePanel[i].setLayout(null);
-					taskPanel.add(messagePanel[i]);
-					taskPanel.revalidate();
-					taskPanel.repaint();
-
-					startTime[i] = new JTextArea("04:20");
-					startTime[i].setFont(new Font("Pluto Sans Cond ExLight", Font.PLAIN, 12));
-					startTime[i].setBounds( 85, 50, 50, 22);
-					startTime[i].setOpaque(false);
-					messagePanel[i].add(startTime[i]);
-					
-					startDate[i] = new JTextArea("22/04/2014");
-					startDate[i].setFont(new Font("Pluto Sans Cond ExLight", Font.PLAIN, 12));
-					startDate[i].setBounds(10, 50, 88, 27);
-					startDate[i].setOpaque(false);
-					messagePanel[i].add(startDate[i]);
-
-					endTime[i] = new JTextArea("18:20");
-					endTime[i].setFont(new Font("Pluto Sans Cond ExLight", Font.PLAIN, 12));
-					endTime[i].setBounds(225, 50, 88, 22);
-					endTime[i].setOpaque(false);
-					messagePanel[i].add(endTime[i]);
-					
-					endDate[i] = new JTextArea("22/04/2014");
-					endDate[i].setFont(new Font("Pluto Sans Cond ExLight", Font.PLAIN, 12));
-					endDate[i].setBounds(150, 50, 88, 27);
-					endDate[i].setOpaque(false);
-					messagePanel[i].add(endDate[i]);
-					taskDescription[i] = new JTextArea();
-					taskDescription[i].setFont(new Font("Pluto Sans Medium", Font.PLAIN, 18));
-					taskDescription[i].setBounds(10,10, FRAME_WIDTH-25,60); //55 characters
-					taskDescription[i].setLineWrap(true);
-					taskDescription[i].setWrapStyleWord(true);
-					taskDescription[i].setEditable(false);
-					taskDescription[i].setOpaque(false);
-					messagePanel[i].add(taskDescription[i]);
+					createTaskObject(messagePanel, dateTime, alias,
+							taskDescription, heightChange, i);
 					
 					if(i%4==0) {
 						//green
 						messagePanel[i].setBackground(new Color(153, 204, 102));
 						taskDescription[i].setForeground(Color.WHITE);
-						startDate[i].setForeground(Color.WHITE);
-						startTime[i].setForeground(Color.WHITE);
-						endDate[i].setForeground(Color.WHITE);
-						endTime[i].setForeground(Color.WHITE);
+						alias[i].setForeground(Color.WHITE);
+						dateTime[i].setForeground(Color.WHITE);
 					} else if(i%4==1) {
 						//yellow
 						messagePanel[i].setBackground(new Color(255,255,51));
 						taskDescription[i].setForeground(new Color(102,102,102));
-						startDate[i].setForeground(new Color(102,102,102));
-						startTime[i].setForeground(new Color(102,102,102));
-						endDate[i].setForeground(new Color(102,102,102));
-						endTime[i].setForeground(new Color(102,102,102));
+						dateTime[i].setForeground(new Color(102,102,102));
+						alias[i].setForeground(new Color(102,102,102));
 					} else if(i%4==2) {
 						// red
 						messagePanel[i].setBackground(new Color(255, 153, 153));
 						taskDescription[i].setForeground(Color.WHITE);
-						startDate[i].setForeground(Color.WHITE);
-						startTime[i].setForeground(Color.WHITE);
-						endDate[i].setForeground(Color.WHITE);
-						endTime[i].setForeground(Color.WHITE);
+						alias[i].setForeground(Color.WHITE);
+						dateTime[i].setForeground(Color.WHITE);
 					} else {
 						//light grey
 						messagePanel[i].setBackground(new Color(204, 204, 204));
 						taskDescription[i].setForeground(new Color(153,153,153));
-						startDate[i].setForeground(new Color(153,153,153));
-						startTime[i].setForeground(new Color(153,153,153));
-						endDate[i].setForeground(new Color(153,153,153));
-						endTime[i].setForeground(new Color(153,153,153));
+						alias[i].setForeground(new Color(153,153,153));
+						dateTime[i].setForeground(new Color(153,153,153));
 					}
-					change += TASK_OBJECT_FRAME_HEIGHT;
+					heightChange += TASK_OBJECT_FRAME_HEIGHT;
+					dateTime[i].setText("");
+					alias[i].setText("");
 					taskDescription[i].append(input.get(i));
-					taskPanel.setPreferredSize(new Dimension(FRAME_WIDTH,change));
+					taskPanel.setPreferredSize(new Dimension(FRAME_WIDTH,heightChange));
 				}
 				break;
 			default:
 				break;	
 			}	
+		}
+		private void createTaskObject(JPanel[] messagePanel,
+				JTextArea[] dateTime, JTextArea[] alias,
+				JTextArea[] taskDescription, int change, int i) {
+			messagePanel[i] = new JPanel();
+			messagePanel[i].setBounds(0, 0+change, FRAME_WIDTH, 70);
+			messagePanel[i].setLayout(null);
+			taskPanel.add(messagePanel[i]);
+			taskPanel.revalidate();
+			taskPanel.repaint();
+
+			dateTime[i] = new JTextArea("12:40");
+			dateTime[i].setFont(new Font("Pluto Sans Cond ExLight", Font.PLAIN, 12));
+			dateTime[i].setBounds(10, 50, 200, 22);
+			dateTime[i].setOpaque(false);
+			messagePanel[i].add(dateTime[i]);
+			
+			alias[i] = new JTextArea("@lias: ");
+			alias[i].setFont(new Font("Pluto Sans Cond ExLight", Font.PLAIN, 12));
+			alias[i].setBounds(250, 50, 88, 22);
+			alias[i].setOpaque(false);
+			messagePanel[i].add(alias[i]);
+			
+			taskDescription[i] = new JTextArea();
+			taskDescription[i].setFont(new Font("Pluto Sans Medium", Font.PLAIN, 18));
+			taskDescription[i].setBounds(10,10, FRAME_WIDTH-25,60); //55 characters
+			taskDescription[i].setLineWrap(true);
+			taskDescription[i].setWrapStyleWord(true);
+			taskDescription[i].setEditable(false);
+			taskDescription[i].setOpaque(false);
+			messagePanel[i].add(taskDescription[i]);
 		}
 		//@author: Jiajie
 		@Override
