@@ -120,7 +120,7 @@ public class MainLogic{
 				return new Feedback(MESSAGE_EXIT, false, true);
 				
 			default:
-				return new Feedback(MESSAGE_INVALID);
+				return new Feedback(MESSAGE_INVALID, true);
 		}
 	}
 	

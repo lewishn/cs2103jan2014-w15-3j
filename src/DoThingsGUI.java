@@ -2,7 +2,6 @@ import java.awt.Color;
 import java.awt.Dimension;
 import java.awt.EventQueue;
 import java.awt.Font;
-import java.awt.SystemColor;
 import java.awt.event.KeyEvent;
 import java.awt.event.KeyListener;
 import java.awt.event.MouseEvent;
@@ -33,7 +32,7 @@ import org.jnativehook.keyboard.NativeKeyListener;
 public class DoThingsGUI extends JFrame  {
 
 	private static final String MESSAGE_STARTUP = "Get ready to Do Things!\n";
-	private static final String STARTUP_COMMAND = "list";
+	private static final String STARTUP_COMMAND = "list all";
 	private static final int COMMAND_ENTER = KeyEvent.VK_ENTER;
 	private static final int COMMAND_HIDE = NativeKeyEvent.VK_F8;
 	private static final int COMMAND_SHIFT_WINDOW_LEFT = KeyEvent.VK_F11;
@@ -51,7 +50,6 @@ public class DoThingsGUI extends JFrame  {
 	private JLabel headingLabel;
 	private JPanel textPanel;
 	private JLabel feedbackLabel;
-	private ArrayList<String>input = new ArrayList<String>();
 	private JScrollPane taskPanelScroll;
 	private JPanel taskPanel;
 	private GlobalKeyPress globalKeyPress; 
@@ -68,7 +66,6 @@ public class DoThingsGUI extends JFrame  {
 				try {
 					DoThingsGUI frame = new DoThingsGUI();
 					frame.setVisible(true);
-					MainLogic.runLogic(STARTUP_COMMAND);
 				} catch (Exception e) {
 					e.printStackTrace();
 				}
@@ -163,6 +160,8 @@ public class DoThingsGUI extends JFrame  {
 		inputField.addKeyListener(triggerOnKeyReleased);
 		addMouseListener(triggerOnMouseAction);
 		headingLabel.addMouseMotionListener(triggerOnMouseAction);
+
+		MainLogic.runLogic(STARTUP_COMMAND);
 	}
 	
 	// Class recognizes KeyEvents even if focus is not on window @author: Jiajie 
@@ -244,7 +243,6 @@ public class DoThingsGUI extends JFrame  {
 			
 			switch(key){
 			case COMMAND_ENTER:
-				taskPanel.setPreferredSize(new Dimension(FRAME_WIDTH,FRAME_HEIGHT));
 				String userInput = inputField.getText();
 				Feedback feed = MainLogic.runLogic(userInput);
 				taskPanel.removeAll();
@@ -256,6 +254,7 @@ public class DoThingsGUI extends JFrame  {
 				} else if(feed.getErrorFlag()) {
 					feedbackLabel.setText(feed.getDesc());
 					inputField.selectAll();
+					taskPanel.setPreferredSize(new Dimension(FRAME_WIDTH,FRAME_HEIGHT));
 				} else {
 					ArrayList<Task>taskList = MainLogic.getTaskList();
 					ArrayList<Integer> numberList = feed.getIndexList();
