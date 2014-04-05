@@ -40,11 +40,11 @@ class TaskHandler {
 		Task newTask = createTask(userInput);
 		
 		if (newTask == null) {
-			return new Feedback("Error, start time cannot be after end time.");
+			return new Feedback("Error, start time cannot be after end time.", true);
 		}
 		
 		if (newTask.getDescription().trim().length() == 0) {
-			return new Feedback("Error, task description cannot be empty.");
+			return new Feedback("Error, task description cannot be empty.", true);
 		}
 		
 		HistoryHandler.pushUndoStack();
@@ -167,25 +167,26 @@ class TaskHandler {
 				Task.getList().add(taskToUpdate);
 				return new Feedback(MESSAGE_UPDATE_ARGUMENT_ERROR);
 			}
-			taskToUpdate = updateTaskTime(taskToUpdate, updateField, updateDesc);
+			tempTask = updateTaskTime(taskToUpdate, updateField, updateDesc);
 			
 			if (taskToUpdate == null) {
 				Task.getList().add(taskToUpdate);
-				return new Feedback("Error, start time cannot be after end time");
+				return new Feedback("Error, start time cannot be after end time", true);
 			}
+			taskToUpdate = tempTask;
 			
 		} else if (updateField.equals("alias")) {
 			String[] tokens = updateDesc.split("\\s+");
 			if (tokens.length <= 0) {
 				// since the task is previously removed, it needs to be put back in in the event of an error
 				Task.getList().add(taskToUpdate);
-				return new Feedback("Invalid alias");
+				return new Feedback("Invalid alias", true);
 			}
 			
 			String alias = tokens[0];	
 			if (Task.isAliasValid(alias) || isInteger(alias)) {
 				Task.getList().add(taskToUpdate);
-				return new Feedback("Alias is already in use");
+				return new Feedback("Alias is already in use", true);
 			
 			} else {
 				taskToUpdate.setAlias(alias);
@@ -211,7 +212,7 @@ class TaskHandler {
 		ArrayList<Integer> listToMark = getTaskIdFromString(taskID);
 		
 		if(listToMark.size() == 0) {
-			return new Feedback("Nothing to mark.\n");
+			return new Feedback("Nothing to mark.\n", true);
 		}
 		
 		for (int i = 0; i < listToMark.size(); i++) {
@@ -284,34 +285,29 @@ class TaskHandler {
 	protected static Feedback listTasks(String userInput) {
 		Task.sortList();
 		ArrayList<Task> taskList = Task.getList();
-		ArrayList<Integer> numberList;
+		ArrayList<Integer> indexList;
+		String feedback = userInput;
+		
 		
 		if (userInput == null) {
-			numberList = getListOfAllTasks();
+			indexList = getListOfTaskWithStatus(false);
 		} else {
-			if (userInput.equals("incomplete")) {
-				numberList = getListOfTaskWithStatus(false);
-			} else if (userInput.equals("completed")) {
-				numberList = getListOfTaskWithStatus(true);
+			if (userInput.equals("completed")) {
+				indexList = getListOfTaskWithStatus(true);
 			} else if (userInput.equals("overdue")) {
-				numberList = getListOfOverdueTask();
+				indexList = getListOfOverdueTask();
 			} else if (DateParser.isDate(userInput)) {
-				numberList = getListOfTaskWithDate(userInput);
+				indexList = getListOfTaskWithDate(userInput);
+			} else if (userInput.equals("all")) {
+				indexList = getListOfAllTasks();
+				feedback = "all";
 			} else {
-				numberList = getListOfAllTasks();
+				indexList = getListOfTaskWithStatus(false);
+				feedback = "incomplete";
 			}
 		}
 		
-		if (numberList.size() == 0) {
-			return new Feedback(MESSAGE_EMPTY_TASKS);
-		}
-		
-		String feedback = "";
-		for (int i = 0; i < numberList.size(); i++) {
-			int index = (int) numberList.get(i);
-			feedback = feedback + String.format(MESSAGE_LIST_NUMBER, index + 1, taskList.get(i).toDisplayString());
-		}
-		return new Feedback(feedback);
+		return new Feedback("Showing " + feedback " tasks" , indexList);
 	}
 	
 	/**
@@ -319,31 +315,31 @@ class TaskHandler {
 	 * @return a Feedback Object to be shown to the user
 	 */
 	private static ArrayList<Integer> getListOfAllTasks() {
-		ArrayList<Integer> numberList = new ArrayList<Integer>();
+		ArrayList<Integer> indexList = new ArrayList<Integer>();
 		if (!Task.getList().isEmpty()) {
 			for (int i = 0; i < Task.getList().size(); i++) {
-				numberList.add(i);
+				indexList.add(i);
 			}
 		}
-		return numberList;
+		return indexList;
 	}
 	
 	private static ArrayList<Integer> getListOfTaskWithStatus(boolean completed) {
 		ArrayList<Task> list = Task.loadTasks();
-		ArrayList<Integer> numberList = new ArrayList<Integer>();
+		ArrayList<Integer> indexList = new ArrayList<Integer>();
 		
 		for (int i = 0; i < list.size(); i++) {
 			if (list.get(i).getStatus() == completed) {
-				numberList.add(i);
+				indexList.add(i);
 			}
 		}
 		
-		return numberList;
+		return indexList;
 	}
 	
 	private static ArrayList<Integer> getListOfOverdueTask() {
 		ArrayList<Task> list = Task.loadTasks();
-		ArrayList<Integer> numberList = new ArrayList<Integer>();
+		ArrayList<Integer> indexList = new ArrayList<Integer>();
 		
 		for (int i = 0; i < list.size(); i++) {
 			DateTime start = list.get(i).getStartDateTime();
@@ -351,23 +347,23 @@ class TaskHandler {
 			
 			if (start != null && end != null) { 
 				if (start.isBeforeNow() || end.isBeforeNow() && list.get(i).getStatus() == false) {
-					numberList.add(i);
+					indexList.add(i);
 				} 
 			} else if (start != null && start.isBeforeNow() && list.get(i).getStatus() == false) {
-					numberList.add(i);
+					indexList.add(i);
 			} else if (end != null && end.isBeforeNow() && list.get(i).getStatus() == false) {
-					numberList.add(i);
+					indexList.add(i);
 			}
 		}
 		
-		return numberList;
+		return indexList;
 	}
 	
 	private static ArrayList<Integer> getListOfTaskWithDate(String input) {
 		DateTime date = DateParser.setDate(input);
 		
 		ArrayList<Task> list = Task.loadTasks();
-		ArrayList<Integer> numberList = new ArrayList<Integer>();
+		ArrayList<Integer> indexList = new ArrayList<Integer>();
 		
 		for (int i = 0; i < list.size(); i++) {
 			DateTime start = list.get(i).getStartDateTime();
@@ -375,21 +371,21 @@ class TaskHandler {
 			
 			if (start != null && end != null) { 
 				if (DateParser.isSameDate(start, date) || DateParser.isSameDate(end, date)) {
-					numberList.add(i);
+					indexList.add(i);
 				} 
 			} else if (start != null) {
 				if (DateParser.isSameDate(start, date)) {
-					numberList.add(i);
+					indexList.add(i);
 				}
 			} else if (end != null) {
 				if (DateParser.isSameDate(end, date)) {
-					numberList.add(i);
+					indexList.add(i);
 				}
 			}
 			
 		}
 		
-		return numberList;
+		return indexList;
 	}
 	
 	//////////DELETE Functionality//////////
@@ -409,26 +405,26 @@ class TaskHandler {
 			deleteCompleted();
 			Task.saveTasks();
 			HistoryHandler.purgeRedoStack();
-			return new Feedback("All completed tasks have been deleted.\n");
+			return new Feedback("All completed tasks have been deleted.");
 			
 		} else if (taskID.equalsIgnoreCase("all")) {
 			HistoryHandler.pushUndoStack();
 			deleteAll();
 			Task.saveTasks();
 			HistoryHandler.purgeRedoStack();
-			return new Feedback("All tasks have been deleted.\n");
+			return new Feedback("All tasks have been deleted.");
 		} else {
 			ArrayList<Integer> listToDelete = getTaskIdFromString(taskID);
 			
 			if (listToDelete.size() == 0) {
-				return new Feedback("No such tasks.\n");
+				return new Feedback("No such tasks.", true);
 			}
 			
 			HistoryHandler.pushUndoStack();
 			deleteList(listToDelete);
 			Task.saveTasks();
 			HistoryHandler.purgeRedoStack();
-			return new Feedback("All specified tasks have been deleted.\n");
+			return new Feedback("All specified tasks have been deleted.");
 		}
 		
 	}
@@ -518,6 +514,6 @@ class TaskHandler {
 			}
 		}
 		
-		return new Feedback("");
+		return new Feedback("Search for " + searchKey , indexList);
 	}
 }
