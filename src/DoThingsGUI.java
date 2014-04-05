@@ -260,24 +260,23 @@ public class DoThingsGUI extends JFrame  {
 					//input.add(userInput);
 					inputField.setText("");  
 					
-					
-					
 					JPanel messagePanel[] = new JPanel[numberList.size()];
 					JTextArea dateTime[] = new JTextArea[numberList.size()];
 					JTextArea alias[] = new JTextArea[numberList.size()];
 					JTextArea taskDescription[] = new JTextArea[numberList.size()];
 					heightChange=0;
+					taskPanel.setPreferredSize(new Dimension(FRAME_WIDTH,FRAME_HEIGHT));
 					for(int i=0; i<numberList.size(); i++) {	
 						//----- one task ----//
 						createTaskObject(messagePanel, dateTime, alias,
 								taskDescription, heightChange, i);
 						
 						if(i%4==0) {
-							//green
-							messagePanel[i].setBackground(new Color(153, 204, 102));
-							taskDescription[i].setForeground(Color.WHITE);
-							alias[i].setForeground(Color.WHITE);
-							dateTime[i].setForeground(Color.WHITE);
+							//light grey
+							messagePanel[i].setBackground(new Color(204, 204, 204));
+							taskDescription[i].setForeground(new Color(153,153,153));
+							alias[i].setForeground(new Color(153,153,153));
+							dateTime[i].setForeground(new Color(153,153,153));
 						} else if(i%4==1) {
 							//yellow
 							messagePanel[i].setBackground(new Color(255,255,51));
@@ -291,11 +290,11 @@ public class DoThingsGUI extends JFrame  {
 							alias[i].setForeground(Color.WHITE);
 							dateTime[i].setForeground(Color.WHITE);
 						} else {
-							//light grey
-							messagePanel[i].setBackground(new Color(204, 204, 204));
-							taskDescription[i].setForeground(new Color(153,153,153));
-							alias[i].setForeground(new Color(153,153,153));
-							dateTime[i].setForeground(new Color(153,153,153));
+							//green
+							messagePanel[i].setBackground(new Color(153, 204, 102));
+							taskDescription[i].setForeground(Color.WHITE);
+							alias[i].setForeground(Color.WHITE);
+							dateTime[i].setForeground(Color.WHITE);
 						}
 						heightChange += TASK_OBJECT_FRAME_HEIGHT;
 						dateTime[i].setText("12:09");

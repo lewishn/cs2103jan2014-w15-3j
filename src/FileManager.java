@@ -12,7 +12,7 @@ import java.util.logging.Logger;
 class FileManager {
 	
 	@SuppressWarnings("deprecation")
-	public static final String filepath = new File(URLDecoder.decode(DoThings.class.getProtectionDomain().getCodeSource().getLocation().getPath())).getParent() + System.getProperty("file.separator");
+	public static final String filepath = new File(URLDecoder.decode(DoThingsGUI.class.getProtectionDomain().getCodeSource().getLocation().getPath())).getParent() + System.getProperty("file.separator");
 	
 	private static Logger LOGGER = Logger.getLogger(FileManager.class.getName());
 	private static BufferedReader getReader(String fileName) throws FileNotFoundException {
