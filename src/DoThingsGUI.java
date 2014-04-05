@@ -1,6 +1,4 @@
-import java.awt.BorderLayout;
 import java.awt.Color;
-import java.awt.Cursor;
 import java.awt.Dimension;
 import java.awt.EventQueue;
 import java.awt.Font;
@@ -41,9 +39,11 @@ public class DoThingsGUI extends JFrame  {
 	private static final int COMMAND_SHIFT_WINDOW_RIGHT = KeyEvent.VK_F12;
 	private static final int COMMAND_SHIFT_WINDOW_UP = KeyEvent.VK_F9;
 	private static final int COMMAND_SHIFT_WINDOW_DOWN = KeyEvent.VK_F10;
-	private static final int FRAME_MOVEMENT = 10;
 	private static final int TASK_OBJECT_FRAME_HEIGHT = 72;
-			
+	private static final int FRAME_MOVEMENT = 10;		
+	private static final int FRAME_WIDTH = 400;
+	private static final int FRAME_HEIGHT = 700;
+	
 	private JPanel contentPane;
 	private JTextField inputField;
 	private JLabel headingLabel;
@@ -52,8 +52,6 @@ public class DoThingsGUI extends JFrame  {
 	private ArrayList<String>input = new ArrayList<String>();
 	private JScrollPane taskPanelScroll;
 	private JPanel taskPanel;
-	private int TEXTAREAHEIGHT = 120;
-	private int CHARPERLINE = 20;
 	private GlobalKeyPress globalKeyPress; 
 	private TriggerOnKeyReleased triggerOnKeyReleased;
 	private TriggerOnMouseAction triggerOnMouseAction;
@@ -88,7 +86,7 @@ public class DoThingsGUI extends JFrame  {
 		setTitle("Do-things");
 		setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
 		setBackground(Color.BLACK);
-		setBounds(100, 25, 400, 700);
+		setBounds(100, 25, FRAME_WIDTH, FRAME_HEIGHT);
 		setUndecorated(true);
 		contentPane = new JPanel();
 		contentPane.setAutoscrolls(true);
@@ -100,18 +98,18 @@ public class DoThingsGUI extends JFrame  {
 		contentPane.setLayout(null);
 		
 		inputField = new JTextField();
-		inputField.setBounds(10, 57, 380, 33);
+		inputField.setBounds(10, 57, FRAME_WIDTH-20, 33);
 		inputField.setBorder(null);
 		inputField.setBackground(new Color(153,204,255));
 		inputField.setForeground(Color.BLACK);
 		inputField.setFont(new Font("Pluto Sans ExtraLight", Font.PLAIN, 23));
 		contentPane.add(inputField);
 		
-		feedbackLabel = new JLabel("");
+		feedbackLabel = new JLabel(MESSAGE_STARTUP);
 		feedbackLabel.setForeground(Color.GRAY);
 		feedbackLabel.setFont(new Font("Pluto Sans ExtraLight", Font.PLAIN, 14));
 		feedbackLabel.setHorizontalAlignment(SwingConstants.CENTER);
-		feedbackLabel.setBounds(0, 30, 400, 33);
+		feedbackLabel.setBounds(0, 30, FRAME_WIDTH, 33);
 		contentPane.add(feedbackLabel);
 		
 		headingLabel = new JLabel("Do-Things");
@@ -128,7 +126,7 @@ public class DoThingsGUI extends JFrame  {
 
 		textPanel = new JPanel();
 		textPanel.setBackground(new Color(255, 255, 255));
-		textPanel.setBounds(0, 62, 400, 35);
+		textPanel.setBounds(0, 62, FRAME_WIDTH, 35);
 		contentPane.add(textPanel);
 			
 		taskPanel = new JPanel();
@@ -151,12 +149,12 @@ public class DoThingsGUI extends JFrame  {
 		taskPanelScroll.setOpaque(false);
 		taskPanelScroll.setHorizontalScrollBarPolicy(ScrollPaneConstants.HORIZONTAL_SCROLLBAR_NEVER);
 		taskPanelScroll.setBorder(null);
-		taskPanelScroll.setBounds(0, 97, 400, 603);
+		taskPanelScroll.setBounds(0, 97, FRAME_WIDTH, 603);
 		contentPane.add(taskPanelScroll);
 		
 		JPanel backgroundPanel = new JPanel();
 		backgroundPanel.setBackground(SystemColor.windowBorder);
-		backgroundPanel.setBounds(0, 0, 400, 600);
+		backgroundPanel.setBounds(0, 0, FRAME_WIDTH, FRAME_HEIGHT);
 		contentPane.add(backgroundPanel);
 		backgroundPanel.setLayout(null);
 		
@@ -273,7 +271,7 @@ public class DoThingsGUI extends JFrame  {
 				for(int i=0; i<input.size(); i++) {	
 					//----- one task ----//
 					messagePanel[i] = new JPanel();
-					messagePanel[i].setBounds(0, 0+change, 400, 70);
+					messagePanel[i].setBounds(0, 0+change, FRAME_WIDTH, 70);
 					messagePanel[i].setLayout(null);
 					taskPanel.add(messagePanel[i]);
 					taskPanel.revalidate();
@@ -304,7 +302,7 @@ public class DoThingsGUI extends JFrame  {
 					messagePanel[i].add(endDate[i]);
 					taskDescription[i] = new JTextArea();
 					taskDescription[i].setFont(new Font("Pluto Sans Medium", Font.PLAIN, 18));
-					taskDescription[i].setBounds(10,10, 375,60); //55 characters
+					taskDescription[i].setBounds(10,10, FRAME_WIDTH-25,60); //55 characters
 					taskDescription[i].setLineWrap(true);
 					taskDescription[i].setWrapStyleWord(true);
 					taskDescription[i].setEditable(false);
@@ -347,10 +345,8 @@ public class DoThingsGUI extends JFrame  {
 					
 					change += TASK_OBJECT_FRAME_HEIGHT;
 					taskDescription[i].append(input.get(i));
-					taskPanel.setPreferredSize(new Dimension(400,change));
+					taskPanel.setPreferredSize(new Dimension(FRAME_WIDTH,change));
 				}
-				//String text = textField.getText();
-				//taskDescription.append(text);
 				break;
 			default:
 				break;	
