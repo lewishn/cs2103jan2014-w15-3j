@@ -345,12 +345,14 @@ public class DoThingsGUI extends JFrame  {
 			dateTime[i].setFont(new Font("Pluto Sans Cond ExLight", Font.PLAIN, 12));
 			dateTime[i].setBounds(10, 50, 200, 22);
 			dateTime[i].setOpaque(false);
+			dateTime[i].setEditable(false);
 			messagePanel[i].add(dateTime[i]);
 			
 			alias[i] = new JTextArea();
 			alias[i].setFont(new Font("Pluto Sans Cond ExLight", Font.PLAIN, 12));
 			alias[i].setBounds(250, 50, 88, 22);
 			alias[i].setOpaque(false);
+			alias[i].setEditable(false);
 			messagePanel[i].add(alias[i]);
 			
 			taskDescription[i] = new JTextArea();
