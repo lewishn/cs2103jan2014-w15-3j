@@ -9,10 +9,10 @@ public class HistoryHandler {
 	private static final int MAXIMUM_UNDO_STEPS = 100;
 	private static final int MAXIMUM_SAVE_STACK_SIZE = 10;
 	
-	private static final String UNDO_SUCCESS = "Undo successful!\n";
-	private static final String UNDO_FAIL = "Nothing left to undo.\n";
-	private static final String REDO_SUCCESS = "Redo successful!\n";
-	private static final String REDO_FAIL = "Nothing left to redo.\n";
+	private static final String UNDO_SUCCESS = "Undo successful!";
+	private static final String UNDO_FAIL = "Nothing left to undo.";
+	private static final String REDO_SUCCESS = "Redo successful!";
+	private static final String REDO_FAIL = "Nothing left to redo.";
 	
 	private static ArrayDeque<ArrayList<Task>> taskUndoStack = loadUndoStack();
 	private static ArrayDeque<ArrayList<Task>> taskRedoStack = new ArrayDeque<ArrayList<Task>>();

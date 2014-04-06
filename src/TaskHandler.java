@@ -3,26 +3,34 @@ import java.util.Arrays;
 import java.util.Collections;
 import java.util.HashSet;
 import java.util.Set;
-import java.util.Stack;
 
 import org.joda.time.DateTime;
 
 class TaskHandler {
-	private static final String MESSAGE_ADD_EMPTY = "Error, please add a task description.\n";
-	private static final String MESSAGE_ADDED_TASK = "Added \"%s\".\n";
+	
+	private static final String MESSAGE_ADDED_TASK = "Added \"%s\".";
 	private static final String MESSAGE_EMPTY_TASKS = "Your list is empty";
-	private static final String MESSAGE_UPDATE_TASK = "Task has been updated.\n";
-	private static final String MESSAGE_UPDATE_NO_SUCH_TASK = "Error, please enter a valid task number to update.\n";
-	private static final String MESSAGE_UPDATE_ARGUMENT_ERROR = "Error, incorrect update format.\n";
-	private static final String MESSAGE_LIST_NUMBER = "%d. %s\n";
-	private static final String MESSAGE_DELETE_EMPTY = "Error, please indicate a task number or alias to delete.\n";
-	private static final String MESSAGE_DELETE_ARGUMENT_ERROR = "Error, incorrect delete format.\n";
-	private static final String MESSAGE_TASK_DELETED = "\"%s\" has been deleted from the task list.\n";
-	private static final String MESSAGE_TASK_DELETED_ALL = "All tasks have been deleted from the task list.\n";
-	private static final String MESSAGE_INVALID_DELETE = "No such task, please enter a valid number to delete.\n";
+	private static final String MESSAGE_UPDATE_TASK = "Task has been updated.";	
+	private static final String MESSAGE_LIST_NUMBER = "%d. %s";
+	private static final String MESSAGE_LIST_INCOMPLETE = "Showing incomplete tasks";
+	private static final String MESSAGE_LIST_COMPLETE = "Showing completed tasks";
+	private static final String MESSAGE_LIST_OVERDUE = "Showing overdue tasks";
+	private static final String MESSAGE_LIST_ALL = "Showing all tasks";	
+	private static final String MESSAGE_DELETE_COMPLETE = "All completed tasks have been deleted.";
+	private static final String MESSAGE_DELETE_ALL = "All tasks have been deleted.";
+	private static final String MESSAGE_DELETE_SUCCESS = "All specified tasks have been deleted.";
+	private static final String MESSAGE_TASK_MARK = "Tasks have been marked.";
+	private static final String MESSAGE_ERROR_ADD_NO_DESC = "Please add a task description.";
+	private static final String MESSAGE_ERROR_MARK_NO_TASK = "Nothing to mark.";
+	private static final String MESSAGE_ERROR_DELETE_ARGUMENT = "Incorrect delete format.";
+	private static final String MESSAGE_ERROR_UPDATE_NO_SUCH_TASK = "Please enter a valid task number to update.";
+	private static final String MESSAGE_ERROR_UPDATE_ARGUMENT = "Incorrect update format.";
 	private static final String MESSAGE_ERROR_START_AFTER_END ="Error, start time cannot be after end time.";
 	private static final String MESSAGE_ERROR_TASK_DESC_EMPTY = "Error, task description cannot be empty.";
 	private static final String MESSAGE_ERROR_ALIAS_IN_USE = "Alias is already in use";
+	private static final String MESSAGE_ERROR_DELETE = "No such tasks. Please enter a valid number or alias to delete.";
+	private static final String MESSAGE_ERROR_SEARCH = "Please enter a search key.";
+	private static final String MESSAGE_ERROR_ALIAS = "Invalid alias";
 	private static final String MINUTE_LAST = "23:59";
 	private static final String MINUTE_FIRST = "00:00";
 	
@@ -36,7 +44,7 @@ class TaskHandler {
 	 */
 	protected static Feedback addTask(String userInput) {
 		if (!CommandParser.isInputValid(userInput, 1)) {
-			return new Feedback(MESSAGE_ADD_EMPTY);
+			return new Feedback(MESSAGE_ERROR_ADD_NO_DESC);
 		}
 		
 		Task newTask = createTask(userInput);
@@ -150,7 +158,7 @@ class TaskHandler {
 	 */
 	protected static Feedback updateTask(String update) {	
 		if (!CommandParser.isInputValid(update, 2)) {
-			return new Feedback(MESSAGE_UPDATE_ARGUMENT_ERROR);
+			return new Feedback(MESSAGE_ERROR_UPDATE_ARGUMENT);
 		}
 		
 		String taskID = CommandParser.getUserCommandType(update);
@@ -161,13 +169,13 @@ class TaskHandler {
 		Task taskToUpdate = getTaskToUpdate(taskID);
 		
 		if (taskToUpdate == null) {
-			return new Feedback(MESSAGE_UPDATE_NO_SUCH_TASK);
+			return new Feedback(MESSAGE_ERROR_UPDATE_NO_SUCH_TASK);
 		}
 		
 		if (updateField.equalsIgnoreCase("start") || updateField.equalsIgnoreCase("end") || updateField.equalsIgnoreCase("time")) {
 			if (!CommandParser.isInputValid(updateDesc, 1)) {
 				Task.getList().add(taskToUpdate);
-				return new Feedback(MESSAGE_UPDATE_ARGUMENT_ERROR);
+				return new Feedback(MESSAGE_ERROR_UPDATE_ARGUMENT);
 			}
 			Task tempTask = updateTaskTime(taskToUpdate, updateField, updateDesc);
 			
@@ -182,7 +190,7 @@ class TaskHandler {
 			if (tokens.length <= 0) {
 				// since the task is previously removed, it needs to be put back in in the event of an error
 				Task.getList().add(taskToUpdate);
-				return new Feedback("Invalid alias", true);
+				return new Feedback(MESSAGE_ERROR_ALIAS, true);
 			}
 			
 			String alias = tokens[0];	
@@ -197,7 +205,7 @@ class TaskHandler {
 		} else if (updateField.equals("desc") || updateField.equals("description")) {
 			if (!CommandParser.isInputValid(updateDesc, 1)) {
 				Task.getList().add(taskToUpdate);
-				return new Feedback(MESSAGE_UPDATE_ARGUMENT_ERROR);
+				return new Feedback(MESSAGE_ERROR_UPDATE_ARGUMENT);
 			}
 			taskToUpdate.setDescription(updateDesc);
 		} else {
@@ -219,7 +227,7 @@ class TaskHandler {
 		ArrayList<Integer> listToMark = getTaskIdFromString(taskID);
 		ArrayList<Task> taskList = Task.getList();
 		if(listToMark.size() == 0) {
-			return new Feedback("Nothing to mark.\n", true);
+			return new Feedback(MESSAGE_ERROR_MARK_NO_TASK, true);
 		}
 		
 		for (int i = 0; i < listToMark.size(); i++) {
@@ -227,7 +235,7 @@ class TaskHandler {
 		}
 		Task.setList(taskList);
 		Task.saveTasks();
-		return new Feedback("Tasks have been marked.\n");
+		return new Feedback(MESSAGE_TASK_MARK);
 	}
 	
 	private static Task updateTaskTime(Task task, String field, String update) {
@@ -300,23 +308,23 @@ class TaskHandler {
 		
 		if (userInput == null) {
 			indexList = getListOfTaskWithStatus(false);
-			feedback = "Showing incomplete tasks";
+			feedback = MESSAGE_LIST_INCOMPLETE;
 		} else {
 			if (userInput.equals("completed")) {
 				indexList = getListOfTaskWithStatus(true);
-				feedback = "Showing completed tasks";
+				feedback = MESSAGE_LIST_COMPLETE;
 			} else if (userInput.equals("overdue")) {
 				indexList = getListOfOverdueTask();
-				feedback = "Showing overdue tasks";
+				feedback = MESSAGE_LIST_OVERDUE;
 			} else if (DateParser.isDate(userInput)) {
 				indexList = getListOfTaskWithDate(userInput);
 				feedback = "Showing tasks on " + userInput;
 			} else if (userInput.equals("all")) {
 				indexList = getListOfAllTasks();
-				feedback = "Showing all tasks";
+				feedback = MESSAGE_LIST_ALL;
 			} else {
 				indexList = getListOfTaskWithStatus(false);
-				feedback = "Showing incomplete tasks";
+				feedback = MESSAGE_LIST_INCOMPLETE;
 			}
 		}
 		return new Feedback(feedback , indexList);
@@ -409,7 +417,7 @@ class TaskHandler {
 	 */
 	protected static Feedback deleteTask(String taskID) {
 		if (!CommandParser.isInputValid(taskID, 1)) {
-			return new Feedback(MESSAGE_DELETE_ARGUMENT_ERROR);
+			return new Feedback(MESSAGE_ERROR_DELETE_ARGUMENT);
 		}
 		
 		if (taskID.equalsIgnoreCase("completed")) {
@@ -417,26 +425,26 @@ class TaskHandler {
 			deleteCompleted();
 			Task.saveTasks();
 			HistoryHandler.purgeRedoStack();
-			return new Feedback("All completed tasks have been deleted.");
+			return new Feedback(MESSAGE_DELETE_COMPLETE);
 			
 		} else if (taskID.equalsIgnoreCase("all")) {
 			HistoryHandler.pushUndoStack();
 			deleteAll();
 			Task.saveTasks();
 			HistoryHandler.purgeRedoStack();
-			return new Feedback("All tasks have been deleted.");
+			return new Feedback(MESSAGE_DELETE_ALL);
 		} else {
 			ArrayList<Integer> listToDelete = getTaskIdFromString(taskID);
 			
 			if (listToDelete.size() == 0) {
-				return new Feedback("No such tasks.", true);
+				return new Feedback(MESSAGE_ERROR_DELETE, true);
 			}
 			
 			HistoryHandler.pushUndoStack();
 			deleteList(listToDelete);
 			Task.saveTasks();
 			HistoryHandler.purgeRedoStack();
-			return new Feedback("All specified tasks have been deleted.");
+			return new Feedback(MESSAGE_DELETE_SUCCESS);
 		}
 		
 	}
@@ -512,7 +520,7 @@ class TaskHandler {
 	private static Feedback searchTasks(String searchKey) {
 		String[] keys = searchKey.split("\\s+");
 		if (keys.length == 0) {
-			return new Feedback("Error, please enter a search key.");
+			return new Feedback(MESSAGE_ERROR_SEARCH);
 		}
 		ArrayList<Task> taskList = Task.getList();
 		ArrayList<Integer> indexList = new ArrayList<Integer>();
