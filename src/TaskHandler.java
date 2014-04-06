@@ -237,20 +237,26 @@ class TaskHandler {
 			task.setStartDateTime(tempTask.getStartDateTime());
 			task.setEndDateTime(tempTask.getEndDateTime());
 		} else {
-			DateTime date = task.getStartDateTime();
-			if (timeFields[Task.START_DATE] == null && timeFields[Task.START_TIME] == null) {
-				return task;
-			} else if (timeFields[Task.START_DATE] == null) {
-				date = TimeParser.setTime(date, timeFields[Task.START_TIME]);
-			} else if (timeFields[Task.START_TIME] == null) {
-				date = DateParser.setDate(timeFields[Task.START_DATE]);
-				date = TimeParser.setTime(date, MINUTE_LAST);
+			DateTime dateTime = task.getStartDateTime();
+			String date = timeFields[Task.START_DATE];
+			String time = timeFields[Task.START_TIME];
+			
+			if (date != null && time != null) {
+				dateTime = DateParser.setDate(date);
+				dateTime = TimeParser.setTime(dateTime, time);
+			} else if (date != null) {
+				DateTime temp = DateParser.setDate(date);
+				dateTime = TimeParser.setTime(temp, Task.getTimeString(dateTime));
+			} else if (time != null) {
+				dateTime = TimeParser.setTime(dateTime, time);
+			} else {
+				return null;
 			}
 			
 			if (field.equalsIgnoreCase("start")) {
-				task.setStartDateTime(date);
+				task.setStartDateTime(dateTime);
 			} else {
-				task.setEndDateTime(date);
+				task.setEndDateTime(dateTime);
 			}
 			
 			if (task.getStartDateTime().isAfter(task.getEndDateTime())) {
