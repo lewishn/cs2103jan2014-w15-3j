@@ -1,5 +1,5 @@
 [ADD] new insert write 
 [LIST] display show 
 [DELETE] drop 
-[EXIT] q 
+[EXIT] q q! 
 [UPDATE] edit 

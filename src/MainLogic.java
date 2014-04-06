@@ -2,8 +2,9 @@ import java.util.ArrayList;
 
 public class MainLogic{
 	private static final String MESSAGE_EXIT = "exit";
-	private static final String MESSAGE_INVALID = "Oops, please try again.\n";
-	
+	private static final String MESSAGE_INVALID = "Oops, please try again.";
+	private static final String MESSAGE_ERROR_CUSTOM ="Invalid custom command format";
+	private static final String MESSAGE_ERROR_CUSTOM_FORMAT = "Invalid custom command format";
 	private static final String DEFAULT_ADD = "add";
 	private static final String DEFAULT_UPDATE = "update";
 	private static final String DEFAULT_DELETE = "delete";
@@ -109,14 +110,14 @@ public class MainLogic{
 				
 			case CUSTOM:
 				if (!CommandParser.isInputValid(commandDesc, 2)) {
-					feed = new Feedback("Invalid custom command format");
+					feed = new Feedback(MESSAGE_ERROR_CUSTOM);
 					return processFeedback(feed, DEFAULT_CUSTOM);
 				}
 				
 				String type = getCustomHeader(commandDesc);
 				
 				if (type == null) {
-					feed = new Feedback("Invalid custom command format");
+					feed = new Feedback(MESSAGE_ERROR_CUSTOM_FORMAT);
 					return processFeedback(feed, DEFAULT_CUSTOM);
 				}
 				String customToBeAdded = CommandParser.getUserCommandDesc(commandDesc);

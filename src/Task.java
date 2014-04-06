@@ -20,7 +20,8 @@ class Task implements Comparable<Task>{
 	private static final String NULL_START = "NO_START_TIME";
 	private static final String NULL_END = "NO_END_TIME";
 	private static final String NULL_ALIAS = "NO_ALIAS";
-	private static final String STRING_FORMAT = "%s%s%s%s %s";
+	private static final String DATE_DISPLAY_FORMAT_1 = "%s %s  to  %s %s";
+	private static final String DATE_DISPLAY_FORMAT_2 = "$s %s";
 	
 	private static ArrayList<Task> taskList = loadTasks();
 	
@@ -123,22 +124,34 @@ class Task implements Comparable<Task>{
 		return start + DELIMITER + end + DELIMITER + taskAlias + DELIMITER + status + DELIMITER + description;
 	}
 	
-	public String toDisplayString() {
-		String start = (startDateTime != null) ? getDateString(startDateTime) : "";
-		String end = (endDateTime != null) ? getDateString(endDateTime) : "";
-		String stat = (status == true) ? "[completed]" : "[incomplete]";
-		String name = (alias != null) ? "[name:" + alias + "]" : "";
-		
-		return String.format(STRING_FORMAT, start, end, stat, name, description);
+	protected String getDateTimeString() {
+		if (startDateTime != null && endDateTime != null) {
+			return String.format(DATE_DISPLAY_FORMAT_1, getDateString(startDateTime), getTimeString(startDateTime), getDateString(endDateTime), getTimeString(endDateTime));
+		} else if (startDateTime != null) {
+			return String.format(DATE_DISPLAY_FORMAT_2, getDateString(startDateTime), getTimeString(startDateTime));
+		} else if (endDateTime != null) {
+			return String.format(DATE_DISPLAY_FORMAT_2, getDateString(endDateTime), getTimeString(endDateTime));
+		} else {
+			return "";
+		}
 	}
 	
-	private String getDateString(DateTime date) {
+	protected static String getTimeString(DateTime date) {
+		if (date == null) {
+			return null;
+		}
+		
 		DecimalFormat df = new DecimalFormat("00");
-		
 		String time = df.format(date.getHourOfDay()) + ":" + df.format(date.getMinuteOfHour());
-		String dt = date.toString("dd/MMM/YYYY");
+		return time;
+	}
+	
+	protected static String getDateString(DateTime date) {
+		if (date == null) {
+			return null;
+		}
 		
-		return "[" + time + "|" + dt + "]";
+		return date.toString("dd/MMM/YYYY");
 	}
 	
 	@Override

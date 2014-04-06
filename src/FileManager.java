@@ -10,7 +10,8 @@ import java.util.ArrayList;
 import java.util.logging.Logger;
 
 class FileManager {
-	
+	private static final String MESSAGE_ERROR_LOGGER_READ = "Error reading from file ";
+	private static final String MESSAGE_ERROR_LOGGER_WRITE = "Error writing to file ";
 	@SuppressWarnings("deprecation")
 	public static final String filepath = new File(URLDecoder.decode(DoThingsGUI.class.getProtectionDomain().getCodeSource().getLocation().getPath())).getParent() + System.getProperty("file.separator");
 	
@@ -38,7 +39,7 @@ class FileManager {
 				list.add(line);
 			}
 		} catch (IOException e) {
-			LOGGER.info("Error reading from file " + fileName);
+			LOGGER.info( MESSAGE_ERROR_LOGGER_READ + fileName);
 		}
 		
 		return list;
@@ -54,7 +55,7 @@ class FileManager {
 			writer.flush();
 			writer.close();
 		} catch (IOException e) {
-			LOGGER.info("Error writing to file " + fileName);
+			LOGGER.info(MESSAGE_ERROR_LOGGER_WRITE + fileName);
 			e.printStackTrace();
 		}
 	}
