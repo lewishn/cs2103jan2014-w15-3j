@@ -262,6 +262,7 @@ public class MainLogic{
 				Integer numberToString = number + 1;
 				result.get(TASK_DESC).add(HASH_TAG + numberToString.toString() +" " + task.getDescription());
 				result.get(TASK_ALIAS).add(task.getAlias());
+				result.get(TASK_DATE).add(task.getDateTimeString());
 				if (task.getStatus()) {
 					result.get(TASK_STATUS).add(MARK_CODE);
 				} else {

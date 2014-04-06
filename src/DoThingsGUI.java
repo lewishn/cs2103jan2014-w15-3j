@@ -69,6 +69,7 @@ public class DoThingsGUI extends JFrame  {
 	private static ArrayList<String> taskDesc;
 	private static ArrayList<String> taskAlias;
 	private static ArrayList<String> taskStatus;
+	private static ArrayList<String> taskDate;
 	private GlobalKeyPress globalKeyPress; 
 	private TriggerOnKeyReleased triggerOnKeyReleased;
 	private TriggerOnMouseAction triggerOnMouseAction;
@@ -331,14 +332,14 @@ public class DoThingsGUI extends JFrame  {
 
 			dateTime.add(new JTextArea("12:40"));
 			dateTime.get(i).setFont(new Font("Pluto Sans Cond ExLight", Font.PLAIN, 12));
-			dateTime.get(i).setBounds(10, 50, 200, 22);
+			dateTime.get(i).setBounds(10, 50, 250, 22);
 			dateTime.get(i).setOpaque(false);
 			dateTime.get(i).setEditable(false);
 			messagePanel.get(i).add(dateTime.get(i));
 			
 			alias.add(new JTextArea());
 			alias.get(i).setFont(new Font("Pluto Sans Cond ExLight", Font.PLAIN, 12));
-			alias.get(i).setBounds(250, 50, 88, 22);
+			alias.get(i).setBounds(260, 50, 88, 22);
 			alias.get(i).setOpaque(false);
 			alias.get(i).setEditable(false);
 			messagePanel.get(i).add(alias.get(i));
@@ -370,6 +371,7 @@ public class DoThingsGUI extends JFrame  {
 				taskDesc = result.get(TASK_DESC);
 				taskAlias = result.get(TASK_ALIAS);
 				taskStatus = result.get(TASK_STATUS);
+				taskDate = result.get(TASK_DATE);
 				int numOfTask = taskDesc.size();
 				inputField.setText("");  
 				
@@ -413,7 +415,7 @@ public class DoThingsGUI extends JFrame  {
 						 */
 					}
 					heightChange += TASK_OBJECT_FRAME_HEIGHT;
-					dateTime.get(i).setText("12:09");
+					dateTime.get(i).setText(taskDate.get(i));
 					if (taskAlias.get(i) == null) {		
 					} else {
 						alias.get(i).setText(ALIAS + taskAlias.get(i));
