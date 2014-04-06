@@ -201,7 +201,12 @@ class TaskHandler {
 			}
 			taskToUpdate.setDescription(updateDesc);
 		} else {
-			taskToUpdate = createTask(updateStringWithoutID);
+			Task tempTask = createTask(updateStringWithoutID);
+			if (tempTask.getDescription().trim().length() == 0) {
+				Task.getList().add(taskToUpdate);
+				return new Feedback(MESSAGE_ERROR_TASK_DESC_EMPTY);
+			}
+			taskToUpdate = tempTask;
 		}
 		
 		Task.getList().add(taskToUpdate);
@@ -291,25 +296,30 @@ class TaskHandler {
 	protected static Feedback listTasks(String userInput) {
 		Task.sortList();
 		ArrayList<Integer> indexList;
-		String feedback = userInput + " ";
+		String feedback;
 		
 		if (userInput == null) {
 			indexList = getListOfTaskWithStatus(false);
-			feedback ="";
+			feedback = "Showing incomplete tasks";
 		} else {
 			if (userInput.equals("completed")) {
 				indexList = getListOfTaskWithStatus(true);
+				feedback = "Showing completed tasks";
 			} else if (userInput.equals("overdue")) {
 				indexList = getListOfOverdueTask();
+				feedback = "Showing overdue tasks";
 			} else if (DateParser.isDate(userInput)) {
 				indexList = getListOfTaskWithDate(userInput);
+				feedback = "Showing tasks on " + userInput;
 			} else if (userInput.equals("all")) {
 				indexList = getListOfAllTasks();
+				feedback = "Showing all tasks";
 			} else {
 				indexList = getListOfTaskWithStatus(false);
+				feedback = "Showing incomplete tasks";
 			}
 		}
-		return new Feedback("Showing " + feedback + "tasks" , indexList);
+		return new Feedback(feedback , indexList);
 	}
 	
 	/**
