@@ -10,7 +10,7 @@ import org.joda.time.DateTime;
 class TaskHandler {
 	private static final String MESSAGE_ADD_EMPTY = "Error, please add a task description.\n";
 	private static final String MESSAGE_ADDED_TASK = "Added \"%s\".\n";
-	private static final String MESSAGE_EMPTY_TASKS = "You have no tasks scheduled.\n";
+	private static final String MESSAGE_EMPTY_TASKS = "Your list is empty";
 	private static final String MESSAGE_UPDATE_TASK = "Task has been updated.\n";
 	private static final String MESSAGE_UPDATE_NO_SUCH_TASK = "Error, please enter a valid task number to update.\n";
 	private static final String MESSAGE_UPDATE_ARGUMENT_ERROR = "Error, incorrect update format.\n";
@@ -20,7 +20,9 @@ class TaskHandler {
 	private static final String MESSAGE_TASK_DELETED = "\"%s\" has been deleted from the task list.\n";
 	private static final String MESSAGE_TASK_DELETED_ALL = "All tasks have been deleted from the task list.\n";
 	private static final String MESSAGE_INVALID_DELETE = "No such task, please enter a valid number to delete.\n";
-	
+	private static final String MESSAGE_ERROR_START_AFTER_END ="Error, start time cannot be after end time.";
+	private static final String MESSAGE_ERROR_TASK_DESC_EMPTY = "Error, task description cannot be empty.";
+	private static final String MESSAGE_ERROR_ALIAS_IN_USE = "Alias is already in use";
 	private static final String MINUTE_LAST = "23:59";
 	private static final String MINUTE_FIRST = "00:00";
 	
@@ -40,11 +42,11 @@ class TaskHandler {
 		Task newTask = createTask(userInput);
 		
 		if (newTask == null) {
-			return new Feedback("Error, start time cannot be after end time.", true);
-		}
+			return new Feedback(MESSAGE_ERROR_START_AFTER_END, true);
+		} 
 		
 		if (newTask.getDescription().trim().length() == 0) {
-			return new Feedback("Error, task description cannot be empty.", true);
+			return new Feedback(MESSAGE_ERROR_TASK_DESC_EMPTY, true);
 		}
 		
 		HistoryHandler.pushUndoStack();
@@ -171,7 +173,7 @@ class TaskHandler {
 			
 			if (tempTask == null) {
 				Task.getList().add(taskToUpdate);
-				return new Feedback("Error, start time cannot be after end time", true);
+				return new Feedback(MESSAGE_ERROR_START_AFTER_END, true);
 			}
 			taskToUpdate = tempTask;
 			
@@ -186,7 +188,7 @@ class TaskHandler {
 			String alias = tokens[0];	
 			if (Task.isAliasValid(alias) || isInteger(alias)) {
 				Task.getList().add(taskToUpdate);
-				return new Feedback("Alias is already in use", true);
+				return new Feedback(MESSAGE_ERROR_ALIAS_IN_USE, true);
 			
 			} else {
 				taskToUpdate.setAlias(alias);
@@ -268,12 +270,9 @@ class TaskHandler {
 		} else if (Task.isAliasValid(taskID)) {
 			index = Task.getTaskIndexFromAlias(taskID);
 		}
-		
 		if (index < 0 || index >= Task.getList().size()) {
 			return null;
 		}
-		
-		
 		taskToUpdate = Task.getList().get(index);
 		Task.getList().remove(index);
 		
@@ -285,13 +284,12 @@ class TaskHandler {
 	
 	protected static Feedback listTasks(String userInput) {
 		Task.sortList();
-		ArrayList<Task> taskList = Task.getList();
 		ArrayList<Integer> indexList;
-		String feedback = userInput;
-		
+		String feedback = userInput + " ";
 		
 		if (userInput == null) {
 			indexList = getListOfTaskWithStatus(false);
+			feedback ="";
 		} else {
 			if (userInput.equals("completed")) {
 				indexList = getListOfTaskWithStatus(true);
@@ -301,14 +299,11 @@ class TaskHandler {
 				indexList = getListOfTaskWithDate(userInput);
 			} else if (userInput.equals("all")) {
 				indexList = getListOfAllTasks();
-				feedback = "all";
 			} else {
 				indexList = getListOfTaskWithStatus(false);
-				feedback = "incomplete";
 			}
 		}
-		
-		return new Feedback("Showing " + feedback + " tasks" , indexList);
+		return new Feedback("Showing " + feedback + "tasks" , indexList);
 	}
 	
 	/**

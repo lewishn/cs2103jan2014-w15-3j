@@ -2,7 +2,7 @@ import java.util.ArrayList;
 
 public class MainLogic{
 	private static final String MESSAGE_EXIT = "exit";
-	private static final String MESSAGE_INVALID = "Invalid command! Please try again.\n";
+	private static final String MESSAGE_INVALID = "Oops, please try again.\n";
 	
 	private static final String DEFAULT_ADD = "add";
 	private static final String DEFAULT_UPDATE = "update";
@@ -16,6 +16,19 @@ public class MainLogic{
 	private static final String DEFAULT_HELP = "help";
 	private static final String DEFAULT_SEARCH = "search";
 	private static final String DEFAULT_EXIT = "exit";
+	
+	private static final String ERROR_CODE = "error";
+	private static final String HASH_TAG = "#";
+	private static final String MARK_CODE = "marked";
+	private static final String UNMARK_CODE = "unmarked";
+	
+	private static final int FEEDBACK_TYPE = 0;
+	private static final int FEEDBACK_DESC = 1;
+	private static final int TASK_DESC = 2;
+	private static final int TASK_ALIAS = 3;
+	private static final int TASK_STATUS = 4;
+	private static final int TASK_DATE = 5;
+	private static final int NUM_OF_FEEDBACK = 6;
 	
 	private enum CommandType {
 		ADD, DELETE, UPDATE, LIST, UNDO, REDO, SEARCH, CUSTOM, DELETE_CUSTOM, MARK, HELP, EXIT, INVALID;
@@ -64,63 +77,80 @@ public class MainLogic{
 	 * @return a Feedback object containing a String to be shown to the user
 	 */
 	//@author: John & Lewis
-	protected static Feedback runLogic(String userInput) {
+	protected static ArrayList<ArrayList<String>> runLogic(String userInput) {
 		String command = CommandParser.getUserCommandType(userInput);
 		String commandDesc = CommandParser.getUserCommandDesc(userInput);
+		Feedback feed;
 		
 		CommandType commandType = getCommandType(command);
 		
 		switch (commandType) {
 			case ADD:
-				return TaskHandler.addTask(commandDesc);
+				feed = TaskHandler.addTask(commandDesc);
+				return processFeedback(feed, DEFAULT_ADD); 
 				
 			case LIST:
-				return TaskHandler.listTasks(commandDesc);
+				feed =TaskHandler.listTasks(commandDesc);
+				return processFeedback(feed, DEFAULT_LIST);
 				
 			case UPDATE:
-				return TaskHandler.updateTask(commandDesc);	
+				feed =TaskHandler.updateTask(commandDesc);	
+				return processFeedback(feed, DEFAULT_UPDATE);
 				
 			case DELETE:
-				return TaskHandler.deleteTask(commandDesc);
+				feed =TaskHandler.deleteTask(commandDesc);
+				return processFeedback(feed, DEFAULT_DELETE);
 			
 			case HELP:
+
+				//return processFeedback(feed, DEFAULT_HELP);
 				//System.out.println("Help");
 				//
 				
 			case CUSTOM:
 				if (!CommandParser.isInputValid(commandDesc, 2)) {
-					return new Feedback("Invalid custom command format");
+					feed = new Feedback("Invalid custom command format");
+					return processFeedback(feed, DEFAULT_CUSTOM);
 				}
 				
 				String type = getCustomHeader(commandDesc);
 				
 				if (type == null) {
-					return new Feedback("Invalid custom command format");
+					feed = new Feedback("Invalid custom command format");
+					return processFeedback(feed, DEFAULT_CUSTOM);
 				}
 				String customToBeAdded = CommandParser.getUserCommandDesc(commandDesc);
-				return CustomCommandHandler.addCustomCommand(customToBeAdded, type);
+				feed = CustomCommandHandler.addCustomCommand(customToBeAdded, type);
+				return processFeedback(feed, DEFAULT_CUSTOM);
 				
 			case DELETE_CUSTOM:	
-				return CustomCommandHandler.deleteCustomCommand(commandDesc);
+				feed = CustomCommandHandler.deleteCustomCommand(commandDesc);
+				return processFeedback(feed, DEFAULT_DELETE_CUSTOM);
 				
 			case UNDO:
-				return HistoryHandler.undoCommand();
+				feed = HistoryHandler.undoCommand();
+				return processFeedback(feed, DEFAULT_UNDO);
 			
 			case REDO:
-				return HistoryHandler.redoCommand();
+				feed = HistoryHandler.redoCommand();
+				return processFeedback(feed, DEFAULT_REDO);
 				
 			case SEARCH:
+				//processFeedback(feed, DEFAULT_SEARCH);
 				//System.out.println("Search");
 				//
 			
 			case MARK:
-				return TaskHandler.markTask(commandDesc);
+				feed = TaskHandler.markTask(commandDesc);
+				return processFeedback(feed, DEFAULT_MARK);
 				
 			case EXIT:
-				return new Feedback(MESSAGE_EXIT, false, true);
+				feed = new Feedback(MESSAGE_EXIT, false, true);
+				return processFeedback(feed, DEFAULT_EXIT);
 				
 			default:
-				return new Feedback(MESSAGE_INVALID, true);
+				feed = new Feedback(MESSAGE_INVALID, true);
+				return processFeedback(feed, ERROR_CODE);
 		}
 	}
 	
@@ -200,6 +230,44 @@ public class MainLogic{
 	
 	protected static ArrayList<Task> getTaskList() {
 		return Task.getList();
+	}
+	
+	private static ArrayList<ArrayList<String>> processFeedback(Feedback feed, String type) {
+		ArrayList<ArrayList<String>> result = new ArrayList<ArrayList<String>>();
+		for(int i=0; i<NUM_OF_FEEDBACK; i++) {
+			result.add(new ArrayList<String>());
+		}
+		
+		if (feed.getExitFlag()) {
+			result.get(FEEDBACK_TYPE).add(DEFAULT_EXIT);
+		} else if (feed.getErrorFlag()) {
+			result.get(FEEDBACK_TYPE).add(ERROR_CODE);
+		} else {
+			result.get(FEEDBACK_TYPE).add(type);
+		} 
+		result.get(FEEDBACK_DESC).add(feed.getDesc());
+		
+		if (type.equals(DEFAULT_HELP)) {
+			
+		}
+		else {
+			ArrayList<Task>taskList = MainLogic.getTaskList();
+			ArrayList<Integer> numberList = feed.getIndexList();
+			
+			for(int i=0; i<numberList.size(); i++) {
+				Integer number = numberList.get(i);
+				Task task = taskList.get(number);
+				Integer numberToString = number + 1;
+				result.get(TASK_DESC).add(HASH_TAG + numberToString.toString() +" " + task.getDescription());
+				result.get(TASK_ALIAS).add(task.getAlias());
+				if (task.getStatus()) {
+					result.get(TASK_STATUS).add(MARK_CODE);
+				} else {
+					result.get(TASK_STATUS).add(UNMARK_CODE);
+				}
+			}
+		}  
+		return result;
 	}
 }
 

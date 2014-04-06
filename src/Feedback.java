@@ -18,7 +18,7 @@ class Feedback {
 		description = desc;
 		error = isError;
 		exit = false;
-		indexList = null;
+		indexList = TaskHandler.getListOfTaskWithStatus(false);
 	}
 	
 	public Feedback(String desc, boolean isError, boolean isExit) {

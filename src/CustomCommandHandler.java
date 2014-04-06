@@ -19,9 +19,9 @@ class CustomCommandHandler {
 	protected static final String HEADER_EXIT = "[EXIT]";
 
 	private static final String MESSAGE_CUSTOM_DUPLICATE = "Sorry, but this word is already in use.\n";
-	private static final String MESSAGE_CUSTOM_SUCCESS = " has been successfully added to the command list.\n";
-	private static final String MESSAGE_CUSTOM_NONEXISTANT = "Error deleting. There is no such word in the command list.\n";
-	private static final String MESSAGE_CUSTOM_DELETED = " has been successfully deleted from the command list.\n";
+	private static final String MESSAGE_CUSTOM_SUCCESS = " added to the command list.\n";
+	private static final String MESSAGE_CUSTOM_NONEXISTANT = "Error deleting. No such word in command list.\n";
+	private static final String MESSAGE_CUSTOM_DELETED = " deleted from the command list.\n";
 	
 	protected static ArrayList<ArrayList<String>> customCommandList = loadCustomCommands();
 	

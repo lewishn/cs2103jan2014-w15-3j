@@ -30,9 +30,19 @@ import org.jnativehook.keyboard.NativeKeyListener;
 
 //@author: John
 public class DoThingsGUI extends JFrame  {
-
+	private static final String DEFAULT_EXIT = "exit";
 	private static final String MESSAGE_STARTUP = "Get ready to Do Things!\n";
 	private static final String STARTUP_COMMAND = "list all";
+	private static final String ERROR_CODE = "error";
+	private static final String MARK_CODE = "marked";
+	private static final String UNMARK_CODE = "unmarked";
+	private static final String ALIAS = "@lias: ";
+	private static final int FEEDBACK_TYPE = 0;
+	private static final int FEEDBACK_DESC = 1;
+	private static final int TASK_DESC = 2;
+	private static final int TASK_ALIAS = 3;
+	private static final int TASK_STATUS = 4;
+	private static final int TASK_DATE = 5;
 	private static final int COMMAND_ENTER = KeyEvent.VK_ENTER;
 	private static final int COMMAND_HIDE = NativeKeyEvent.VK_F8;
 	private static final int COMMAND_SHIFT_WINDOW_LEFT = KeyEvent.VK_F11;
@@ -244,65 +254,77 @@ public class DoThingsGUI extends JFrame  {
 			switch(key){
 			case COMMAND_ENTER:
 				String userInput = inputField.getText();
-				Feedback feed = MainLogic.runLogic(userInput);
+				ArrayList<ArrayList<String>> result = MainLogic.runLogic(userInput);
+				String feedbackType = result.get(FEEDBACK_TYPE).get(0);
+				String feedbackDesc = result.get(FEEDBACK_DESC).get(0);
 				taskPanel.removeAll();
 				taskPanel.updateUI();
 
 				
-				if(feed.getExitFlag()) {
+				if(feedbackType.equals(DEFAULT_EXIT)) {
 					System.exit(0);
-				} else if(feed.getErrorFlag()) {
-					feedbackLabel.setText(feed.getDesc());
+				} else if (feedbackType.equals(ERROR_CODE)) {
+					feedbackLabel.setText(feedbackDesc);
 					inputField.selectAll();
-					taskPanel.setPreferredSize(new Dimension(FRAME_WIDTH,FRAME_HEIGHT));
+					//taskPanel.setPreferredSize(new Dimension(FRAME_WIDTH,0));
 				} else {
-					ArrayList<Task>taskList = MainLogic.getTaskList();
-					ArrayList<Integer> numberList = feed.getIndexList();
-					//input.add(userInput);
+					ArrayList<String> taskDesc = result.get(TASK_DESC);
+					ArrayList<String> taskAlias = result.get(TASK_ALIAS);
+					ArrayList<String> taskStatus = result.get(TASK_STATUS);
+					int numOfTask = taskDesc.size();
 					inputField.setText("");  
 					
-					JPanel messagePanel[] = new JPanel[numberList.size()];
-					JTextArea dateTime[] = new JTextArea[numberList.size()];
-					JTextArea alias[] = new JTextArea[numberList.size()];
-					JTextArea taskDescription[] = new JTextArea[numberList.size()];
+					JPanel messagePanel[] = new JPanel[numOfTask];
+					JTextArea dateTime[] = new JTextArea[numOfTask];
+					JTextArea alias[] = new JTextArea[numOfTask];
+					JTextArea taskDescription[] = new JTextArea[numOfTask];
 					heightChange=0;
-					for(int i=0; i<numberList.size(); i++) {	
+					for(int i=0; i<numOfTask; i++) {	
 						//----- one task ----//
 						createTaskObject(messagePanel, dateTime, alias,
 								taskDescription, heightChange, i);
-						
-						if(i%4==0) {
+				
+						if (taskStatus.get(i).equals(MARK_CODE)) {
 							//light grey
 							messagePanel[i].setBackground(new Color(204, 204, 204));
 							taskDescription[i].setForeground(new Color(153,153,153));
 							alias[i].setForeground(new Color(153,153,153));
 							dateTime[i].setForeground(new Color(153,153,153));
-						} else if(i%4==1) {
+						} else if (taskStatus.get(i).equals(UNMARK_CODE)) {
+							
+							// if task due today
 							//yellow
 							messagePanel[i].setBackground(new Color(255,255,51));
 							taskDescription[i].setForeground(new Color(102,102,102));
 							dateTime[i].setForeground(new Color(102,102,102));
 							alias[i].setForeground(new Color(102,102,102));
-						} else if(i%4==2) {
+							
+							// if task overdue
 							// red
+							/*
 							messagePanel[i].setBackground(new Color(255, 153, 153));
 							taskDescription[i].setForeground(Color.WHITE);
 							alias[i].setForeground(Color.WHITE);
 							dateTime[i].setForeground(Color.WHITE);
-						} else {
+						
+							// else
 							//green
 							messagePanel[i].setBackground(new Color(153, 204, 102));
 							taskDescription[i].setForeground(Color.WHITE);
 							alias[i].setForeground(Color.WHITE);
 							dateTime[i].setForeground(Color.WHITE);
+							 */
 						}
 						heightChange += TASK_OBJECT_FRAME_HEIGHT;
 						dateTime[i].setText("12:09");
-						alias[i].setText(taskList.get(numberList.get(i)).getAlias());
-						taskDescription[i].append(taskList.get(numberList.get(i)).getDescription());
+						if (taskAlias.get(i) == null) {		
+						} else {
+							alias[i].setText(ALIAS + taskAlias.get(i));
+						}	
+						taskDescription[i].append(taskDesc.get(i));
 						taskPanel.setPreferredSize(new Dimension(FRAME_WIDTH,heightChange));
-						feedbackLabel.setText(feed.getDesc());
 					}
+					feedbackLabel.setText(feedbackDesc);
 					break;
 				}
 			default:
@@ -325,14 +347,14 @@ public class DoThingsGUI extends JFrame  {
 			dateTime[i].setOpaque(false);
 			messagePanel[i].add(dateTime[i]);
 			
-			alias[i] = new JTextArea("@lias: ");
+			alias[i] = new JTextArea();
 			alias[i].setFont(new Font("Pluto Sans Cond ExLight", Font.PLAIN, 12));
 			alias[i].setBounds(250, 50, 88, 22);
 			alias[i].setOpaque(false);
 			messagePanel[i].add(alias[i]);
 			
 			taskDescription[i] = new JTextArea();
-			taskDescription[i].setFont(new Font("Pluto Sans Medium", Font.PLAIN, 18));
+			taskDescription[i].setFont(new Font("Pluto Sans Light", Font.PLAIN, 18));
 			taskDescription[i].setBounds(10,10, FRAME_WIDTH-25,60); //55 characters
 			taskDescription[i].setLineWrap(true);
 			taskDescription[i].setWrapStyleWord(true);
