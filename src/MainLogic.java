@@ -240,6 +240,7 @@ public class MainLogic{
 		
 		if (feed.getExitFlag()) {
 			result.get(FEEDBACK_TYPE).add(DEFAULT_EXIT);
+			return result;
 		} else if (feed.getErrorFlag()) {
 			result.get(FEEDBACK_TYPE).add(ERROR_CODE);
 		} else {

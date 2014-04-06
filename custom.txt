@@ -1,4 +1,4 @@
-[ADD] new insert write show 
-[LIST] display 
+[ADD] new insert write 
+[LIST] display show 
 [DELETE] drop 
 [EXIT] q 
