@@ -2,3 +2,4 @@
 [LIST] display show 
 [DELETE] drop 
 [EXIT] q 
+[UPDATE] edit 
