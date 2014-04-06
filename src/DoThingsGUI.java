@@ -404,7 +404,6 @@ public class DoThingsGUI extends JFrame  {
 						taskDescription.get(i).setForeground(Color.WHITE);
 						alias.get(i).setForeground(Color.WHITE);
 						dateTime.get(i).setForeground(Color.WHITE);
-					
 						// else
 						//green
 						messagePanel.get(i).setBackground(new Color(153, 204, 102));
