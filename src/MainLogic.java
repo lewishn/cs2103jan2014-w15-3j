@@ -22,6 +22,10 @@ public class MainLogic{
 	private static final String HASH_TAG = "#";
 	private static final String MARK_CODE = "marked";
 	private static final String UNMARK_CODE = "unmarked";
+	private static final String OVERDUE = "overdue";
+	private static final String DUE_TODAY = "today";
+	private static final String DUE_OTHER = "others";
+	private static final String FLOATING = "floating";
 	
 	private static final int FEEDBACK_TYPE = 0;
 	private static final int FEEDBACK_DESC = 1;
@@ -29,7 +33,8 @@ public class MainLogic{
 	private static final int TASK_ALIAS = 3;
 	private static final int TASK_STATUS = 4;
 	private static final int TASK_DATE = 5;
-	private static final int NUM_OF_FEEDBACK = 6;
+	private static final int TASK_TIME = 6;
+	private static final int NUM_OF_FEEDBACK = 7;
 	
 	private enum CommandType {
 		ADD, DELETE, UPDATE, LIST, UNDO, REDO, SEARCH, CUSTOM, DELETE_CUSTOM, MARK, HELP, EXIT, INVALID;
@@ -264,10 +269,29 @@ public class MainLogic{
 				result.get(TASK_ALIAS).add(task.getAlias());
 				result.get(TASK_DATE).add(task.getDateTimeString());
 				if (task.getStatus()) {
-					result.get(TASK_STATUS).add(MARK_CODE);
+					result.get(TASK_STATUS).add(MARK_CODE);					
+					if (task.isUnscheduled()) {
+						result.get(TASK_TIME).add(FLOATING);
+					} else if (task.isToday()) {
+						result.get(TASK_TIME).add(DUE_TODAY);
+					} else if (task.isOverdue()) {
+						result.get(TASK_TIME).add(OVERDUE);
+					} else {
+						result.get(TASK_TIME).add(DUE_OTHER);
+					}
 				} else {
 					result.get(TASK_STATUS).add(UNMARK_CODE);
+					if (task.isUnscheduled()) {
+						result.get(TASK_TIME).add(FLOATING);
+					} else if (task.isToday()) {
+						result.get(TASK_TIME).add(DUE_TODAY);
+					} else if (task.isOverdue()) {
+						result.get(TASK_TIME).add(OVERDUE);
+					} else {
+						result.get(TASK_TIME).add(DUE_OTHER);
+					}
 				}
+
 			}
 		}  
 		return result;

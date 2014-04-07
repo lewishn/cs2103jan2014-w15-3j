@@ -29,20 +29,25 @@ import org.jnativehook.keyboard.NativeKeyEvent;
 import org.jnativehook.keyboard.NativeKeyListener;
 
 //@author: John
+@SuppressWarnings("serial")
 public class DoThingsGUI extends JFrame  {
 	private static final String DEFAULT_EXIT = "exit";
 	private static final String MESSAGE_STARTUP = "Get ready to Do Things!\n";
 	private static final String STARTUP_COMMAND = "list";
 	private static final String ERROR_CODE = "error";
 	private static final String MARK_CODE = "marked";
-	private static final String UNMARK_CODE = "unmarked";
 	private static final String ALIAS = "@lias: ";
+	private static final String OVERDUE = "overdue";
+	private static final String DUE_TODAY = "today";
+	private static final String FLOATING = "floating";
+	private static final String DEFAULT_HELP = "help";
 	private static final int FEEDBACK_TYPE = 0;
 	private static final int FEEDBACK_DESC = 1;
 	private static final int TASK_DESC = 2;
 	private static final int TASK_ALIAS = 3;
 	private static final int TASK_STATUS = 4;
 	private static final int TASK_DATE = 5;
+	private static final int TASK_TIME = 6;
 	private static final int COMMAND_ENTER = KeyEvent.VK_ENTER;
 	private static final int COMMAND_HIDE = NativeKeyEvent.VK_F8;
 	private static final int COMMAND_SHIFT_WINDOW_LEFT = KeyEvent.VK_F11;
@@ -70,6 +75,7 @@ public class DoThingsGUI extends JFrame  {
 	private static ArrayList<String> taskAlias;
 	private static ArrayList<String> taskStatus;
 	private static ArrayList<String> taskDate;
+	private static ArrayList<String> taskTime;
 	private GlobalKeyPress globalKeyPress; 
 	private TriggerOnKeyReleased triggerOnKeyReleased;
 	private TriggerOnMouseAction triggerOnMouseAction;
@@ -330,7 +336,7 @@ public class DoThingsGUI extends JFrame  {
 			taskPanel.revalidate();
 			taskPanel.repaint();
 
-			dateTime.add(new JTextArea("12:40"));
+			dateTime.add(new JTextArea());
 			dateTime.get(i).setFont(new Font("Pluto Sans Cond ExLight", Font.PLAIN, 12));
 			dateTime.get(i).setBounds(10, 50, 250, 22);
 			dateTime.get(i).setOpaque(false);
@@ -362,69 +368,84 @@ public class DoThingsGUI extends JFrame  {
 			String feedbackDesc = result.get(FEEDBACK_DESC).get(0);
 			taskPanel.removeAll();
 			taskPanel.updateUI();
-
-			if (feedbackType.equals(ERROR_CODE)) {
-				feedbackLabel.setText(feedbackDesc);
-				inputField.selectAll();
-				//taskPanel.setPreferredSize(new Dimension(FRAME_WIDTH,0));
-			} else {
-				taskDesc = result.get(TASK_DESC);
-				taskAlias = result.get(TASK_ALIAS);
-				taskStatus = result.get(TASK_STATUS);
-				taskDate = result.get(TASK_DATE);
-				int numOfTask = taskDesc.size();
-				inputField.setText("");  
-				
-				messagePanel = new ArrayList<JPanel>();
-				dateTime = new ArrayList<JTextArea>();
-				alias = new ArrayList<JTextArea>();
-				taskDescription = new ArrayList<JTextArea>();
-				heightChange=0;
-				for(int i=0; i<numOfTask; i++) {	
-					//----- one task ----//
-					Content.createTaskObject(heightChange, i);
 			
-					if (taskStatus.get(i).equals(MARK_CODE)) {
-						//light grey
-						messagePanel.get(i).setBackground(new Color(204, 204, 204));
-						taskDescription.get(i).setForeground(new Color(153,153,153));
-						alias.get(i).setForeground(new Color(153,153,153));
-						dateTime.get(i).setForeground(new Color(153,153,153));
-					} else if (taskStatus.get(i).equals(UNMARK_CODE)) {
-						
-						// if task due today
-						//yellow
-						messagePanel.get(i).setBackground(new Color(255,255,51));
-						taskDescription.get(i).setForeground(new Color(102,102,102));
-						dateTime.get(i).setForeground(new Color(102,102,102));
-						alias.get(i).setForeground(new Color(102,102,102));
-						
-						// if task overdue
-						// red
-						/*
-						messagePanel.get(i).setBackground(new Color(255, 153, 153));
-						taskDescription.get(i).setForeground(Color.WHITE);
-						alias.get(i).setForeground(Color.WHITE);
-						dateTime.get(i).setForeground(Color.WHITE);
-						// else
-						//green
-						messagePanel.get(i).setBackground(new Color(153, 204, 102));
-						taskDescription.get(i).setForeground(Color.WHITE);
-						alias.get(i).setForeground(Color.WHITE);
-						dateTime.get(i).setForeground(Color.WHITE);
-						 */
+			
+			if (feedbackType.equals(DEFAULT_HELP)) {
+				printHelp();
+			} else {
+				if (feedbackType.equals(ERROR_CODE)) {
+					feedbackLabel.setText(feedbackDesc);
+					inputField.selectAll();
+					taskPanel.setPreferredSize(new Dimension(FRAME_WIDTH,0));
+				} else {
+					taskDesc = result.get(TASK_DESC);
+					taskAlias = result.get(TASK_ALIAS);
+					taskStatus = result.get(TASK_STATUS);
+					taskDate = result.get(TASK_DATE);
+					taskTime = result.get(TASK_TIME);
+					int numOfTask = taskDesc.size();
+					inputField.setText("");  
+					
+					messagePanel = new ArrayList<JPanel>();
+					dateTime = new ArrayList<JTextArea>();
+					alias = new ArrayList<JTextArea>();
+					taskDescription = new ArrayList<JTextArea>();
+					heightChange=0;
+					for(int i=0; i<numOfTask; i++) {	
+						//----- one task ----//
+						Content.createTaskObject(heightChange, i);
+				
+						if (taskStatus.get(i).equals(MARK_CODE)) {
+							//light grey
+							messagePanel.get(i).setBackground(new Color(204, 204, 204));
+							taskDescription.get(i).setForeground(new Color(153,153,153));
+							alias.get(i).setForeground(new Color(153,153,153));
+							dateTime.get(i).setForeground(new Color(153,153,153));
+						} else if (taskTime.get(i).equals(FLOATING)) {
+							// floating task
+							//light green
+							messagePanel.get(i).setBackground(new Color(153, 204, 153));
+							taskDescription.get(i).setForeground(Color.WHITE);
+							alias.get(i).setForeground(Color.WHITE);
+							dateTime.get(i).setForeground(Color.WHITE);
+						} else if (taskTime.get(i).equals(DUE_TODAY)) {
+							// if task due today
+							//yellow
+							messagePanel.get(i).setBackground(new Color(255,255,51));
+							taskDescription.get(i).setForeground(new Color(102,102,102));
+							dateTime.get(i).setForeground(new Color(102,102,102));
+							alias.get(i).setForeground(new Color(102,102,102));
+							
+						} else if (taskTime.get(i).equals(OVERDUE)) {
+							// if task overdue
+							// red
+							messagePanel.get(i).setBackground(new Color(204, 51, 61));
+							taskDescription.get(i).setForeground(Color.WHITE);
+							alias.get(i).setForeground(Color.WHITE);
+							dateTime.get(i).setForeground(Color.WHITE);
+						} else {
+							// else
+							//green
+							messagePanel.get(i).setBackground(new Color(153, 204, 102));
+							taskDescription.get(i).setForeground(Color.WHITE);
+							alias.get(i).setForeground(Color.WHITE);
+							dateTime.get(i).setForeground(Color.WHITE);
+						}
+						heightChange += TASK_OBJECT_FRAME_HEIGHT;
+						dateTime.get(i).setText(taskDate.get(i));
+						if (taskAlias.get(i) == null) {		
+						} else {
+							alias.get(i).setText(ALIAS + taskAlias.get(i));
+						}	
+						taskDescription.get(i).append(taskDesc.get(i));
+						taskPanel.setPreferredSize(new Dimension(FRAME_WIDTH,heightChange));
 					}
-					heightChange += TASK_OBJECT_FRAME_HEIGHT;
-					dateTime.get(i).setText(taskDate.get(i));
-					if (taskAlias.get(i) == null) {		
-					} else {
-						alias.get(i).setText(ALIAS + taskAlias.get(i));
-					}	
-					taskDescription.get(i).append(taskDesc.get(i));
-					taskPanel.setPreferredSize(new Dimension(FRAME_WIDTH,heightChange));
-				}
-				feedbackLabel.setText(feedbackDesc);
-			}			
+					feedbackLabel.setText(feedbackDesc);
+				}			
+			}
+		}
+		
+		private static void printHelp() {
 		}
 	}
 }
