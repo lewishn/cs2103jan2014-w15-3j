@@ -217,9 +217,11 @@ class TaskHandler {
 			taskToUpdate = tempTask;
 		}
 		
+		HistoryHandler.pushUndoStack();
 		Task.getList().add(taskToUpdate);
 		Task.sortList();
 		Task.saveTasks();
+		HistoryHandler.purgeRedoStack();
 		return new Feedback(MESSAGE_UPDATE_TASK);
 	}
 	
