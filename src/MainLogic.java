@@ -19,7 +19,7 @@ public class MainLogic{
 	private static final String DEFAULT_EXIT = "exit";
 	
 	private static final String ERROR_CODE = "error";
-	private static final String HASH_TAG = "#";
+	private static final String DOT = ". ";
 	private static final String MARK_CODE = "marked";
 	private static final String UNMARK_CODE = "unmarked";
 	private static final String OVERDUE = "overdue";
@@ -264,7 +264,7 @@ public class MainLogic{
 				Integer number = numberList.get(i);
 				Task task = taskList.get(number);
 				Integer numberToString = number + 1;
-				result.get(TASK_DESC).add(HASH_TAG + numberToString.toString() +" " + task.getDescription());
+				result.get(TASK_DESC).add( numberToString.toString()+ DOT+ task.getDescription());
 				result.get(TASK_ALIAS).add(task.getAlias());
 				result.get(TASK_DATE).add(task.getDateTimeString());
 				if (task.getStatus()) {
