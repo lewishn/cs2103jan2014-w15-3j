@@ -9,6 +9,7 @@ import java.awt.event.MouseListener;
 import java.awt.event.MouseMotionListener;
 import java.awt.event.WindowEvent;
 import java.awt.event.WindowListener;
+import java.awt.geom.RoundRectangle2D;
 import java.util.ArrayList;
 
 import javax.swing.GroupLayout;
@@ -28,7 +29,7 @@ import org.jnativehook.NativeHookException;
 import org.jnativehook.keyboard.NativeKeyEvent;
 import org.jnativehook.keyboard.NativeKeyListener;
 
-//@author: John
+//@author: John, Jiajie
 @SuppressWarnings("serial")
 public class DoThingsGUI extends JFrame  {
 	private static final String DEFAULT_EXIT = "exit";
@@ -91,6 +92,7 @@ public class DoThingsGUI extends JFrame  {
 				try {
 					DoThingsGUI frame = new DoThingsGUI();
 					frame.setVisible(true);
+					
 				} catch (Exception e) {
 					e.printStackTrace();
 				}
@@ -119,6 +121,7 @@ public class DoThingsGUI extends JFrame  {
 		contentPane.setBorder(null);
 		setContentPane(contentPane);
 		contentPane.setLayout(null);
+		setShape(new RoundRectangle2D.Double(0,0,FRAME_WIDTH,FRAME_HEIGHT, 50, 50));
 		
 		inputField = new JTextField();
 		inputField.setBounds(10, 57, FRAME_WIDTH-20, 33);
