@@ -2,6 +2,7 @@ import java.awt.Color;
 import java.awt.Dimension;
 import java.awt.EventQueue;
 import java.awt.Font;
+import java.awt.Toolkit;
 import java.awt.event.KeyEvent;
 import java.awt.event.KeyListener;
 import java.awt.event.MouseEvent;
@@ -130,6 +131,7 @@ public class DoThingsGUI extends JFrame  {
 		setContentPane(contentPane);
 		contentPane.setLayout(null);
 		setShape(new RoundRectangle2D.Double(0,0,FRAME_WIDTH,FRAME_HEIGHT, 20, 20));
+		setIconImage(Toolkit.getDefaultToolkit().getImage("Task.png"));
 		
 		inputField = new JTextField();
 		inputField.setBounds(10, 57, FRAME_WIDTH-20, 33);
