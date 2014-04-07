@@ -14,12 +14,16 @@ import java.util.ArrayList;
 
 import javax.swing.GroupLayout;
 import javax.swing.GroupLayout.Alignment;
+import javax.swing.InputMap;
+import javax.swing.JComponent;
 import javax.swing.JFrame;
 import javax.swing.JLabel;
 import javax.swing.JPanel;
+import javax.swing.JScrollBar;
 import javax.swing.JScrollPane;
 import javax.swing.JTextArea;
 import javax.swing.JTextField;
+import javax.swing.KeyStroke;
 import javax.swing.ScrollPaneConstants;
 import javax.swing.SwingConstants;
 import javax.swing.border.EmptyBorder;
@@ -55,10 +59,13 @@ public class DoThingsGUI extends JFrame  {
 	private static final int COMMAND_SHIFT_WINDOW_RIGHT = KeyEvent.VK_F12;
 	private static final int COMMAND_SHIFT_WINDOW_UP = KeyEvent.VK_F9;
 	private static final int COMMAND_SHIFT_WINDOW_DOWN = KeyEvent.VK_F10;
+	private static final int COMMAND_SCROLL_UP = KeyEvent.VK_UP;
+	private static final int COMMAND_SCROLL_DOWN = KeyEvent.VK_DOWN;
 	private static final int TASK_OBJECT_FRAME_HEIGHT = 72;
 	private static final int FRAME_MOVEMENT = 10;		
 	private static final int FRAME_WIDTH = 400;
 	private static final int FRAME_HEIGHT = 700;
+	private static final int FRAME_SCROLL_SPEED = 75;
 	private static int heightChange =0;
 	
 	private JPanel contentPane;
@@ -67,6 +74,7 @@ public class DoThingsGUI extends JFrame  {
 	private JPanel textPanel;
 	private static JLabel feedbackLabel;
 	private JScrollPane taskPanelScroll;
+	private JScrollBar verticalScrollBar;
 	private static JPanel taskPanel;
 	private static ArrayList<JPanel> messagePanel;
 	private static ArrayList<JTextArea> dateTime;
@@ -78,7 +86,7 @@ public class DoThingsGUI extends JFrame  {
 	private static ArrayList<String> taskDate;
 	private static ArrayList<String> taskTime;
 	private GlobalKeyPress globalKeyPress; 
-	private TriggerOnKeyReleased triggerOnKeyReleased;
+	private TriggerOnKeyAction triggerOnKeyReleased;
 	private TriggerOnMouseAction triggerOnMouseAction;
 	
 	
@@ -103,7 +111,7 @@ public class DoThingsGUI extends JFrame  {
 	public DoThingsGUI () {
 		
 		globalKeyPress = new GlobalKeyPress(true);
-		triggerOnKeyReleased = new TriggerOnKeyReleased();
+		triggerOnKeyReleased = new TriggerOnKeyAction();
 		triggerOnMouseAction = new TriggerOnMouseAction();
 		
 		setForeground(Color.BLACK);
@@ -121,7 +129,7 @@ public class DoThingsGUI extends JFrame  {
 		contentPane.setBorder(null);
 		setContentPane(contentPane);
 		contentPane.setLayout(null);
-		setShape(new RoundRectangle2D.Double(0,0,FRAME_WIDTH,FRAME_HEIGHT, 50, 50));
+		setShape(new RoundRectangle2D.Double(0,0,FRAME_WIDTH,FRAME_HEIGHT, 20, 20));
 		
 		inputField = new JTextField();
 		inputField.setBounds(10, 57, FRAME_WIDTH-20, 33);
@@ -185,15 +193,20 @@ public class DoThingsGUI extends JFrame  {
 		Content.getInfoOfTasks(STARTUP_COMMAND);
 		feedbackLabel.setText(MESSAGE_STARTUP);
 		
-		setLocationRelativeTo(null);
-		
+		setLocationRelativeTo(null);	// GUI appears in the middle of screen by default
+			
 		addWindowListener(globalKeyPress);	
 		inputField.addKeyListener(triggerOnKeyReleased);
 		addMouseListener(triggerOnMouseAction);
 		headingLabel.addMouseMotionListener(triggerOnMouseAction);
+		
+		verticalScrollBar = taskPanelScroll.getVerticalScrollBar();
+		verticalScrollBar.setUnitIncrement(FRAME_SCROLL_SPEED);
+	
 	}
 	
-	// Class recognizes KeyEvents even if focus is not on window @author: Jiajie 
+	// Class recognizes KeyEvents even if focus is not on window 
+	// @author: Jiajie 
 	private class GlobalKeyPress implements WindowListener, NativeKeyListener{
 
 		Boolean isVisible = false;
@@ -264,8 +277,9 @@ public class DoThingsGUI extends JFrame  {
 		public void nativeKeyTyped(NativeKeyEvent arg0) {}
 	}
 	
-	private class TriggerOnKeyReleased implements KeyListener{
-		//@author: john
+	// @Author: Jiajie, John 
+	private class TriggerOnKeyAction implements KeyListener{
+		
 		@Override
 		public void keyReleased(KeyEvent e) {
 			int key = e.getKeyCode();
@@ -280,10 +294,11 @@ public class DoThingsGUI extends JFrame  {
 			}	
 		}
 
-		//@author: Jiajie
 		@Override
 		public void keyPressed(KeyEvent e) {
 			int key = e.getKeyCode();
+			InputMap verticalMap = verticalScrollBar.getInputMap(JComponent.WHEN_IN_FOCUSED_WINDOW );
+
 			
 			switch(key){
 			case COMMAND_SHIFT_WINDOW_UP:
@@ -297,6 +312,14 @@ public class DoThingsGUI extends JFrame  {
 				break;
 			case COMMAND_SHIFT_WINDOW_RIGHT:
 				setLocation(getX()+FRAME_MOVEMENT,getY());
+				break;
+			case COMMAND_SCROLL_UP:					
+				verticalMap.put(KeyStroke.getKeyStroke( "UP" ),"negativeUnitIncrement" );
+				break;
+			case COMMAND_SCROLL_DOWN:
+				verticalMap.put(KeyStroke.getKeyStroke( "DOWN" ),"positiveUnitIncrement" );
+				break;
+			default:
 				break;
 			}
 		}
