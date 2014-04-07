@@ -2,6 +2,7 @@ import java.text.DecimalFormat;
 import java.util.ArrayList;
 import java.util.Collections;
 
+import org.joda.time.DateMidnight;
 import org.joda.time.DateTime;
 
 class Task implements Comparable<Task>{
@@ -100,6 +101,31 @@ class Task implements Comparable<Task>{
 	protected static void sortList() {
 		Collections.sort(taskList);
 	}	
+	
+	protected boolean isOverdue() {
+		if (endDateTime != null) {
+			return endDateTime.isAfterNow();
+		} else if (startDateTime != null) {
+			return startDateTime.isAfterNow();
+		}
+		
+		return false;
+	}
+	
+	protected boolean isToday() {
+		DateTime today = (new DateTime()).withTimeAtStartOfDay();
+		if (startDateTime != null) {
+			return today.equals(startDateTime.withTimeAtStartOfDay());
+		} else if (endDateTime != null) {
+			return today.equals(endDateTime.withTimeAtStartOfDay());
+		}
+		
+		return false;
+	}
+	
+	protected boolean isUnscheduled() {
+		return startDateTime == null && endDateTime == null;
+	}
 	
 	protected static Task parseTaskFromString(String line) {
 		String[] tokens = line.split(DELIMITER);
