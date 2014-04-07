@@ -517,7 +517,7 @@ class TaskHandler {
 	
 	//search
 	
-	private static Feedback searchTasks(String searchKey) {
+	protected static Feedback searchTasks(String searchKey) {
 		String[] keys = searchKey.split("\\s+");
 		if (keys.length == 0) {
 			return new Feedback(MESSAGE_ERROR_SEARCH);

@@ -142,9 +142,8 @@ public class MainLogic{
 				return processFeedback(feed, DEFAULT_REDO);
 				
 			case SEARCH:
-				//processFeedback(feed, DEFAULT_SEARCH);
-				//System.out.println("Search");
-				//
+				feed = TaskHandler.searchTasks(commandDesc);
+				return processFeedback(feed, DEFAULT_SEARCH);
 			
 			case MARK:
 				feed = TaskHandler.markTask(commandDesc);
