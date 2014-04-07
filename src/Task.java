@@ -19,7 +19,7 @@ class Task implements Comparable<Task>{
 	private static final String NULL_END = "NO_END_TIME";
 	private static final String NULL_ALIAS = "NO_ALIAS";
 	private static final String DATE_DISPLAY_FORMAT_1 = "%s %s  to  %s %s";
-	private static final String DATE_DISPLAY_FORMAT_2 = "$s %s";
+	private static final String DATE_DISPLAY_FORMAT_2 = "%s %s";
 	
 	private static ArrayList<Task> taskList = loadTasks();
 	
@@ -104,9 +104,9 @@ class Task implements Comparable<Task>{
 	
 	protected boolean isOverdue() {
 		if (endDateTime != null) {
-			return endDateTime.isAfterNow();
+			return endDateTime.isBeforeNow();
 		} else if (startDateTime != null) {
-			return startDateTime.isAfterNow();
+			return startDateTime.isBeforeNow();
 		}
 		
 		return false;
