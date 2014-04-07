@@ -28,7 +28,7 @@ class TaskHandler {
 	private static final String MESSAGE_ERROR_START_AFTER_END ="Error, start time cannot be after end time.";
 	private static final String MESSAGE_ERROR_TASK_DESC_EMPTY = "Error, task description cannot be empty.";
 	private static final String MESSAGE_ERROR_ALIAS_IN_USE = "Alias is already in use";
-	private static final String MESSAGE_ERROR_DELETE = "No such tasks. Please enter a valid number or alias to delete.";
+	private static final String MESSAGE_ERROR_DELETE = "No such tasks. Please enter a valid number or alias.";
 	private static final String MESSAGE_ERROR_SEARCH = "Please enter a search key.";
 	private static final String MESSAGE_ERROR_ALIAS = "Invalid alias";
 	private static final String MINUTE_LAST = "23:59";
