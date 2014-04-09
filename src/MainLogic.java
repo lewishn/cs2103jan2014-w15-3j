@@ -269,23 +269,23 @@ public class MainLogic{
 				result.get(TASK_DATE).add(task.getDateTimeString());
 				if (task.getStatus()) {
 					result.get(TASK_STATUS).add(MARK_CODE);					
-					if (task.isUnscheduled()) {
-						result.get(TASK_TIME).add(FLOATING);
+					if (task.isOverdue()) {
+						result.get(TASK_TIME).add(OVERDUE);
 					} else if (task.isToday()) {
 						result.get(TASK_TIME).add(DUE_TODAY);
-					} else if (task.isOverdue()) {
-						result.get(TASK_TIME).add(OVERDUE);
+					} else if (task.isUnscheduled()) {
+						result.get(TASK_TIME).add(FLOATING);
 					} else {
 						result.get(TASK_TIME).add(DUE_OTHER);
 					}
 				} else {
 					result.get(TASK_STATUS).add(UNMARK_CODE);
-					if (task.isUnscheduled()) {
-						result.get(TASK_TIME).add(FLOATING);
+					if (task.isOverdue()) {
+						result.get(TASK_TIME).add(OVERDUE);
 					} else if (task.isToday()) {
 						result.get(TASK_TIME).add(DUE_TODAY);
-					} else if (task.isOverdue()) {
-						result.get(TASK_TIME).add(OVERDUE);
+					} else if (task.isUnscheduled()) {
+						result.get(TASK_TIME).add(FLOATING);
 					} else {
 						result.get(TASK_TIME).add(DUE_OTHER);
 					}
