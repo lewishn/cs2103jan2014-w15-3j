@@ -9,9 +9,7 @@ import org.joda.time.DateTime;
 class TaskHandler {
 	
 	private static final String MESSAGE_ADDED_TASK = "Added \"%s\".";
-	private static final String MESSAGE_EMPTY_TASKS = "Your list is empty";
 	private static final String MESSAGE_UPDATE_TASK = "Task has been updated.";	
-	private static final String MESSAGE_LIST_NUMBER = "%d. %s";
 	private static final String MESSAGE_LIST_INCOMPLETE = "Showing incomplete tasks";
 	private static final String MESSAGE_LIST_COMPLETE = "Showing completed tasks";
 	private static final String MESSAGE_LIST_OVERDUE = "Showing overdue tasks";
@@ -166,58 +164,58 @@ class TaskHandler {
 		String updateField = CommandParser.getUserCommandType(updateStringWithoutID);
 		String updateDesc = CommandParser.getUserCommandDesc(updateStringWithoutID);
 		
-		Task taskToUpdate = getTaskToUpdate(taskID);
+		Task taskToUpdate = null;
+		int updateIndex = getIndexToUpdate(taskID);
 		
-		if (taskToUpdate == null) {
+		if (updateIndex == -1) {
 			return new Feedback(MESSAGE_ERROR_UPDATE_NO_SUCH_TASK);
 		}
 		
 		if (updateField.equalsIgnoreCase("start") || updateField.equalsIgnoreCase("end") || updateField.equalsIgnoreCase("time")) {
 			if (!CommandParser.isInputValid(updateDesc, 1)) {
-				Task.getList().add(taskToUpdate);
 				return new Feedback(MESSAGE_ERROR_UPDATE_ARGUMENT);
 			}
-			Task tempTask = updateTaskTime(taskToUpdate, updateField, updateDesc);
 			
-			if (tempTask == null) {
-				Task.getList().add(taskToUpdate);
+			taskToUpdate = Task.getList().get(updateIndex);
+			taskToUpdate = updateTaskTime(taskToUpdate, updateField, updateDesc);
+			
+			if (taskToUpdate == null) {
 				return new Feedback(MESSAGE_ERROR_START_AFTER_END, true);
 			}
-			taskToUpdate = tempTask;
 			
 		} else if (updateField.equals("alias")) {
 			String[] tokens = updateDesc.split("\\s+");
 			if (tokens.length <= 0) {
-				// since the task is previously removed, it needs to be put back in in the event of an error
-				Task.getList().add(taskToUpdate);
 				return new Feedback(MESSAGE_ERROR_ALIAS, true);
 			}
-			
+
 			String alias = tokens[0];	
 			if (Task.isAliasValid(alias) || isInteger(alias)) {
-				Task.getList().add(taskToUpdate);
 				return new Feedback(MESSAGE_ERROR_ALIAS_IN_USE, true);
 			
-			} else {
-				taskToUpdate.setAlias(alias);
 			}
+			
+			taskToUpdate = Task.getList().get(updateIndex);
+			taskToUpdate.setAlias(alias);
 			
 		} else if (updateField.equals("desc") || updateField.equals("description")) {
 			if (!CommandParser.isInputValid(updateDesc, 1)) {
-				Task.getList().add(taskToUpdate);
 				return new Feedback(MESSAGE_ERROR_UPDATE_ARGUMENT);
 			}
+			
+			taskToUpdate = Task.getList().get(updateIndex);
 			taskToUpdate.setDescription(updateDesc);
+			
 		} else {
-			Task tempTask = createTask(updateStringWithoutID);
-			if (tempTask.getDescription().trim().length() == 0) {
-				Task.getList().add(taskToUpdate);
+			taskToUpdate = createTask(updateStringWithoutID);
+			
+			if (taskToUpdate.getDescription().trim().length() == 0) {
 				return new Feedback(MESSAGE_ERROR_TASK_DESC_EMPTY);
 			}
-			taskToUpdate = tempTask;
 		}
 		
 		HistoryHandler.pushUndoStack();
+		Task.getList().remove(updateIndex);
 		Task.getList().add(taskToUpdate);
 		Task.sortList();
 		Task.saveTasks();
@@ -282,8 +280,7 @@ class TaskHandler {
 		return task;
 	}
 	
-	private static Task getTaskToUpdate(String taskID) {
-		Task taskToUpdate = null;
+	private static int getIndexToUpdate(String taskID) {
 		int index = -1;
 		
 		if (isInteger(taskID)) {
@@ -291,13 +288,12 @@ class TaskHandler {
 		} else if (Task.isAliasValid(taskID)) {
 			index = Task.getTaskIndexFromAlias(taskID);
 		}
-		if (index < 0 || index >= Task.getList().size()) {
-			return null;
-		}
-		taskToUpdate = Task.getList().get(index);
-		Task.getList().remove(index);
 		
-		return taskToUpdate;
+		if (index < 0 || index >= Task.getList().size()) {
+			return -1;
+		}
+		
+		return index;
 	}
 	
 	

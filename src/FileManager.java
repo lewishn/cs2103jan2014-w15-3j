@@ -1,11 +1,17 @@
 import java.io.BufferedReader;
 import java.io.BufferedWriter;
 import java.io.File;
+import java.io.FileInputStream;
 import java.io.FileNotFoundException;
+import java.io.FileOutputStream;
 import java.io.FileReader;
 import java.io.FileWriter;
 import java.io.IOException;
+import java.io.InputStreamReader;
+import java.io.OutputStreamWriter;
+import java.io.UnsupportedEncodingException;
 import java.net.URLDecoder;
+import java.nio.file.Files;
 import java.util.ArrayList;
 import java.util.logging.Logger;
 
@@ -14,17 +20,25 @@ class FileManager {
 	private static final String MESSAGE_ERROR_LOGGER_WRITE = "Error writing to file ";
 	@SuppressWarnings("deprecation")
 	public static final String filepath = new File(URLDecoder.decode(DoThingsGUI.class.getProtectionDomain().getCodeSource().getLocation().getPath())).getParent() + System.getProperty("file.separator");
-	
 	private static Logger LOGGER = Logger.getLogger(FileManager.class.getName());
+	
 	private static BufferedReader getReader(String fileName) throws FileNotFoundException {
 		File file = new File(fileName);
-		BufferedReader bw = new BufferedReader(new FileReader(file));
-		return bw;
+		BufferedReader bw;
+		try {
+			bw = new BufferedReader(new InputStreamReader(new FileInputStream(file), "UTF8"));
+			return bw;
+		} catch (UnsupportedEncodingException e) {
+			//LOGGER.info("Unsupported file encoding");
+			e.printStackTrace();
+		}
+		
+		return null;
 	}
 	
 	private static BufferedWriter getWriter(String fileName) throws IOException {
 		File file = new File(fileName);
-		BufferedWriter bw = new BufferedWriter(new FileWriter(file));
+		BufferedWriter bw = new BufferedWriter(new OutputStreamWriter(new FileOutputStream(file), "UTF8"));
 		return bw;
 	}
 	
@@ -55,8 +69,10 @@ class FileManager {
 			writer.flush();
 			writer.close();
 		} catch (IOException e) {
-			LOGGER.info(MESSAGE_ERROR_LOGGER_WRITE + fileName);
+			//LOGGER.info(MESSAGE_ERROR_LOGGER_WRITE + fileName);
 			e.printStackTrace();
+		} finally {
+			
 		}
 	}
 }
