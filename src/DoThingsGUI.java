@@ -483,11 +483,11 @@ public class DoThingsGUI extends JFrame  {
 		private static final int HELP_Y_OFFSET = 10;
 		private static final int HELP_WIDTH = FRAME_WIDTH;
 		private static final int HELP_HEIGHT = 500;
-		private static final float HELP_FONT_SIZE = 12;
+		private static final float HELP_FONT_SIZE = 13;
 		private static final Font dateTimeFont = plutoSansLight.deriveFont(DATE_TIME_FONT_SIZE);
 		private static final Font aliasFont = plutoSansCondExLight.deriveFont(ALIAS_FONT_SIZE);
 		private static final Font taskDescriptionFont = plutoSansLight.deriveFont(TASK_DESCRIPTION_FONT_SIZE);
-		private static final Font helpFont = plutoSansCondExLight.deriveFont(HELP_FONT_SIZE);
+		private static final Font helpFont = plutoSansCondLight.deriveFont(HELP_FONT_SIZE);
 		
 		private static void createTaskObjects(int aliasExtension, int descriptionExtension, int change, int i) {
 			createMessagePanel(aliasExtension, descriptionExtension, change, i);
@@ -662,6 +662,12 @@ public class DoThingsGUI extends JFrame  {
 			createHelpTextarea();
 			help.append(desc);
 		}
+
+		/**
+		 * Finds out if the input custom command is already in use
+		 * @param command
+		 * @return true if the command is already in use.
+		 */
 		private static void createHelpTextarea() {
 			help = new JTextArea();
 			helpFont.isPlain();

@@ -110,8 +110,7 @@ public class MainLogic{
 				return processFeedback(feed, DEFAULT_DELETE);
 			
 			case HELP:
-				// dummy code for now
-				Feedback feedback = new Feedback("HELP \n List of Commands");
+				Feedback feedback = new Feedback("HELP \n List of Commands:");
 				return processFeedback(feedback, DEFAULT_HELP);
 				
 			case CUSTOM:
@@ -238,7 +237,7 @@ public class MainLogic{
 		return Task.getList();
 	}
 	// Author: A0097082Y
-	private String getHelp() {
+	private static String getHelp() {
 		String[] commandList = {
 				DEFAULT_ADD, DEFAULT_UPDATE, DEFAULT_MARK,
 				DEFAULT_DELETE, DEFAULT_LIST, DEFAULT_SEARCH,
@@ -274,7 +273,7 @@ public class MainLogic{
 		result.get(FEEDBACK_DESC).add(feed.getDesc());
 		
 		if (type.equals(DEFAULT_HELP)) {
-			result.get(TASK_DESC).add(feed.getDesc());
+			result.get(TASK_DESC).add(getHelp());
 		}
 		else {
 			ArrayList<Task>taskList = Task.getList();
