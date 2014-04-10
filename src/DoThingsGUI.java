@@ -404,7 +404,7 @@ public class DoThingsGUI extends JFrame  {
 		private static final int TASK_DESCRIPTION_HEIGHT = 19;
 		private static final int ALIAS_X_OFFSET = 260;
 		private static final int ALIAS_Y_OFFSET = 31;
-		private static final int ALIAS_WIDTH = 88;
+		private static final int ALIAS_WIDTH = 120;
 		private static final int ALIAS_HEIGHT = 22;
 		private static final int DATE_TIME_X_OFFSET = 10;
 		private static final int DATE_TIME_Y_OFFSET = 31;
@@ -415,45 +415,48 @@ public class DoThingsGUI extends JFrame  {
 		private static final int NUM_CHAR_FIRST_LINE = 32;
 		private static final int NUM_CHAR_LINE = 34;
 		private static final int HEIGHT_OF_ONE_LINE = 19;
+		private static final int NUM_CHAR_ALIAS_FIRST_LINE = 14;
+		private static final int NUM_CHAR_ALIAS_LINE = 19;
 		private static final String PLUTO_LIGHT_FONT = "Pluto Sans Light";
 		private static final String PLUTO_COND_EXLIGHT_FONT = "Pluto Sans Cond ExLight";
 		
-		private static void createTaskObjects(int extension, int change, int i) {
-			createMessagePanel(extension, change, i);
-			createDateTimeField(extension, i);
-			createAliasField(extension, i);
-			createTaskDescription(extension, i);
+		private static void createTaskObjects(int aliasExtension, int descriptionExtension, int change, int i) {
+			createMessagePanel(aliasExtension, descriptionExtension, change, i);
+			createDateTimeField(descriptionExtension, i);
+			createAliasField(aliasExtension, descriptionExtension, i);
+			createTaskDescription(descriptionExtension, i);
 		}
-		private static void createTaskDescription(int extension, int i) {
+		private static void createTaskDescription(int descriptionExtension, int i) {
 			taskDescription.add(new JTextArea());	
-			
 			taskDescription.get(i).setFont(new Font(PLUTO_LIGHT_FONT, Font.PLAIN, TASK_DESCRIPTION_FONT_SIZE));	
-			taskDescription.get(i).setBounds(TASK_DESCRIPTION_X_OFFSET,TASK_DESCRIPTION_Y_OFFSET, FRAME_WIDTH - TASK_DESCRIPTION_WIDTH,TASK_DESCRIPTION_HEIGHT + extension); //55 characters
+			taskDescription.get(i).setBounds(TASK_DESCRIPTION_X_OFFSET,TASK_DESCRIPTION_Y_OFFSET, FRAME_WIDTH - TASK_DESCRIPTION_WIDTH,TASK_DESCRIPTION_HEIGHT + descriptionExtension); //55 characters
 			taskDescription.get(i).setLineWrap(true);
 			taskDescription.get(i).setWrapStyleWord(true);
 			taskDescription.get(i).setEditable(false);
 			taskDescription.get(i).setOpaque(false);
 			messagePanel.get(i).add(taskDescription.get(i));
 		}
-		private static void createAliasField(int extension,int i) {
+		private static void createAliasField(int aliasExtension, int descriptionExtension,int i) {
 			alias.add(new JTextArea());
 			alias.get(i).setFont(new Font(PLUTO_COND_EXLIGHT_FONT, Font.PLAIN, ALIAS_FONT_SIZE));
-			alias.get(i).setBounds(ALIAS_X_OFFSET, ALIAS_Y_OFFSET + extension, ALIAS_WIDTH, ALIAS_HEIGHT);
+			alias.get(i).setBounds(ALIAS_X_OFFSET, ALIAS_Y_OFFSET + descriptionExtension, ALIAS_WIDTH, ALIAS_HEIGHT + aliasExtension);
+			alias.get(i).setLineWrap(true);
+			alias.get(i).setWrapStyleWord(true);
 			alias.get(i).setOpaque(false);
 			alias.get(i).setEditable(false);
 			messagePanel.get(i).add(alias.get(i));
 		}
-		private static void createDateTimeField(int extension ,int i) {
+		private static void createDateTimeField(int descriptionExtension ,int i) {
 			dateTime.add(new JTextArea());
 			dateTime.get(i).setFont(new Font(PLUTO_COND_EXLIGHT_FONT, Font.PLAIN, DATE_TIME_FONT_SIZE));
-			dateTime.get(i).setBounds(DATE_TIME_X_OFFSET, DATE_TIME_Y_OFFSET + extension, DATE_TIME_WIDTH, DATE_TIME_HEIGHT);
+			dateTime.get(i).setBounds(DATE_TIME_X_OFFSET, DATE_TIME_Y_OFFSET + descriptionExtension, DATE_TIME_WIDTH, DATE_TIME_HEIGHT);
 			dateTime.get(i).setOpaque(false);
 			dateTime.get(i).setEditable(false);
 			messagePanel.get(i).add(dateTime.get(i));
 		}
-		private static void createMessagePanel(int extension, int change, int i) {
+		private static void createMessagePanel(int aliasExtension, int descriptionExtension, int change, int i) {
 			messagePanel.add(new JPanel());
-			messagePanel.get(i).setBounds(ZERO, ZERO + change, FRAME_WIDTH, MESSAGE_PANEL_HEIGHT + extension);
+			messagePanel.get(i).setBounds(ZERO, ZERO + change, FRAME_WIDTH, MESSAGE_PANEL_HEIGHT + descriptionExtension + aliasExtension);
 			messagePanel.get(i).setLayout(null);
 			taskPanel.add(messagePanel.get(i));
 			taskPanel.revalidate();
@@ -485,9 +488,13 @@ public class DoThingsGUI extends JFrame  {
 						int numOfTask = initialiseFeedbackVariables();
 						for(int i=ZERO; i<numOfTask; i++) {	
 							// Checks for overflow of description text and extends the message panel to fit.
-							int overflowExtension = lengthForTextOverflow(i);
-							createTaskObjects(overflowExtension, heightChange, i);
-							heightChange += overflowExtension;
+							int descriptionOverflowExtension = lengthForDescriptionTextOverflow(i);
+							
+							// Checks for overflow of alias text and extends the message panel to fit
+							int aliasOverflowExtension = lengthForAliasTextOverflow(i);
+							createTaskObjects(aliasOverflowExtension, descriptionOverflowExtension, heightChange, i);
+							heightChange += descriptionOverflowExtension;
+							heightChange += aliasOverflowExtension;
 							
 							// Select color scheme of taskObject
 							if (taskStatus.get(i).equals(MARK_CODE)) {
@@ -511,16 +518,32 @@ public class DoThingsGUI extends JFrame  {
 				}
 			}
 		}
-		private static int lengthForTextOverflow(int i) {
+		private static int lengthForAliasTextOverflow(int i) {
+			int additionalHeight = ZERO;
+			if(taskAlias.get(i) != null) {
+				int charLength = taskAlias.get(i).length();
+				
+				if(charLength > NUM_CHAR_ALIAS_FIRST_LINE) {
+					additionalHeight += HEIGHT_OF_ONE_LINE;
+					charLength -= NUM_CHAR_FIRST_LINE;
+					while (charLength>NUM_CHAR_ALIAS_LINE) {
+						additionalHeight += HEIGHT_OF_ONE_LINE;
+						charLength-=NUM_CHAR_LINE;
+					}
+				}
+			}
+			return additionalHeight;
+		}
+		private static int lengthForDescriptionTextOverflow(int i) {
 			int charLength = taskDesc.get(i).length();
 			int additionalHeight = ZERO; 
 			if (charLength > NUM_CHAR_FIRST_LINE) {
 				additionalHeight += HEIGHT_OF_ONE_LINE;
 				charLength -= NUM_CHAR_FIRST_LINE;
-				 while (charLength>NUM_CHAR_LINE) {
-					 additionalHeight += HEIGHT_OF_ONE_LINE;
-					 charLength-=NUM_CHAR_LINE;
-				 }
+				while (charLength>NUM_CHAR_LINE) {
+					additionalHeight += HEIGHT_OF_ONE_LINE;
+					charLength-=NUM_CHAR_LINE;
+				}
 			}
 			return additionalHeight;
 		}
