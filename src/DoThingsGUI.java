@@ -2,7 +2,12 @@ import java.awt.Color;
 import java.awt.Dimension;
 import java.awt.EventQueue;
 import java.awt.Font;
+import java.awt.Frame;
+import java.awt.Image;
+import java.awt.PopupMenu;
+import java.awt.SystemTray;
 import java.awt.Toolkit;
+import java.awt.TrayIcon;
 import java.awt.event.KeyEvent;
 import java.awt.event.KeyListener;
 import java.awt.event.MouseEvent;
@@ -86,9 +91,13 @@ public class DoThingsGUI extends JFrame  {
 	private static ArrayList<String> taskStatus;
 	private static ArrayList<String> taskDate;
 	private static ArrayList<String> taskTime;
+	private static SystemTray tray;
+	private static TrayIcon trayIcon;
 	private GlobalKeyPress globalKeyPress; 
 	private TriggerOnKeyAction triggerOnKeyReleased;
 	private TriggerOnMouseAction triggerOnMouseAction;
+	private static Image image;
+
 	
 	
 	private int xCoordOfFrame;
@@ -114,6 +123,7 @@ public class DoThingsGUI extends JFrame  {
 		globalKeyPress = new GlobalKeyPress(true);
 		triggerOnKeyReleased = new TriggerOnKeyAction();
 		triggerOnMouseAction = new TriggerOnMouseAction();
+		image = Toolkit.getDefaultToolkit().getImage("Task.png");
 		
 		setForeground(Color.BLACK);
 		setFont(new Font("Consolas", Font.BOLD, 14));
@@ -131,7 +141,7 @@ public class DoThingsGUI extends JFrame  {
 		setContentPane(contentPane);
 		contentPane.setLayout(null);
 		setShape(new RoundRectangle2D.Double(0,0,FRAME_WIDTH,FRAME_HEIGHT, 20, 20));
-		setIconImage(Toolkit.getDefaultToolkit().getImage("Task.png"));
+		setIconImage(image);
 		
 		inputField = new JTextField();
 		inputField.setBounds(10, 57, FRAME_WIDTH-20, 33);
@@ -258,22 +268,20 @@ public class DoThingsGUI extends JFrame  {
 		public void nativeKeyReleased(NativeKeyEvent e) {
 			int keyCode = e.getKeyCode();
 			if (keyCode == COMMAND_HIDE) {
-			//	SwingUtilities.invokeLater(new Runnable() {
-				//	public void run() {
-						//JOptionPane.showMessageDialog(null, "This will run on Swing's Event Dispatch Thread.");
 						if (isVisible == true) {
 							inputField.requestFocus();
 							DoThingsGUI.this.setVisible(false);
 							isVisible = false;
+							hideToSytemTray();
+							
 						}
 						else {
 							inputField.requestFocus();
 							DoThingsGUI.this.setVisible(true);
 							isVisible = true;
+							removeFromSystemTray();
 						}
 					}
-				//});
-			//}
 		}
 		@Override
 		public void nativeKeyTyped(NativeKeyEvent arg0) {}
@@ -479,5 +487,20 @@ public class DoThingsGUI extends JFrame  {
 		
 		private static void printHelp() {
 		}
+	}
+	private void hideToSytemTray(){
+        try{
+        	PopupMenu popup = new PopupMenu();
+        	tray=SystemTray.getSystemTray();   
+            trayIcon=new TrayIcon(image, "Do-Things", popup);
+            trayIcon.setImageAutoSize(true);
+            tray.add(trayIcon);
+        }catch(Exception e){
+            System.out.println("Unable to set System Tray");
+        }
+	}
+	
+	private void removeFromSystemTray(){
+		tray.remove(trayIcon);
 	}
 }
