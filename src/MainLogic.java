@@ -18,6 +18,8 @@ public class MainLogic{
 	private static final String DEFAULT_SEARCH = "search";
 	private static final String DEFAULT_EXIT = "exit";
 	
+	private static final String MESSAGE_HELP = "Showing list of commands.";
+	
 	private static final String ERROR_CODE = "error";
 	private static final String DOT = ". ";
 	private static final String MARK_CODE = "marked";
@@ -236,6 +238,25 @@ public class MainLogic{
 		return Task.getList();
 	}
 	// Author: A0097082Y
+	private String getHelp() {
+		String[] commandList = {
+				DEFAULT_ADD, DEFAULT_UPDATE, DEFAULT_MARK,
+				DEFAULT_DELETE, DEFAULT_LIST, DEFAULT_SEARCH,
+				DEFAULT_UNDO, DEFAULT_REDO, DEFAULT_CUSTOM,
+				DEFAULT_DELETE_CUSTOM,  DEFAULT_HELP, DEFAULT_EXIT
+		};
+		
+		String list = "";
+		
+		for (int i = 0; i < commandList.length; i++) {
+			String commandHeader = getCustomHeader(commandList[i]);
+			list += (commandHeader + "\n");
+			list += (commandList[i] + CustomCommandHandler.getListOfCustomCommands(commandHeader) + "\n\n");
+		}
+		
+		return list;
+	}
+	
 	private static ArrayList<ArrayList<String>> processFeedback(Feedback feed, String type) {
 		ArrayList<ArrayList<String>> result = new ArrayList<ArrayList<String>>();
 		for(int i=0; i<NUM_OF_FEEDBACK; i++) {
@@ -256,7 +277,7 @@ public class MainLogic{
 			result.get(TASK_DESC).add(feed.getDesc());
 		}
 		else {
-			ArrayList<Task>taskList = MainLogic.getTaskList();
+			ArrayList<Task>taskList = Task.getList();
 			ArrayList<Integer> numberList = feed.getIndexList();
 			
 			for(int i=0; i<numberList.size(); i++) {

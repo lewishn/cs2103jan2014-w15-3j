@@ -18,10 +18,10 @@ class CustomCommandHandler {
 	protected static final String HEADER_MARK = "[MARK]";
 	protected static final String HEADER_EXIT = "[EXIT]";
 
-	private static final String MESSAGE_CUSTOM_DUPLICATE = "Sorry, but this word is already in use.\n";
-	private static final String MESSAGE_CUSTOM_SUCCESS = " added to the command list.\n";
-	private static final String MESSAGE_CUSTOM_NONEXISTANT = "Error deleting. No such word in command list.\n";
-	private static final String MESSAGE_CUSTOM_DELETED = " deleted from the command list.\n";
+	private static final String MESSAGE_CUSTOM_DUPLICATE = "Sorry, but this word is already in use.";
+	private static final String MESSAGE_CUSTOM_SUCCESS = "\"%s\" has been added to the command list.";
+	private static final String MESSAGE_CUSTOM_NONEXISTANT = "Error deleting. No such word in command list.";
+	private static final String MESSAGE_CUSTOM_DELETED = "\"%s\" has been deleted from the command list.";
 	
 	protected static ArrayList<ArrayList<String>> customCommandList = loadCustomCommands();
 	
@@ -56,11 +56,9 @@ class CustomCommandHandler {
 			return new Feedback(MESSAGE_CUSTOM_DUPLICATE);
 		}
 		
-		HistoryHandler.pushUndoStack();
 		addCommandToList(userCommand, commandType);
-		HistoryHandler.purgeRedoStack();
 		saveCustomCommands();
-		return new Feedback(userCommand + MESSAGE_CUSTOM_SUCCESS, false);
+		return new Feedback(userCommand + MESSAGE_CUSTOM_SUCCESS);
 	}
 	
 	private static void addCommandToList(String userCommand, String commandType) {
@@ -90,6 +88,19 @@ class CustomCommandHandler {
 		return -1;
 	}
 	
+	protected static String getListOfCustomCommands(String header) {
+		int index = getCommandHeaderIndex(header);
+		String list = " ";
+		
+		if (index != -1) {
+			for (int i = 1; i < customCommandList.get(index).size(); i++) {
+				list += customCommandList.get(index).get(i);
+			}
+		}
+		
+		return list;
+	}
+	
 	/**
 	 * Finds out if the input custom command is already in use
 	 * @param command
@@ -114,14 +125,13 @@ class CustomCommandHandler {
 		for (int i = 0; i < customCommandList.size(); i++) {
 			for (int j = 0; j < customCommandList.get(i).size(); j++) {
 				if (customCommandList.get(i).get(j).equals(userCommand)) {
-					HistoryHandler.pushUndoStack();
 					customCommandList.get(i).remove(j);
-					HistoryHandler.purgeRedoStack();
 					saveCustomCommands();
-					return new Feedback(userCommand + MESSAGE_CUSTOM_DELETED, false);
+					return new Feedback(userCommand + MESSAGE_CUSTOM_DELETED);
 				}
 			}
 		}
+		
 		return new Feedback(MESSAGE_CUSTOM_NONEXISTANT, false);
 	}	
 	
