@@ -17,8 +17,7 @@ public class MainLogic{
 	private static final String DEFAULT_HELP = "help";
 	private static final String DEFAULT_SEARCH = "search";
 	private static final String DEFAULT_EXIT = "exit";
-	
-	private static final String MESSAGE_HELP = "Showing list of commands.";
+	private static final String HELP_FEEDBACK_MSG = "Need help? Your Commands:";
 	
 	private static final String ERROR_CODE = "error";
 	private static final String DOT = ". ";
@@ -110,7 +109,7 @@ public class MainLogic{
 				return processFeedback(feed, DEFAULT_DELETE);
 			
 			case HELP:
-				Feedback feedback = new Feedback("HELP \n List of Commands:");
+				Feedback feedback = new Feedback(HELP_FEEDBACK_MSG);
 				return processFeedback(feedback, DEFAULT_HELP);
 				
 			case CUSTOM:

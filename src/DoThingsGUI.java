@@ -548,6 +548,7 @@ public class DoThingsGUI extends JFrame  {
 			
 				if (feedbackType.equals(DEFAULT_HELP)) {
 					String helpDesc = result.get(TASK_DESC).get(ZERO);
+					feedbackLabel.setText(feedbackDesc);
 					printHelp(helpDesc);
 				} else {
 					if (feedbackType.equals(ERROR_CODE)) {
