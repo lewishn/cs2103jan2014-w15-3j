@@ -662,6 +662,7 @@ public class DoThingsGUI extends JFrame  {
 			refreshTaskPanel(); 
 			createHelpTextarea();
 			help.append(desc);
+			inputField.setText("");
 		}
 
 		/**
