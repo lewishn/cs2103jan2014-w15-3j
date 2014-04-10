@@ -108,10 +108,9 @@ public class MainLogic{
 				return processFeedback(feed, DEFAULT_DELETE);
 			
 			case HELP:
-
-				//return processFeedback(feed, DEFAULT_HELP);
-				//System.out.println("Help");
-				//
+				// dummy code for now
+				Feedback feedback = new Feedback("HELP \n List of Commands");
+				return processFeedback(feedback, DEFAULT_HELP);
 				
 			case CUSTOM:
 				if (!CommandParser.isInputValid(commandDesc, 2)) {
@@ -254,7 +253,7 @@ public class MainLogic{
 		result.get(FEEDBACK_DESC).add(feed.getDesc());
 		
 		if (type.equals(DEFAULT_HELP)) {
-			
+			result.get(TASK_DESC).add(feed.getDesc());
 		}
 		else {
 			ArrayList<Task>taskList = MainLogic.getTaskList();

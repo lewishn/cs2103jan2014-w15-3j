@@ -81,6 +81,7 @@ public class DoThingsGUI extends JFrame  {
 	private static JLabel feedbackLabel;
 	private JScrollPane taskPanelScroll;
 	private JScrollBar verticalScrollBar;
+	private static JTextArea help;
 	private static JPanel taskPanel;
 	private static ArrayList<JPanel> messagePanel;
 	private static ArrayList<JTextArea> dateTime;
@@ -210,6 +211,9 @@ public class DoThingsGUI extends JFrame  {
 	}
 	private void createInputField() {
 		inputField = new JTextField();
+		inputField.setSelectedTextColor(new Color(0,0,51));
+		//inputField.setSelectedTextColor(new Color(255,0,0));
+		inputField.setSelectionColor(new Color(255,255,51));
 		inputField.setBounds(10, 57, FRAME_WIDTH-20, 33);
 		inputField.setBorder(null);
 		inputField.setBackground(new Color(153,204,255));
@@ -417,6 +421,11 @@ public class DoThingsGUI extends JFrame  {
 		private static final int HEIGHT_OF_ONE_LINE = 19;
 		private static final int NUM_CHAR_ALIAS_FIRST_LINE = 14;
 		private static final int NUM_CHAR_ALIAS_LINE = 19;
+		private static final int HELP_X_OFFSET = 10;
+		private static final int HELP_Y_OFFSET = 10;
+		private static final int HELP_WIDTH = FRAME_WIDTH;
+		private static final int HELP_HEIGHT = 500;
+		private static final int HELP_FONT_SIZE = 12;
 		private static final String PLUTO_LIGHT_FONT = "Pluto Sans Light";
 		private static final String PLUTO_COND_EXLIGHT_FONT = "Pluto Sans Cond ExLight";
 		
@@ -475,7 +484,8 @@ public class DoThingsGUI extends JFrame  {
 				refreshTaskPanel();
 			
 				if (feedbackType.equals(DEFAULT_HELP)) {
-					printHelp();
+					String helpDesc = result.get(TASK_DESC).get(ZERO);
+					printHelp(helpDesc);
 				} else {
 					if (feedbackType.equals(ERROR_CODE)) {
 						errorProcessing(feedbackDesc);
@@ -584,7 +594,22 @@ public class DoThingsGUI extends JFrame  {
 			taskPanel.updateUI();
 		}
 		
-		private static void printHelp() {
+		private static void printHelp(String desc) {
+			refreshTaskPanel(); 
+			createHelpTextarea();
+			help.append(desc);
+		}
+		private static void createHelpTextarea() {
+			help = new JTextArea();
+			help.setFont(new Font(PLUTO_COND_EXLIGHT_FONT, Font.PLAIN, HELP_FONT_SIZE));
+			help.setBounds(HELP_X_OFFSET, HELP_Y_OFFSET, HELP_WIDTH, HELP_HEIGHT);
+			help.setLineWrap(true);
+			help.setWrapStyleWord(true);
+			help.setOpaque(false);
+			help.setEditable(false);
+			taskPanel.add(help);
+			taskPanel.revalidate();
+			taskPanel.repaint();
 		}
 	}
 	private void hideToSytemTray(){
