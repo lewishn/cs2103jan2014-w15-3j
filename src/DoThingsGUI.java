@@ -2,7 +2,6 @@ import java.awt.Color;
 import java.awt.Dimension;
 import java.awt.EventQueue;
 import java.awt.Font;
-import java.awt.Frame;
 import java.awt.Image;
 import java.awt.PopupMenu;
 import java.awt.SystemTray;
@@ -17,7 +16,6 @@ import java.awt.event.WindowEvent;
 import java.awt.event.WindowListener;
 import java.awt.geom.RoundRectangle2D;
 import java.util.ArrayList;
-
 import javax.swing.GroupLayout;
 import javax.swing.GroupLayout.Alignment;
 import javax.swing.InputMap;
@@ -33,17 +31,16 @@ import javax.swing.KeyStroke;
 import javax.swing.ScrollPaneConstants;
 import javax.swing.SwingConstants;
 import javax.swing.border.EmptyBorder;
-
 import org.jnativehook.GlobalScreen;
 import org.jnativehook.NativeHookException;
 import org.jnativehook.keyboard.NativeKeyEvent;
 import org.jnativehook.keyboard.NativeKeyListener;
 
-//@author: John, Jiajie
+//@author: 
 @SuppressWarnings("serial")
 public class DoThingsGUI extends JFrame  {
 	private static final String DEFAULT_EXIT = "exit";
-	private static final String MESSAGE_STARTUP = "Get ready to Do Things!\n";
+	private static final String MESSAGE_STARTUP = "Get ready to Do Things!";
 	private static final String STARTUP_COMMAND = "list";
 	private static final String ERROR_CODE = "error";
 	private static final String MARK_CODE = "marked";
@@ -52,6 +49,11 @@ public class DoThingsGUI extends JFrame  {
 	private static final String DUE_TODAY = "today";
 	private static final String FLOATING = "floating";
 	private static final String DEFAULT_HELP = "help";
+	private static final String HEADING_LABEL = "Do-Things";
+	private static final String PLUTO_COND_LIGHT = "Pluto Sans Cond Light";
+	private static final String PLUTO_EXLIGHT = "Pluto Sans ExtraLight";
+	private static final String CONTENT_PANE_FONT = "Consolas";
+	private static final String CONTENT_PANE_TITLE = "Do-Things";
 	private static final int FEEDBACK_TYPE = 0;
 	private static final int FEEDBACK_DESC = 1;
 	private static final int TASK_DESC = 2;
@@ -72,8 +74,36 @@ public class DoThingsGUI extends JFrame  {
 	private static final int TASK_OBJECT_FRAME_HEIGHT = 53;
 	private static final int FRAME_WIDTH = 400;
 	private static final int FRAME_HEIGHT = 700;
+	private static final int TEXT_PANEL_HEIGHT = 35;
+	private static final int TEXT_PANEL_WIDTH = FRAME_WIDTH;
+	private static final int TEXT_PANEL_X_OFFSET = 0;
+	private static final int TEXT_PANEL_Y_OFFSET = 62;
+	private static final int HEADING_LABEL_BUFFER = 10;
+	private static final int HEADING_LABEL_FONT_SIZE = 22;
+	private static final int HEADING_LABEL_X_OFFSET = 0;
+	private static final int HEADING_LABEL_Y_OFFSET = 0;
+	private static final int HEADING_LABEL_WIDTH = FRAME_WIDTH;
+	private static final int HEADING_LABEL_HEIGHT = 63;
+	private static final int INPUT_FIELD_X_OFFSET = 10;
+	private static final int INPUT_FIELD_Y_OFFSET = 57;
+	private static final int INPUT_FIELD_WIDTH = FRAME_WIDTH - 20;
+	private static final int INPUT_FIELD_HEIGHT = 33;
+	private static final int INPUT_FIELD_FONT_SIZE = 23;
+	private static final int FEEDBACK_FONT_SIZE = 14;
+	private static final int FEEDBACK_X_OFFSET = 0;
+	private static final int FEEDBACK_Y_OFFSET = 30;
+	private static final int FEEDBACK_WIDTH = FRAME_WIDTH;
+	private static final int FEEDBACK_HEIGHT = 33;
+	private static final int ZERO = 0;
+	private static final int CONTENT_PANE_FONT_SIZE = 14;
+	private static final int CONTENT_PANE_X_OFFSET = 100;
+	private static final int CONTENT_PANE_Y_OFFSET = 25;
+	private static final int CONTENT_PANE_WIDTH = FRAME_WIDTH;
+	private static final int CONTENT_PANE_HEIGHT = FRAME_HEIGHT;
+	private static final int SHAPE_DIMENSION = 20;
 	private static int heightChange =0;
-	
+
+
 	private JPanel contentPane;
 	private static JTextField inputField;
 	private JLabel headingLabel;
@@ -101,6 +131,7 @@ public class DoThingsGUI extends JFrame  {
 	
 	private static final Color HIGHLIGHT_FONT_DARK_BLUE = new Color(0,0,51); 
 	private static final Color HIGHLIGHT_Yellow = new Color(255,255,51);
+	private static final Color INPUT_FIELD_BACKGROUND_LIGHT_BLUE= new Color(153, 204, 255);
 	
 	private int xCoordOfFrame;
 	private int yCoordOfFrame;
@@ -112,7 +143,6 @@ public class DoThingsGUI extends JFrame  {
 				try {
 					DoThingsGUI frame = new DoThingsGUI();
 					frame.setVisible(true);
-					
 				} catch (Exception e) {
 					e.printStackTrace();
 				}
@@ -186,50 +216,51 @@ public class DoThingsGUI extends JFrame  {
 	private void createTextPanel() {
 		textPanel = new JPanel();
 		textPanel.setFocusable(false);
-		textPanel.setBackground(new Color(255, 255, 255));
-		textPanel.setBounds(0, 62, FRAME_WIDTH, 35);
+		textPanel.setBackground(Color.white);
+		textPanel.setBounds(TEXT_PANEL_X_OFFSET, TEXT_PANEL_Y_OFFSET, TEXT_PANEL_WIDTH, TEXT_PANEL_HEIGHT);
 		contentPane.add(textPanel);
 	}
 	private void createHeadingLabel() {
-		headingLabel = new JLabel("Do-Things");
+		
+		headingLabel = new JLabel(HEADING_LABEL);
 		headingLabel.setForeground(Color.GRAY);
 		headingLabel.setVerticalAlignment(SwingConstants.TOP);
 		headingLabel.setVerticalTextPosition(SwingConstants.TOP);
-		headingLabel.setBorder(new EmptyBorder(10, 10, 10, 10));
+		headingLabel.setBorder(new EmptyBorder(HEADING_LABEL_BUFFER, HEADING_LABEL_BUFFER, HEADING_LABEL_BUFFER, HEADING_LABEL_BUFFER));
 		headingLabel.setOpaque(true);
-		headingLabel.setBackground(new Color(255, 255, 255));
-		headingLabel.setFont(new Font("Pluto Sans Cond Light", Font.PLAIN, 22));
+		headingLabel.setBackground(Color.white);
+		headingLabel.setFont(new Font(PLUTO_COND_LIGHT, Font.PLAIN, HEADING_LABEL_FONT_SIZE));
 		headingLabel.setHorizontalAlignment(SwingConstants.CENTER);
-		headingLabel.setBounds(0, 0, 400, 63);
+		headingLabel.setBounds(HEADING_LABEL_X_OFFSET, HEADING_LABEL_Y_OFFSET, HEADING_LABEL_WIDTH, HEADING_LABEL_HEIGHT);
 		contentPane.add(headingLabel);
 	}
 	private void createFeedbackLabel() {
 		feedbackLabel = new JLabel();
 		feedbackLabel.setFocusable(false);
 		feedbackLabel.setForeground(Color.GRAY);
-		feedbackLabel.setFont(new Font("Pluto Sans ExtraLight", Font.PLAIN, 14));
+		feedbackLabel.setFont(new Font(PLUTO_EXLIGHT, Font.PLAIN, FEEDBACK_FONT_SIZE));
 		feedbackLabel.setHorizontalAlignment(SwingConstants.CENTER);
-		feedbackLabel.setBounds(0, 30, FRAME_WIDTH, 33);
+		feedbackLabel.setBounds(FEEDBACK_X_OFFSET, FEEDBACK_Y_OFFSET, FEEDBACK_WIDTH, FEEDBACK_HEIGHT);
 		contentPane.add(feedbackLabel);
 	}
 	private void createInputField() {
 		inputField = new JTextField();
 		inputField.setSelectedTextColor(HIGHLIGHT_FONT_DARK_BLUE);
 		inputField.setSelectionColor(HIGHLIGHT_Yellow);
-		inputField.setBounds(10, 57, FRAME_WIDTH-20, 33);
+		inputField.setBounds(INPUT_FIELD_X_OFFSET, INPUT_FIELD_Y_OFFSET, INPUT_FIELD_WIDTH, INPUT_FIELD_HEIGHT);
 		inputField.setBorder(null);
-		inputField.setBackground(new Color(153,204,255));
+		inputField.setBackground(INPUT_FIELD_BACKGROUND_LIGHT_BLUE);
 		inputField.setForeground(Color.BLACK);
-		inputField.setFont(new Font("Pluto Sans ExtraLight", Font.PLAIN, 23));
+		inputField.setFont(new Font(PLUTO_EXLIGHT, Font.PLAIN, INPUT_FIELD_FONT_SIZE));
 		contentPane.add(inputField);
 	}
 	private void createContentPane() {
 		setForeground(Color.BLACK);
-		setFont(new Font("Consolas", Font.BOLD, 14));
-		setTitle("Do-things");
+		setFont(new Font(CONTENT_PANE_FONT, Font.BOLD, CONTENT_PANE_FONT_SIZE));
+		setTitle(CONTENT_PANE_TITLE);
 		setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
 		setBackground(Color.BLACK);
-		setBounds(100, 25, FRAME_WIDTH, FRAME_HEIGHT);
+		setBounds(CONTENT_PANE_X_OFFSET, CONTENT_PANE_Y_OFFSET, CONTENT_PANE_WIDTH, CONTENT_PANE_HEIGHT);
 		setUndecorated(true);
 		contentPane = new JPanel();
 		contentPane.setAutoscrolls(true);
@@ -239,7 +270,7 @@ public class DoThingsGUI extends JFrame  {
 		contentPane.setBorder(null);
 		setContentPane(contentPane);
 		contentPane.setLayout(null);
-		setShape(new RoundRectangle2D.Double(0,0,FRAME_WIDTH,FRAME_HEIGHT, 20, 20));
+		setShape(new RoundRectangle2D.Double(ZERO,ZERO,FRAME_WIDTH,FRAME_HEIGHT, SHAPE_DIMENSION, SHAPE_DIMENSION));
 		setIconImage(image);
 	}
 	
