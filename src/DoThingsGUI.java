@@ -2,6 +2,7 @@ import java.awt.Color;
 import java.awt.Dimension;
 import java.awt.EventQueue;
 import java.awt.Font;
+import java.awt.FontFormatException;
 import java.awt.Image;
 import java.awt.PopupMenu;
 import java.awt.SystemTray;
@@ -16,8 +17,9 @@ import java.awt.event.WindowEvent;
 import java.awt.event.WindowListener;
 import java.awt.geom.RoundRectangle2D;
 import java.io.File;
-//import java.io.InputStream;
+import java.io.IOException;
 import java.util.ArrayList;
+
 import javax.swing.GroupLayout;
 import javax.swing.GroupLayout.Alignment;
 import javax.swing.InputMap;
@@ -33,6 +35,7 @@ import javax.swing.KeyStroke;
 import javax.swing.ScrollPaneConstants;
 import javax.swing.SwingConstants;
 import javax.swing.border.EmptyBorder;
+
 import org.jnativehook.GlobalScreen;
 import org.jnativehook.NativeHookException;
 import org.jnativehook.keyboard.NativeKeyEvent;
@@ -52,9 +55,6 @@ public class DoThingsGUI extends JFrame  {
 	private static final String FLOATING = "floating";
 	private static final String DEFAULT_HELP = "help";
 	private static final String HEADING_LABEL = "Do-Things";
-	private static final String PLUTO_COND_LIGHT = "Pluto Sans Cond Light";
-	private static final String PLUTO_EXLIGHT = "Pluto Sans ExtraLight";
-	private static final String CONTENT_PANE_FONT = "Consolas";
 	private static final String CONTENT_PANE_TITLE = "Do-Things";
 	private static final int FEEDBACK_TYPE = 0;
 	private static final int FEEDBACK_DESC = 1;
@@ -81,7 +81,7 @@ public class DoThingsGUI extends JFrame  {
 	private static final int TEXT_PANEL_X_OFFSET = 0;
 	private static final int TEXT_PANEL_Y_OFFSET = 62;
 	private static final int HEADING_LABEL_BUFFER = 10;
-	private static final int HEADING_LABEL_FONT_SIZE = 22;
+	private static final float HEADING_LABEL_FONT_SIZE = 32;
 	private static final int HEADING_LABEL_X_OFFSET = 0;
 	private static final int HEADING_LABEL_Y_OFFSET = 0;
 	private static final int HEADING_LABEL_WIDTH = FRAME_WIDTH;
@@ -90,14 +90,13 @@ public class DoThingsGUI extends JFrame  {
 	private static final int INPUT_FIELD_Y_OFFSET = 57;
 	private static final int INPUT_FIELD_WIDTH = FRAME_WIDTH - 20;
 	private static final int INPUT_FIELD_HEIGHT = 33;
-	private static final int INPUT_FIELD_FONT_SIZE = 23;
-	private static final int FEEDBACK_FONT_SIZE = 14;
+	private static final float INPUT_FIELD_FONT_SIZE = 23;
+	private static final float FEEDBACK_FONT_SIZE = 14;
 	private static final int FEEDBACK_X_OFFSET = 0;
 	private static final int FEEDBACK_Y_OFFSET = 30;
 	private static final int FEEDBACK_WIDTH = FRAME_WIDTH;
 	private static final int FEEDBACK_HEIGHT = 33;
 	private static final int ZERO = 0;
-	private static final int CONTENT_PANE_FONT_SIZE = 14;
 	private static final int CONTENT_PANE_X_OFFSET = 100;
 	private static final int CONTENT_PANE_Y_OFFSET = 25;
 	private static final int CONTENT_PANE_WIDTH = FRAME_WIDTH;
@@ -139,25 +138,38 @@ public class DoThingsGUI extends JFrame  {
 	private int yCoordOfFrame;
 
 	private static Font plutoSansCondExLight;
+	private static Font plutoSansCondLight;
 	private static Font plutoSansLight;
+	private static Font plutoSansExLight;
+
+	private static Font headingLabelFont;
+	private static Font feedbackLabelFont;
+	private static Font inputFieldFont;
 	// Launch application
 	public static void main(String[] args) {
 		EventQueue.invokeLater(new Runnable() {
 			public void run() {
 				try {
-					File font_file = new File("fonts/PlutoSansLight.otf");
-					plutoSansLight = Font.createFont(Font.TRUETYPE_FONT, font_file);
-					//InputStream is = DoThingsGUI.class.getResourceAsStream("fonts/PlutoSansLight.otf");
-					//plutoSansLight = Font.createFont(Font.TRUETYPE_FONT, is);
-					font_file = new File("fonts/PlutoSansCondExLight.otf");
-					plutoSansCondExLight = Font.createFont(Font.TRUETYPE_FONT, font_file);
-					//is = DoThingsGUI.class.getResourceAsStream("fonts/PlutoSansCondExLight.otf");
-					//plutoSansCondExLight = Font.createFont(Font.TRUETYPE_FONT, is);			
+					readCustomFonts();					
 					DoThingsGUI frame = new DoThingsGUI();
 					frame.setVisible(true);
 				} catch (Exception e) {
 					e.printStackTrace();
 				}
+			}
+			private void readCustomFonts() throws FontFormatException,
+					IOException {
+				File font_file = new File("fonts/PlutoSansLight.otf");
+				plutoSansLight = Font.createFont(Font.TRUETYPE_FONT, font_file);
+				font_file = new File("fonts/PlutoSansCondExLight.otf");
+				plutoSansCondExLight = Font.createFont(Font.TRUETYPE_FONT, font_file);
+				font_file = new File("fonts/PlutoSansCondLight.otf");
+				plutoSansCondLight = Font.createFont(Font.TRUETYPE_FONT, font_file);
+				font_file = new File("fonts/PlutoSansExtraLight.otf");
+				plutoSansExLight = Font.createFont(Font.TRUETYPE_FONT, font_file);
+				headingLabelFont = plutoSansCondLight.deriveFont(HEADING_LABEL_FONT_SIZE);
+				feedbackLabelFont = plutoSansLight.deriveFont(FEEDBACK_FONT_SIZE);
+				inputFieldFont = plutoSansExLight.deriveFont(INPUT_FIELD_FONT_SIZE);
 			}
 		});
 	}
@@ -233,7 +245,6 @@ public class DoThingsGUI extends JFrame  {
 		contentPane.add(textPanel);
 	}
 	private void createHeadingLabel() {
-		
 		headingLabel = new JLabel(HEADING_LABEL);
 		headingLabel.setForeground(Color.GRAY);
 		headingLabel.setVerticalAlignment(SwingConstants.TOP);
@@ -241,7 +252,7 @@ public class DoThingsGUI extends JFrame  {
 		headingLabel.setBorder(new EmptyBorder(HEADING_LABEL_BUFFER, HEADING_LABEL_BUFFER, HEADING_LABEL_BUFFER, HEADING_LABEL_BUFFER));
 		headingLabel.setOpaque(true);
 		headingLabel.setBackground(Color.white);
-		headingLabel.setFont(new Font(PLUTO_COND_LIGHT, Font.PLAIN, HEADING_LABEL_FONT_SIZE));
+		headingLabel.setFont(headingLabelFont);
 		headingLabel.setHorizontalAlignment(SwingConstants.CENTER);
 		headingLabel.setBounds(HEADING_LABEL_X_OFFSET, HEADING_LABEL_Y_OFFSET, HEADING_LABEL_WIDTH, HEADING_LABEL_HEIGHT);
 		contentPane.add(headingLabel);
@@ -250,7 +261,8 @@ public class DoThingsGUI extends JFrame  {
 		feedbackLabel = new JLabel();
 		feedbackLabel.setFocusable(false);
 		feedbackLabel.setForeground(Color.GRAY);
-		feedbackLabel.setFont(new Font(PLUTO_EXLIGHT, Font.PLAIN, FEEDBACK_FONT_SIZE));
+		feedbackLabel.setFont(feedbackLabelFont);
+		feedbackLabelFont.isPlain();
 		feedbackLabel.setHorizontalAlignment(SwingConstants.CENTER);
 		feedbackLabel.setBounds(FEEDBACK_X_OFFSET, FEEDBACK_Y_OFFSET, FEEDBACK_WIDTH, FEEDBACK_HEIGHT);
 		contentPane.add(feedbackLabel);
@@ -263,12 +275,13 @@ public class DoThingsGUI extends JFrame  {
 		inputField.setBorder(null);
 		inputField.setBackground(INPUT_FIELD_BACKGROUND_LIGHT_BLUE);
 		inputField.setForeground(Color.BLACK);
-		inputField.setFont(new Font(PLUTO_EXLIGHT, Font.PLAIN, INPUT_FIELD_FONT_SIZE));
+		inputField.setFont(inputFieldFont);
+		inputFieldFont.isPlain();
 		contentPane.add(inputField);
 	}
 	private void createContentPane() {
 		setForeground(Color.BLACK);
-		setFont(new Font(CONTENT_PANE_FONT, Font.BOLD, CONTENT_PANE_FONT_SIZE));
+		//setFont(new Font(CONTENT_PANE_FONT, Font.BOLD, CONTENT_PANE_FONT_SIZE));
 		setTitle(CONTENT_PANE_TITLE);
 		setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
 		setBackground(Color.BLACK);
@@ -444,9 +457,9 @@ public class DoThingsGUI extends JFrame  {
 		private static final Color MESSAGE_FLOAT_BACKGROUND_TURQUOISE = new Color(153, 204, 153); 
 		private static final Color MESSAGE_MARKED_BACKGROUND_LIGHT_GREY = new Color(204, 204, 204); 
 		private static final Color FONT_MARKED_GREY = new Color(153,153,153); 
-		private static final int TASK_DESCRIPTION_FONT_SIZE = 18;
-		private static final int ALIAS_FONT_SIZE = 12;
-		private static final int DATE_TIME_FONT_SIZE = ALIAS_FONT_SIZE;
+		private static final float TASK_DESCRIPTION_FONT_SIZE = 19;
+		private static final float ALIAS_FONT_SIZE = 13;
+		private static final float DATE_TIME_FONT_SIZE = ALIAS_FONT_SIZE;
 		private static final int TASK_DESCRIPTION_X_OFFSET = 10;
 		private static final int TASK_DESCRIPTION_Y_OFFSET = 10;
 		private static final int TASK_DESCRIPTION_WIDTH = 25;
@@ -470,7 +483,7 @@ public class DoThingsGUI extends JFrame  {
 		private static final int HELP_Y_OFFSET = 10;
 		private static final int HELP_WIDTH = FRAME_WIDTH;
 		private static final int HELP_HEIGHT = 500;
-		private static final int HELP_FONT_SIZE = 12;
+		private static final float HELP_FONT_SIZE = 12;
 		private static final Font dateTimeFont = plutoSansLight.deriveFont(DATE_TIME_FONT_SIZE);
 		private static final Font aliasFont = plutoSansCondExLight.deriveFont(ALIAS_FONT_SIZE);
 		private static final Font taskDescriptionFont = plutoSansLight.deriveFont(TASK_DESCRIPTION_FONT_SIZE);
