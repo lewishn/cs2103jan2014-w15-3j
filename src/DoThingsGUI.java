@@ -98,7 +98,10 @@ public class DoThingsGUI extends JFrame  {
 	private TriggerOnKeyAction triggerOnKeyReleased;
 	private TriggerOnMouseAction triggerOnMouseAction;
 	private static Image image;
-
+	
+	private static final Color HIGHLIGHT_FONT_DARK_BLUE = new Color(0,0,51); 
+	private static final Color HIGHLIGHT_Yellow = new Color(255,255,51);
+	
 	private int xCoordOfFrame;
 	private int yCoordOfFrame;
 
@@ -211,9 +214,8 @@ public class DoThingsGUI extends JFrame  {
 	}
 	private void createInputField() {
 		inputField = new JTextField();
-		inputField.setSelectedTextColor(new Color(0,0,51));
-		//inputField.setSelectedTextColor(new Color(255,0,0));
-		inputField.setSelectionColor(new Color(255,255,51));
+		inputField.setSelectedTextColor(HIGHLIGHT_FONT_DARK_BLUE);
+		inputField.setSelectionColor(HIGHLIGHT_Yellow);
 		inputField.setBounds(10, 57, FRAME_WIDTH-20, 33);
 		inputField.setBorder(null);
 		inputField.setBackground(new Color(153,204,255));
