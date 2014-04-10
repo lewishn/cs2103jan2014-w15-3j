@@ -98,8 +98,6 @@ public class DoThingsGUI extends JFrame  {
 	private TriggerOnMouseAction triggerOnMouseAction;
 	private static Image image;
 
-	
-	
 	private int xCoordOfFrame;
 	private int yCoordOfFrame;
 
@@ -125,65 +123,31 @@ public class DoThingsGUI extends JFrame  {
 		triggerOnMouseAction = new TriggerOnMouseAction();
 		image = Toolkit.getDefaultToolkit().getImage("Task.png");
 		
-		setForeground(Color.BLACK);
-		setFont(new Font("Consolas", Font.BOLD, 14));
-		setTitle("Do-things");
-		setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
-		setBackground(Color.BLACK);
-		setBounds(100, 25, FRAME_WIDTH, FRAME_HEIGHT);
-		setUndecorated(true);
-		contentPane = new JPanel();
-		contentPane.setAutoscrolls(true);
-		contentPane.setToolTipText("");
-		contentPane.setBackground(Color.BLACK);
-		contentPane.setForeground(Color.BLACK);
-		contentPane.setBorder(null);
-		setContentPane(contentPane);
-		contentPane.setLayout(null);
-		setShape(new RoundRectangle2D.Double(0,0,FRAME_WIDTH,FRAME_HEIGHT, 20, 20));
-		setIconImage(image);
-		
-		inputField = new JTextField();
-		inputField.setBounds(10, 57, FRAME_WIDTH-20, 33);
-		inputField.setBorder(null);
-		inputField.setBackground(new Color(153,204,255));
-		inputField.setForeground(Color.BLACK);
-		inputField.setFont(new Font("Pluto Sans ExtraLight", Font.PLAIN, 23));
-		contentPane.add(inputField);
-		
-		feedbackLabel = new JLabel();
-		feedbackLabel.setFocusable(false);
-		feedbackLabel.setForeground(Color.GRAY);
-		feedbackLabel.setFont(new Font("Pluto Sans ExtraLight", Font.PLAIN, 14));
-		feedbackLabel.setHorizontalAlignment(SwingConstants.CENTER);
-		feedbackLabel.setBounds(0, 30, FRAME_WIDTH, 33);
-		contentPane.add(feedbackLabel);
-		
-		headingLabel = new JLabel("Do-Things");
-		headingLabel.setForeground(Color.GRAY);
-		headingLabel.setVerticalAlignment(SwingConstants.TOP);
-		headingLabel.setVerticalTextPosition(SwingConstants.TOP);
-		headingLabel.setBorder(new EmptyBorder(10, 10, 10, 10));
-		headingLabel.setOpaque(true);
-		headingLabel.setBackground(new Color(255, 255, 255));
-		headingLabel.setFont(new Font("Pluto Sans Cond Light", Font.PLAIN, 22));
-		headingLabel.setHorizontalAlignment(SwingConstants.CENTER);
-		headingLabel.setBounds(0, 0, 400, 63);
-		contentPane.add(headingLabel);
-
-		textPanel = new JPanel();
-		textPanel.setFocusable(false);
-		textPanel.setBackground(new Color(255, 255, 255));
-		textPanel.setBounds(0, 62, FRAME_WIDTH, 35);
-		contentPane.add(textPanel);
+		createContentPane();		
+		createInputField();
+		createFeedbackLabel();
+		createHeadingLabel();
+		createTextPanel();	
+		createTaskPanel();
+		createTaskPanelScroll();
+		populateToDoListStartup();
+		setLocationRelativeTo(null);	// GUI appears in the middle of screen by default
 			
-		taskPanel = new JPanel();
-		taskPanel.setFocusable(false);
-		taskPanel.setBounds(0, 0, 171, 485);
-		taskPanel.setOpaque(false);
-		taskPanel.setBackground(new Color(255, 204, 51));
-		contentPane.add(taskPanel);
+		addWindowListener(globalKeyPress);	
+		inputField.addKeyListener(triggerOnKeyReleased);
+		addMouseListener(triggerOnMouseAction);
+		headingLabel.addMouseMotionListener(triggerOnMouseAction);
 		
+		verticalScrollBar = taskPanelScroll.getVerticalScrollBar();
+		verticalScrollBar.setUnitIncrement(FRAME_SCROLL_SPEED);
+	
+	}
+
+	private void populateToDoListStartup() {
+		Content.getInfoOfTasks(STARTUP_COMMAND);
+		feedbackLabel.setText(MESSAGE_STARTUP);
+	}
+	private void createTaskPanelScroll() {
 		taskPanelScroll = new JScrollPane(taskPanel);
 		taskPanelScroll.setFocusable(false);
 		GroupLayout gl_taskPanel = new GroupLayout(taskPanel);
@@ -201,20 +165,71 @@ public class DoThingsGUI extends JFrame  {
 		taskPanelScroll.setBorder(null);
 		taskPanelScroll.setBounds(0, 97, FRAME_WIDTH, 603);
 		contentPane.add(taskPanelScroll);
-		
-		Content.getInfoOfTasks(STARTUP_COMMAND);
-		feedbackLabel.setText(MESSAGE_STARTUP);
-		
-		setLocationRelativeTo(null);	// GUI appears in the middle of screen by default
-			
-		addWindowListener(globalKeyPress);	
-		inputField.addKeyListener(triggerOnKeyReleased);
-		addMouseListener(triggerOnMouseAction);
-		headingLabel.addMouseMotionListener(triggerOnMouseAction);
-		
-		verticalScrollBar = taskPanelScroll.getVerticalScrollBar();
-		verticalScrollBar.setUnitIncrement(FRAME_SCROLL_SPEED);
-	
+	}
+	private void createTaskPanel() {
+		taskPanel = new JPanel();
+		taskPanel.setFocusable(false);
+		taskPanel.setBounds(0, 0, 171, 485);
+		taskPanel.setOpaque(false);
+		taskPanel.setBackground(new Color(255, 204, 51));
+		contentPane.add(taskPanel);
+	}
+	private void createTextPanel() {
+		textPanel = new JPanel();
+		textPanel.setFocusable(false);
+		textPanel.setBackground(new Color(255, 255, 255));
+		textPanel.setBounds(0, 62, FRAME_WIDTH, 35);
+		contentPane.add(textPanel);
+	}
+	private void createHeadingLabel() {
+		headingLabel = new JLabel("Do-Things");
+		headingLabel.setForeground(Color.GRAY);
+		headingLabel.setVerticalAlignment(SwingConstants.TOP);
+		headingLabel.setVerticalTextPosition(SwingConstants.TOP);
+		headingLabel.setBorder(new EmptyBorder(10, 10, 10, 10));
+		headingLabel.setOpaque(true);
+		headingLabel.setBackground(new Color(255, 255, 255));
+		headingLabel.setFont(new Font("Pluto Sans Cond Light", Font.PLAIN, 22));
+		headingLabel.setHorizontalAlignment(SwingConstants.CENTER);
+		headingLabel.setBounds(0, 0, 400, 63);
+		contentPane.add(headingLabel);
+	}
+	private void createFeedbackLabel() {
+		feedbackLabel = new JLabel();
+		feedbackLabel.setFocusable(false);
+		feedbackLabel.setForeground(Color.GRAY);
+		feedbackLabel.setFont(new Font("Pluto Sans ExtraLight", Font.PLAIN, 14));
+		feedbackLabel.setHorizontalAlignment(SwingConstants.CENTER);
+		feedbackLabel.setBounds(0, 30, FRAME_WIDTH, 33);
+		contentPane.add(feedbackLabel);
+	}
+	private void createInputField() {
+		inputField = new JTextField();
+		inputField.setBounds(10, 57, FRAME_WIDTH-20, 33);
+		inputField.setBorder(null);
+		inputField.setBackground(new Color(153,204,255));
+		inputField.setForeground(Color.BLACK);
+		inputField.setFont(new Font("Pluto Sans ExtraLight", Font.PLAIN, 23));
+		contentPane.add(inputField);
+	}
+	private void createContentPane() {
+		setForeground(Color.BLACK);
+		setFont(new Font("Consolas", Font.BOLD, 14));
+		setTitle("Do-things");
+		setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
+		setBackground(Color.BLACK);
+		setBounds(100, 25, FRAME_WIDTH, FRAME_HEIGHT);
+		setUndecorated(true);
+		contentPane = new JPanel();
+		contentPane.setAutoscrolls(true);
+		contentPane.setToolTipText("");
+		contentPane.setBackground(Color.BLACK);
+		contentPane.setForeground(Color.BLACK);
+		contentPane.setBorder(null);
+		setContentPane(contentPane);
+		contentPane.setLayout(null);
+		setShape(new RoundRectangle2D.Double(0,0,FRAME_WIDTH,FRAME_HEIGHT, 20, 20));
+		setIconImage(image);
 	}
 	
 	// Class recognizes KeyEvents even if focus is not on window 
@@ -287,7 +302,7 @@ public class DoThingsGUI extends JFrame  {
 		public void nativeKeyTyped(NativeKeyEvent arg0) {}
 	}
 	
-	// @Author: Jiajie, John 
+	// @Author: Jiajie 
 	private class TriggerOnKeyAction implements KeyListener{
 		
 		@Override
@@ -362,30 +377,27 @@ public class DoThingsGUI extends JFrame  {
 		@Override
 		public void mouseMoved(MouseEvent arg0) {}
 	}
-	// @author: John
+	// @author: A0097082Y
 	private static class Content {
-		private static void createTaskObject(int change, int i) {
-			messagePanel.add(new JPanel());
-			messagePanel.get(i).setBounds(0, 0+change, FRAME_WIDTH, 70);
-			messagePanel.get(i).setLayout(null);
-			taskPanel.add(messagePanel.get(i));
-			taskPanel.revalidate();
-			taskPanel.repaint();
 
-			dateTime.add(new JTextArea());
-			dateTime.get(i).setFont(new Font("Pluto Sans Cond ExLight", Font.PLAIN, 12));
-			dateTime.get(i).setBounds(10, 50, 250, 22);
-			dateTime.get(i).setOpaque(false);
-			dateTime.get(i).setEditable(false);
-			messagePanel.get(i).add(dateTime.get(i));
-			
-			alias.add(new JTextArea());
-			alias.get(i).setFont(new Font("Pluto Sans Cond ExLight", Font.PLAIN, 12));
-			alias.get(i).setBounds(260, 50, 88, 22);
-			alias.get(i).setOpaque(false);
-			alias.get(i).setEditable(false);
-			messagePanel.get(i).add(alias.get(i));
-			
+		private static final Color MESSAGE_ELSE_TIME_BACKGROUND_GREEN = new Color(153,204,102);
+		private static final Color FONT_ELSE_TIME_WHITE = new Color(255,255,255);
+		private static final Color MESSAGE_OVERDUE_BACKGROUND_RED = new Color(204,51,61);
+		private static final Color FONT_OVERDUE_WHITE = new Color(255,255,255);
+		private static final Color MESSAGE_TODAY_BACKGROUND_YELLOW = new Color(255,255,51);
+		private static final Color FONT_TODAY_DARK_GREY = new Color(102,102,102);
+		private static final Color FONT_FLOAT_WHITE = new Color(255,255,255); 
+		private static final Color MESSAGE_FLOAT_BACKGROUND_TURQUOISE = new Color(153, 204, 153); 
+		private static final Color MESSAGE_MARKED_BACKGROUND_LIGHT_GREY = new Color(204, 204, 204); 
+		private static final Color FONT_MARKED_GREY = new Color(153,153,153); 
+				
+		private static void createTaskObjects(int change, int i) {
+			createMessagePanel(change, i);
+			createDateTimeField(i);
+			createAliasField(i);
+			createMessagePanel(i);
+		}
+		private static void createMessagePanel(int i) {
 			taskDescription.add(new JTextArea());
 			taskDescription.get(i).setFont(new Font("Pluto Sans Light", Font.PLAIN, 18));
 			taskDescription.get(i).setBounds(10,10, FRAME_WIDTH-25,60); //55 characters
@@ -395,6 +407,30 @@ public class DoThingsGUI extends JFrame  {
 			taskDescription.get(i).setOpaque(false);
 			messagePanel.get(i).add(taskDescription.get(i));
 		}
+		private static void createAliasField(int i) {
+			alias.add(new JTextArea());
+			alias.get(i).setFont(new Font("Pluto Sans Cond ExLight", Font.PLAIN, 12));
+			alias.get(i).setBounds(260, 50, 88, 22);
+			alias.get(i).setOpaque(false);
+			alias.get(i).setEditable(false);
+			messagePanel.get(i).add(alias.get(i));
+		}
+		private static void createDateTimeField(int i) {
+			dateTime.add(new JTextArea());
+			dateTime.get(i).setFont(new Font("Pluto Sans Cond ExLight", Font.PLAIN, 12));
+			dateTime.get(i).setBounds(10, 50, 250, 22);
+			dateTime.get(i).setOpaque(false);
+			dateTime.get(i).setEditable(false);
+			messagePanel.get(i).add(dateTime.get(i));
+		}
+		private static void createMessagePanel(int change, int i) {
+			messagePanel.add(new JPanel());
+			messagePanel.get(i).setBounds(0, 0+change, FRAME_WIDTH, 70);
+			messagePanel.get(i).setLayout(null);
+			taskPanel.add(messagePanel.get(i));
+			taskPanel.revalidate();
+			taskPanel.repaint();
+		}
 		private static void getInfoOfTasks(String userInput) {
 			ArrayList<ArrayList<String>> result = MainLogic.runLogic(userInput);
 			String feedbackType = result.get(FEEDBACK_TYPE).get(0);
@@ -402,19 +438,16 @@ public class DoThingsGUI extends JFrame  {
 				System.exit(0);
 			} else if (feedbackType.equals(ERROR_CODE)) {
 				String feedbackDesc = result.get(FEEDBACK_DESC).get(0);
-				feedbackLabel.setText(feedbackDesc);
-				inputField.selectAll();
+				errorProcessing(feedbackDesc);
 			} else {
 				String feedbackDesc = result.get(FEEDBACK_DESC).get(0);
-				taskPanel.removeAll();
-				taskPanel.updateUI();
+				refreshTaskPanel();
 			
 				if (feedbackType.equals(DEFAULT_HELP)) {
 					printHelp();
 				} else {
 					if (feedbackType.equals(ERROR_CODE)) {
-						feedbackLabel.setText(feedbackDesc);
-						inputField.selectAll();
+						errorProcessing(feedbackDesc);
 						//taskPanel.setPreferredSize(new Dimension(FRAME_WIDTH,0));
 					} else {
 						taskDesc = result.get(TASK_DESC);
@@ -422,67 +455,65 @@ public class DoThingsGUI extends JFrame  {
 						taskStatus = result.get(TASK_STATUS);
 						taskDate = result.get(TASK_DATE);
 						taskTime = result.get(TASK_TIME);
-						int numOfTask = taskDesc.size();
-						inputField.setText("");  
-						
-						messagePanel = new ArrayList<JPanel>();
-						dateTime = new ArrayList<JTextArea>();
-						alias = new ArrayList<JTextArea>();
-						taskDescription = new ArrayList<JTextArea>();
-						heightChange=0;
+						int numOfTask = initialiseFeedbackVariables();
 						for(int i=0; i<numOfTask; i++) {	
 							//----- one task ----//
-							Content.createTaskObject(heightChange, i);
-					
+							createTaskObjects(heightChange, i);
+
 							if (taskStatus.get(i).equals(MARK_CODE)) {
-								//light grey
-								messagePanel.get(i).setBackground(new Color(204, 204, 204));
-								taskDescription.get(i).setForeground(new Color(153,153,153));
-								alias.get(i).setForeground(new Color(153,153,153));
-								dateTime.get(i).setForeground(new Color(153,153,153));
+								setTaskObjectColorScheme(i, MESSAGE_MARKED_BACKGROUND_LIGHT_GREY, FONT_MARKED_GREY);
 							} else if (taskTime.get(i).equals(FLOATING)) {
-								// floating task
-								//light green
-								messagePanel.get(i).setBackground(new Color(153, 204, 153));
-								taskDescription.get(i).setForeground(Color.WHITE);
-								alias.get(i).setForeground(Color.WHITE);
-								dateTime.get(i).setForeground(Color.WHITE);
+								setTaskObjectColorScheme(i, MESSAGE_FLOAT_BACKGROUND_TURQUOISE, FONT_FLOAT_WHITE);
 							} else if (taskTime.get(i).equals(DUE_TODAY)) {
-								// if task due today
-								//yellow
-								messagePanel.get(i).setBackground(new Color(255,255,51));
-								taskDescription.get(i).setForeground(new Color(102,102,102));
-								dateTime.get(i).setForeground(new Color(102,102,102));
-								alias.get(i).setForeground(new Color(102,102,102));
-								
+								setTaskObjectColorScheme(i, MESSAGE_TODAY_BACKGROUND_YELLOW, FONT_TODAY_DARK_GREY);
 							} else if (taskTime.get(i).equals(OVERDUE)) {
-								// if task overdue
-								// red
-								messagePanel.get(i).setBackground(new Color(204, 51, 61));
-								taskDescription.get(i).setForeground(Color.WHITE);
-								alias.get(i).setForeground(Color.WHITE);
-								dateTime.get(i).setForeground(Color.WHITE);
+								setTaskObjectColorScheme(i, MESSAGE_OVERDUE_BACKGROUND_RED, FONT_OVERDUE_WHITE);
 							} else {
-								// else
-								//green
-								messagePanel.get(i).setBackground(new Color(153, 204, 102));
-								taskDescription.get(i).setForeground(Color.WHITE);
-								alias.get(i).setForeground(Color.WHITE);
-								dateTime.get(i).setForeground(Color.WHITE);
+								setTaskObjectColorScheme(i, MESSAGE_ELSE_TIME_BACKGROUND_GREEN, FONT_ELSE_TIME_WHITE);
 							}
-							heightChange += TASK_OBJECT_FRAME_HEIGHT;
-							dateTime.get(i).setText(taskDate.get(i));
-							if (taskAlias.get(i) == null) {		
-							} else {
-								alias.get(i).setText(ALIAS + taskAlias.get(i));
-							}	
-							taskDescription.get(i).append(taskDesc.get(i));
-							taskPanel.setPreferredSize(new Dimension(FRAME_WIDTH,heightChange));
+							setFeedbackIntoRespectiveFields(i);
+							setTaskPanelHeight();
 						}
 						feedbackLabel.setText(feedbackDesc);
 					}			
 				}
 			}
+		}
+		private static void setTaskPanelHeight() {
+			heightChange += TASK_OBJECT_FRAME_HEIGHT;
+			taskPanel.setPreferredSize(new Dimension(FRAME_WIDTH,heightChange));
+		}
+		private static void setFeedbackIntoRespectiveFields(int i) {
+			dateTime.get(i).setText(taskDate.get(i));
+			if (taskAlias.get(i) == null) {		
+			} else {
+				alias.get(i).setText(ALIAS + taskAlias.get(i));
+			}	
+			taskDescription.get(i).append(taskDesc.get(i));
+		}
+		private static void setTaskObjectColorScheme(int i, Color messageBackground, Color fontColor) {
+			messagePanel.get(i).setBackground(messageBackground);
+			taskDescription.get(i).setForeground(fontColor);
+			alias.get(i).setForeground(fontColor);
+			dateTime.get(i).setForeground(fontColor);
+		}
+		private static int initialiseFeedbackVariables() {
+			int numOfTask = taskDesc.size();
+			inputField.setText("");  
+			messagePanel = new ArrayList<JPanel>();
+			dateTime = new ArrayList<JTextArea>();
+			alias = new ArrayList<JTextArea>();
+			taskDescription = new ArrayList<JTextArea>();
+			heightChange=0;
+			return numOfTask;
+		}
+		private static void errorProcessing(String feedbackDesc) {
+			feedbackLabel.setText(feedbackDesc);
+			inputField.selectAll();
+		}
+		private static void refreshTaskPanel() {
+			taskPanel.removeAll();
+			taskPanel.updateUI();
 		}
 		
 		private static void printHelp() {
