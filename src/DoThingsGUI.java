@@ -69,7 +69,7 @@ public class DoThingsGUI extends JFrame  {
 	private static final int COMMAND_SCROLL_DOWN = KeyEvent.VK_DOWN;
 	private static final int FRAME_MOVEMENT = 10;		
 	private static final int FRAME_SCROLL_SPEED = 75;
-	private static final int TASK_OBJECT_FRAME_HEIGHT = 72;
+	private static final int TASK_OBJECT_FRAME_HEIGHT = 53;
 	private static final int FRAME_WIDTH = 400;
 	private static final int FRAME_HEIGHT = 700;
 	private static int heightChange =0;
@@ -401,17 +401,20 @@ public class DoThingsGUI extends JFrame  {
 		private static final int TASK_DESCRIPTION_X_OFFSET = 10;
 		private static final int TASK_DESCRIPTION_Y_OFFSET = 10;
 		private static final int TASK_DESCRIPTION_WIDTH = 25;
-		private static final int TASK_DESCRIPTION_HEIGHT = 38;
+		private static final int TASK_DESCRIPTION_HEIGHT = 19;
 		private static final int ALIAS_X_OFFSET = 260;
-		private static final int ALIAS_Y_OFFSET = 50;
+		private static final int ALIAS_Y_OFFSET = 31;
 		private static final int ALIAS_WIDTH = 88;
-		private static final int ALIAS_LENGTH = 22;
+		private static final int ALIAS_HEIGHT = 22;
 		private static final int DATE_TIME_X_OFFSET = 10;
-		private static final int DATE_TIME_Y_OFFSET = 50;
+		private static final int DATE_TIME_Y_OFFSET = 31;
 		private static final int DATE_TIME_WIDTH = 250;
-		private static final int DATE_TIME_LENGTH = 22;
-		private static final int MESSAGE_PANEL_LENGTH = 70;
+		private static final int DATE_TIME_HEIGHT = 22;
+		private static final int MESSAGE_PANEL_HEIGHT = 51;
 		private static final int ZERO = 0;
+		private static final int NUM_CHAR_FIRST_LINE = 32;
+		private static final int NUM_CHAR_LINE = 34;
+		private static final int HEIGHT_OF_ONE_LINE = 19;
 		private static final String PLUTO_LIGHT_FONT = "Pluto Sans Light";
 		private static final String PLUTO_COND_EXLIGHT_FONT = "Pluto Sans Cond ExLight";
 		
@@ -435,7 +438,7 @@ public class DoThingsGUI extends JFrame  {
 		private static void createAliasField(int extension,int i) {
 			alias.add(new JTextArea());
 			alias.get(i).setFont(new Font(PLUTO_COND_EXLIGHT_FONT, Font.PLAIN, ALIAS_FONT_SIZE));
-			alias.get(i).setBounds(ALIAS_X_OFFSET, ALIAS_Y_OFFSET + extension, ALIAS_WIDTH, ALIAS_LENGTH);
+			alias.get(i).setBounds(ALIAS_X_OFFSET, ALIAS_Y_OFFSET + extension, ALIAS_WIDTH, ALIAS_HEIGHT);
 			alias.get(i).setOpaque(false);
 			alias.get(i).setEditable(false);
 			messagePanel.get(i).add(alias.get(i));
@@ -443,14 +446,14 @@ public class DoThingsGUI extends JFrame  {
 		private static void createDateTimeField(int extension ,int i) {
 			dateTime.add(new JTextArea());
 			dateTime.get(i).setFont(new Font(PLUTO_COND_EXLIGHT_FONT, Font.PLAIN, DATE_TIME_FONT_SIZE));
-			dateTime.get(i).setBounds(DATE_TIME_X_OFFSET, DATE_TIME_Y_OFFSET + extension, DATE_TIME_WIDTH, DATE_TIME_LENGTH);
+			dateTime.get(i).setBounds(DATE_TIME_X_OFFSET, DATE_TIME_Y_OFFSET + extension, DATE_TIME_WIDTH, DATE_TIME_HEIGHT);
 			dateTime.get(i).setOpaque(false);
 			dateTime.get(i).setEditable(false);
 			messagePanel.get(i).add(dateTime.get(i));
 		}
 		private static void createMessagePanel(int extension, int change, int i) {
 			messagePanel.add(new JPanel());
-			messagePanel.get(i).setBounds(ZERO, ZERO + change, FRAME_WIDTH, MESSAGE_PANEL_LENGTH + extension);
+			messagePanel.get(i).setBounds(ZERO, ZERO + change, FRAME_WIDTH, MESSAGE_PANEL_HEIGHT + extension);
 			messagePanel.get(i).setLayout(null);
 			taskPanel.add(messagePanel.get(i));
 			taskPanel.revalidate();
@@ -509,15 +512,17 @@ public class DoThingsGUI extends JFrame  {
 			}
 		}
 		private static int lengthForTextOverflow(int i) {
-			int length = taskDesc.get(i).length();
-			int additionalLength = ZERO;
-			if (length > 55) {
-				 while (length>34) {
-					 additionalLength += 19;
-					 length-=55;
+			int charLength = taskDesc.get(i).length();
+			int additionalHeight = ZERO; 
+			if (charLength > NUM_CHAR_FIRST_LINE) {
+				additionalHeight += HEIGHT_OF_ONE_LINE;
+				charLength -= NUM_CHAR_FIRST_LINE;
+				 while (charLength>NUM_CHAR_LINE) {
+					 additionalHeight += HEIGHT_OF_ONE_LINE;
+					 charLength-=NUM_CHAR_LINE;
 				 }
 			}
-			return additionalLength;
+			return additionalHeight;
 		}
 		private static void setTaskPanelHeight() {
 			heightChange += TASK_OBJECT_FRAME_HEIGHT;
