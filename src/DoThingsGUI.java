@@ -67,11 +67,11 @@ public class DoThingsGUI extends JFrame  {
 	private static final int COMMAND_SHIFT_WINDOW_DOWN = KeyEvent.VK_F10;
 	private static final int COMMAND_SCROLL_UP = KeyEvent.VK_UP;
 	private static final int COMMAND_SCROLL_DOWN = KeyEvent.VK_DOWN;
-	private static final int TASK_OBJECT_FRAME_HEIGHT = 72;
 	private static final int FRAME_MOVEMENT = 10;		
+	private static final int FRAME_SCROLL_SPEED = 75;
+	private static final int TASK_OBJECT_FRAME_HEIGHT = 72;
 	private static final int FRAME_WIDTH = 400;
 	private static final int FRAME_HEIGHT = 700;
-	private static final int FRAME_SCROLL_SPEED = 75;
 	private static int heightChange =0;
 	
 	private JPanel contentPane;
@@ -132,19 +132,24 @@ public class DoThingsGUI extends JFrame  {
 		createTaskPanelScroll();
 		populateToDoListStartup();
 		setLocationRelativeTo(null);	// GUI appears in the middle of screen by default
-			
+		
+		setListeners();
+		setVrticalScrollBarSettings();
+	
+	}
+
+	private void setVrticalScrollBarSettings() {
+		verticalScrollBar = taskPanelScroll.getVerticalScrollBar();
+		verticalScrollBar.setUnitIncrement(FRAME_SCROLL_SPEED);
+	}
+	private void setListeners() {
 		addWindowListener(globalKeyPress);	
 		inputField.addKeyListener(triggerOnKeyReleased);
 		addMouseListener(triggerOnMouseAction);
 		headingLabel.addMouseMotionListener(triggerOnMouseAction);
-		
-		verticalScrollBar = taskPanelScroll.getVerticalScrollBar();
-		verticalScrollBar.setUnitIncrement(FRAME_SCROLL_SPEED);
-	
 	}
-
 	private void populateToDoListStartup() {
-		Content.getInfoOfTasks(STARTUP_COMMAND);
+		ResponsiveContent.getInfoOfTasks(STARTUP_COMMAND);
 		feedbackLabel.setText(MESSAGE_STARTUP);
 	}
 	private void createTaskPanelScroll() {
@@ -312,7 +317,7 @@ public class DoThingsGUI extends JFrame  {
 			switch(key){
 			case COMMAND_ENTER:
 				String userInput = inputField.getText();
-				Content.getInfoOfTasks(userInput);
+				ResponsiveContent.getInfoOfTasks(userInput);
 				break;
 			default:
 				break;	
@@ -378,7 +383,7 @@ public class DoThingsGUI extends JFrame  {
 		public void mouseMoved(MouseEvent arg0) {}
 	}
 	// @author: A0097082Y
-	private static class Content {
+	private static class ResponsiveContent {
 
 		private static final Color MESSAGE_ELSE_TIME_BACKGROUND_GREEN = new Color(153,204,102);
 		private static final Color FONT_ELSE_TIME_WHITE = new Color(255,255,255);
@@ -390,42 +395,62 @@ public class DoThingsGUI extends JFrame  {
 		private static final Color MESSAGE_FLOAT_BACKGROUND_TURQUOISE = new Color(153, 204, 153); 
 		private static final Color MESSAGE_MARKED_BACKGROUND_LIGHT_GREY = new Color(204, 204, 204); 
 		private static final Color FONT_MARKED_GREY = new Color(153,153,153); 
-				
-		private static void createTaskObjects(int change, int i) {
-			createMessagePanel(change, i);
-			createDateTimeField(i);
-			createAliasField(i);
-			createMessagePanel(i);
+		private static final int TASK_DESCRIPTION_FONT_SIZE = 18;
+		private static final int ALIAS_FONT_SIZE = 12;
+		private static final int DATE_TIME_FONT_SIZE = ALIAS_FONT_SIZE;
+		private static final int TASK_DESCRIPTION_X_OFFSET = 10;
+		private static final int TASK_DESCRIPTION_Y_OFFSET = 10;
+		private static final int TASK_DESCRIPTION_WIDTH = 25;
+		private static final int TASK_DESCRIPTION_HEIGHT = 38;
+		private static final int ALIAS_X_OFFSET = 260;
+		private static final int ALIAS_Y_OFFSET = 50;
+		private static final int ALIAS_WIDTH = 88;
+		private static final int ALIAS_LENGTH = 22;
+		private static final int DATE_TIME_X_OFFSET = 10;
+		private static final int DATE_TIME_Y_OFFSET = 50;
+		private static final int DATE_TIME_WIDTH = 250;
+		private static final int DATE_TIME_LENGTH = 22;
+		private static final int MESSAGE_PANEL_LENGTH = 70;
+		private static final int ZERO = 0;
+		private static final String PLUTO_LIGHT_FONT = "Pluto Sans Light";
+		private static final String PLUTO_COND_EXLIGHT_FONT = "Pluto Sans Cond ExLight";
+		
+		private static void createTaskObjects(int extension, int change, int i) {
+			createMessagePanel(extension, change, i);
+			createDateTimeField(extension, i);
+			createAliasField(extension, i);
+			createTaskDescription(extension, i);
 		}
-		private static void createMessagePanel(int i) {
-			taskDescription.add(new JTextArea());
-			taskDescription.get(i).setFont(new Font("Pluto Sans Light", Font.PLAIN, 18));
-			taskDescription.get(i).setBounds(10,10, FRAME_WIDTH-25,60); //55 characters
+		private static void createTaskDescription(int extension, int i) {
+			taskDescription.add(new JTextArea());	
+			
+			taskDescription.get(i).setFont(new Font(PLUTO_LIGHT_FONT, Font.PLAIN, TASK_DESCRIPTION_FONT_SIZE));	
+			taskDescription.get(i).setBounds(TASK_DESCRIPTION_X_OFFSET,TASK_DESCRIPTION_Y_OFFSET, FRAME_WIDTH - TASK_DESCRIPTION_WIDTH,TASK_DESCRIPTION_HEIGHT + extension); //55 characters
 			taskDescription.get(i).setLineWrap(true);
 			taskDescription.get(i).setWrapStyleWord(true);
 			taskDescription.get(i).setEditable(false);
 			taskDescription.get(i).setOpaque(false);
 			messagePanel.get(i).add(taskDescription.get(i));
 		}
-		private static void createAliasField(int i) {
+		private static void createAliasField(int extension,int i) {
 			alias.add(new JTextArea());
-			alias.get(i).setFont(new Font("Pluto Sans Cond ExLight", Font.PLAIN, 12));
-			alias.get(i).setBounds(260, 50, 88, 22);
+			alias.get(i).setFont(new Font(PLUTO_COND_EXLIGHT_FONT, Font.PLAIN, ALIAS_FONT_SIZE));
+			alias.get(i).setBounds(ALIAS_X_OFFSET, ALIAS_Y_OFFSET + extension, ALIAS_WIDTH, ALIAS_LENGTH);
 			alias.get(i).setOpaque(false);
 			alias.get(i).setEditable(false);
 			messagePanel.get(i).add(alias.get(i));
 		}
-		private static void createDateTimeField(int i) {
+		private static void createDateTimeField(int extension ,int i) {
 			dateTime.add(new JTextArea());
-			dateTime.get(i).setFont(new Font("Pluto Sans Cond ExLight", Font.PLAIN, 12));
-			dateTime.get(i).setBounds(10, 50, 250, 22);
+			dateTime.get(i).setFont(new Font(PLUTO_COND_EXLIGHT_FONT, Font.PLAIN, DATE_TIME_FONT_SIZE));
+			dateTime.get(i).setBounds(DATE_TIME_X_OFFSET, DATE_TIME_Y_OFFSET + extension, DATE_TIME_WIDTH, DATE_TIME_LENGTH);
 			dateTime.get(i).setOpaque(false);
 			dateTime.get(i).setEditable(false);
 			messagePanel.get(i).add(dateTime.get(i));
 		}
-		private static void createMessagePanel(int change, int i) {
+		private static void createMessagePanel(int extension, int change, int i) {
 			messagePanel.add(new JPanel());
-			messagePanel.get(i).setBounds(0, 0+change, FRAME_WIDTH, 70);
+			messagePanel.get(i).setBounds(ZERO, ZERO + change, FRAME_WIDTH, MESSAGE_PANEL_LENGTH + extension);
 			messagePanel.get(i).setLayout(null);
 			taskPanel.add(messagePanel.get(i));
 			taskPanel.revalidate();
@@ -433,14 +458,14 @@ public class DoThingsGUI extends JFrame  {
 		}
 		private static void getInfoOfTasks(String userInput) {
 			ArrayList<ArrayList<String>> result = MainLogic.runLogic(userInput);
-			String feedbackType = result.get(FEEDBACK_TYPE).get(0);
+			String feedbackType = result.get(FEEDBACK_TYPE).get(ZERO);
 			if(feedbackType.equals(DEFAULT_EXIT)) {
-				System.exit(0);
+				System.exit(ZERO);
 			} else if (feedbackType.equals(ERROR_CODE)) {
-				String feedbackDesc = result.get(FEEDBACK_DESC).get(0);
+				String feedbackDesc = result.get(FEEDBACK_DESC).get(ZERO);
 				errorProcessing(feedbackDesc);
 			} else {
-				String feedbackDesc = result.get(FEEDBACK_DESC).get(0);
+				String feedbackDesc = result.get(FEEDBACK_DESC).get(ZERO);
 				refreshTaskPanel();
 			
 				if (feedbackType.equals(DEFAULT_HELP)) {
@@ -448,7 +473,6 @@ public class DoThingsGUI extends JFrame  {
 				} else {
 					if (feedbackType.equals(ERROR_CODE)) {
 						errorProcessing(feedbackDesc);
-						//taskPanel.setPreferredSize(new Dimension(FRAME_WIDTH,0));
 					} else {
 						taskDesc = result.get(TASK_DESC);
 						taskAlias = result.get(TASK_ALIAS);
@@ -456,10 +480,13 @@ public class DoThingsGUI extends JFrame  {
 						taskDate = result.get(TASK_DATE);
 						taskTime = result.get(TASK_TIME);
 						int numOfTask = initialiseFeedbackVariables();
-						for(int i=0; i<numOfTask; i++) {	
-							//----- one task ----//
-							createTaskObjects(heightChange, i);
-
+						for(int i=ZERO; i<numOfTask; i++) {	
+							// Checks for overflow of description text and extends the message panel to fit.
+							int overflowExtension = lengthForTextOverflow(i);
+							createTaskObjects(overflowExtension, heightChange, i);
+							heightChange += overflowExtension;
+							
+							// Select color scheme of taskObject
 							if (taskStatus.get(i).equals(MARK_CODE)) {
 								setTaskObjectColorScheme(i, MESSAGE_MARKED_BACKGROUND_LIGHT_GREY, FONT_MARKED_GREY);
 							} else if (taskTime.get(i).equals(FLOATING)) {
@@ -471,13 +498,26 @@ public class DoThingsGUI extends JFrame  {
 							} else {
 								setTaskObjectColorScheme(i, MESSAGE_ELSE_TIME_BACKGROUND_GREEN, FONT_ELSE_TIME_WHITE);
 							}
+							// Update text fields and extend taskPanel to fit i number of message panels
 							setFeedbackIntoRespectiveFields(i);
 							setTaskPanelHeight();
 						}
+						// Finally feedback to user what has been done
 						feedbackLabel.setText(feedbackDesc);
 					}			
 				}
 			}
+		}
+		private static int lengthForTextOverflow(int i) {
+			int length = taskDesc.get(i).length();
+			int additionalLength = ZERO;
+			if (length > 55) {
+				 while (length>34) {
+					 additionalLength += 19;
+					 length-=55;
+				 }
+			}
+			return additionalLength;
 		}
 		private static void setTaskPanelHeight() {
 			heightChange += TASK_OBJECT_FRAME_HEIGHT;
@@ -504,7 +544,7 @@ public class DoThingsGUI extends JFrame  {
 			dateTime = new ArrayList<JTextArea>();
 			alias = new ArrayList<JTextArea>();
 			taskDescription = new ArrayList<JTextArea>();
-			heightChange=0;
+			heightChange=ZERO;
 			return numOfTask;
 		}
 		private static void errorProcessing(String feedbackDesc) {

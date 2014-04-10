@@ -264,7 +264,7 @@ public class MainLogic{
 				Integer number = numberList.get(i);
 				Task task = taskList.get(number);
 				Integer numberToString = number + 1;
-				result.get(TASK_DESC).add( numberToString.toString()+ DOT+ task.getDescription());
+				result.get(TASK_DESC).add(numberToString.toString() + DOT + task.getDescription());
 				result.get(TASK_ALIAS).add(task.getAlias());
 				result.get(TASK_DATE).add(task.getDateTimeString());
 				if (task.getStatus()) {
@@ -290,7 +290,6 @@ public class MainLogic{
 						result.get(TASK_TIME).add(DUE_OTHER);
 					}
 				}
-
 			}
 		}  
 		return result;
