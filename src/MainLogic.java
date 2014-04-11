@@ -1,4 +1,4 @@
-//@author A0097082Y
+// @author A0097082Y
 import java.util.ArrayList;
 
 public class MainLogic{
@@ -216,7 +216,12 @@ public class MainLogic{
 				return null;
 		}
 	}
-	
+	/**
+	 * Processes feedback before sending an ArrayList of ArrayList<String> to GUI which contains all the feedback information
+	 * @param feed
+	 * @param type
+	 * @return ArrayList<ArrayList<String>> result
+	 */
 	private static ArrayList<ArrayList<String>> processFeedback(Feedback feed, String type) {
 		ArrayList<ArrayList<String>> result = new ArrayList<ArrayList<String>>();
 		for(int i=0; i<NUM_OF_FEEDBACK; i++) {
@@ -234,7 +239,7 @@ public class MainLogic{
 		result.get(FEEDBACK_DESC).add(feed.getDesc());
 		
 		if (type.equals(DEFAULT_HELP)) {
-			result.get(TASK_DESC).add(getHelp());
+			result.get(TASK_DESC).add(helpDescription());
 		}
 		else {
 			ArrayList<Task>taskList = Task.getList();
@@ -274,7 +279,11 @@ public class MainLogic{
 		}  
 		return result;
 	}
-	
+	/**
+	 * Check whether a command input is a default command
+	 * @param s
+	 * @return true or false
+	 */
 	protected static boolean isDefaultCommand(String s) {
 		String[] defaultCommandList = {
 				DEFAULT_ADD, DEFAULT_UPDATE, DEFAULT_MARK,
@@ -288,15 +297,13 @@ public class MainLogic{
 				return true;
 			}
 		}
-			
 		return false;
 	}
-		
-	protected static ArrayList<Task> getTaskList() {
-		return Task.getList();
-	}
-		
-	private static String getHelp() {
+	/**
+	 * creates help description
+	 * @return longHelpDescription
+	 */
+	private static String helpDescription() {
 		String[] commandList = {
 				DEFAULT_ADD, DEFAULT_UPDATE, DEFAULT_MARK,
 				DEFAULT_DELETE, DEFAULT_LIST, DEFAULT_SEARCH,
@@ -304,15 +311,14 @@ public class MainLogic{
 				DEFAULT_DELETE_CUSTOM,  DEFAULT_HELP, DEFAULT_EXIT
 		};
 		
-		String list = "";
+		String longHelpDescription = "";
 		
 		for (int i = 0; i < commandList.length; i++) {
 			String commandHeader = getCustomHeader(commandList[i]);
-			list += (commandHeader + "\n");
-			list += (commandList[i] + CustomCommandHandler.getListOfCustomCommands(commandHeader) + "\n\n");
+			longHelpDescription += (commandHeader + "\n");
+			longHelpDescription += (commandList[i] + CustomCommandHandler.getListOfCustomCommands(commandHeader) + "\n\n");
 		}
-		
-		return list;
+		return longHelpDescription;
 	}
 }
 
