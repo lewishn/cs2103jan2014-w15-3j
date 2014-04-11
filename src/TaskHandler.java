@@ -57,9 +57,7 @@ class TaskHandler {
 		
 		HistoryHandler.pushUndoStack();
 		Task.getList().add(newTask);
-		Task.sortList();
-		Task.saveTasks();
-		HistoryHandler.purgeRedoStack();
+		executePostCommandRoutine();
 		return new Feedback(String.format(MESSAGE_ADDED_TASK, userInput));
 	}
 	
@@ -145,9 +143,7 @@ class TaskHandler {
 		return new Task(input, start, end, alias);
 	}
 	
-	
 	//////////UPDATE Functionality//////////
-	
 	/**
 	 * Updates a task in the specified field
 	 * Input format is "[task number/alias][field to update][update]
@@ -217,9 +213,7 @@ class TaskHandler {
 		HistoryHandler.pushUndoStack();
 		Task.getList().remove(updateIndex);
 		Task.getList().add(taskToUpdate);
-		Task.sortList();
-		Task.saveTasks();
-		HistoryHandler.purgeRedoStack();
+		executePostCommandRoutine();
 		return new Feedback(MESSAGE_UPDATE_TASK);
 	}
 	
@@ -360,17 +354,8 @@ class TaskHandler {
 		ArrayList<Integer> indexList = new ArrayList<Integer>();
 		
 		for (int i = 0; i < list.size(); i++) {
-			DateTime start = list.get(i).getStartDateTime();
-			DateTime end = list.get(i).getEndDateTime();
-			
-			if (start != null && end != null) { 
-				if (start.isBeforeNow() || end.isBeforeNow() && list.get(i).getStatus() == false) {
-					indexList.add(i);
-				} 
-			} else if (start != null && start.isBeforeNow() && list.get(i).getStatus() == false) {
-					indexList.add(i);
-			} else if (end != null && end.isBeforeNow() && list.get(i).getStatus() == false) {
-					indexList.add(i);
+			if (list.get(i).isOverdue()) {
+				indexList.add(i);
 			}
 		}
 		
@@ -440,8 +425,7 @@ class TaskHandler {
 			
 			HistoryHandler.pushUndoStack();
 			deleteList(listToDelete);
-			Task.saveTasks();
-			HistoryHandler.purgeRedoStack();
+			executePostCommandRoutine();
 			return new Feedback(MESSAGE_DELETE_SUCCESS);
 		}
 		
@@ -513,8 +497,7 @@ class TaskHandler {
 		}
 	}
 	
-	//search
-	
+	////////////////SEARCH Functionality////////////////////
 	protected static Feedback searchTasks(String searchKey) {
 		String[] keys = searchKey.split("\\s+");
 		if (keys.length == 0) {
@@ -533,5 +516,11 @@ class TaskHandler {
 		}
 		
 		return new Feedback("Search for " + searchKey , indexList);
+	}
+	
+	private static void executePostCommandRoutine() {
+		Task.sortList();
+		Task.saveTasks();
+		HistoryHandler.purgeRedoStack();
 	}
 }

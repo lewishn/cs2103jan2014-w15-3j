@@ -1,6 +1,9 @@
+//@author A0099727
 import java.util.ArrayList;
 
 class CommandParser {
+	private static final String timeIdentifier = "at @ by from for to on before until end start - , and";
+	
 	/**
 	 * Returns the command type portion of the string
 	 * @param userInput
@@ -97,6 +100,11 @@ class CommandParser {
 		return fields;
 	}
 	
+	/**
+	 * Removes date and time from the string
+	 * @param s
+	 * @return String without date and time
+	 */
 	protected static String removeDateTimeFromString(String s) {
 		String[] tokens = s.split("\\s+");
 		
@@ -113,6 +121,11 @@ class CommandParser {
 		return arrayToString(tokens);
 	}
 	
+	/**
+	 * Removes all occurrences of "alias:<string>" and escape character "\" from the string
+	 * @param desc
+	 * @return String with alias and escape character removed
+	 */
 	protected static String removeAliasAndEscapeChar(String desc) {
 		String[] tokens = desc.split("\\s+");
 		for (int i = 0; i < tokens.length; i++) {
@@ -128,6 +141,11 @@ class CommandParser {
 		return arrayToString(tokens);
 	}
 	
+	/**
+	 * Get the first occurence of an alias in the string
+	 * @param desc
+	 * @return
+	 */
 	protected static String getAliasFromDescription(String desc) {
 		String[] tokens = desc.split("\\s+");
 		for (int i = 0; i < tokens.length; i++) {
@@ -139,11 +157,17 @@ class CommandParser {
 		return null;
 	}
 	
+	/**
+	 * Checks if the string is a time identifier
+	 * @param s
+	 * @return true if s is a time identifier
+	 */
 	private static boolean isDateTimeIdentifier(String s) {
-		String[] identifierList = {"at", "@", "by", "from", "for", "to", "on", "before", "until", "end", "start", "-", ","};
+		String[] identifierList = timeIdentifier.split(" ");
 		
-		if (s == null)
+		if (s == null) {
 			return false;
+		}
 		
 		for(String identifier: identifierList) {
 			if (s.equals(identifier)) return true;
@@ -152,6 +176,11 @@ class CommandParser {
 		return false;
 	}
 	
+	/**
+	 * Converts a String array to a sentence
+	 * @param s
+	 * @return array s as String sentence
+	 */
 	protected static String arrayToString(String[] s) {
 		String r = "";
 		for (int i = 0; i < s.length; i++) {

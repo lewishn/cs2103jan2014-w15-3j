@@ -1,6 +1,7 @@
+//@author A0099727J
+
 import java.util.ArrayList;
 import java.util.Arrays;
-
 import org.joda.time.DateTime;
 import org.joda.time.format.DateTimeFormat;
 import org.joda.time.format.DateTimeFormatter;
@@ -16,11 +17,10 @@ public class DateParser{
 	private static final String DATE_FORMAT_7 = "dd-MM";
 	private static final String DATE_FORMAT_8 = "dd/MMM";
 	private static final String DATE_FORMAT_9 = "dd-MMM";
-	private static final String DATE_FORMAT_10 = "dd.MMM";
-	private static final String DATE_FORMAT_11 = "E";
+	private static final String DATE_FORMAT_10 = "E";
 	private static final int FORMAT_TYPE_0_INDEX = 6;	//format 0 : full date, with year
-	private static final int FORMAT_TYPE_1_INDEX = 11;	//format 1 : with day and month only
-	private static final int FORMAT_TYPE_2_INDEX = 12;	//format 2 : day of the week, Friday, etc.
+	private static final int FORMAT_TYPE_1_INDEX = 10;	//format 1 : with day and month only
+	private static final int FORMAT_TYPE_2_INDEX = 11;	//format 2 : day of the week, Friday, etc.
 	
 	private static final String DATE_TODAY = "today";
 	private static final String DATE_TOMORROW = "tomorrow";
@@ -38,8 +38,7 @@ public class DateParser{
 			DateTimeFormat.forPattern(DATE_FORMAT_7), 
 			DateTimeFormat.forPattern(DATE_FORMAT_8), 
 			DateTimeFormat.forPattern(DATE_FORMAT_9), 
-			DateTimeFormat.forPattern(DATE_FORMAT_10), 
-			DateTimeFormat.forPattern(DATE_FORMAT_11)
+			DateTimeFormat.forPattern(DATE_FORMAT_10)
 		));
 
 	
@@ -108,6 +107,11 @@ public class DateParser{
 		return -1;
 	}
 	
+	/**
+	 * Checks if input String is a date with format 3 (yesterday, today, tomorrow)
+	 * @param input
+	 * @return true if input is format3
+	 */
 	private static boolean isFormat3(String input) {
 		return input.equalsIgnoreCase(DATE_TODAY) || input.equalsIgnoreCase(DATE_TOMORROW) || input.equalsIgnoreCase(DATE_YESTERDAY);
 	}
@@ -128,6 +132,12 @@ public class DateParser{
 		}
 	}
 	
+	/**
+	 * Checks if two dates are the same day
+	 * @param date1
+	 * @param date2
+	 * @return true if date1 is the same as date 2
+	 */
 	protected static boolean isSameDate(DateTime date1, DateTime date2) {
 		return (date1.getYear() == date2.getYear()) && (date1.getDayOfYear() == date2.getDayOfYear());
 	}
@@ -193,6 +203,12 @@ public class DateParser{
 		return date;
 	}
 	
+	/**
+	 * Parse the input string with date format type 3 and returns a
+	 * DateTime object with the corresponding date
+	 * @param input
+	 * @return a DateTime object with the date set to the input date
+	 */
 	private static DateTime parseDateFormat3(String input) {
 		DateTime today = new DateTime();
 		
@@ -218,7 +234,6 @@ public class DateParser{
 			tokens = date.split("-");
 		}
 		
-		System.out.println(tokens.length);
 		int[] intTokens = new int[tokens.length];
 		for (int i = 0; i < tokens.length; i++) {
 			try {	

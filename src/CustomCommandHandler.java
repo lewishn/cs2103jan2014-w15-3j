@@ -62,6 +62,11 @@ class CustomCommandHandler {
 		return new Feedback(String.format(MESSAGE_CUSTOM_SUCCESS, userCommand));
 	}
 	
+	/**
+	 * Add the userCommand to the list of custom command, depending on the commandType
+	 * @param userCommand
+	 * @param commandType
+	 */
 	private static void addCommandToList(String userCommand, String commandType) {
 		int index = getCommandHeaderIndex(commandType);
 		if (index >= 0) {
@@ -89,6 +94,11 @@ class CustomCommandHandler {
 		return -1;
 	}
 	
+	/**
+	 * Get a String containing all the custom commands for the specified header
+	 * @param header
+	 * @return
+	 */
 	protected static String getListOfCustomCommands(String header) {
 		int index = getCommandHeaderIndex(header);
 		String list = " ";
