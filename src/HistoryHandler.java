@@ -8,37 +8,57 @@ public class HistoryHandler {
 	private static final int MAXIMUM_UNDO_STEPS = 100;
 	private static final int MAXIMUM_SAVE_STACK_SIZE = 10;
 	
-	private static final String UNDO_SUCCESS = "Undo successful!";
-	private static final String UNDO_FAIL = "Nothing left to undo.";
-	private static final String REDO_SUCCESS = "Redo successful!";
-	private static final String REDO_FAIL = "Nothing left to redo.";
+	private static final String UNDO_SUCCESS = "%d step(s) undone";
+	private static final String UNDO_FAIL = "Nothing left to undo";
+	private static final String REDO_SUCCESS = "%d step(s) redone";
+	private static final String REDO_FAIL = "Nothing left to redo";
 	
 	private static ArrayDeque<ArrayList<Task>> taskUndoStack = loadUndoStack();
 	private static ArrayDeque<ArrayList<Task>> taskRedoStack = new ArrayDeque<ArrayList<Task>>();
 	
 	/**
-	 * Undo the previous action which manipulates the task list
+	 * Undo the previous actions which manipulates the task list numberOfSteps times
 	 * @return a Feedback object to be shown to the user, indicating success or failure in undoing
 	 */
-	protected static Feedback undoCommand() {
-		boolean tryUndo = popUndoStack();
-		if(tryUndo) {
+	protected static Feedback undoCommand(int numberOfSteps) {
+		int successfulTries = 0;
+		
+		while (numberOfSteps-- > 0) {
+			boolean tryUndo = popUndoStack();
+			if (tryUndo) {
+				successfulTries++;
+			} else {
+				break;
+			}
+		}
+
+		if(successfulTries > 0) {
 			Task.saveTasks();
-			return new Feedback(UNDO_SUCCESS);
+			return new Feedback(String.format(UNDO_SUCCESS, successfulTries));
 		} else {
 			return new Feedback(UNDO_FAIL);
 		}
 	}
 	
 	/**
-	 * redo the previous undo action
+	 * redo the previous undo actions numberOfSteps times
 	 * @return a Feedback object to be shown to the user, indicating success or failure in redoing
 	 */
-	protected static Feedback redoCommand() {
-		boolean tryRedo = popRedoStack();
-		if(tryRedo) {
+	protected static Feedback redoCommand(int numberOfSteps) {
+		int successfulTries = 0;
+		
+		while (numberOfSteps-- > 0) {
+			boolean tryUndo = popRedoStack();
+			if (tryUndo) {
+				successfulTries++;
+			} else {
+				break;
+			}
+		}
+
+		if(successfulTries > 0) {
 			Task.saveTasks();
-			return new Feedback(REDO_SUCCESS);
+			return new Feedback(String.format(REDO_SUCCESS, successfulTries));
 		} else {
 			return new Feedback(REDO_FAIL);
 		}

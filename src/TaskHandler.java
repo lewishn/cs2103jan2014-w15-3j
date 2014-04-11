@@ -67,7 +67,7 @@ class TaskHandler {
 		ArrayList<String> input = new ArrayList<String>(Arrays.asList(inputTokens));
 		
 		String alias = CommandParser.getAliasFromDescription(userInput);		
-		alias = (Task.isAliasValid(alias) || isInteger(alias)) ? null : alias;
+		alias = (Task.isAliasValid(alias) || CommandParser.isInteger(alias)) ? null : alias;
 		userInput = CommandParser.removeDateTimeFromString(userInput);
 		userInput = CommandParser.removeAliasAndEscapeChar(userInput);
 		
@@ -186,7 +186,7 @@ class TaskHandler {
 			}
 
 			String alias = tokens[0];	
-			if (Task.isAliasValid(alias) || isInteger(alias)) {
+			if (Task.isAliasValid(alias) || CommandParser.isInteger(alias)) {
 				return new Feedback(MESSAGE_ERROR_ALIAS_IN_USE, true);
 			
 			}
@@ -277,7 +277,7 @@ class TaskHandler {
 	private static int getIndexToUpdate(String taskID) {
 		int index = -1;
 		
-		if (isInteger(taskID)) {
+		if (CommandParser.isInteger(taskID)) {
 			index = Integer.parseInt(taskID) - 1;
 		} else if (Task.isAliasValid(taskID)) {
 			index = Task.getTaskIndexFromAlias(taskID);
@@ -469,7 +469,7 @@ class TaskHandler {
 		for (int i = 0; i < tempList.length; i++) {
 			int index = -1;
 			
-			if (isInteger(tempList[i])) {
+			if (CommandParser.isInteger(tempList[i])) {
 				index = Integer.parseInt(tempList[i]) - 1;
 			} else if (Task.isAliasValid(tempList[i])) {
 				index = Task.getTaskIndexFromAlias(tempList[i]);
@@ -486,15 +486,6 @@ class TaskHandler {
 		Collections.reverse(dList);
 		
 		return dList;
-	}
-	
-	private static boolean isInteger(String str) {
-		try {
-			Integer.parseInt(str);
-			return true;
-		} catch (NumberFormatException e) {
-			return false;
-		}
 	}
 	
 	////////////////SEARCH Functionality////////////////////
