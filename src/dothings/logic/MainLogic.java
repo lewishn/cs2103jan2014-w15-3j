@@ -6,7 +6,7 @@ import java.util.ArrayList;
 import dothings.parser.CommandParser;
 
 public class MainLogic{
-	private static final String MESSAGE_EXIT = "exit";
+	private static final String MESSAGE_EXIT = "exiting..";
 	private static final String MESSAGE_INVALID = "Oops, please try again.";
 	private static final String MESSAGE_ERROR_CUSTOM ="Invalid custom command format";
 	private static final String MESSAGE_ERROR_CUSTOM_FORMAT = "Invalid custom command format";

@@ -19,6 +19,22 @@ public class IntegrationTesting {
 	private static final int TASK_TIME = 6;
 
 	@Test
+	public void invalidCommand() {
+		ArrayList<ArrayList<String>> result = MainLogic.runLogic("delete all");
+		result = MainLogic.runLogic("blah iu21s");
+
+		String expectedFeedbackType = "error";
+		String feedbackType = result.get(FEEDBACK_TYPE).get(0);
+		assertEquals(expectedFeedbackType, feedbackType);
+				
+		String expectedFeedbackDes = "Oops, please try again.";
+		String feedbackDesc = result.get(FEEDBACK_DESC).get(0);
+		assertEquals(expectedFeedbackDes, feedbackDesc);
+
+		assertTrue(result.get(TASK_DESC).isEmpty());
+	}
+	
+	@Test
 	public void testHelpSuccess() {
 		ArrayList<ArrayList<String>> result = MainLogic.runLogic("help");
 		
@@ -491,5 +507,33 @@ public class IntegrationTesting {
 		String expectedDesc = "1. assignment due";
 		String taskDesc = result.get(TASK_DESC).get(0);
 		assertEquals(expectedDesc, taskDesc);
+	}
+	
+	@Test
+	public void exitValid() {
+		ArrayList<ArrayList<String>> result = MainLogic.runLogic("delete all");
+		result = MainLogic.runLogic("exit");
+
+		String expectedFeedbackType = "exit";
+		String feedbackType = result.get(FEEDBACK_TYPE).get(0);
+		assertEquals(expectedFeedbackType, feedbackType);
+	}
+	@Test
+	public void exitExtraNum() {
+		ArrayList<ArrayList<String>> result = MainLogic.runLogic("delete all");
+		result = MainLogic.runLogic("exit 1253");
+
+		String expectedFeedbackType = "exit";
+		String feedbackType = result.get(FEEDBACK_TYPE).get(0);
+		assertEquals(expectedFeedbackType, feedbackType);
+	}
+	@Test
+	public void exitExtraText() {
+		ArrayList<ArrayList<String>> result = MainLogic.runLogic("delete all");
+		result = MainLogic.runLogic("exit ase");
+
+		String expectedFeedbackType = "exit";
+		String feedbackType = result.get(FEEDBACK_TYPE).get(0);
+		assertEquals(expectedFeedbackType, feedbackType);
 	}
 }
