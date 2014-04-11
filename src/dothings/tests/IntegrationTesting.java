@@ -22,11 +22,10 @@ public class IntegrationTesting {
 		String expectedType = "help";
 		String feedbackType = result.get(FEEDBACK_TYPE).get(0);
 		assertEquals(expectedType, feedbackType);
-		/*
-		String expectedDesc = "[ADD]\n add\n\n [UPDATE]\n update \n\n [MARK]\n mark\n\n [DELETE]\n delete\n\n [LIST]\n list\n\n [SEARCH]\n search"
-				+ "\n\n [UNDO]\n undo\n\n [REDO]\n redo\n\n [CUSTOM]\n custom\n\n [DELETE_CUSTOM]\n dcustom\n\n [HELP]\n help\n\n [EXIT]\n exit \n\n";
+		
+		String expectedDesc = "[ADD]\nadd \n\n[UPDATE]\nupdate \n\n[MARK]\nmark \n\n[DELETE]\ndelete \n\n[LIST]\nlist \n\n[SEARCH]\nsearch "
+				+ "\n\n[UNDO]\nundo \n\n[REDO]\nredo \n\n[CUSTOM]\ncustom \n\n[DELETE_CUSTOM]\ndcustom \n\n[HELP]\nhelp \n\n[EXIT]\nexit \n\n";
 		String feedbackDesc = result.get(TASK_DESC).get(0);
-		assertEquals(expectedDesc, feedbackDesc);*/
+		assertEquals(expectedDesc, feedbackDesc);
 	}
-
 }
