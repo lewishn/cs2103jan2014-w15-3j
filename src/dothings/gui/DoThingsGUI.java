@@ -796,16 +796,17 @@ public class DoThingsGUI extends JFrame  {
 		 */
 		private static void printHelp(String desc) {
 			refreshTaskPanel(); 
-			createHelpTextarea();
-			help.append(desc);
+			createHelpTextarea(desc);
+			
 			inputField.setText("");
 		}
 		/**
 		 * Creates Text field when Help command is called
 		 */
-		private static void createHelpTextarea() {
+		private static void createHelpTextarea(String desc) {
 			help = new JTextArea();
 			help.setFont(new Font(PLUTO_COND_EXLIGHT_FONT, Font.PLAIN, HELP_FONT_SIZE));
+			help.append(desc);
 			help.setBounds(HELP_X_OFFSET, HELP_Y_OFFSET, HELP_WIDTH, FRAME_HEIGHT);
 			help.setLineWrap(true);
 			help.setWrapStyleWord(true);
