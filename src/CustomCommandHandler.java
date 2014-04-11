@@ -1,3 +1,4 @@
+//@author A0099727J
 import java.util.ArrayList;
 import java.util.Arrays;
 
@@ -19,9 +20,9 @@ class CustomCommandHandler {
 	protected static final String HEADER_EXIT = "[EXIT]";
 
 	private static final String MESSAGE_CUSTOM_DUPLICATE = "Sorry, but this word is already in use.";
-	private static final String MESSAGE_CUSTOM_SUCCESS = " has been added to the command list.";
+	private static final String MESSAGE_CUSTOM_SUCCESS = "\"%s\" has been added to the command list.";
 	private static final String MESSAGE_CUSTOM_NONEXISTANT = "Error deleting. No such word in command list.";
-	private static final String MESSAGE_CUSTOM_DELETED = " has been deleted from the command list.";
+	private static final String MESSAGE_CUSTOM_DELETED = "\"%s\" has been deleted from the command list.";
 	
 	protected static ArrayList<ArrayList<String>> customCommandList = loadCustomCommands();
 	
@@ -58,7 +59,7 @@ class CustomCommandHandler {
 		
 		addCommandToList(userCommand, commandType);
 		saveCustomCommands();
-		return new Feedback(userCommand + MESSAGE_CUSTOM_SUCCESS);
+		return new Feedback(String.format(MESSAGE_CUSTOM_SUCCESS, userCommand));
 	}
 	
 	private static void addCommandToList(String userCommand, String commandType) {
@@ -102,7 +103,7 @@ class CustomCommandHandler {
 	}
 	
 	/**
-	 * Finds out if the input custom command is already in use
+	 * Check if the input custom command is already in use
 	 * @param command
 	 * @return true if the command is already in use.
 	 */
@@ -127,7 +128,7 @@ class CustomCommandHandler {
 				if (customCommandList.get(i).get(j).equals(userCommand)) {
 					customCommandList.get(i).remove(j);
 					saveCustomCommands();
-					return new Feedback(userCommand + MESSAGE_CUSTOM_DELETED);
+					return new Feedback(String.format(MESSAGE_CUSTOM_DELETED, userCommand));
 				}
 			}
 		}

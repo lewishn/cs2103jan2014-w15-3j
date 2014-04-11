@@ -1,3 +1,4 @@
+//@author A0097082Y
 import java.util.ArrayList;
 
 public class MainLogic{
@@ -46,7 +47,6 @@ public class MainLogic{
 	 * @param com
 	 * @return a CommandType enum indicating the command type
 	 */
-	//@author: Lewis
 	private static CommandType getCommandType(String com) {
 		
 		if (com.equalsIgnoreCase(DEFAULT_ADD) || CustomCommandHandler.isCustomCommand(com, CustomCommandHandler.HEADER_ADD)) {
@@ -83,7 +83,6 @@ public class MainLogic{
 	 * @param userInput
 	 * @return a Feedback object containing a String to be shown to the user
 	 */
-	//@author: John & Lewis
 	protected static ArrayList<ArrayList<String>> runLogic(String userInput) {
 		String command = CommandParser.getUserCommandType(userInput);
 		String commandDesc = CommandParser.getUserCommandDesc(userInput);
@@ -207,54 +206,6 @@ public class MainLogic{
 		}
 	}
 	
-	protected static boolean isDefaultCommand(String s) {
-		String[] defaultCommandList = {
-				DEFAULT_ADD,
-				DEFAULT_UPDATE,
-				DEFAULT_DELETE,
-				DEFAULT_LIST,
-				DEFAULT_UNDO,
-				DEFAULT_REDO,
-				DEFAULT_CUSTOM,
-				DEFAULT_DELETE_CUSTOM,  
-				DEFAULT_SEARCH,
-				DEFAULT_MARK,
-				DEFAULT_HELP, 
-				DEFAULT_EXIT
-		};
-		
-		for (int i = 0; i < defaultCommandList.length; i++) {
-			if (s.equals(defaultCommandList[i])) {
-				return true;
-			}
-		}
-		
-		return false;
-	}
-	
-	protected static ArrayList<Task> getTaskList() {
-		return Task.getList();
-	}
-	// Author: A0097082Y
-	private static String getHelp() {
-		String[] commandList = {
-				DEFAULT_ADD, DEFAULT_UPDATE, DEFAULT_MARK,
-				DEFAULT_DELETE, DEFAULT_LIST, DEFAULT_SEARCH,
-				DEFAULT_UNDO, DEFAULT_REDO, DEFAULT_CUSTOM,
-				DEFAULT_DELETE_CUSTOM,  DEFAULT_HELP, DEFAULT_EXIT
-		};
-		
-		String list = "";
-		
-		for (int i = 0; i < commandList.length; i++) {
-			String commandHeader = getCustomHeader(commandList[i]);
-			list += (commandHeader + "\n");
-			list += (commandList[i] + CustomCommandHandler.getListOfCustomCommands(commandHeader) + "\n\n");
-		}
-		
-		return list;
-	}
-	
 	private static ArrayList<ArrayList<String>> processFeedback(Feedback feed, String type) {
 		ArrayList<ArrayList<String>> result = new ArrayList<ArrayList<String>>();
 		for(int i=0; i<NUM_OF_FEEDBACK; i++) {
@@ -312,6 +263,48 @@ public class MainLogic{
 		}  
 		return result;
 	}
+	
+	//@author A0099727J
+		protected static boolean isDefaultCommand(String s) {
+			String[] defaultCommandList = {
+					DEFAULT_ADD, DEFAULT_UPDATE, DEFAULT_MARK,
+					DEFAULT_DELETE, DEFAULT_LIST, DEFAULT_SEARCH,
+					DEFAULT_UNDO, DEFAULT_REDO, DEFAULT_CUSTOM,
+					DEFAULT_DELETE_CUSTOM,  DEFAULT_HELP, DEFAULT_EXIT
+			};
+			
+			for (int i = 0; i < defaultCommandList.length; i++) {
+				if (s.equals(defaultCommandList[i])) {
+					return true;
+				}
+			}
+			
+			return false;
+		}
+		
+		protected static ArrayList<Task> getTaskList() {
+			return Task.getList();
+		}
+		
+		//@author A0099727J
+		private static String getHelp() {
+			String[] commandList = {
+					DEFAULT_ADD, DEFAULT_UPDATE, DEFAULT_MARK,
+					DEFAULT_DELETE, DEFAULT_LIST, DEFAULT_SEARCH,
+					DEFAULT_UNDO, DEFAULT_REDO, DEFAULT_CUSTOM,
+					DEFAULT_DELETE_CUSTOM,  DEFAULT_HELP, DEFAULT_EXIT
+			};
+			
+			String list = "";
+			
+			for (int i = 0; i < commandList.length; i++) {
+				String commandHeader = getCustomHeader(commandList[i]);
+				list += (commandHeader + "\n");
+				list += (commandList[i] + CustomCommandHandler.getListOfCustomCommands(commandHeader) + "\n\n");
+			}
+			
+			return list;
+		}
 }
 
 

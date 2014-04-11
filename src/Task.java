@@ -33,6 +33,14 @@ class Task implements Comparable<Task>{
 		description = desc;
 		status = false;
 	}
+
+	protected Task(Task task) {
+		startDateTime = task.startDateTime;
+		endDateTime = task.endDateTime;
+		status = task.status;
+		description = task.description;
+		alias = task.alias;
+	}
 	
 	protected Task(String desc, DateTime start, DateTime end, String name) {
 		startDateTime = start;

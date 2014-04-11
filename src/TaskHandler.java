@@ -176,7 +176,7 @@ class TaskHandler {
 				return new Feedback(MESSAGE_ERROR_UPDATE_ARGUMENT);
 			}
 			
-			taskToUpdate = Task.getList().get(updateIndex);
+			taskToUpdate = new Task(Task.getList().get(updateIndex));
 			taskToUpdate = updateTaskTime(taskToUpdate, updateField, updateDesc);
 			
 			if (taskToUpdate == null) {
@@ -195,7 +195,7 @@ class TaskHandler {
 			
 			}
 			
-			taskToUpdate = Task.getList().get(updateIndex);
+			taskToUpdate = new Task(Task.getList().get(updateIndex));
 			taskToUpdate.setAlias(alias);
 			
 		} else if (updateField.equals("desc") || updateField.equals("description")) {
@@ -203,7 +203,7 @@ class TaskHandler {
 				return new Feedback(MESSAGE_ERROR_UPDATE_ARGUMENT);
 			}
 			
-			taskToUpdate = Task.getList().get(updateIndex);
+			taskToUpdate = new Task(Task.getList().get(updateIndex));
 			taskToUpdate.setDescription(updateDesc);
 			
 		} else {
