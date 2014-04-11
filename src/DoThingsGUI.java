@@ -566,10 +566,10 @@ public class DoThingsGUI extends JFrame  {
 						int numOfTask = initialiseFeedbackVariables();
 						for(int i=ZERO; i<numOfTask; i++) {	
 							// Checks for overflow of description text and extends the message panel to fit.
-							int descriptionOverflowExtension = lengthForDescriptionTextOverflow(i);
+							int descriptionOverflowExtension = heightForDescriptionTextOverflow(i);
 							
 							// Checks for overflow of alias text and extends the message panel to fit
-							int aliasOverflowExtension = lengthForAliasTextOverflow(i);
+							int aliasOverflowExtension = heightForAliasTextOverflow(i);
 							createTaskObjects(aliasOverflowExtension, descriptionOverflowExtension, heightChange, i);
 							heightChange += descriptionOverflowExtension;
 							heightChange += aliasOverflowExtension;
@@ -596,7 +596,10 @@ public class DoThingsGUI extends JFrame  {
 				}
 			}
 		}
-		private static int lengthForAliasTextOverflow(int i) {
+		/**
+		 * determines additional height that needs to be added to the task object to fit text overflow in alias field
+		 */
+		private static int heightForAliasTextOverflow(int i) {
 			int additionalHeight = ZERO;
 			if(taskAlias.get(i) != null) {
 				int charLength = taskAlias.get(i).length();
@@ -612,7 +615,12 @@ public class DoThingsGUI extends JFrame  {
 			}
 			return additionalHeight;
 		}
-		private static int lengthForDescriptionTextOverflow(int i) {
+		/**
+		 * determines additional height that needs to be added to the task object panel to fit text overflow in description field
+		 * @param ith task
+		 * @return additional height to add
+		 */
+		private static int heightForDescriptionTextOverflow(int i) {
 			int charLength = taskDesc.get(i).length();
 			int additionalHeight = ZERO; 
 			if (charLength > NUM_CHAR_FIRST_LINE) {
@@ -680,7 +688,6 @@ public class DoThingsGUI extends JFrame  {
 			taskPanel.removeAll();
 			taskPanel.updateUI();
 		}
-
 		/**
 		 * Function called when Help command is input by user
 		 */
@@ -690,7 +697,6 @@ public class DoThingsGUI extends JFrame  {
 			help.append(desc);
 			inputField.setText("");
 		}
-
 		/**
 		 * Creates Text field when Help command is called
 		 */
@@ -707,6 +713,4 @@ public class DoThingsGUI extends JFrame  {
 			taskPanel.repaint();
 		}
 	}
-
-
 }
