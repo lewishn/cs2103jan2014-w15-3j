@@ -536,4 +536,46 @@ public class IntegrationTesting {
 		String feedbackType = result.get(FEEDBACK_TYPE).get(0);
 		assertEquals(expectedFeedbackType, feedbackType);
 	}
+	
+	@Test
+	public void customValidCommandValidCustom() {
+		ArrayList<ArrayList<String>> result = MainLogic.runLogic("delete all");
+		result = MainLogic.runLogic("add assignment due tomorrow");
+		result = MainLogic.runLogic("custom add +");
+
+		String expectedFeedbackType = "custom";
+		String feedbackType = result.get(FEEDBACK_TYPE).get(0);
+		assertEquals(expectedFeedbackType, feedbackType);
+		
+		String expectedFeedbackDes = "\"+\" has been added to the command list.";
+		String feedbackDesc = result.get(FEEDBACK_DESC).get(0);
+		assertEquals(expectedFeedbackDes, feedbackDesc);
+		
+		String expectedDesc = "1. assignment due";
+		String taskDesc = result.get(TASK_DESC).get(0);
+		assertEquals(expectedDesc, taskDesc);
+		
+		result = MainLogic.runLogic("dcustom +");
+	}
+	@Test
+	public void dcustomValidCommandValidCustom() {
+		ArrayList<ArrayList<String>> result = MainLogic.runLogic("delete all");
+		result = MainLogic.runLogic("add assignment due tomorrow");
+		result = MainLogic.runLogic("custom add +");
+		result = MainLogic.runLogic("dcustom +");
+
+		String expectedFeedbackType = "dcustom";
+		String feedbackType = result.get(FEEDBACK_TYPE).get(0);
+		assertEquals(expectedFeedbackType, feedbackType);
+		
+		String expectedFeedbackDes = "\"+\" has been deleted from the command list.";
+		String feedbackDesc = result.get(FEEDBACK_DESC).get(0);
+		assertEquals(expectedFeedbackDes, feedbackDesc);
+		
+		String expectedDesc = "1. assignment due";
+		String taskDesc = result.get(TASK_DESC).get(0);
+		assertEquals(expectedDesc, taskDesc);
+
+		result = MainLogic.runLogic("dcustom +");
+	}
 }
