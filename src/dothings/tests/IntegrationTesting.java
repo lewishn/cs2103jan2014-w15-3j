@@ -222,5 +222,86 @@ public class IntegrationTesting {
 		assertEquals(expectedDesc, taskDesc);
 	}
 	
+	@Test
+	public void searchSuccess() {
+		ArrayList<ArrayList<String>> result = MainLogic.runLogic("delete all");
+		result = MainLogic.runLogic("add assignment due tomorrow");
+		result = MainLogic.runLogic("search assignment");
+
+		String expectedFeedbackType = "search";
+		String feedbackType = result.get(FEEDBACK_TYPE).get(0);
+		assertEquals(expectedFeedbackType, feedbackType);
+				
+		String expectedFeedbackDes = "Search for assignment";
+		String feedbackDesc = result.get(FEEDBACK_DESC).get(0);
+		assertEquals(expectedFeedbackDes, feedbackDesc);
+
+		String expectedDesc = "1. assignment due";
+		String taskDesc = result.get(TASK_DESC).get(0);
+		assertEquals(expectedDesc, taskDesc);
+	}
+	@Test
+	public void searchMultipleSuccess() {
+		ArrayList<ArrayList<String>> result = MainLogic.runLogic("delete all");
+		result = MainLogic.runLogic("add assignment1 due tomorrow");
+		result = MainLogic.runLogic("add assignment2 due tomorrow");
+		result = MainLogic.runLogic("add assignment3 due tomorrow");
+		result = MainLogic.runLogic("search assignment");
+
+		String expectedFeedbackType = "search";
+		String feedbackType = result.get(FEEDBACK_TYPE).get(0);
+		assertEquals(expectedFeedbackType, feedbackType);
+				
+		String expectedFeedbackDes = "Search for assignment";
+		String feedbackDesc = result.get(FEEDBACK_DESC).get(0);
+		assertEquals(expectedFeedbackDes, feedbackDesc);
+
+		String expectedDesc = "1. assignment1 due";
+		String taskDesc = result.get(TASK_DESC).get(0);
+		assertEquals(expectedDesc, taskDesc);
+		
+		expectedDesc = "2. assignment2 due";
+		taskDesc = result.get(TASK_DESC).get(1);
+		assertEquals(expectedDesc, taskDesc);
+		
+		expectedDesc = "3. assignment3 due";
+		taskDesc = result.get(TASK_DESC).get(2);
+		assertEquals(expectedDesc, taskDesc);
+	}	
+	@Test
+	public void searchFail() {
+		ArrayList<ArrayList<String>> result = MainLogic.runLogic("delete all");
+		result = MainLogic.runLogic("add assignment due tomorrow");
+		result = MainLogic.runLogic("search");
+
+		String expectedFeedbackType = "search";
+		String feedbackType = result.get(FEEDBACK_TYPE).get(0);
+		assertEquals(expectedFeedbackType, feedbackType);
+				
+		String expectedFeedbackDes = "Please enter something to search.";
+		String feedbackDesc = result.get(FEEDBACK_DESC).get(0);
+		assertEquals(expectedFeedbackDes, feedbackDesc);
+
+		String expectedDesc = "1. assignment due";
+		String taskDesc = result.get(TASK_DESC).get(0);
+		assertEquals(expectedDesc, taskDesc);
+	}
+	@Test
+	public void searchInvalidDescription() {
+		ArrayList<ArrayList<String>> result = MainLogic.runLogic("delete all");
+		result = MainLogic.runLogic("add assignment due tomorrow");
+		result = MainLogic.runLogic("search banana");
+
+		String expectedFeedbackType = "search";
+		String feedbackType = result.get(FEEDBACK_TYPE).get(0);
+		assertEquals(expectedFeedbackType, feedbackType);
+				
+		String expectedFeedbackDes = "Search for banana";
+		String feedbackDesc = result.get(FEEDBACK_DESC).get(0);
+		assertEquals(expectedFeedbackDes, feedbackDesc);
+
+		assertTrue(result.get(TASK_DESC).isEmpty());
+	}
+	
 	
 }

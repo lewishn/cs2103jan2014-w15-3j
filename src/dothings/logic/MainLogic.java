@@ -23,6 +23,7 @@ public class MainLogic{
 	private static final String DEFAULT_SEARCH = "search";
 	private static final String DEFAULT_EXIT = "exit";
 	private static final String HELP_FEEDBACK_MSG = "Need help? Your Commands:";
+	private static final String MESSAGE_ERROR_SEARCH = "Please enter something to search.";
 	
 	private static final String ERROR_CODE = "error";
 	private static final String DOT = ". ";
@@ -152,8 +153,14 @@ public class MainLogic{
 				return processFeedback(feed, DEFAULT_REDO);
 				
 			case SEARCH:
-				feed = TaskHandler.searchTasks(commandDesc);
-				return processFeedback(feed, DEFAULT_SEARCH);
+				if (commandDesc == null) {
+					feed = new Feedback(MESSAGE_ERROR_SEARCH);
+					return processFeedback(feed, DEFAULT_SEARCH);
+				} else {
+					feed = TaskHandler.searchTasks(commandDesc);
+					return processFeedback(feed, DEFAULT_SEARCH);	
+				}
+				
 			
 			case MARK:
 				feed = TaskHandler.markTask(commandDesc);
