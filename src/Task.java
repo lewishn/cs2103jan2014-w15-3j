@@ -218,8 +218,8 @@ class Task implements Comparable<Task>{
 
 	@Override
 	/**
-	 * Returns the task with all fields separated by the DELIMITER.
-	 * @return the task with all fields separated by the DELIMITER.
+	 * Returns the string representation of the task.
+	 * @return the string representation of the task.
 	 */
 	public String toString() {
 		String start = (startDateTime == null) ? NULL_START : startDateTime.toString();

@@ -7,60 +7,100 @@ class Feedback {
 	private boolean exit;
 	private boolean error;
 	
-	public Feedback(String desc) {
+	/**
+	 * Constructs and initializes a feedback object with the specified description.
+	 * @param desc the description of the new feedback object.
+	 */
+	protected Feedback(String desc) {
 		description = desc;
 		error = false;
 		exit = false;
 		indexList = TaskHandler.getListOfTaskWithStatus(false);
 	}
-	
-	public Feedback(String desc, boolean isError) {
+	/**
+	 * Constructs and initializes a feedback object with an error status and a description of the error.
+	 * @param desc the description of the new feedback object.
+	 * @param isError true if the feedback object is an error message; false otherwise.
+	 */
+	protected Feedback(String desc, boolean isError) {
 		description = desc;
 		error = isError;
 		exit = false;
 		indexList = TaskHandler.getListOfTaskWithStatus(false);
 	}
-	
-	public Feedback(String desc, boolean isError, boolean isExit) {
+	/**
+	 * Constructs and initializes a feedback object with an error status, exit flag, and its description.
+	 * @param desc the description of the new feedback object.
+	 * @param isError true if the feedback object is an error message; false otherwise.
+	 * @param isExit true if the feedback object is an exit message; false otherwise.
+	 */
+	protected Feedback(String desc, boolean isError, boolean isExit) {
 		description = desc;
 		error = isError;
 		exit = isExit;
 		indexList = null;
 	}
-	
-	public Feedback(String desc, ArrayList<Integer> list) {
+	/**
+	 * Constructs and initializes a feedback object with a list of tasks to be displayed.
+	 * @param desc the description of the new feedback object.
+	 * @param list the index list of tasks to be displayed.
+	 */
+	protected Feedback(String desc, ArrayList<Integer> list) {
 		description = desc;
 		error = false;
 		exit = false;
 		indexList = list;
 	}
-	
-	public String getDesc() {
-		return this.description;
+	/**
+	 * Returns the description of this feedback object.
+	 * @return the description of this feedback object.
+	 */
+	protected String getDesc() {
+		return description;
 	}
-	
-	public boolean getExitFlag() {
+	/**
+	 * Returns the exit flag of this feedback object.
+	 * @return the exit flag of this feedback object.
+	 */
+	protected boolean getExitFlag() {
 		return exit;
 	}
-	
-	public ArrayList<Integer> getIndexList() {
+	/**
+	 * Returns the index list of this feedback object.
+	 * @return the index list of this feedback object.
+	 */
+	protected ArrayList<Integer> getIndexList() {
 		return indexList;
 	}
-	
-	public boolean getErrorFlag() {
+	/**
+	 * Returns the error flag of this feedback object.
+	 * @return the error flag of this feedback object.
+	 */
+	protected boolean getErrorFlag() {
 		return error;
 	}
-	
-	public void setDescription(String desc) {
+	/**
+	 * Sets the description of this task to the specified description.
+	 * @param desc the specified description.
+	 */
+	protected void setDescription(String desc) {
 		description = desc;
 	}
 	
 	@Override
+	/**
+	 * Returns the string representation of this feedback object.
+	 * @return the description of this feedback object.
+	 */
 	public String toString(){
 		return description;
 	}
-	
-	public boolean equals(Feedback other){
+	/**
+	 * Checks whether this feedback object is the same as the specified feedback object.
+	 * @param other the feedback object to be compared.
+	 * @return true if this feedback object is the same as the specified feedback object.
+	 */
+	protected boolean equals(Feedback other){
 		if (!description.equals(other.getDesc())) {
 			return false;
 		}
