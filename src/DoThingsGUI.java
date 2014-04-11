@@ -428,13 +428,13 @@ public class DoThingsGUI extends JFrame  {
 		private static final Color MESSAGE_FLOAT_BACKGROUND_TURQUOISE = new Color(153, 204, 153); 
 		private static final Color MESSAGE_MARKED_BACKGROUND_LIGHT_GREY = new Color(204, 204, 204); 
 		private static final Color FONT_MARKED_GREY = new Color(153,153,153); 
-		private static final int TASK_DESCRIPTION_FONT_SIZE = 17;
+		private static final int TASK_DESCRIPTION_FONT_SIZE = 18;
 		private static final int ALIAS_FONT_SIZE = 11;
 		private static final int DATE_TIME_FONT_SIZE = ALIAS_FONT_SIZE;
 		private static final int TASK_DESCRIPTION_X_OFFSET = 10;
 		private static final int TASK_DESCRIPTION_Y_OFFSET = 10;
 		private static final int TASK_DESCRIPTION_WIDTH = 25;
-		private static final int TASK_DESCRIPTION_HEIGHT = 19;
+		private static final int TASK_DESCRIPTION_HEIGHT = 22;
 		private static final int ALIAS_X_OFFSET = 265;
 		private static final int ALIAS_Y_OFFSET = 31;
 		private static final int ALIAS_WIDTH = 120;
