@@ -17,7 +17,7 @@ class TaskHandler {
 	private static final String MESSAGE_ADDED_TASK = "Added \"%s\".";
 	private static final String MESSAGE_UPDATE_TASK = "Task has been updated.";	
 	private static final String MESSAGE_LIST_INCOMPLETE = "Showing incomplete tasks";
-	private static final String MESSAGE_LIST_ERROR = "Oh no! Please enter a valid date";
+	private static final String MESSAGE_LIST_ERROR = "Oh no! Please enter a valid date or status";
 	private static final String MESSAGE_LIST_COMPLETE = "Showing completed tasks";
 	private static final String MESSAGE_LIST_OVERDUE = "Showing overdue tasks";
 	private static final String MESSAGE_LIST_ALL = "Showing all tasks";	

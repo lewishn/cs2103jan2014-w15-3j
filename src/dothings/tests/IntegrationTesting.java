@@ -484,7 +484,7 @@ public class IntegrationTesting {
 		String feedbackType = result.get(FEEDBACK_TYPE).get(0);
 		assertEquals(expectedFeedbackType, feedbackType);
 				
-		String expectedFeedbackDes = "Oh no! Please enter a valid date";
+		String expectedFeedbackDes = "Oh no! Please enter a valid date or status";
 		String feedbackDesc = result.get(FEEDBACK_DESC).get(0);
 		assertEquals(expectedFeedbackDes, feedbackDesc);
 
