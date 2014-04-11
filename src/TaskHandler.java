@@ -31,6 +31,7 @@ class TaskHandler {
 	private static final String MESSAGE_ERROR_ALIAS = "Invalid alias";
 	private static final String MINUTE_LAST = "23:59";
 	private static final String MINUTE_FIRST = "00:00";
+	private static final String WHITESPACE = "\\s+";
 	
 	
 	//////////ADD Functionality//////////
@@ -61,9 +62,13 @@ class TaskHandler {
 		return new Feedback(String.format(MESSAGE_ADDED_TASK, userInput));
 	}
 	
-	
+	/**
+	 * Creates a task from the given userInput
+	 * @param userInput
+	 * @return Task created from the userInput
+	 */
 	protected static Task createTask(String userInput) {
-		String[] inputTokens = userInput.split("\\s+");
+		String[] inputTokens = userInput.split(WHITESPACE);
 		ArrayList<String> input = new ArrayList<String>(Arrays.asList(inputTokens));
 		
 		String alias = CommandParser.getAliasFromDescription(userInput);		
@@ -72,72 +77,90 @@ class TaskHandler {
 		userInput = CommandParser.removeAliasAndEscapeChar(userInput);
 		
 		String[] fields = CommandParser.getTaskFields(input);
-		Task newTask = createTaskFromFields(fields, userInput, alias);
 		
-		return newTask;
+		return createTaskFromFields(fields, userInput, alias);
 	}
 	
-	/**
-	 * Reads the user input and time fields and creates a Task object
-	 * @param fields
-	 * @param input
-	 * @return Task object	
-	 */
 	private static Task createTaskFromFields(String[] fields, String input, String alias) {
-		DateTime start = null;
-		DateTime end = null;
-	
+		Task newTask = null;
+		
 		if (fields[Task.START_DATE] == null) {
-			if (fields[Task.START_TIME] != null) {
-				start = DateParser.setDate();
-				start = TimeParser.setTime(start, fields[Task.START_TIME]);
-				
-				// If null, "Deadline" Task with today's date
-				// Else, Timed Task with today's date
-				if (fields[Task.END_TIME] != null) {
-					end = DateParser.setDate();
-					end = TimeParser.setTime(start, fields[Task.END_TIME]);
-				} 
-			}
+			newTask = createTaskWithoutStartDate(fields, input, alias);
 		} else {
-			start = DateParser.setDate(fields[Task.START_DATE]);
-			
-			if (fields[Task.START_TIME] == null) {
-				if (fields[Task.END_DATE] == null) {
-					// "Deadline" Task with only start date
-					start = TimeParser.setTime(start, MINUTE_LAST);
-				} else {
-					// Timed Task with start and end dates but no time
-					start = TimeParser.setTime(start, MINUTE_FIRST);
-					end = DateParser.setDate(fields[Task.END_DATE]);
-					end = TimeParser.setTime(end, MINUTE_LAST);
-				}
-				
-			} else {
-				start = TimeParser.setTime(start, fields[Task.START_TIME]);
-				
-				if (fields[Task.END_DATE] == null) {
-					if (fields[Task.END_TIME] != null) {
-						// Timed Task with start and end times within one specific date
-						end = DateParser.setDate(fields[Task.START_DATE]);
-						end = TimeParser.setTime(end, fields[Task.END_TIME]);
-					}
-				} else {
-					end = DateParser.setDate(fields[Task.END_DATE]);
-					
-					if (fields[Task.END_TIME] == null) {
-						// Timed Task with start time, start and end dates, but no end time
-						end = TimeParser.setTime(end, MINUTE_LAST);
-					} else {
-						// Timed Task with start and end time/dates
-						end = TimeParser.setTime(end, fields[Task.END_TIME]);
-					}
-				}
-			}
+			newTask = createTaskWithStartDate(fields, input, alias);
 		}
 		
-		if (start != null && end != null && start.isAfter(end)) {
+		if (newTask.getStartDateTime() != null && newTask.getEndDateTime() != null && newTask.getStartDateTime().isAfter(newTask.getEndDateTime())) {
 			return null;
+		} else {
+			return newTask;
+		}
+	}
+
+	private static Task createTaskWithoutStartDate(String[] fields, String input, String alias) {
+		DateTime start = null;
+		DateTime end = null;
+		
+		if (fields[Task.START_TIME] != null) {
+			start = DateParser.setDate();
+			start = TimeParser.setTime(start, fields[Task.START_TIME]);
+			
+			// If null, Deadline Task with today's date. Else, Scheduled Task with today's date
+			if (fields[Task.END_TIME] != null) {
+				end = DateParser.setDate();
+				end = TimeParser.setTime(start, fields[Task.END_TIME]);
+			} 
+		}
+		
+		return new Task(input, start, end, alias);
+	}
+	
+	private static Task createTaskWithStartDate(String[] fields, String input, String alias) {
+		if (fields[Task.START_TIME] == null) {
+			return createTaskWithStartDateNoStartTime(fields, input, alias);
+		} else {
+			return createTaskWithStartDateAndTime(fields, input, alias);
+		}
+	}
+	
+	private static Task createTaskWithStartDateNoStartTime(String[] fields, String input, String alias) {
+		DateTime start = DateParser.setDate(fields[Task.START_DATE]);
+		DateTime end = null;
+		
+		if (fields[Task.END_DATE] == null) {
+			// "Deadline" Task with only start date
+			start = TimeParser.setTime(start, MINUTE_LAST);
+		} else {
+			// Timed Task with start and end dates but no time
+			start = TimeParser.setTime(start, MINUTE_FIRST);
+			end = DateParser.setDate(fields[Task.END_DATE]);
+			end = TimeParser.setTime(end, MINUTE_LAST);
+		}
+		
+		return new Task(input, start, end, alias);
+	}
+	
+	private static Task createTaskWithStartDateAndTime(String[] fields, String input, String alias) {
+		DateTime start = DateParser.setDate(fields[Task.START_DATE]);
+		start = TimeParser.setTime(start, fields[Task.START_TIME]);
+		DateTime end = null;
+		
+		if (fields[Task.END_DATE] == null) {
+			if (fields[Task.END_TIME] != null) {
+				// Timed Task with start and end times within one specific date
+				end = DateParser.setDate(fields[Task.START_DATE]);
+				end = TimeParser.setTime(end, fields[Task.END_TIME]);
+			}
+		} else {
+			end = DateParser.setDate(fields[Task.END_DATE]);
+			
+			if (fields[Task.END_TIME] == null) {
+				// Timed Task with start time, start and end dates, but no end time
+				end = TimeParser.setTime(end, MINUTE_LAST);
+			} else {
+				// Timed Task with start and end time/dates
+				end = TimeParser.setTime(end, fields[Task.END_TIME]);
+			}
 		}
 		
 		return new Task(input, start, end, alias);
