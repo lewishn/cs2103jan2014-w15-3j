@@ -37,8 +37,7 @@ import org.jnativehook.GlobalScreen;
 import org.jnativehook.NativeHookException;
 import org.jnativehook.keyboard.NativeKeyEvent;
 import org.jnativehook.keyboard.NativeKeyListener;
-
-//@author: 
+ 
 @SuppressWarnings("serial")
 public class DoThingsGUI extends JFrame  {
 	private static final String DEFAULT_EXIT = "exit";
@@ -80,7 +79,7 @@ public class DoThingsGUI extends JFrame  {
 	private static final int TEXT_PANEL_X_OFFSET = 0;
 	private static final int TEXT_PANEL_Y_OFFSET = 62;
 	private static final int HEADING_LABEL_BUFFER = 10;
-	private static final int HEADING_LABEL_FONT_SIZE = 28;
+	private static final int HEADING_LABEL_FONT_SIZE = 26;
 	private static final int HEADING_LABEL_X_OFFSET = 0;
 	private static final int HEADING_LABEL_Y_OFFSET = 0;
 	private static final int HEADING_LABEL_WIDTH = FRAME_WIDTH;
@@ -135,7 +134,7 @@ public class DoThingsGUI extends JFrame  {
 	private int xCoordOfFrame;
 	private int yCoordOfFrame;
 
-	// Launch application
+	// @author  
 	public static void main(String[] args) {
 		EventQueue.invokeLater(new Runnable() {
 			public void run() {
@@ -156,6 +155,7 @@ public class DoThingsGUI extends JFrame  {
 		triggerOnMouseAction = new TriggerOnMouseAction();
 		image = Toolkit.getDefaultToolkit().getImage("Task.png");
 		
+		// @author A0097082Y
 		createContentPane();		
 		createInputField();
 		createFeedbackLabel();
@@ -165,7 +165,6 @@ public class DoThingsGUI extends JFrame  {
 		createTaskPanelScroll();
 		populateToDoListStartup();
 		setLocationRelativeTo(null);	// GUI appears in the middle of screen by default
-		
 		setListeners();
 		setVrticalScrollBarSettings();
 	
@@ -429,7 +428,7 @@ public class DoThingsGUI extends JFrame  {
 		private static final Color MESSAGE_FLOAT_BACKGROUND_TURQUOISE = new Color(153, 204, 153); 
 		private static final Color MESSAGE_MARKED_BACKGROUND_LIGHT_GREY = new Color(204, 204, 204); 
 		private static final Color FONT_MARKED_GREY = new Color(153,153,153); 
-		private static final int TASK_DESCRIPTION_FONT_SIZE = 18;
+		private static final int TASK_DESCRIPTION_FONT_SIZE = 17;
 		private static final int ALIAS_FONT_SIZE = 11;
 		private static final int DATE_TIME_FONT_SIZE = ALIAS_FONT_SIZE;
 		private static final int TASK_DESCRIPTION_X_OFFSET = 10;
@@ -616,15 +615,24 @@ public class DoThingsGUI extends JFrame  {
 			heightChange=ZERO;
 			return numOfTask;
 		}
+		/**
+		 * Sets error message into feedback field and selects all text in inputfield
+		 */
 		private static void errorProcessing(String feedbackDesc) {
 			feedbackLabel.setText(feedbackDesc);
 			inputField.selectAll();
 		}
+		/**
+		 * removes all panels added to taskPanel
+		 */
 		private static void refreshTaskPanel() {
 			taskPanel.removeAll();
 			taskPanel.updateUI();
 		}
-		
+
+		/**
+		 * Function called when Help command is input by user
+		 */
 		private static void printHelp(String desc) {
 			refreshTaskPanel(); 
 			createHelpTextarea();
@@ -648,8 +656,9 @@ public class DoThingsGUI extends JFrame  {
 			taskPanel.repaint();
 		}
 	}
+
 	/**
-	 * Creates Text field when Help command is called
+	 * Hides program to system tray
 	 */
 	private void hideToSytemTray(){
         try{
@@ -662,7 +671,7 @@ public class DoThingsGUI extends JFrame  {
             System.out.println("Unable to set System Tray");
         }
 	}
-	
+
 	private void removeFromSystemTray(){
 		tray.remove(trayIcon);
 	}
