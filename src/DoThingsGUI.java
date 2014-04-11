@@ -161,7 +161,7 @@ public class DoThingsGUI extends JFrame  {
 		populateToDoListOnStartup();
 		setGUIAppearMiddleOfScreen();
 		setListeners();
-		setVrticalScrollBarSettings();
+		setVerticalScrollBarSettings();
 
 	}
 	
@@ -175,7 +175,10 @@ public class DoThingsGUI extends JFrame  {
 		GlobalKeyPress(Boolean visible) {
 			isVisible = visible;
 		}
-
+		
+		/**
+		 * Listens for opened window and registers native hook to the window. Adds NativeKeyListener to the window
+		 */
 		@Override
 		public void windowOpened(WindowEvent e) {
 			//Initialize native hook.
@@ -188,7 +191,10 @@ public class DoThingsGUI extends JFrame  {
 			}
 			GlobalScreen.getInstance().addNativeKeyListener(this);
 		}
-
+		
+		/**
+		 * Listens for closed window and unregisters native hook from the window.
+		 */
 		@Override
 		public void windowClosed(WindowEvent e) {
 			//Clean up the native hook.
@@ -196,13 +202,39 @@ public class DoThingsGUI extends JFrame  {
 			System.runFinalization();
 			System.exit(0);
 		}
-
+		
+		/**
+		 * Prints error message when window fails to register native hook
+		 * @param ex
+		 */
 		private void printErrorMessage(NativeHookException ex) {
 			System.err.println(MESSAGE_REGISTER_NATIVE_HOOK_ERROR);
 			System.err.println(ex.getMessage());
 			ex.printStackTrace();
 		}
+		
+		/**
+		 * Listens for global key press. If window is visible, sets window to invisible and hide it to system tray. 
+		 * If window is not visible, sets window to visible and remove system tray.  
+		 */
+		@Override
+		public void nativeKeyReleased(NativeKeyEvent e) {
+			int keyCode = e.getKeyCode();
+			if (keyCode == COMMAND_HIDE) {
+				if (isVisible) {
+					inputField.requestFocus();
+					DoThingsGUI.this.setVisible(false);
+					isVisible = false;
+					hideToSytemTray();
 
+				} else {
+					inputField.requestFocus();
+					DoThingsGUI.this.setVisible(true);
+					isVisible = true;
+					removeFromSystemTray();
+				}
+			}
+		}
 		@Override
 		public void windowActivated(WindowEvent e) {}
 		@Override
@@ -215,31 +247,16 @@ public class DoThingsGUI extends JFrame  {
 		public void windowIconified(WindowEvent e) {}
 		@Override
 		public void nativeKeyPressed(NativeKeyEvent e) {}
-		@Override
-		public void nativeKeyReleased(NativeKeyEvent e) {
-			int keyCode = e.getKeyCode();
-			if (keyCode == COMMAND_HIDE) {
-				if (isVisible == true) {
-					inputField.requestFocus();
-					DoThingsGUI.this.setVisible(false);
-					isVisible = false;
-					hideToSytemTray();
-
-				}
-				else {
-					inputField.requestFocus();
-					DoThingsGUI.this.setVisible(true);
-					isVisible = true;
-					removeFromSystemTray();
-				}
-			}
-		}
+		
 		@Override
 		public void nativeKeyTyped(NativeKeyEvent arg0) {}
 	}
 
 	private class TriggerOnKeyAction implements KeyListener{
-
+		
+		/**
+		 * Listens for key released. If user press and releases ENTER key, execute user commands
+		 */
 		@Override
 		public void keyReleased(KeyEvent e) {
 			int key = e.getKeyCode();
@@ -253,7 +270,10 @@ public class DoThingsGUI extends JFrame  {
 				break;	
 			}	
 		}
-
+		
+		/**
+		 * Listens and executes key pressed.
+		 */
 		@Override
 		public void keyPressed(KeyEvent e) {
 			int key = e.getKeyCode();
@@ -282,19 +302,27 @@ public class DoThingsGUI extends JFrame  {
 				break;
 			}
 		}
+		
 		@Override
 		public void keyTyped(KeyEvent e) {}
+		
 	}
 
 	private class TriggerOnMouseAction implements MouseListener, MouseMotionListener{
-
+		
+		/**
+		 * Listens for mouse press and records the the x,y coordinates relative to the source component.
+		 */
 		@Override
 		public void mousePressed(MouseEvent arg0) {	 
 			// Get x,y and store them
 			xCoordOfFrame=arg0.getX();
 			yCoordOfFrame=arg0.getY();
 		}
-
+		
+		/**
+		 * Listens for mouse drag and shifts the frame to the end position.
+		 */
 		@Override
 		public void mouseDragged(MouseEvent arg0) {
 			setLocation(getX()+arg0.getX()-xCoordOfFrame,getY()+arg0.getY()-yCoordOfFrame);
@@ -313,7 +341,7 @@ public class DoThingsGUI extends JFrame  {
 	}
 	
 	/**
-	 * Hides program to system tray
+	 * Hides program to system tray and creates tray icon in system tray
 	 */
 	private void hideToSytemTray(){
 		try{
@@ -326,39 +354,64 @@ public class DoThingsGUI extends JFrame  {
 			System.out.println(MESSAGE_ERROR_SYSTEM_TRAY);
 		}
 	}
-
+	
+	/**
+	 * Removes tray icon from system tray.
+	 */
 	private void removeFromSystemTray(){
 		tray.remove(trayIcon);
 	}
+	
+	/**
+	 * Sets GUI to appear in the middle of the screen by default.
+	 */
 	private void setGUIAppearMiddleOfScreen() {
 		setLocationRelativeTo(null);
 	}
-
+	
+	/**
+	 * Gets the icon image from home directory.
+	 */
 	private void getIconImageForGUI() {
 		iconImage = Toolkit.getDefaultToolkit().getImage("Task.png");
 	}
-
-	private void setVrticalScrollBarSettings() {
+	
+	/**
+	 * Sets vertical scroll bar scrolling speed.
+	 */
+	private void setVerticalScrollBarSettings() {
 		verticalScrollBar = taskPanelScroll.getVerticalScrollBar();
 		verticalScrollBar.setUnitIncrement(FRAME_SCROLL_SPEED);
 	}
-
+	
+	/**
+	 * Sets various listeners to some GUI components.
+	 */
 	private void setListeners() {	
 		setWindowHideDisplayListener();
 		setInputFieldListener();
 		setHeadingLabelListener();
 	}
-
+	
+	/**
+	 * Sets windowListener to GUI to listen for global key press.
+	 */
 	private void setWindowHideDisplayListener() {
 		globalKeyPress = new GlobalKeyPress(true);
 		addWindowListener(globalKeyPress);
 	}
-
+	
+	/**
+	 * Sets keyListener to input field.
+	 */
 	private void setInputFieldListener() {
 		triggerOnKeyAction = new TriggerOnKeyAction();
 		inputField.addKeyListener(triggerOnKeyAction);
 	}
-
+	
+	/**
+	 * Sets mouseListener and mouseActionListener to Heading Label.
+	 */
 	private void setHeadingLabelListener() {
 		triggerOnMouseAction = new TriggerOnMouseAction();
 		headingLabel.addMouseListener(triggerOnMouseAction);
