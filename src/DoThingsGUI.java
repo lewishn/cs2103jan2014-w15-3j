@@ -80,7 +80,7 @@ public class DoThingsGUI extends JFrame  {
 	private static final int TEXT_PANEL_X_OFFSET = 0;
 	private static final int TEXT_PANEL_Y_OFFSET = 62;
 	private static final int HEADING_LABEL_BUFFER = 10;
-	private static final int HEADING_LABEL_FONT_SIZE = 26;
+	private static final int HEADING_LABEL_FONT_SIZE = 25;
 	private static final int HEADING_LABEL_X_OFFSET = 0;
 	private static final int HEADING_LABEL_Y_OFFSET = 0;
 	private static final int HEADING_LABEL_WIDTH = FRAME_WIDTH;
