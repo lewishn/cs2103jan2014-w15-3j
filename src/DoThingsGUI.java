@@ -111,7 +111,7 @@ public class DoThingsGUI extends JFrame  {
 	private JScrollBar verticalScrollBar;
 	private static JTextArea help;
 	private static JPanel taskPanel;
-	private static ArrayList<JPanel> messagePanel;
+	private static ArrayList<JPanel> taskObjectPanel;
 	private static ArrayList<JTextArea> dateTime;
 	private static ArrayList<JTextArea> alias;
 	private static ArrayList<JTextArea> taskDescription;
@@ -153,11 +153,11 @@ public class DoThingsGUI extends JFrame  {
 		createContentPane();		
 		createInputField();
 		createFeedbackLabel();
-		createHeadingLabel();
+		createTitleLabel();
 		createTextPanel();	
 		createTaskPanel();
 		createTaskPanelScroll();
-		populateToDoListStartup();
+		populateToDoListOnStartup();
 		setGUIAppearMiddleOfScreen();
 		setListeners();
 		setVrticalScrollBarSettings();
@@ -246,7 +246,7 @@ public class DoThingsGUI extends JFrame  {
 			switch(key){
 			case COMMAND_ENTER:
 				String userInput = inputField.getText();
-				ResponsiveContent.getInfoOfTasks(userInput);
+				ResponsiveContent.drawTaskObjectField(userInput);
 				break;
 			default:
 				break;	
@@ -365,10 +365,16 @@ public class DoThingsGUI extends JFrame  {
 	}
 	
 	// @author A0097082Y
-	private void populateToDoListStartup() {
-		ResponsiveContent.getInfoOfTasks(STARTUP_COMMAND);
+	/**
+	 * populates to do list on startup
+	 */
+	private void populateToDoListOnStartup() {
+		ResponsiveContent.drawTaskObjectField(STARTUP_COMMAND);
 		feedbackLabel.setText(MESSAGE_STARTUP);
 	}
+	/**
+	 * creates task panel scroll which sits below the input field (i.e. white box). Gives scroll property to panel within it.
+	 */
 	private void createTaskPanelScroll() {
 		taskPanelScroll = new JScrollPane(taskPanel);
 		taskPanelScroll.setFocusable(false);
@@ -388,6 +394,9 @@ public class DoThingsGUI extends JFrame  {
 		taskPanelScroll.setBounds(0, 97, FRAME_WIDTH, 603);
 		contentPane.add(taskPanelScroll);
 	}
+	/**
+	 * Creates task panel. It is inserted to taskPanelScroll.
+	 */
 	private void createTaskPanel() {
 		taskPanel = new JPanel();
 		taskPanel.setFocusable(false);
@@ -396,6 +405,9 @@ public class DoThingsGUI extends JFrame  {
 		taskPanel.setBackground(new Color(255, 204, 51));
 		contentPane.add(taskPanel);
 	}
+	/**
+	 * creates text panel to sit behind the input field. 
+	 */
 	private void createTextPanel() {
 		textPanel = new JPanel();
 		textPanel.setFocusable(false);
@@ -403,7 +415,10 @@ public class DoThingsGUI extends JFrame  {
 		textPanel.setBounds(TEXT_PANEL_X_OFFSET, TEXT_PANEL_Y_OFFSET, TEXT_PANEL_WIDTH, TEXT_PANEL_HEIGHT);
 		contentPane.add(textPanel);
 	}
-	private void createHeadingLabel() {
+	/**
+	 * creates title label
+	 */
+	private void createTitleLabel() {
 		headingLabel = new JLabel(HEADING_LABEL);
 		headingLabel.setForeground(Color.GRAY);
 		headingLabel.setVerticalAlignment(SwingConstants.TOP);
@@ -416,6 +431,9 @@ public class DoThingsGUI extends JFrame  {
 		headingLabel.setBounds(HEADING_LABEL_X_OFFSET, HEADING_LABEL_Y_OFFSET, HEADING_LABEL_WIDTH, HEADING_LABEL_HEIGHT);
 		contentPane.add(headingLabel);
 	}
+	/**
+	 * creates feedback label which sits below the title. Feedback for users are printed here.
+	 */
 	private void createFeedbackLabel() {
 		feedbackLabel = new JLabel();
 		feedbackLabel.setFocusable(false);
@@ -425,6 +443,9 @@ public class DoThingsGUI extends JFrame  {
 		feedbackLabel.setBounds(FEEDBACK_X_OFFSET, FEEDBACK_Y_OFFSET, FEEDBACK_WIDTH, FEEDBACK_HEIGHT);
 		contentPane.add(feedbackLabel);
 	}
+	/**
+	 * creates text input field where user types in commands
+	 */
 	private void createInputField() {
 		inputField = new JTextField();
 		inputField.setSelectedTextColor(HIGHLIGHT_FONT_DARK_BLUE);
@@ -436,6 +457,9 @@ public class DoThingsGUI extends JFrame  {
 		inputField.setFont(new Font(PLUTO_EXLIGHT, Font.PLAIN, INPUT_FIELD_FONT_SIZE));
 		contentPane.add(inputField);
 	}
+	/**
+	 *  creates Content pane which holds everything
+	 */
 	private void createContentPane() {
 		setForeground(Color.BLACK);
 		setTitle(CONTENT_PANE_TITLE);
@@ -455,8 +479,6 @@ public class DoThingsGUI extends JFrame  {
 		setIconImage(iconImage);
 	}
 
-
-	// @author: A0097082Y
 	private static class ResponsiveContent {
 
 		private static final Color MESSAGE_ELSE_TIME_BACKGROUND_GREEN = new Color(153,204,102);
@@ -498,13 +520,24 @@ public class DoThingsGUI extends JFrame  {
 		private static final int HELP_FONT_SIZE = 13;
 		private static final String PLUTO_COND_EXLIGHT_FONT = "Pluto Sans Cond ExLight";
 		private static final String PLUTO_LIGHT_FONT = "Pluto Sans Light";
-		// @author A0097082Y
+		/**
+		 * function to create task object panel which holds task description, alias and date & time text areas
+		 * @param aliasExtension
+		 * @param descriptionExtension
+		 * @param change
+		 * @param i
+		 */
 		private static void createTaskObjects(int aliasExtension, int descriptionExtension, int change, int i) {
-			createMessagePanel(aliasExtension, descriptionExtension, change, i);
+			taskObjectPanel(aliasExtension, descriptionExtension, change, i);
 			createDateTimeField(descriptionExtension, i);
 			createAliasField(aliasExtension, descriptionExtension, i);
 			createTaskDescription(descriptionExtension, i);
 		}
+		/**
+		 * creates task description text area within the task object panel
+		 * @param descriptionExtension
+		 * @param i
+		 */
 		private static void createTaskDescription(int descriptionExtension, int i) {
 			taskDescription.add(new JTextArea());	
 			taskDescription.get(i).setFont(new Font(PLUTO_LIGHT_FONT, Font.PLAIN, TASK_DESCRIPTION_FONT_SIZE));	
@@ -513,8 +546,14 @@ public class DoThingsGUI extends JFrame  {
 			taskDescription.get(i).setWrapStyleWord(true);
 			taskDescription.get(i).setEditable(false);
 			taskDescription.get(i).setOpaque(false);
-			messagePanel.get(i).add(taskDescription.get(i));
+			taskObjectPanel.get(i).add(taskDescription.get(i));
 		}
+		/**
+		 * creates alias text area within task object panel
+		 * @param aliasExtension
+		 * @param descriptionExtension
+		 * @param i
+		 */
 		private static void createAliasField(int aliasExtension, int descriptionExtension,int i) {
 			alias.add(new JTextArea());
 			alias.get(i).setFont(new Font(PLUTO_COND_EXLIGHT_FONT, Font.PLAIN, ALIAS_FONT_SIZE));
@@ -523,25 +562,41 @@ public class DoThingsGUI extends JFrame  {
 			alias.get(i).setWrapStyleWord(true);
 			alias.get(i).setOpaque(false);
 			alias.get(i).setEditable(false);
-			messagePanel.get(i).add(alias.get(i));
+			taskObjectPanel.get(i).add(alias.get(i));
 		}
+		/**
+		 * Creates date & time text area within task object panel
+		 * @param descriptionExtension
+		 * @param i
+		 */
 		private static void createDateTimeField(int descriptionExtension ,int i) {
 			dateTime.add(new JTextArea());
 			dateTime.get(i).setFont(new Font(PLUTO_COND_EXLIGHT_FONT, Font.PLAIN, DATE_TIME_FONT_SIZE));
 			dateTime.get(i).setBounds(DATE_TIME_X_OFFSET, DATE_TIME_Y_OFFSET + descriptionExtension, DATE_TIME_WIDTH, DATE_TIME_HEIGHT);
 			dateTime.get(i).setOpaque(false);
 			dateTime.get(i).setEditable(false);
-			messagePanel.get(i).add(dateTime.get(i));
+			taskObjectPanel.get(i).add(dateTime.get(i));
 		}
-		private static void createMessagePanel(int aliasExtension, int descriptionExtension, int change, int i) {
-			messagePanel.add(new JPanel());
-			messagePanel.get(i).setBounds(ZERO, ZERO + change, FRAME_WIDTH, MESSAGE_PANEL_HEIGHT + descriptionExtension + aliasExtension);
-			messagePanel.get(i).setLayout(null);
-			taskPanel.add(messagePanel.get(i));
+		/**
+		 * Creates task object which is one panel holding all the description, alias and date & time text fields 
+		 * @param aliasExtension
+		 * @param descriptionExtension
+		 * @param change
+		 * @param i
+		 */
+		private static void taskObjectPanel(int aliasExtension, int descriptionExtension, int change, int i) {
+			taskObjectPanel.add(new JPanel());
+			taskObjectPanel.get(i).setBounds(ZERO, ZERO + change, FRAME_WIDTH, MESSAGE_PANEL_HEIGHT + descriptionExtension + aliasExtension);
+			taskObjectPanel.get(i).setLayout(null);
+			taskPanel.add(taskObjectPanel.get(i));
 			taskPanel.revalidate();
 			taskPanel.repaint();
 		}
-		private static void getInfoOfTasks(String userInput) {
+		/**
+		 * updates panel height according to how many tasks are listed
+		 * @param userInput 
+		 */
+		private static void drawTaskObjectField(String userInput) {
 			ArrayList<ArrayList<String>> result = MainLogic.runLogic(userInput);
 			String feedbackType = result.get(FEEDBACK_TYPE).get(ZERO);
 			if(feedbackType.equals(DEFAULT_EXIT)) {
@@ -596,6 +651,8 @@ public class DoThingsGUI extends JFrame  {
 		}
 		/**
 		 * determines additional height that needs to be added to the task object to fit text overflow in alias field
+		 * @param i
+		 * @return additionalHeight
 		 */
 		private static int heightForAliasTextOverflow(int i) {
 			int additionalHeight = ZERO;
@@ -615,8 +672,8 @@ public class DoThingsGUI extends JFrame  {
 		}
 		/**
 		 * determines additional height that needs to be added to the task object panel to fit text overflow in description field
-		 * @param ith task
-		 * @return additional height to add
+		 * @param i
+		 * @return additionalHeight
 		 */
 		private static int heightForDescriptionTextOverflow(int i) {
 			int charLength = taskDesc.get(i).length();
@@ -640,6 +697,7 @@ public class DoThingsGUI extends JFrame  {
 		}
 		/**
 		 * sets date time 
+		 * @param i
 		 */
 		private static void setFeedbackIntoRespectiveFields(int i) {
 			dateTime.get(i).setText(taskDate.get(i));
@@ -651,21 +709,24 @@ public class DoThingsGUI extends JFrame  {
 		}
 		/**
 		 * sets color schemes for message panel, task description font, alias font and date time font
+		 * @param i
+		 * @param messageBackground
+		 * @param fontColor
 		 */
 		private static void setTaskObjectColorScheme(int i, Color messageBackground, Color fontColor) {
-			messagePanel.get(i).setBackground(messageBackground);
+			taskObjectPanel.get(i).setBackground(messageBackground);
 			taskDescription.get(i).setForeground(fontColor);
 			alias.get(i).setForeground(fontColor);
 			dateTime.get(i).setForeground(fontColor);
 		}
 		/**
 		 * set Jpanels to new Jpanels, re initialising variables
-		 * @return number of tasks returned from user query
+		 * @return numOfTask
 		 */
 		private static int initialiseFeedbackVariables() {
 			int numOfTask = taskDesc.size();
 			inputField.setText("");  
-			messagePanel = new ArrayList<JPanel>();
+			taskObjectPanel = new ArrayList<JPanel>();
 			dateTime = new ArrayList<JTextArea>();
 			alias = new ArrayList<JTextArea>();
 			taskDescription = new ArrayList<JTextArea>();
@@ -674,6 +735,7 @@ public class DoThingsGUI extends JFrame  {
 		}
 		/**
 		 * Sets error message into feedback field and selects all text in input field
+		 * @param feedbackDesc
 		 */
 		private static void errorProcessing(String feedbackDesc) {
 			feedbackLabel.setText(feedbackDesc);
@@ -688,6 +750,7 @@ public class DoThingsGUI extends JFrame  {
 		}
 		/**
 		 * Function called when Help command is input by user
+		 * @param desc
 		 */
 		private static void printHelp(String desc) {
 			refreshTaskPanel(); 
