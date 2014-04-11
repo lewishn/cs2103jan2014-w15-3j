@@ -1,8 +1,7 @@
-//@author A0100234A
 import java.text.DecimalFormat;
 import java.util.ArrayList;
 import java.util.Collections;
-
+//Author: A0100234E
 import org.joda.time.DateMidnight;
 import org.joda.time.DateTime;
 
