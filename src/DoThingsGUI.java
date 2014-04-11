@@ -80,7 +80,7 @@ public class DoThingsGUI extends JFrame  {
 	private static final int TEXT_PANEL_X_OFFSET = 0;
 	private static final int TEXT_PANEL_Y_OFFSET = 62;
 	private static final int HEADING_LABEL_BUFFER = 10;
-	private static final int HEADING_LABEL_FONT_SIZE = 30;
+	private static final int HEADING_LABEL_FONT_SIZE = 28;
 	private static final int HEADING_LABEL_X_OFFSET = 0;
 	private static final int HEADING_LABEL_Y_OFFSET = 0;
 	private static final int HEADING_LABEL_WIDTH = FRAME_WIDTH;
@@ -446,9 +446,9 @@ public class DoThingsGUI extends JFrame  {
 		private static final int DATE_TIME_HEIGHT = 22;
 		private static final int MESSAGE_PANEL_HEIGHT = 51;
 		private static final int ZERO = 0;
-		private static final int NUM_CHAR_FIRST_LINE = 32;
+		private static final int NUM_CHAR_FIRST_LINE = 31;
 		private static final int NUM_CHAR_LINE = 34;
-		private static final int HEIGHT_OF_ONE_LINE = 19;
+		private static final int HEIGHT_OF_ONE_LINE = 25;
 		private static final int NUM_CHAR_ALIAS_FIRST_LINE = 14;
 		private static final int NUM_CHAR_ALIAS_LINE = 19;
 		private static final int HELP_X_OFFSET = 10;
