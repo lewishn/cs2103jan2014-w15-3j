@@ -80,7 +80,7 @@ public class DoThingsGUI extends JFrame  {
 	private static final int TEXT_PANEL_X_OFFSET = 0;
 	private static final int TEXT_PANEL_Y_OFFSET = 62;
 	private static final int HEADING_LABEL_BUFFER = 10;
-	private static final int HEADING_LABEL_FONT_SIZE = 32;
+	private static final int HEADING_LABEL_FONT_SIZE = 30;
 	private static final int HEADING_LABEL_X_OFFSET = 0;
 	private static final int HEADING_LABEL_Y_OFFSET = 0;
 	private static final int HEADING_LABEL_WIDTH = FRAME_WIDTH;
@@ -102,7 +102,6 @@ public class DoThingsGUI extends JFrame  {
 	private static final int CONTENT_PANE_HEIGHT = FRAME_HEIGHT;
 	private static final int SHAPE_DIMENSION = 20;
 	private static int heightChange =0;
-
 
 	private JPanel contentPane;
 	private static JTextField inputField;
@@ -255,7 +254,6 @@ public class DoThingsGUI extends JFrame  {
 	}
 	private void createContentPane() {
 		setForeground(Color.BLACK);
-		//setFont(new Font(CONTENT_PANE_FONT, Font.BOLD, CONTENT_PANE_FONT_SIZE));
 		setTitle(CONTENT_PANE_TITLE);
 		setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
 		setBackground(Color.BLACK);
@@ -431,8 +429,8 @@ public class DoThingsGUI extends JFrame  {
 		private static final Color MESSAGE_FLOAT_BACKGROUND_TURQUOISE = new Color(153, 204, 153); 
 		private static final Color MESSAGE_MARKED_BACKGROUND_LIGHT_GREY = new Color(204, 204, 204); 
 		private static final Color FONT_MARKED_GREY = new Color(153,153,153); 
-		private static final int TASK_DESCRIPTION_FONT_SIZE = 19;
-		private static final int ALIAS_FONT_SIZE = 13;
+		private static final int TASK_DESCRIPTION_FONT_SIZE = 18;
+		private static final int ALIAS_FONT_SIZE = 12;
 		private static final int DATE_TIME_FONT_SIZE = ALIAS_FONT_SIZE;
 		private static final int TASK_DESCRIPTION_X_OFFSET = 10;
 		private static final int TASK_DESCRIPTION_Y_OFFSET = 10;
