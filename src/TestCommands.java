@@ -33,5 +33,4 @@ public class TestCommands {
 		list = Task.getList();
 		assertFalse(list.isEmpty());
 	}
-
 }

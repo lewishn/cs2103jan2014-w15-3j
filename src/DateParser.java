@@ -76,7 +76,7 @@ public class DateParser{
 	 * Get the date format type of the input.
 	 * returns 0 if date contains day, month and year
 	 * returns 1 if date contains day and month only
-	 * returns 2 if date is written in english (Tuesday, wed etc)
+	 * returns 2 if date is written in English (Tuesday, wed etc)
 	 * returns 3 if date is yesterday/today/tomorrow
 	 * returns -1 if invalid
 	 * @param input
