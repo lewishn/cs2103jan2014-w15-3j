@@ -67,6 +67,7 @@ public class Task implements Comparable<Task>{
 		description = desc;
 		alias = name;
 	}
+	
 	/**
 	 * Constructs and initializes a new task with the specified fields above.
 	 * @param desc the description of the new task object.
@@ -82,6 +83,7 @@ public class Task implements Comparable<Task>{
 		description = desc;
 		alias = name;
 	}
+	
 	/**
 	 * Sets the description of this task to the specified description.
 	 * @param desc the specified description.
@@ -89,6 +91,7 @@ public class Task implements Comparable<Task>{
 	public void setDescription(String desc) {
 		description = desc;
 	}
+	
 	/**
 	 * Sets the start time of this task to the specified time.
 	 * @param start the specified start time.
@@ -96,6 +99,7 @@ public class Task implements Comparable<Task>{
 	public void setStartDateTime(DateTime start) {
 		startDateTime = start;
 	}
+	
 	/**
 	 * Sets the end time of this task to to the specified time.
 	 * @param end the specified end time.
@@ -103,12 +107,14 @@ public class Task implements Comparable<Task>{
 	public void setEndDateTime(DateTime end) {
 		endDateTime = end; 
 	}
+	
 	/**
 	 * Toggles the status of this task.
 	 */
 	public void toggleStatus() {
 		status = !status;
 	}
+	
 	/**
 	 * Sets the alias of this task to the specified alias.
 	 * @param alias
@@ -116,6 +122,7 @@ public class Task implements Comparable<Task>{
 	public void setAlias(String alias) {	
 		this.alias = alias;
 	}
+	
 	/**
 	 * Returns the description of this task.
 	 * @return the description of this task.
@@ -123,6 +130,7 @@ public class Task implements Comparable<Task>{
 	public String getDescription() {
 		return description;
 	}
+	
 	/**
 	 * Returns the start time of this task.
 	 * @return the start time of this task.
@@ -130,6 +138,7 @@ public class Task implements Comparable<Task>{
 	public DateTime getStartDateTime() {
 		return startDateTime;
 	}
+	
 	/**
 	 * Returns the end time of this task.
 	 * @return the end time of this task.
@@ -137,6 +146,7 @@ public class Task implements Comparable<Task>{
 	public DateTime getEndDateTime() {
 		return endDateTime;
 	}
+	
 	/**
 	 * Returns the status of this task.
 	 * @return true if this task is marked as complete; false otherwise.
@@ -144,6 +154,7 @@ public class Task implements Comparable<Task>{
 	public boolean getStatus() {
 		return status;
 	}
+	
 	/**
 	 * Returns the alias of this task.
 	 * @return the alias of this task.
@@ -158,6 +169,16 @@ public class Task implements Comparable<Task>{
 	public static ArrayList<Task> getList() {
 		return taskList;
 	}
+	
+	public static ArrayList<Task> getCloneList() {
+		ArrayList<Task> clone = new ArrayList<Task>();
+		for (int i = 0; i < taskList.size(); i++) {
+			clone.add(new Task(taskList.get(i)));
+		}
+		
+		return clone;
+	}
+	
 	/**
 	 * Replaces the current task list with the specified task list.
 	 * @param list
@@ -165,6 +186,7 @@ public class Task implements Comparable<Task>{
 	public static void setList(ArrayList<Task> list) {
 		taskList = list;
 	}
+	
 	/**
 	 * Sorts the task list.
 	 */

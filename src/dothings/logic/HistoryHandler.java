@@ -72,7 +72,7 @@ public class HistoryHandler {
 	 * Pushes a copy of the taskList and CustomCommandList into the undo stack.
 	 */
 	protected static void pushUndoStack() {
-		ArrayList<Task> taskNewList = (ArrayList<Task>) Task.getList().clone();		
+		ArrayList<Task> taskNewList = Task.getCloneList();		
 		taskUndoStack.add(taskNewList);
 		reduceStackSize();
 		saveUndoStack();
@@ -88,7 +88,7 @@ public class HistoryHandler {
 	}
 	
 	private static void pushRedoStack() {
-		ArrayList<Task> taskNewList = (ArrayList<Task>) Task.getList().clone();		
+		ArrayList<Task> taskNewList = Task.getCloneList();		
 		taskRedoStack.add(taskNewList);
 	}
 	
