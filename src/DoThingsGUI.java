@@ -434,7 +434,7 @@ public class DoThingsGUI extends JFrame  {
 		private static final int TASK_DESCRIPTION_X_OFFSET = 10;
 		private static final int TASK_DESCRIPTION_Y_OFFSET = 10;
 		private static final int TASK_DESCRIPTION_WIDTH = 25;
-		private static final int TASK_DESCRIPTION_HEIGHT = 22;
+		private static final int TASK_DESCRIPTION_HEIGHT = 23;
 		private static final int ALIAS_X_OFFSET = 265;
 		private static final int ALIAS_Y_OFFSET = 31;
 		private static final int ALIAS_WIDTH = 120;
