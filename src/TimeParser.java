@@ -1,6 +1,6 @@
+//@author A0099727J
 import java.util.ArrayList;
 import java.util.Arrays;
-
 import org.joda.time.DateTime;
 import org.joda.time.format.DateTimeFormat;
 import org.joda.time.format.DateTimeFormatter;
@@ -78,6 +78,12 @@ public class TimeParser{
 		return isValidFormat(input);
 	}
 	
+	/**
+	 * Sets the time of the DateTime object to the input time
+	 * @param date
+	 * @param input
+	 * @return DateTime object with the input time
+	 */
 	private static DateTime parseTimeFormat(DateTime date, String input){
 		DateTime time = null;
 		

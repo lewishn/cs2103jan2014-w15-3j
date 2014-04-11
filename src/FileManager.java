@@ -1,17 +1,15 @@
+//@author A0099727J
 import java.io.BufferedReader;
 import java.io.BufferedWriter;
 import java.io.File;
 import java.io.FileInputStream;
 import java.io.FileNotFoundException;
 import java.io.FileOutputStream;
-import java.io.FileReader;
-import java.io.FileWriter;
 import java.io.IOException;
 import java.io.InputStreamReader;
 import java.io.OutputStreamWriter;
 import java.io.UnsupportedEncodingException;
 import java.net.URLDecoder;
-import java.nio.file.Files;
 import java.util.ArrayList;
 import java.util.logging.Logger;
 
@@ -22,6 +20,13 @@ class FileManager {
 	public static final String filepath = new File(URLDecoder.decode(DoThingsGUI.class.getProtectionDomain().getCodeSource().getLocation().getPath())).getParent() + System.getProperty("file.separator");
 	private static Logger LOGGER = Logger.getLogger(FileManager.class.getName());
 	
+	
+	/**
+	 * Get a new buffered reader with UTF8 encoding
+	 * @param fileName
+	 * @return buffered reader
+	 * @throws FileNotFoundException
+	 */
 	private static BufferedReader getReader(String fileName) throws FileNotFoundException {
 		File file = new File(fileName);
 		BufferedReader bw;
@@ -36,12 +41,23 @@ class FileManager {
 		return null;
 	}
 	
+	/**
+	 * Get a new buffered writer with UTF8 encoding
+	 * @param fileName
+	 * @return buffered writer
+	 * @throws FileNotFoundException
+	 */
 	private static BufferedWriter getWriter(String fileName) throws IOException {
 		File file = new File(fileName);
 		BufferedWriter bw = new BufferedWriter(new OutputStreamWriter(new FileOutputStream(file), "UTF8"));
 		return bw;
 	}
 	
+	/**
+	 * Read from a text file
+	 * @param fileName
+	 * @return ArrayList of String with each line as an entry
+	 */
 	protected static ArrayList<String> readFromFile(String fileName) {
 		//LOGGER.info("Reading from file " + fileName);
 		ArrayList<String> list = new ArrayList<String>();
@@ -59,6 +75,11 @@ class FileManager {
 		return list;
 	}
 	
+	/**
+	 * Save arraylist of string to a file
+	 * @param fileName
+	 * @param list
+	 */
 	protected static void writeToFile(String fileName, ArrayList<String> list) {
 		//LOGGER.info("Writing to file " + fileName);
 		try {

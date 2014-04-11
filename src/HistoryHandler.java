@@ -1,7 +1,6 @@
+//@author A0099727J
 import java.util.ArrayDeque;
 import java.util.ArrayList;
-import java.util.Stack;
-
 
 public class HistoryHandler {
 	private static final String FILE_UNDO = "undo.txt";
@@ -18,7 +17,7 @@ public class HistoryHandler {
 	private static ArrayDeque<ArrayList<Task>> taskRedoStack = new ArrayDeque<ArrayList<Task>>();
 	
 	/**
-	 * The previous action by the user which manipulates the taskList or customCommandList will be undone
+	 * Undo the previous action which manipulates the task list
 	 * @return a Feedback object to be shown to the user, indicating success or failure in undoing
 	 */
 	protected static Feedback undoCommand() {
@@ -31,6 +30,10 @@ public class HistoryHandler {
 		}
 	}
 	
+	/**
+	 * redo the previous undo action
+	 * @return a Feedback object to be shown to the user, indicating success or failure in redoing
+	 */
 	protected static Feedback redoCommand() {
 		boolean tryRedo = popRedoStack();
 		if(tryRedo) {
@@ -51,6 +54,9 @@ public class HistoryHandler {
 		saveUndoStack();
 	}
 	
+	/**
+	 * Removes from entries from the undo history until the maximum size is reached
+	 */
 	private static void reduceStackSize() {
 		while (taskUndoStack.size() > MAXIMUM_UNDO_STEPS) {
 			taskUndoStack.pollFirst();
@@ -78,7 +84,7 @@ public class HistoryHandler {
 	}
 	
 	/**
-	 * Get the top of the undo stack
+	 * Get the top of the redo stack
 	 * @return true if stack size is greater than zero, false otherwise
 	 */
 	private static boolean popRedoStack() {
@@ -92,10 +98,16 @@ public class HistoryHandler {
 		}
 	}
 	
+	/**
+	 * Empties the redo history
+	 */
 	protected static void purgeRedoStack() {
 		taskRedoStack = new ArrayDeque<ArrayList<Task>>();
 	}
 	
+	/**
+	 * Saves undo history to a file
+	 */
 	private static void saveUndoStack() {
 		ArrayDeque<ArrayList<Task>> undoStack = (ArrayDeque<ArrayList<Task>>) taskUndoStack.clone();
 		ArrayList<String> saveList = new ArrayList<String>();
@@ -113,6 +125,10 @@ public class HistoryHandler {
 		FileManager.writeToFile(FILE_UNDO, saveList);
 	}
 	
+	/**
+	 * Loads undo history from a file
+	 * @return
+	 */
 	private static ArrayDeque<ArrayList<Task>> loadUndoStack() {
 		ArrayList<String> list = FileManager.readFromFile(FILE_UNDO);
 		ArrayDeque<ArrayList<Task>> undoStack = new ArrayDeque<ArrayList<Task>>();
