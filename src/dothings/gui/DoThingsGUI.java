@@ -807,7 +807,7 @@ public class DoThingsGUI extends JFrame  {
 			help = new JTextArea();
 			help.setFont(new Font(PLUTO_COND_EXLIGHT_FONT, Font.PLAIN, HELP_FONT_SIZE));
 			help.append(desc);
-			help.setBounds(HELP_X_OFFSET, HELP_Y_OFFSET, HELP_WIDTH, FRAME_HEIGHT);
+			help.setBounds(HELP_X_OFFSET, HELP_Y_OFFSET, HELP_WIDTH, help.getHeight());
 			help.setLineWrap(true);
 			help.setWrapStyleWord(true);
 			help.setOpaque(false);
