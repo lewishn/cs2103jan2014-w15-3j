@@ -521,7 +521,7 @@ public class DoThingsGUI extends JFrame  {
 		setIconImage(iconImage);
 	}
 
-	private static class ResponsiveContent {
+	public static class ResponsiveContent {
 
 		private static final Color MESSAGE_ELSE_TIME_BACKGROUND_GREEN = new Color(153,204,102);
 		private static final Color FONT_ELSE_TIME_WHITE = new Color(255,255,255);
@@ -811,6 +811,7 @@ public class DoThingsGUI extends JFrame  {
 			help.setWrapStyleWord(true);
 			help.setOpaque(false);
 			help.setEditable(false);
+			taskPanel.setBounds(ZERO, ZERO, FRAME_WIDTH, help.getHeight());
 			taskPanel.add(help);
 			taskPanel.revalidate();
 			taskPanel.repaint();
