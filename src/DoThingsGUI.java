@@ -430,13 +430,13 @@ public class DoThingsGUI extends JFrame  {
 		private static final Color MESSAGE_MARKED_BACKGROUND_LIGHT_GREY = new Color(204, 204, 204); 
 		private static final Color FONT_MARKED_GREY = new Color(153,153,153); 
 		private static final int TASK_DESCRIPTION_FONT_SIZE = 18;
-		private static final int ALIAS_FONT_SIZE = 12;
+		private static final int ALIAS_FONT_SIZE = 11;
 		private static final int DATE_TIME_FONT_SIZE = ALIAS_FONT_SIZE;
 		private static final int TASK_DESCRIPTION_X_OFFSET = 10;
 		private static final int TASK_DESCRIPTION_Y_OFFSET = 10;
 		private static final int TASK_DESCRIPTION_WIDTH = 25;
 		private static final int TASK_DESCRIPTION_HEIGHT = 19;
-		private static final int ALIAS_X_OFFSET = 260;
+		private static final int ALIAS_X_OFFSET = 265;
 		private static final int ALIAS_Y_OFFSET = 31;
 		private static final int ALIAS_WIDTH = 120;
 		private static final int ALIAS_HEIGHT = 22;
@@ -633,9 +633,7 @@ public class DoThingsGUI extends JFrame  {
 		}
 
 		/**
-		 * Finds out if the input custom command is already in use
-		 * @param command
-		 * @return true if the command is already in use.
+		 * Creates Text field when Help command is called
 		 */
 		private static void createHelpTextarea() {
 			help = new JTextArea();
@@ -650,6 +648,9 @@ public class DoThingsGUI extends JFrame  {
 			taskPanel.repaint();
 		}
 	}
+	/**
+	 * Creates Text field when Help command is called
+	 */
 	private void hideToSytemTray(){
         try{
         	PopupMenu popup = new PopupMenu();
