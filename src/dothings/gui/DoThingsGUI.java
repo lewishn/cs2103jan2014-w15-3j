@@ -558,7 +558,7 @@ public class DoThingsGUI extends JFrame  {
 		private static final int HELP_X_OFFSET = 10;
 		private static final int HELP_Y_OFFSET = 10;
 		private static final int HELP_WIDTH = FRAME_WIDTH;
-		private static final int HELP_HEIGHT = 500;
+		private static final int HELP_HEIGHT = 700;
 		private static final int HELP_FONT_SIZE = 13;
 		private static final String PLUTO_COND_EXLIGHT_FONT = "Pluto Sans Cond ExLight";
 		private static final String PLUTO_LIGHT_FONT = "Pluto Sans Light";
@@ -807,7 +807,7 @@ public class DoThingsGUI extends JFrame  {
 			help = new JTextArea();
 			help.setFont(new Font(PLUTO_COND_EXLIGHT_FONT, Font.PLAIN, HELP_FONT_SIZE));
 			help.append(desc);
-			help.setBounds(HELP_X_OFFSET, HELP_Y_OFFSET, HELP_WIDTH, help.getHeight());
+			help.setBounds(HELP_X_OFFSET, HELP_Y_OFFSET, HELP_WIDTH, HELP_HEIGHT);
 			help.setLineWrap(true);
 			help.setWrapStyleWord(true);
 			help.setOpaque(false);
