@@ -192,6 +192,9 @@ public class MainLogic{
 			case UNDO:
 				return CustomCommandHandler.HEADER_UNDO;
 				
+			case REDO:
+				return CustomCommandHandler.HEADER_REDO;
+				
 			case SEARCH:
 				return CustomCommandHandler.HEADER_SEARCH;
 			
