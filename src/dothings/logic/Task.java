@@ -1,16 +1,21 @@
+package dothings.logic;
+
 //Author: A0100234E
 import java.util.*;
 import java.text.*;
+
 import org.joda.time.*;
 
-class Task implements Comparable<Task>{
+import dothings.storage.FileManager;
+
+public class Task implements Comparable<Task>{
 	private static final String FILE_TASK = "tasks.txt";
 
-	protected static final int START_DATE = 0;
-	protected static final int START_TIME = 1;
-	protected static final int END_DATE = 2;
-	protected static final int END_TIME = 3;
-	protected static final int TASK_FIELD_SIZE = 4;
+	public static final int START_DATE = 0;
+	public static final int START_TIME = 1;
+	public static final int END_DATE = 2;
+	public static final int END_TIME = 3;
+	public static final int TASK_FIELD_SIZE = 4;
 
 	private static final String DELIMITER = " ~~ ";
 	private static final String NULL_START = "NO_START_TIME";
@@ -31,7 +36,7 @@ class Task implements Comparable<Task>{
 	 * Constructs and initializes a task with the specified description.
 	 * @param desc the description of the new task object.
 	 */
-	protected Task(String desc) {
+	public Task(String desc) {
 		description = desc;
 		status = false;
 	}
@@ -40,7 +45,7 @@ class Task implements Comparable<Task>{
 	 * Constructs and initializes a task with the same fields as the input task object.
 	 * @param task the input task object.
 	 */
-	protected Task(Task task) {
+	public Task(Task task) {
 		startDateTime = task.startDateTime;
 		endDateTime = task.endDateTime;
 		status = task.status;
@@ -55,7 +60,7 @@ class Task implements Comparable<Task>{
 	 * @param end the end time of the new task object.
 	 * @param name the name of the new task object.
 	 */
-	protected Task(String desc, DateTime start, DateTime end, String name) {
+	public Task(String desc, DateTime start, DateTime end, String name) {
 		startDateTime = start;
 		endDateTime = end;
 		status = false;
@@ -70,7 +75,7 @@ class Task implements Comparable<Task>{
 	 * @param name the name of the new task object.
 	 * @param stat the status of the task, whether it is marked as complete or not.
 	 */
-	protected Task(String desc, DateTime start, DateTime end, String name, boolean stat) {
+	public Task(String desc, DateTime start, DateTime end, String name, boolean stat) {
 		startDateTime = start;
 		endDateTime = end;
 		status = stat;
@@ -81,96 +86,96 @@ class Task implements Comparable<Task>{
 	 * Sets the description of this task to the specified description.
 	 * @param desc the specified description.
 	 */
-	protected void setDescription(String desc) {
+	public void setDescription(String desc) {
 		description = desc;
 	}
 	/**
 	 * Sets the start time of this task to the specified time.
 	 * @param start the specified start time.
 	 */
-	protected void setStartDateTime(DateTime start) {
+	public void setStartDateTime(DateTime start) {
 		startDateTime = start;
 	}
 	/**
 	 * Sets the end time of this task to to the specified time.
 	 * @param end the specified end time.
 	 */
-	protected void setEndDateTime(DateTime end) {
+	public void setEndDateTime(DateTime end) {
 		endDateTime = end; 
 	}
 	/**
 	 * Toggles the status of this task.
 	 */
-	protected void toggleStatus() {
+	public void toggleStatus() {
 		status = !status;
 	}
 	/**
 	 * Sets the alias of this task to the specified alias.
 	 * @param alias
 	 */
-	protected void setAlias(String alias) {	
+	public void setAlias(String alias) {	
 		this.alias = alias;
 	}
 	/**
 	 * Returns the description of this task.
 	 * @return the description of this task.
 	 */
-	protected String getDescription() {
+	public String getDescription() {
 		return description;
 	}
 	/**
 	 * Returns the start time of this task.
 	 * @return the start time of this task.
 	 */
-	protected DateTime getStartDateTime() {
+	public DateTime getStartDateTime() {
 		return startDateTime;
 	}
 	/**
 	 * Returns the end time of this task.
 	 * @return the end time of this task.
 	 */
-	protected DateTime getEndDateTime() {
+	public DateTime getEndDateTime() {
 		return endDateTime;
 	}
 	/**
 	 * Returns the status of this task.
 	 * @return true if this task is marked as complete; false otherwise.
 	 */
-	protected boolean getStatus() {
+	public boolean getStatus() {
 		return status;
 	}
 	/**
 	 * Returns the alias of this task.
 	 * @return the alias of this task.
 	 */
-	protected String getAlias() {
+	public String getAlias() {
 		return alias;
 	}
 	/**
 	 * Returns the entire list of tasks.
 	 * @return the entire list of tasks.
 	 */
-	protected static ArrayList<Task> getList() {
+	public static ArrayList<Task> getList() {
 		return taskList;
 	}
 	/**
 	 * Replaces the current task list with the specified task list.
 	 * @param list
 	 */
-	protected static void setList(ArrayList<Task> list) {
+	public static void setList(ArrayList<Task> list) {
 		taskList = list;
 	}
 	/**
 	 * Sorts the task list.
 	 */
-	protected static void sortList() {
+	public static void sortList() {
 		Collections.sort(taskList);
 	}	
 	/**
 	 * Checks whether this task is overdue.
 	 * @return true if this task is overdue; false otherwise.
 	 */
-	protected boolean isOverdue() {
+	public boolean isOverdue() {
 		if (endDateTime != null) {
 			return endDateTime.isBeforeNow();
 		} else if (startDateTime != null) {
@@ -183,7 +188,7 @@ class Task implements Comparable<Task>{
 	 * Checks whether this task is due today.
 	 * @return true if this task is due today; false otherwise.
 	 */
-	protected boolean isToday() {
+	public boolean isToday() {
 		DateTime today = (new DateTime()).withTimeAtStartOfDay();
 		if (startDateTime != null) {
 			return today.equals(startDateTime.withTimeAtStartOfDay());
@@ -197,7 +202,7 @@ class Task implements Comparable<Task>{
 	 * Checks whether this task has no schedule.
 	 * @return true if this task has no schedule; false otherwise;
 	 */
-	protected boolean isUnscheduled() {
+	public boolean isUnscheduled() {
 		return startDateTime == null && endDateTime == null;
 	}
 	/**
@@ -205,7 +210,7 @@ class Task implements Comparable<Task>{
 	 * @param line a string input to be separated.
 	 * @return a new task object with the specified fields.
 	 */
-	protected static Task parseTaskFromString(String line) {
+	public static Task parseTaskFromString(String line) {
 		String[] tokens = line.split(DELIMITER);
 		DateTime start = (tokens[0].equals(NULL_START)) ? null : new DateTime(tokens[0]);
 		DateTime end = (tokens[1].equals(NULL_END)) ? null : new DateTime(tokens[1]);
@@ -232,7 +237,7 @@ class Task implements Comparable<Task>{
 	 * Returns the start and end time of this task.
 	 * @return the start and end time of this task.
 	 */
-	protected String getDateTimeString() {
+	public String getDateTimeString() {
 		if (startDateTime != null && endDateTime != null) {
 			return String.format(DATE_DISPLAY_FORMAT_1, getDateString(startDateTime), getTimeString(startDateTime), getDateString(endDateTime), getTimeString(endDateTime));
 		} else if (startDateTime != null) {
@@ -248,7 +253,7 @@ class Task implements Comparable<Task>{
 	 * @param date the specified DateTime object.
 	 * @return the time portion of the specified DateTime object.
 	 */
-	protected static String getTimeString(DateTime date) {
+	public static String getTimeString(DateTime date) {
 		if (date == null) {
 			return null;
 		}
@@ -262,7 +267,7 @@ class Task implements Comparable<Task>{
 	 * @param date
 	 * @return the date portion of the specified DateTime object.
 	 */
-	protected static String getDateString(DateTime date) {
+	public static String getDateString(DateTime date) {
 		if (date == null) {
 			return null;
 		}
@@ -309,7 +314,7 @@ class Task implements Comparable<Task>{
 	 * @param alias the string to be checked.
 	 * @return true if the alias is valid; false otherwise.
 	 */
-	protected static boolean isAliasValid(String alias) {
+	public static boolean isAliasValid(String alias) {
 		if (alias == null || alias.length() == 0 || alias.equals("")) {
 			return false;
 		}
@@ -329,7 +334,7 @@ class Task implements Comparable<Task>{
 	 * @param alias the string from which the task index is retrieved.
 	 * @return the task index; -1 otherwise.
 	 */
-	protected static int getTaskIndexFromAlias(String alias) {
+	public static int getTaskIndexFromAlias(String alias) {
 		for (int i = 0; i < taskList.size(); i++) {
 			if (taskList.get(i).getAlias() == null) {
 				continue;
@@ -344,7 +349,7 @@ class Task implements Comparable<Task>{
 	/**
 	 * Saves the task list to text file.
 	 */
-	protected static void saveTasks() {
+	public static void saveTasks() {
 		ArrayList<String> listToSave = new ArrayList<String>();
 		for (int i = 0; i < taskList.size(); i++) {
 			String taskStringForm = taskList.get(i).toString();
@@ -357,7 +362,7 @@ class Task implements Comparable<Task>{
 	 * Loads the task list from the text file.
 	 * @return the task list. 
 	 */
-	protected static ArrayList<Task> loadTasks() {
+	public static ArrayList<Task> loadTasks() {
 		ArrayList<Task> listOfTasks = new ArrayList<Task>();
 		ArrayList<String> list = FileManager.readFromFile(FILE_TASK);
 

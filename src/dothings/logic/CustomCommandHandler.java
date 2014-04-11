@@ -1,6 +1,10 @@
+package dothings.logic;
+
 //@author A0099727J
 import java.util.ArrayList;
 import java.util.Arrays;
+
+import dothings.storage.FileManager;
 
 
 class CustomCommandHandler {

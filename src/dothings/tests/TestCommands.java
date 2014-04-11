@@ -1,8 +1,12 @@
+package dothings.tests;
 import static org.junit.Assert.*;
 
 import java.util.ArrayList;
 
 import org.junit.Test;
+
+import dothings.logic.MainLogic;
+import dothings.logic.Task;
 
 
 public class TestCommands {

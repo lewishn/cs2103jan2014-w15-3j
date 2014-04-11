@@ -1,6 +1,10 @@
+package dothings.logic;
+
 //@author A0099727J
 import java.util.ArrayDeque;
 import java.util.ArrayList;
+
+import dothings.storage.FileManager;
 
 public class HistoryHandler {
 	private static final String FILE_UNDO = "undo.txt";

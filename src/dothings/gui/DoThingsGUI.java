@@ -1,3 +1,5 @@
+package dothings.gui;
+
 import java.awt.Color;
 import java.awt.Dimension;
 import java.awt.EventQueue;
@@ -37,6 +39,8 @@ import org.jnativehook.GlobalScreen;
 import org.jnativehook.NativeHookException;
 import org.jnativehook.keyboard.NativeKeyEvent;
 import org.jnativehook.keyboard.NativeKeyListener;
+
+import dothings.logic.MainLogic;
 
 @SuppressWarnings("serial")
 public class DoThingsGUI extends JFrame  {

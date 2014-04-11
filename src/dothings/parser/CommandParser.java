@@ -1,7 +1,10 @@
 //@author A0099727
+package dothings.parser;
 import java.util.ArrayList;
 
-class CommandParser {
+import dothings.logic.Task;
+
+public class CommandParser {
 	private static final String timeIdentifier = "at @ by from for to on before until end start - , and";
 	
 	/**
@@ -9,7 +12,7 @@ class CommandParser {
 	 * @param userInput
 	 * @return command type portion of the input
 	 */
-	protected static String getUserCommandType(String userInput) {
+	public static String getUserCommandType(String userInput) {
 		String[] tokens = userInput.split("\\s+");
 		return tokens[0];
 	}
@@ -19,7 +22,7 @@ class CommandParser {
 	 * @param userInput
 	 * @return description portion of the input
 	 */
-	protected static String getUserCommandDesc(String userInput) {
+	public static String getUserCommandDesc(String userInput) {
 		String[] tokens = userInput.split("\\s+", 2);
 		if (tokens.length < 2) {
 			return null;
@@ -33,7 +36,7 @@ class CommandParser {
 	 * @param userInput
 	 * @return true if the command is at least 2 words long, false otherwise
 	 */
-	protected static boolean isInputValid(String userInput, int length) {
+	public static boolean isInputValid(String userInput, int length) {
 		if (userInput == null || userInput.length() == 0 || userInput.equals("")) {
 			return false;
 		}
@@ -49,7 +52,7 @@ class CommandParser {
 	 * @param input
 	 * @return a String array containing start and end date/times
 	 */
-	protected static String[] getTaskFields(ArrayList<String> input) {
+	public static String[] getTaskFields(ArrayList<String> input) {
 		String[] fields = new String[Task.TASK_FIELD_SIZE];
 		fields = getDateFields(input, fields);
 		fields = getTimeFields(input, fields);
@@ -105,7 +108,7 @@ class CommandParser {
 	 * @param s
 	 * @return String without date and time
 	 */
-	protected static String removeDateTimeFromString(String s) {
+	public static String removeDateTimeFromString(String s) {
 		String[] tokens = s.split("\\s+");
 		
 		for(int i = 0; i < tokens.length; i++) {
@@ -126,7 +129,7 @@ class CommandParser {
 	 * @param desc
 	 * @return String with alias and escape character removed
 	 */
-	protected static String removeAliasAndEscapeChar(String desc) {
+	public static String removeAliasAndEscapeChar(String desc) {
 		String[] tokens = desc.split("\\s+");
 		for (int i = 0; i < tokens.length; i++) {
 			
@@ -146,7 +149,7 @@ class CommandParser {
 	 * @param desc
 	 * @return
 	 */
-	protected static String getAliasFromDescription(String desc) {
+	public static String getAliasFromDescription(String desc) {
 		String[] tokens = desc.split("\\s+");
 		for (int i = 0; i < tokens.length; i++) {
 			if (tokens[i].contains("alias:")) {
@@ -200,7 +203,7 @@ class CommandParser {
 	 * @param str
 	 * @return true is str is an integer
 	 */
-	protected static boolean isInteger(String str) {
+	public static boolean isInteger(String str) {
 		try {
 			Integer.parseInt(str);
 			return true;

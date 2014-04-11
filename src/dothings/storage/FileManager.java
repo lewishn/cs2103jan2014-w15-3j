@@ -1,3 +1,4 @@
+package dothings.storage;
 //@author A0099727J
 import java.io.BufferedReader;
 import java.io.BufferedWriter;
@@ -13,7 +14,9 @@ import java.net.URLDecoder;
 import java.util.ArrayList;
 import java.util.logging.Logger;
 
-class FileManager {
+import dothings.gui.DoThingsGUI;
+
+public class FileManager {
 	private static final String MESSAGE_ERROR_LOGGER_READ = "Error reading from file ";
 	private static final String MESSAGE_ERROR_LOGGER_WRITE = "Error writing to file ";
 	@SuppressWarnings("deprecation")
@@ -58,7 +61,7 @@ class FileManager {
 	 * @param fileName
 	 * @return ArrayList of String with each line as an entry
 	 */
-	protected static ArrayList<String> readFromFile(String fileName) {
+	public static ArrayList<String> readFromFile(String fileName) {
 		//LOGGER.info("Reading from file " + fileName);
 		ArrayList<String> list = new ArrayList<String>();
 		
@@ -80,7 +83,7 @@ class FileManager {
 	 * @param fileName
 	 * @param list
 	 */
-	protected static void writeToFile(String fileName, ArrayList<String> list) {
+	public static void writeToFile(String fileName, ArrayList<String> list) {
 		//LOGGER.info("Writing to file " + fileName);
 		try {
 			BufferedWriter writer = getWriter(filepath + fileName);

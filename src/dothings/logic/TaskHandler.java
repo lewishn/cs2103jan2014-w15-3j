@@ -1,3 +1,5 @@
+package dothings.logic;
+
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collections;
@@ -5,6 +7,10 @@ import java.util.HashSet;
 import java.util.Set;
 
 import org.joda.time.DateTime;
+
+import dothings.parser.CommandParser;
+import dothings.parser.DateParser;
+import dothings.parser.TimeParser;
 
 class TaskHandler {
 	

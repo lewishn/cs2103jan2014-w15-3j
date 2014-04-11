@@ -1,5 +1,9 @@
+package dothings.logic;
+
 // @author A0097082Y
 import java.util.ArrayList;
+
+import dothings.parser.CommandParser;
 
 public class MainLogic{
 	private static final String MESSAGE_EXIT = "exit";
@@ -83,7 +87,7 @@ public class MainLogic{
 	 * @param userInput
 	 * @return a Feedback object containing a String to be shown to the user
 	 */
-	protected static ArrayList<ArrayList<String>> runLogic(String userInput) {
+	public static ArrayList<ArrayList<String>> runLogic(String userInput) {
 		String command = CommandParser.getUserCommandType(userInput);
 		String commandDesc = CommandParser.getUserCommandDesc(userInput);
 		Feedback feed;

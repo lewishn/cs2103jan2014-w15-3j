@@ -1,3 +1,4 @@
+package dothings.parser;
 //@author A0099727J
 import java.util.ArrayList;
 import java.util.Arrays;
@@ -34,7 +35,7 @@ public class TimeParser{
 	 * @param input
 	 * @return a DateTime object with date and time already set
 	 */
-	protected static DateTime setTime(DateTime date, String input) {
+	public static DateTime setTime(DateTime date, String input) {
 		if (isValidFormat(input)) {
 			date = parseTimeFormat(date, input);
 			return date;
@@ -74,7 +75,7 @@ public class TimeParser{
 	 * @param input
 	 * @return true if string is a time, false otherwise
 	 */
-	protected static boolean isTime(String input) {
+	public static boolean isTime(String input) {
 		return isValidFormat(input);
 	}
 	

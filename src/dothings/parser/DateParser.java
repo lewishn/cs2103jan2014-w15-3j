@@ -1,3 +1,4 @@
+package dothings.parser;
 //@author A0099727J
 
 import java.util.ArrayList;
@@ -47,7 +48,7 @@ public class DateParser{
 	 * @param input
 	 * @return a DateTime object with the date to the input
 	 */
-	protected static DateTime setDate(String input) {
+	public static DateTime setDate(String input) {
 		int formatType = getDateFormatType(input);
 		DateTime date = new DateTime();
 
@@ -68,7 +69,7 @@ public class DateParser{
 	 * Set the date to today's date
 	 * @return a DateTime object with the date set to today.
 	 */
-	protected static DateTime setDate() {
+	public static DateTime setDate() {
 		return new DateTime();
 	}
 
@@ -121,7 +122,7 @@ public class DateParser{
 	 * @param input
 	 * @return true if the input string is a valid date
 	 */
-	protected static boolean isDate(String input) {
+	public static boolean isDate(String input) {
 		int formatType = getDateFormatType(input);
 		assert(formatType >= -1 && formatType <=3);
 		
@@ -138,7 +139,7 @@ public class DateParser{
 	 * @param date2
 	 * @return true if date1 is the same as date 2
 	 */
-	protected static boolean isSameDate(DateTime date1, DateTime date2) {
+	public static boolean isSameDate(DateTime date1, DateTime date2) {
 		return (date1.getYear() == date2.getYear()) && (date1.getDayOfYear() == date2.getDayOfYear());
 	}
 	
