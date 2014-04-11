@@ -54,6 +54,7 @@ public class DoThingsGUI extends JFrame  {
 	private static final String CONTENT_PANE_TITLE = "Do-Things";
 	private static final String PLUTO_COND_LIGHT = "Pluto Sans Cond Light";
 	private static final String PLUTO_EXLIGHT = "Pluto Sans ExtraLight";
+	private static final String MESSAGE_ERROR_SYSTEM_TRAY = "Unable to set System Tray";
 	private static final int FEEDBACK_TYPE = 0;
 	private static final int FEEDBACK_DESC = 1;
 	private static final int TASK_DESC = 2;
@@ -258,7 +259,6 @@ public class DoThingsGUI extends JFrame  {
 			int key = e.getKeyCode();
 			InputMap verticalMap = verticalScrollBar.getInputMap(JComponent.WHEN_IN_FOCUSED_WINDOW );
 
-
 			switch(key){
 			case COMMAND_SHIFT_WINDOW_UP:
 				setLocation(getX(),getY()-FRAME_MOVEMENT);
@@ -311,18 +311,19 @@ public class DoThingsGUI extends JFrame  {
 		@Override
 		public void mouseMoved(MouseEvent arg0) {}
 	}
+	
 	/**
 	 * Hides program to system tray
 	 */
 	private void hideToSytemTray(){
 		try{
 			PopupMenu popup = new PopupMenu();
-			tray=SystemTray.getSystemTray();   
-			trayIcon=new TrayIcon(iconImage, "Do-Things", popup);
+			tray = SystemTray.getSystemTray();   
+			trayIcon = new TrayIcon(iconImage, "Do-Things", popup);
 			trayIcon.setImageAutoSize(true);
-			tray.add(trayIcon);
+			tray.add(trayIcon);		
 		}catch(Exception e){
-			System.out.println("Unable to set System Tray");
+			System.out.println(MESSAGE_ERROR_SYSTEM_TRAY);
 		}
 	}
 
