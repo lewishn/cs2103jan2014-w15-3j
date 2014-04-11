@@ -194,4 +194,18 @@ class CommandParser {
 		
 		return r.trim();
 	}
+	
+	/**
+	 * Checks if the String is a valid integer
+	 * @param str
+	 * @return true is str is an integer
+	 */
+	protected static boolean isInteger(String str) {
+		try {
+			Integer.parseInt(str);
+			return true;
+		} catch (NumberFormatException e) {
+			return false;
+		}
+	}
 }

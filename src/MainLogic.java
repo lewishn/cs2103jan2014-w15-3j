@@ -132,11 +132,19 @@ public class MainLogic{
 				return processFeedback(feed, DEFAULT_DELETE_CUSTOM);
 				
 			case UNDO:
-				feed = HistoryHandler.undoCommand();
+				if (CommandParser.isInteger(commandDesc)) {
+					feed = HistoryHandler.undoCommand(Integer.parseInt(commandDesc));
+				} else {
+					feed = HistoryHandler.undoCommand(1);
+				}
 				return processFeedback(feed, DEFAULT_UNDO);
 			
 			case REDO:
-				feed = HistoryHandler.redoCommand();
+				if (CommandParser.isInteger(commandDesc)) {
+					feed = HistoryHandler.redoCommand(Integer.parseInt(commandDesc));
+				} else {
+					feed = HistoryHandler.redoCommand(1);
+				}
 				return processFeedback(feed, DEFAULT_REDO);
 				
 			case SEARCH:
@@ -267,47 +275,45 @@ public class MainLogic{
 		return result;
 	}
 	
-	//@author A0099727J
-		protected static boolean isDefaultCommand(String s) {
-			String[] defaultCommandList = {
-					DEFAULT_ADD, DEFAULT_UPDATE, DEFAULT_MARK,
-					DEFAULT_DELETE, DEFAULT_LIST, DEFAULT_SEARCH,
-					DEFAULT_UNDO, DEFAULT_REDO, DEFAULT_CUSTOM,
-					DEFAULT_DELETE_CUSTOM,  DEFAULT_HELP, DEFAULT_EXIT
-			};
-			
-			for (int i = 0; i < defaultCommandList.length; i++) {
-				if (s.equals(defaultCommandList[i])) {
-					return true;
-				}
+	protected static boolean isDefaultCommand(String s) {
+		String[] defaultCommandList = {
+				DEFAULT_ADD, DEFAULT_UPDATE, DEFAULT_MARK,
+				DEFAULT_DELETE, DEFAULT_LIST, DEFAULT_SEARCH,
+				DEFAULT_UNDO, DEFAULT_REDO, DEFAULT_CUSTOM,
+				DEFAULT_DELETE_CUSTOM,  DEFAULT_HELP, DEFAULT_EXIT
+		};
+		
+		for (int i = 0; i < defaultCommandList.length; i++) {
+			if (s.equals(defaultCommandList[i])) {
+				return true;
 			}
+		}
 			
-			return false;
+		return false;
+	}
+		
+	protected static ArrayList<Task> getTaskList() {
+		return Task.getList();
+	}
+		
+	private static String getHelp() {
+		String[] commandList = {
+				DEFAULT_ADD, DEFAULT_UPDATE, DEFAULT_MARK,
+				DEFAULT_DELETE, DEFAULT_LIST, DEFAULT_SEARCH,
+				DEFAULT_UNDO, DEFAULT_REDO, DEFAULT_CUSTOM,
+				DEFAULT_DELETE_CUSTOM,  DEFAULT_HELP, DEFAULT_EXIT
+		};
+		
+		String list = "";
+		
+		for (int i = 0; i < commandList.length; i++) {
+			String commandHeader = getCustomHeader(commandList[i]);
+			list += (commandHeader + "\n");
+			list += (commandList[i] + CustomCommandHandler.getListOfCustomCommands(commandHeader) + "\n\n");
 		}
 		
-		protected static ArrayList<Task> getTaskList() {
-			return Task.getList();
-		}
-		
-		//@author A0099727J
-		private static String getHelp() {
-			String[] commandList = {
-					DEFAULT_ADD, DEFAULT_UPDATE, DEFAULT_MARK,
-					DEFAULT_DELETE, DEFAULT_LIST, DEFAULT_SEARCH,
-					DEFAULT_UNDO, DEFAULT_REDO, DEFAULT_CUSTOM,
-					DEFAULT_DELETE_CUSTOM,  DEFAULT_HELP, DEFAULT_EXIT
-			};
-			
-			String list = "";
-			
-			for (int i = 0; i < commandList.length; i++) {
-				String commandHeader = getCustomHeader(commandList[i]);
-				list += (commandHeader + "\n");
-				list += (commandList[i] + CustomCommandHandler.getListOfCustomCommands(commandHeader) + "\n\n");
-			}
-			
-			return list;
-		}
+		return list;
+	}
 }
 
 

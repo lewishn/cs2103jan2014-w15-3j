@@ -105,7 +105,7 @@ class CustomCommandHandler {
 		
 		if (index != -1) {
 			for (int i = 1; i < customCommandList.get(index).size(); i++) {
-				list += customCommandList.get(index).get(i);
+				list += " " + customCommandList.get(index).get(i);
 			}
 		}
 		
