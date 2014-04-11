@@ -17,6 +17,7 @@ class TaskHandler {
 	private static final String MESSAGE_ADDED_TASK = "Added \"%s\".";
 	private static final String MESSAGE_UPDATE_TASK = "Task has been updated.";	
 	private static final String MESSAGE_LIST_INCOMPLETE = "Showing incomplete tasks";
+	private static final String MESSAGE_LIST_ERROR = "Oh no! Please enter a valid date";
 	private static final String MESSAGE_LIST_COMPLETE = "Showing completed tasks";
 	private static final String MESSAGE_LIST_OVERDUE = "Showing overdue tasks";
 	private static final String MESSAGE_LIST_ALL = "Showing all tasks";	
@@ -366,6 +367,9 @@ class TaskHandler {
 			if (userInput.equals("completed")) {
 				indexList = getListOfTaskWithStatus(true);
 				feedback = MESSAGE_LIST_COMPLETE;
+			} else if (userInput.equals("incompleted")) {
+				indexList = getListOfTaskWithStatus(false);
+				feedback = MESSAGE_LIST_INCOMPLETE;
 			} else if (userInput.equals("overdue")) {
 				indexList = getListOfOverdueTask();
 				feedback = MESSAGE_LIST_OVERDUE;
@@ -377,7 +381,7 @@ class TaskHandler {
 				feedback = MESSAGE_LIST_ALL;
 			} else {
 				indexList = getListOfTaskWithStatus(false);
-				feedback = MESSAGE_LIST_INCOMPLETE;
+				feedback = MESSAGE_LIST_ERROR;
 			}
 		}
 		return new Feedback(feedback , indexList);

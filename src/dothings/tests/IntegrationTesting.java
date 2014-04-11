@@ -303,5 +303,193 @@ public class IntegrationTesting {
 		assertTrue(result.get(TASK_DESC).isEmpty());
 	}
 	
-	
+	@Test
+	public void listAll() {
+		ArrayList<ArrayList<String>> result = MainLogic.runLogic("delete all");
+		result = MainLogic.runLogic("add assignment due tomorrow");
+		result = MainLogic.runLogic("list all");
+
+		String expectedFeedbackType = "list";
+		String feedbackType = result.get(FEEDBACK_TYPE).get(0);
+		assertEquals(expectedFeedbackType, feedbackType);
+				
+		String expectedFeedbackDes = "Showing all tasks";
+		String feedbackDesc = result.get(FEEDBACK_DESC).get(0);
+		assertEquals(expectedFeedbackDes, feedbackDesc);
+
+		String expectedDesc = "1. assignment due";
+		String taskDesc = result.get(TASK_DESC).get(0);
+		assertEquals(expectedDesc, taskDesc);
+	}
+	@Test
+	public void listAllEmpty() {
+		ArrayList<ArrayList<String>> result = MainLogic.runLogic("delete all");
+		result = MainLogic.runLogic("list all");
+
+		String expectedFeedbackType = "list";
+		String feedbackType = result.get(FEEDBACK_TYPE).get(0);
+		assertEquals(expectedFeedbackType, feedbackType);
+				
+		String expectedFeedbackDes = "Showing all tasks";
+		String feedbackDesc = result.get(FEEDBACK_DESC).get(0);
+		assertEquals(expectedFeedbackDes, feedbackDesc);
+
+		assertTrue(result.get(TASK_DESC).isEmpty());
+	}
+	@Test
+	public void listOverdueTrue() {
+		ArrayList<ArrayList<String>> result = MainLogic.runLogic("delete all");
+		result = MainLogic.runLogic("add assignment due yesterday");
+		result = MainLogic.runLogic("list overdue");
+
+		String expectedFeedbackType = "list";
+		String feedbackType = result.get(FEEDBACK_TYPE).get(0);
+		assertEquals(expectedFeedbackType, feedbackType);
+				
+		String expectedFeedbackDes = "Showing overdue tasks";
+		String feedbackDesc = result.get(FEEDBACK_DESC).get(0);
+		assertEquals(expectedFeedbackDes, feedbackDesc);
+
+		String expectedDesc = "1. assignment due";
+		String taskDesc = result.get(TASK_DESC).get(0);
+		assertEquals(expectedDesc, taskDesc);
+	}
+	@Test
+	public void listOverdueFail() {
+		ArrayList<ArrayList<String>> result = MainLogic.runLogic("delete all");
+		result = MainLogic.runLogic("add assignment due today");
+		result = MainLogic.runLogic("list overdue");
+
+		String expectedFeedbackType = "list";
+		String feedbackType = result.get(FEEDBACK_TYPE).get(0);
+		assertEquals(expectedFeedbackType, feedbackType);
+				
+		String expectedFeedbackDes = "Showing overdue tasks";
+		String feedbackDesc = result.get(FEEDBACK_DESC).get(0);
+		assertEquals(expectedFeedbackDes, feedbackDesc);
+		
+		assertTrue(result.get(TASK_DESC).isEmpty());
+	}
+	@Test
+	public void listCompletedTrue() {
+		ArrayList<ArrayList<String>> result = MainLogic.runLogic("delete all");
+		result = MainLogic.runLogic("add assignment due today");
+		result = MainLogic.runLogic("mark 1");
+		result = MainLogic.runLogic("list completed");
+
+		String expectedFeedbackType = "list";
+		String feedbackType = result.get(FEEDBACK_TYPE).get(0);
+		assertEquals(expectedFeedbackType, feedbackType);
+				
+		String expectedFeedbackDes = "Showing completed tasks";
+		String feedbackDesc = result.get(FEEDBACK_DESC).get(0);
+		assertEquals(expectedFeedbackDes, feedbackDesc);
+
+		String expectedDesc = "1. assignment due";
+		String taskDesc = result.get(TASK_DESC).get(0);
+		assertEquals(expectedDesc, taskDesc);
+	}
+	@Test
+	public void listCompletedFail() {
+		ArrayList<ArrayList<String>> result = MainLogic.runLogic("delete all");
+		result = MainLogic.runLogic("add assignment due today");
+		result = MainLogic.runLogic("list completed");
+
+		String expectedFeedbackType = "list";
+		String feedbackType = result.get(FEEDBACK_TYPE).get(0);
+		assertEquals(expectedFeedbackType, feedbackType);
+				
+		String expectedFeedbackDes = "Showing completed tasks";
+		String feedbackDesc = result.get(FEEDBACK_DESC).get(0);
+		assertEquals(expectedFeedbackDes, feedbackDesc);
+
+		assertTrue(result.get(TASK_DESC).isEmpty());
+	}
+	@Test
+	public void listIncommpletedFail() {
+		ArrayList<ArrayList<String>> result = MainLogic.runLogic("delete all");
+		result = MainLogic.runLogic("add assignment due today");
+		result = MainLogic.runLogic("mark 1");
+		result = MainLogic.runLogic("list incompleted");
+
+		String expectedFeedbackType = "list";
+		String feedbackType = result.get(FEEDBACK_TYPE).get(0);
+		assertEquals(expectedFeedbackType, feedbackType);
+				
+		String expectedFeedbackDes = "Showing incomplete tasks";
+		String feedbackDesc = result.get(FEEDBACK_DESC).get(0);
+		assertEquals(expectedFeedbackDes, feedbackDesc);
+
+		assertTrue(result.get(TASK_DESC).isEmpty());
+	}
+	@Test
+	public void listInCompletedTrue() {
+		ArrayList<ArrayList<String>> result = MainLogic.runLogic("delete all");
+		result = MainLogic.runLogic("add assignment due today");
+		result = MainLogic.runLogic("list incompleted");
+
+		String expectedFeedbackType = "list";
+		String feedbackType = result.get(FEEDBACK_TYPE).get(0);
+		assertEquals(expectedFeedbackType, feedbackType);
+				
+		String expectedFeedbackDes = "Showing incomplete tasks";
+		String feedbackDesc = result.get(FEEDBACK_DESC).get(0);
+		assertEquals(expectedFeedbackDes, feedbackDesc);
+
+		String expectedDesc = "1. assignment due";
+		String taskDesc = result.get(TASK_DESC).get(0);
+		assertEquals(expectedDesc, taskDesc);
+	}
+	@Test
+	public void listDateTrue() {
+		ArrayList<ArrayList<String>> result = MainLogic.runLogic("delete all");
+		result = MainLogic.runLogic("add assignment due today");
+		result = MainLogic.runLogic("list today");
+
+		String expectedFeedbackType = "list";
+		String feedbackType = result.get(FEEDBACK_TYPE).get(0);
+		assertEquals(expectedFeedbackType, feedbackType);
+				
+		String expectedFeedbackDes = "Showing tasks on today";
+		String feedbackDesc = result.get(FEEDBACK_DESC).get(0);
+		assertEquals(expectedFeedbackDes, feedbackDesc);
+
+		String expectedDesc = "1. assignment due";
+		String taskDesc = result.get(TASK_DESC).get(0);
+		assertEquals(expectedDesc, taskDesc);
+	}
+	@Test
+	public void listDateFalse() {
+		ArrayList<ArrayList<String>> result = MainLogic.runLogic("delete all");
+		result = MainLogic.runLogic("add assignment due yesterday");
+		result = MainLogic.runLogic("list 18.04.2014");
+
+		String expectedFeedbackType = "list";
+		String feedbackType = result.get(FEEDBACK_TYPE).get(0);
+		assertEquals(expectedFeedbackType, feedbackType);
+				
+		String expectedFeedbackDes = "Showing tasks on 18.04.2014";
+		String feedbackDesc = result.get(FEEDBACK_DESC).get(0);
+		assertEquals(expectedFeedbackDes, feedbackDesc);
+
+		assertTrue(result.get(TASK_DESC).isEmpty());
+	}
+	@Test
+	public void listDateInvalid() {
+		ArrayList<ArrayList<String>> result = MainLogic.runLogic("delete all");
+		result = MainLogic.runLogic("add assignment due yesterday");
+		result = MainLogic.runLogic("list 18.20.2014");
+
+		String expectedFeedbackType = "list";
+		String feedbackType = result.get(FEEDBACK_TYPE).get(0);
+		assertEquals(expectedFeedbackType, feedbackType);
+				
+		String expectedFeedbackDes = "Oh no! Please enter a valid date";
+		String feedbackDesc = result.get(FEEDBACK_DESC).get(0);
+		assertEquals(expectedFeedbackDes, feedbackDesc);
+
+		String expectedDesc = "1. assignment due";
+		String taskDesc = result.get(TASK_DESC).get(0);
+		assertEquals(expectedDesc, taskDesc);
+	}
 }
