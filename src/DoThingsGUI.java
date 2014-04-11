@@ -602,10 +602,16 @@ public class DoThingsGUI extends JFrame  {
 			}
 			return additionalHeight;
 		}
+		/**
+		 * updates panel height according to how many tasks are listed
+		 */
 		private static void setTaskPanelHeight() {
 			heightChange += TASK_OBJECT_FRAME_HEIGHT;
 			taskPanel.setPreferredSize(new Dimension(FRAME_WIDTH,heightChange));
 		}
+		/**
+		 * sets date time 
+		 */
 		private static void setFeedbackIntoRespectiveFields(int i) {
 			dateTime.get(i).setText(taskDate.get(i));
 			if (taskAlias.get(i) == null) {		
