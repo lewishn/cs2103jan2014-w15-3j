@@ -37,7 +37,7 @@ import org.jnativehook.GlobalScreen;
 import org.jnativehook.NativeHookException;
 import org.jnativehook.keyboard.NativeKeyEvent;
 import org.jnativehook.keyboard.NativeKeyListener;
- 
+
 @SuppressWarnings("serial")
 public class DoThingsGUI extends JFrame  {
 	private static final String DEFAULT_EXIT = "exit";
@@ -54,6 +54,7 @@ public class DoThingsGUI extends JFrame  {
 	private static final String CONTENT_PANE_TITLE = "Do-Things";
 	private static final String PLUTO_COND_LIGHT = "Pluto Sans Cond Light";
 	private static final String PLUTO_EXLIGHT = "Pluto Sans ExtraLight";
+	private static final String MESSAGE_ERROR_SYSTEM_TRAY = "Unable to set System Tray";
 	private static final int FEEDBACK_TYPE = 0;
 	private static final int FEEDBACK_DESC = 1;
 	private static final int TASK_DESC = 2;
@@ -126,15 +127,14 @@ public class DoThingsGUI extends JFrame  {
 	private TriggerOnKeyAction triggerOnKeyAction;
 	private TriggerOnMouseAction triggerOnMouseAction;
 	private static Image iconImage;
-	
+
 	private static final Color HIGHLIGHT_FONT_DARK_BLUE = new Color(0,0,51); 
 	private static final Color HIGHLIGHT_Yellow = new Color(255,255,51);
 	private static final Color INPUT_FIELD_BACKGROUND_LIGHT_BLUE= new Color(153, 204, 255);
-	
+
 	private int xCoordOfFrame;
 	private int yCoordOfFrame;
 
-	// @author  
 	public static void main(String[] args) {
 		EventQueue.invokeLater(new Runnable() {
 			public void run() {
@@ -149,7 +149,7 @@ public class DoThingsGUI extends JFrame  {
 	}
 
 	public DoThingsGUI () {
-		
+
 		getIconImageForGUI();
 		createContentPane();		
 		createInputField();
@@ -159,42 +159,213 @@ public class DoThingsGUI extends JFrame  {
 		createTaskPanel();
 		createTaskPanelScroll();
 		populateToDoListStartup();
-		setLocationRelativeTo(null);	// GUI appears in the middle of screen by default
+		setGUIAppearMiddleOfScreen();
 		setListeners();
 		setVrticalScrollBarSettings();
-	
+
 	}
 	
+	// @author A0101924R
+	private class GlobalKeyPress implements WindowListener, NativeKeyListener{
+
+		private static final String MESSAGE_REGISTER_NATIVE_HOOK_ERROR = "There was a problem registering the native hook.";
+
+		Boolean isVisible = false;
+
+		GlobalKeyPress(Boolean visible) {
+			isVisible = visible;
+		}
+
+		@Override
+		public void windowOpened(WindowEvent e) {
+			//Initialize native hook.
+			try {
+				GlobalScreen.registerNativeHook();
+			}
+			catch (NativeHookException ex) {
+				printErrorMessage(ex);
+				System.exit(1);
+			}
+			GlobalScreen.getInstance().addNativeKeyListener(this);
+		}
+
+		@Override
+		public void windowClosed(WindowEvent e) {
+			//Clean up the native hook.
+			GlobalScreen.unregisterNativeHook();
+			System.runFinalization();
+			System.exit(0);
+		}
+
+		private void printErrorMessage(NativeHookException ex) {
+			System.err.println(MESSAGE_REGISTER_NATIVE_HOOK_ERROR);
+			System.err.println(ex.getMessage());
+			ex.printStackTrace();
+		}
+
+		@Override
+		public void windowActivated(WindowEvent e) {}
+		@Override
+		public void windowClosing(WindowEvent e) {}
+		@Override
+		public void windowDeactivated(WindowEvent e) {}
+		@Override
+		public void windowDeiconified(WindowEvent e) {}
+		@Override
+		public void windowIconified(WindowEvent e) {}
+		@Override
+		public void nativeKeyPressed(NativeKeyEvent e) {}
+		@Override
+		public void nativeKeyReleased(NativeKeyEvent e) {
+			int keyCode = e.getKeyCode();
+			if (keyCode == COMMAND_HIDE) {
+				if (isVisible == true) {
+					inputField.requestFocus();
+					DoThingsGUI.this.setVisible(false);
+					isVisible = false;
+					hideToSytemTray();
+
+				}
+				else {
+					inputField.requestFocus();
+					DoThingsGUI.this.setVisible(true);
+					isVisible = true;
+					removeFromSystemTray();
+				}
+			}
+		}
+		@Override
+		public void nativeKeyTyped(NativeKeyEvent arg0) {}
+	}
+
+	private class TriggerOnKeyAction implements KeyListener{
+
+		@Override
+		public void keyReleased(KeyEvent e) {
+			int key = e.getKeyCode();
+
+			switch(key){
+			case COMMAND_ENTER:
+				String userInput = inputField.getText();
+				ResponsiveContent.getInfoOfTasks(userInput);
+				break;
+			default:
+				break;	
+			}	
+		}
+
+		@Override
+		public void keyPressed(KeyEvent e) {
+			int key = e.getKeyCode();
+			InputMap verticalMap = verticalScrollBar.getInputMap(JComponent.WHEN_IN_FOCUSED_WINDOW );
+
+			switch(key){
+			case COMMAND_SHIFT_WINDOW_UP:
+				setLocation(getX(),getY()-FRAME_MOVEMENT);
+				break;
+			case COMMAND_SHIFT_WINDOW_DOWN:
+				setLocation(getX(),getY()+FRAME_MOVEMENT);
+				break;
+			case COMMAND_SHIFT_WINDOW_LEFT:
+				setLocation(getX()-FRAME_MOVEMENT,getY());
+				break;
+			case COMMAND_SHIFT_WINDOW_RIGHT:
+				setLocation(getX()+FRAME_MOVEMENT,getY());
+				break;
+			case COMMAND_SCROLL_UP:					
+				verticalMap.put(KeyStroke.getKeyStroke( "UP" ),"negativeUnitIncrement" );
+				break;
+			case COMMAND_SCROLL_DOWN:
+				verticalMap.put(KeyStroke.getKeyStroke( "DOWN" ),"positiveUnitIncrement" );
+				break;
+			default:
+				break;
+			}
+		}
+		@Override
+		public void keyTyped(KeyEvent e) {}
+	}
+
+	private class TriggerOnMouseAction implements MouseListener, MouseMotionListener{
+
+		@Override
+		public void mousePressed(MouseEvent arg0) {	 
+			// Get x,y and store them
+			xCoordOfFrame=arg0.getX();
+			yCoordOfFrame=arg0.getY();
+		}
+
+		@Override
+		public void mouseDragged(MouseEvent arg0) {
+			setLocation(getX()+arg0.getX()-xCoordOfFrame,getY()+arg0.getY()-yCoordOfFrame);
+		}
+
+		@Override
+		public void mouseClicked(MouseEvent arg0) {}
+		@Override
+		public void mouseEntered(MouseEvent arg0) {}
+		@Override
+		public void mouseExited(MouseEvent arg0) {}
+		@Override
+		public void mouseReleased(MouseEvent arg0) {}
+		@Override
+		public void mouseMoved(MouseEvent arg0) {}
+	}
+	
+	/**
+	 * Hides program to system tray
+	 */
+	private void hideToSytemTray(){
+		try{
+			PopupMenu popup = new PopupMenu();
+			tray = SystemTray.getSystemTray();   
+			trayIcon = new TrayIcon(iconImage, "Do-Things", popup);
+			trayIcon.setImageAutoSize(true);
+			tray.add(trayIcon);		
+		}catch(Exception e){
+			System.out.println(MESSAGE_ERROR_SYSTEM_TRAY);
+		}
+	}
+
+	private void removeFromSystemTray(){
+		tray.remove(trayIcon);
+	}
+	private void setGUIAppearMiddleOfScreen() {
+		setLocationRelativeTo(null);
+	}
+
 	private void getIconImageForGUI() {
 		iconImage = Toolkit.getDefaultToolkit().getImage("Task.png");
 	}
-	
+
 	private void setVrticalScrollBarSettings() {
 		verticalScrollBar = taskPanelScroll.getVerticalScrollBar();
 		verticalScrollBar.setUnitIncrement(FRAME_SCROLL_SPEED);
 	}
-	
+
 	private void setListeners() {	
 		setWindowHideDisplayListener();
 		setInputFieldListener();
 		setHeadingLabelListener();
 	}
-	
+
 	private void setWindowHideDisplayListener() {
 		globalKeyPress = new GlobalKeyPress(true);
 		addWindowListener(globalKeyPress);
 	}
-	
+
 	private void setInputFieldListener() {
 		triggerOnKeyAction = new TriggerOnKeyAction();
 		inputField.addKeyListener(triggerOnKeyAction);
 	}
-	
+
 	private void setHeadingLabelListener() {
 		triggerOnMouseAction = new TriggerOnMouseAction();
 		headingLabel.addMouseListener(triggerOnMouseAction);
 		headingLabel.addMouseMotionListener(triggerOnMouseAction);
 	}
+	
+	// @author A0097082Y
 	private void populateToDoListStartup() {
 		ResponsiveContent.getInfoOfTasks(STARTUP_COMMAND);
 		feedbackLabel.setText(MESSAGE_STARTUP);
@@ -204,13 +375,13 @@ public class DoThingsGUI extends JFrame  {
 		taskPanelScroll.setFocusable(false);
 		GroupLayout gl_taskPanel = new GroupLayout(taskPanel);
 		gl_taskPanel.setHorizontalGroup(
-			gl_taskPanel.createParallelGroup(Alignment.LEADING)
+				gl_taskPanel.createParallelGroup(Alignment.LEADING)
 				.addGap(0, 320, Short.MAX_VALUE)
-		);
+				);
 		gl_taskPanel.setVerticalGroup(
-			gl_taskPanel.createParallelGroup(Alignment.LEADING)
+				gl_taskPanel.createParallelGroup(Alignment.LEADING)
 				.addGap(0, 485, Short.MAX_VALUE)
-		);
+				);
 		taskPanel.setLayout(gl_taskPanel);
 		taskPanelScroll.setOpaque(false);
 		taskPanelScroll.setHorizontalScrollBarPolicy(ScrollPaneConstants.HORIZONTAL_SCROLLBAR_NEVER);
@@ -284,152 +455,8 @@ public class DoThingsGUI extends JFrame  {
 		setShape(new RoundRectangle2D.Double(ZERO,ZERO,FRAME_WIDTH,FRAME_HEIGHT, SHAPE_DIMENSION, SHAPE_DIMENSION));
 		setIconImage(iconImage);
 	}
-	
-	// Class recognizes KeyEvents even if focus is not on window 
-	// @author: Jiajie 
-	private class GlobalKeyPress implements WindowListener, NativeKeyListener{
 
-		Boolean isVisible = false;
-		
-		GlobalKeyPress(Boolean visible) {
-			isVisible = visible;
-		}
-		
-		@Override
-		public void windowOpened(WindowEvent e) {
-			//Initialize native hook.
-            try {
-                    GlobalScreen.registerNativeHook();
-            }
-            catch (NativeHookException ex) {
-                    System.err.println("There was a problem registering the native hook.");
-                    System.err.println(ex.getMessage());
-                    ex.printStackTrace();
 
-                    System.exit(1);
-            }
-
-            GlobalScreen.getInstance().addNativeKeyListener(this);
-		}
-		
-		@Override
-		public void windowClosed(WindowEvent e) {
-            //Clean up the native hook.
-            GlobalScreen.unregisterNativeHook();
-            System.runFinalization();
-            System.exit(0);
-		}
-		
-		@Override
-		public void windowActivated(WindowEvent e) {}
-		@Override
-		public void windowClosing(WindowEvent e) {}
-		@Override
-		public void windowDeactivated(WindowEvent e) {}
-		@Override
-		public void windowDeiconified(WindowEvent e) {}
-		@Override
-		public void windowIconified(WindowEvent e) {}
-		@Override
-		public void nativeKeyPressed(NativeKeyEvent e) {}
-		@Override
-		public void nativeKeyReleased(NativeKeyEvent e) {
-			int keyCode = e.getKeyCode();
-			if (keyCode == COMMAND_HIDE) {
-						if (isVisible == true) {
-							inputField.requestFocus();
-							DoThingsGUI.this.setVisible(false);
-							isVisible = false;
-							hideToSytemTray();
-							
-						}
-						else {
-							inputField.requestFocus();
-							DoThingsGUI.this.setVisible(true);
-							isVisible = true;
-							removeFromSystemTray();
-						}
-					}
-		}
-		@Override
-		public void nativeKeyTyped(NativeKeyEvent arg0) {}
-	}
-	
-	// @Author: Jiajie 
-	private class TriggerOnKeyAction implements KeyListener{
-		
-		@Override
-		public void keyReleased(KeyEvent e) {
-			int key = e.getKeyCode();
-			
-			switch(key){
-			case COMMAND_ENTER:
-				String userInput = inputField.getText();
-				ResponsiveContent.getInfoOfTasks(userInput);
-				break;
-			default:
-				break;	
-			}	
-		}
-
-		@Override
-		public void keyPressed(KeyEvent e) {
-			int key = e.getKeyCode();
-			InputMap verticalMap = verticalScrollBar.getInputMap(JComponent.WHEN_IN_FOCUSED_WINDOW );
-
-			
-			switch(key){
-			case COMMAND_SHIFT_WINDOW_UP:
-				setLocation(getX(),getY()-FRAME_MOVEMENT);
-				break;
-			case COMMAND_SHIFT_WINDOW_DOWN:
-				setLocation(getX(),getY()+FRAME_MOVEMENT);
-				break;
-			case COMMAND_SHIFT_WINDOW_LEFT:
-				setLocation(getX()-FRAME_MOVEMENT,getY());
-				break;
-			case COMMAND_SHIFT_WINDOW_RIGHT:
-				setLocation(getX()+FRAME_MOVEMENT,getY());
-				break;
-			case COMMAND_SCROLL_UP:					
-				verticalMap.put(KeyStroke.getKeyStroke( "UP" ),"negativeUnitIncrement" );
-				break;
-			case COMMAND_SCROLL_DOWN:
-				verticalMap.put(KeyStroke.getKeyStroke( "DOWN" ),"positiveUnitIncrement" );
-				break;
-			default:
-				break;
-			}
-		}
-		@Override
-		public void keyTyped(KeyEvent e) {}
-	}
-	
-	private class TriggerOnMouseAction implements MouseListener, MouseMotionListener{
-		
-		@Override
-		public void mousePressed(MouseEvent arg0) {	 
-	         // Get x,y and store them
-	         xCoordOfFrame=arg0.getX();
-	         yCoordOfFrame=arg0.getY();
-		}
-		
-		@Override
-		public void mouseDragged(MouseEvent arg0) {
-			setLocation(getX()+arg0.getX()-xCoordOfFrame,getY()+arg0.getY()-yCoordOfFrame);
-		 }
-		
-		@Override
-		public void mouseClicked(MouseEvent arg0) {}
-		@Override
-		public void mouseEntered(MouseEvent arg0) {}
-		@Override
-		public void mouseExited(MouseEvent arg0) {}
-		@Override
-		public void mouseReleased(MouseEvent arg0) {}
-		@Override
-		public void mouseMoved(MouseEvent arg0) {}
-	}
 	// @author: A0097082Y
 	private static class ResponsiveContent {
 
@@ -472,7 +499,7 @@ public class DoThingsGUI extends JFrame  {
 		private static final int HELP_FONT_SIZE = 13;
 		private static final String PLUTO_COND_EXLIGHT_FONT = "Pluto Sans Cond ExLight";
 		private static final String PLUTO_LIGHT_FONT = "Pluto Sans Light";
-		
+		// @author A0097082Y
 		private static void createTaskObjects(int aliasExtension, int descriptionExtension, int change, int i) {
 			createMessagePanel(aliasExtension, descriptionExtension, change, i);
 			createDateTimeField(descriptionExtension, i);
@@ -526,7 +553,7 @@ public class DoThingsGUI extends JFrame  {
 			} else {
 				String feedbackDesc = result.get(FEEDBACK_DESC).get(ZERO);
 				refreshTaskPanel();
-			
+
 				if (feedbackType.equals(DEFAULT_HELP)) {
 					String helpDesc = result.get(TASK_DESC).get(ZERO);
 					feedbackLabel.setText(feedbackDesc);
@@ -544,13 +571,13 @@ public class DoThingsGUI extends JFrame  {
 						for(int i=ZERO; i<numOfTask; i++) {	
 							// Checks for overflow of description text and extends the message panel to fit.
 							int descriptionOverflowExtension = lengthForDescriptionTextOverflow(i);
-							
+
 							// Checks for overflow of alias text and extends the message panel to fit
 							int aliasOverflowExtension = lengthForAliasTextOverflow(i);
 							createTaskObjects(aliasOverflowExtension, descriptionOverflowExtension, heightChange, i);
 							heightChange += descriptionOverflowExtension;
 							heightChange += aliasOverflowExtension;
-							
+
 							// Select color scheme of taskObject
 							if (taskStatus.get(i).equals(MARK_CODE)) {
 								setTaskObjectColorScheme(i, MESSAGE_MARKED_BACKGROUND_LIGHT_GREY, FONT_MARKED_GREY);
@@ -577,7 +604,7 @@ public class DoThingsGUI extends JFrame  {
 			int additionalHeight = ZERO;
 			if(taskAlias.get(i) != null) {
 				int charLength = taskAlias.get(i).length();
-				
+
 				if(charLength > NUM_CHAR_ALIAS_FIRST_LINE) {
 					additionalHeight += HEIGHT_OF_ONE_LINE;
 					charLength -= NUM_CHAR_FIRST_LINE;
@@ -602,10 +629,16 @@ public class DoThingsGUI extends JFrame  {
 			}
 			return additionalHeight;
 		}
+		/**
+		 * updates panel height according to how many tasks are listed
+		 */
 		private static void setTaskPanelHeight() {
 			heightChange += TASK_OBJECT_FRAME_HEIGHT;
 			taskPanel.setPreferredSize(new Dimension(FRAME_WIDTH,heightChange));
 		}
+		/**
+		 * sets date time 
+		 */
 		private static void setFeedbackIntoRespectiveFields(int i) {
 			dateTime.get(i).setText(taskDate.get(i));
 			if (taskAlias.get(i) == null) {		
@@ -614,12 +647,19 @@ public class DoThingsGUI extends JFrame  {
 			}	
 			taskDescription.get(i).append(taskDesc.get(i));
 		}
+		/**
+		 * sets color schemes for message panel, task description font, alias font and date time font
+		 */
 		private static void setTaskObjectColorScheme(int i, Color messageBackground, Color fontColor) {
 			messagePanel.get(i).setBackground(messageBackground);
 			taskDescription.get(i).setForeground(fontColor);
 			alias.get(i).setForeground(fontColor);
 			dateTime.get(i).setForeground(fontColor);
 		}
+		/**
+		 * set Jpanels to new Jpanels, re initialising variables
+		 * @return number of tasks returned from user query
+		 */
 		private static int initialiseFeedbackVariables() {
 			int numOfTask = taskDesc.size();
 			inputField.setText("");  
@@ -631,7 +671,7 @@ public class DoThingsGUI extends JFrame  {
 			return numOfTask;
 		}
 		/**
-		 * Sets error message into feedback field and selects all text in inputfield
+		 * Sets error message into feedback field and selects all text in input field
 		 */
 		private static void errorProcessing(String feedbackDesc) {
 			feedbackLabel.setText(feedbackDesc);
@@ -672,22 +712,5 @@ public class DoThingsGUI extends JFrame  {
 		}
 	}
 
-	/**
-	 * Hides program to system tray
-	 */
-	private void hideToSytemTray(){
-        try{
-        	PopupMenu popup = new PopupMenu();
-        	tray=SystemTray.getSystemTray();   
-            trayIcon=new TrayIcon(iconImage, "Do-Things", popup);
-            trayIcon.setImageAutoSize(true);
-            tray.add(trayIcon);
-        }catch(Exception e){
-            System.out.println("Unable to set System Tray");
-        }
-	}
 
-	private void removeFromSystemTray(){
-		tray.remove(trayIcon);
-	}
 }
