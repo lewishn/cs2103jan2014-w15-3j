@@ -565,16 +565,13 @@ public class DoThingsGUI extends JFrame  {
 						taskTime = result.get(TASK_TIME);
 						int numOfTask = initialiseFeedbackVariables();
 						for(int i=ZERO; i<numOfTask; i++) {	
-							// Checks for overflow of description text and extends the message panel to fit.
-							int descriptionOverflowExtension = heightForDescriptionTextOverflow(i);
 							
-							// Checks for overflow of alias text and extends the message panel to fit
+							int descriptionOverflowExtension = heightForDescriptionTextOverflow(i);
 							int aliasOverflowExtension = heightForAliasTextOverflow(i);
 							createTaskObjects(aliasOverflowExtension, descriptionOverflowExtension, heightChange, i);
 							heightChange += descriptionOverflowExtension;
 							heightChange += aliasOverflowExtension;
 							
-							// Select color scheme of taskObject
 							if (taskStatus.get(i).equals(MARK_CODE)) {
 								setTaskObjectColorScheme(i, MESSAGE_MARKED_BACKGROUND_LIGHT_GREY, FONT_MARKED_GREY);
 							} else if (taskTime.get(i).equals(FLOATING)) {
@@ -586,11 +583,9 @@ public class DoThingsGUI extends JFrame  {
 							} else {
 								setTaskObjectColorScheme(i, MESSAGE_ELSE_TIME_BACKGROUND_GREEN, FONT_ELSE_TIME_WHITE);
 							}
-							// Update text fields and extend taskPanel to fit i number of message panels
 							setFeedbackIntoRespectiveFields(i);
 							setTaskPanelHeight();
 						}
-						// Finally feedback to user what has been done
 						feedbackLabel.setText(feedbackDesc);
 					}			
 				}
