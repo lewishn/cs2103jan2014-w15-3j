@@ -164,7 +164,24 @@ public class DoThingsGUI extends JFrame  {
 		setVrticalScrollBarSettings();
 	
 	}
-	
+	/**
+	 * Hides program to system tray
+	 */
+	private void hideToSytemTray(){
+        try{
+        	PopupMenu popup = new PopupMenu();
+        	tray=SystemTray.getSystemTray();   
+            trayIcon=new TrayIcon(iconImage, "Do-Things", popup);
+            trayIcon.setImageAutoSize(true);
+            tray.add(trayIcon);
+        }catch(Exception e){
+            System.out.println("Unable to set System Tray");
+        }
+	}
+
+	private void removeFromSystemTray(){
+		tray.remove(trayIcon);
+	}
 	private void setGUIAppearMiddleOfScreen() {
 		setLocationRelativeTo(null);
 	}
@@ -691,22 +708,5 @@ public class DoThingsGUI extends JFrame  {
 		}
 	}
 
-	/**
-	 * Hides program to system tray
-	 */
-	private void hideToSytemTray(){
-        try{
-        	PopupMenu popup = new PopupMenu();
-        	tray=SystemTray.getSystemTray();   
-            trayIcon=new TrayIcon(iconImage, "Do-Things", popup);
-            trayIcon.setImageAutoSize(true);
-            tray.add(trayIcon);
-        }catch(Exception e){
-            System.out.println("Unable to set System Tray");
-        }
-	}
 
-	private void removeFromSystemTray(){
-		tray.remove(trayIcon);
-	}
 }
