@@ -33,6 +33,13 @@ class TaskHandler {
 	private static final String MINUTE_FIRST = "00:00";
 	private static final String WHITESPACE = "\\s+";
 	
+	private static final String UPDATE_FIELD_TIME = "time";
+	private static final String UPDATE_FIELD_START = "start";
+	private static final String UPDATE_FIELD_END = "end";
+	private static final String UPDATE_FIELD_DESC1 = "desc";
+	private static final String UPDATE_FIELD_DESC2 = "description";
+	private static final String UPDATE_FIELD_ALIAS = "alias";
+	
 	
 	//////////ADD Functionality//////////
 	
@@ -71,7 +78,7 @@ class TaskHandler {
 		String[] inputTokens = userInput.split(WHITESPACE);
 		ArrayList<String> input = new ArrayList<String>(Arrays.asList(inputTokens));
 		
-		String alias = CommandParser.getAliasFromDescription(userInput);		
+		String alias = CommandParser.getAliasFromDescription(userInput);
 		alias = (Task.isAliasValid(alias) || CommandParser.isInteger(alias)) ? null : alias;
 		userInput = CommandParser.removeDateTimeFromString(userInput);
 		userInput = CommandParser.removeAliasAndEscapeChar(userInput);
@@ -85,19 +92,21 @@ class TaskHandler {
 		Task newTask = null;
 		
 		if (fields[Task.START_DATE] == null) {
-			newTask = createTaskWithoutStartDate(fields, input, alias);
+			newTask = createTaskWithoutStartDate(fields);
 		} else {
-			newTask = createTaskWithStartDate(fields, input, alias);
+			newTask = createTaskWithStartDate(fields);
 		}
 		
 		if (newTask.getStartDateTime() != null && newTask.getEndDateTime() != null && newTask.getStartDateTime().isAfter(newTask.getEndDateTime())) {
 			return null;
 		} else {
+			newTask.setDescription(input);
+			newTask.setAlias(alias);
 			return newTask;
 		}
 	}
 
-	private static Task createTaskWithoutStartDate(String[] fields, String input, String alias) {
+	private static Task createTaskWithoutStartDate(String[] fields) {
 		DateTime start = null;
 		DateTime end = null;
 		
@@ -112,18 +121,18 @@ class TaskHandler {
 			} 
 		}
 		
-		return new Task(input, start, end, alias);
+		return new Task(null, start, end, null);
 	}
 	
-	private static Task createTaskWithStartDate(String[] fields, String input, String alias) {
+	private static Task createTaskWithStartDate(String[] fields) {
 		if (fields[Task.START_TIME] == null) {
-			return createTaskWithStartDateNoStartTime(fields, input, alias);
+			return createTaskWithStartDateNoStartTime(fields);
 		} else {
-			return createTaskWithStartDateAndTime(fields, input, alias);
+			return createTaskWithStartDateAndTime(fields);
 		}
 	}
 	
-	private static Task createTaskWithStartDateNoStartTime(String[] fields, String input, String alias) {
+	private static Task createTaskWithStartDateNoStartTime(String[] fields) {
 		DateTime start = DateParser.setDate(fields[Task.START_DATE]);
 		DateTime end = null;
 		
@@ -137,10 +146,10 @@ class TaskHandler {
 			end = TimeParser.setTime(end, MINUTE_LAST);
 		}
 		
-		return new Task(input, start, end, alias);
+		return new Task(null, start, end, null);
 	}
 	
-	private static Task createTaskWithStartDateAndTime(String[] fields, String input, String alias) {
+	private static Task createTaskWithStartDateAndTime(String[] fields) {
 		DateTime start = DateParser.setDate(fields[Task.START_DATE]);
 		start = TimeParser.setTime(start, fields[Task.START_TIME]);
 		DateTime end = null;
@@ -163,13 +172,13 @@ class TaskHandler {
 			}
 		}
 		
-		return new Task(input, start, end, alias);
+		return new Task(null, start, end, null);
 	}
 	
 	//////////UPDATE Functionality//////////
 	/**
 	 * Updates a task in the specified field
-	 * Input format is "[task number/alias][field to update][update]
+	 * Input format is [task number/alias][field to update][update]
 	 * @param update
 	 * @return a Feedback object to be shown to the user
 	 */
@@ -203,7 +212,7 @@ class TaskHandler {
 			}
 			
 		} else if (updateField.equals("alias")) {
-			String[] tokens = updateDesc.split("\\s+");
+			String[] tokens = updateDesc.split(WHITESPACE);
 			if (tokens.length <= 0) {
 				return new Feedback(MESSAGE_ERROR_ALIAS, true);
 			}
@@ -219,7 +228,7 @@ class TaskHandler {
 			
 		} else if (updateField.equals("desc") || updateField.equals("description")) {
 			if (!CommandParser.isInputValid(updateDesc, 1)) {
-				return new Feedback(MESSAGE_ERROR_UPDATE_ARGUMENT);
+				return new Feedback(MESSAGE_ERROR_UPDATE_ARGUMENT, true);
 			}
 			
 			taskToUpdate = new Task(Task.getList().get(updateIndex));
@@ -229,7 +238,7 @@ class TaskHandler {
 			taskToUpdate = createTask(updateStringWithoutID);
 			
 			if (taskToUpdate.getDescription().trim().length() == 0) {
-				return new Feedback(MESSAGE_ERROR_TASK_DESC_EMPTY);
+				return new Feedback(MESSAGE_ERROR_TASK_DESC_EMPTY, true);
 			}
 		}
 		
@@ -240,6 +249,11 @@ class TaskHandler {
 		return new Feedback(MESSAGE_UPDATE_TASK);
 	}
 	
+	/**
+	 * Toggles the status of the specified tasks.
+	 * @param taskID
+	 * @return Feedback object containing the information to be shown to the user.
+	 */
 	protected static Feedback markTask(String taskID) {
 		ArrayList<Integer> listToMark = getTaskIdFromString(taskID);
 		ArrayList<Task> taskList = Task.getList();
@@ -255,8 +269,15 @@ class TaskHandler {
 		return new Feedback(MESSAGE_TASK_MARK);
 	}
 	
+	/**
+	 * Updates the time of the input task
+	 * @param task
+	 * @param field
+	 * @param update
+	 * @return the updated task
+	 */
 	private static Task updateTaskTime(Task task, String field, String update) {
-		ArrayList<String> updateTokens = new ArrayList<String>(Arrays.asList(update.split("\\s+")));
+		ArrayList<String> updateTokens = new ArrayList<String>(Arrays.asList(update.split(WHITESPACE)));
 		String[] timeFields = CommandParser.getTaskFields(updateTokens);
 		
 		if (field.equalsIgnoreCase("time")) {
@@ -297,6 +318,11 @@ class TaskHandler {
 		return task;
 	}
 	
+	/**
+	 * Get the index of the task from the taskID
+	 * @param taskID
+	 * @return
+	 */
 	private static int getIndexToUpdate(String taskID) {
 		int index = -1;
 		
@@ -315,7 +341,11 @@ class TaskHandler {
 	
 	
 	//////////READ Functionality//////////
-	
+	/**
+	 * Gets the lists of task to display from the input parameter
+	 * @param userInput
+	 * @return Feedback object containing the list of tasks to be displayed
+	 */
 	protected static Feedback listTasks(String userInput) {
 		Task.sortList();
 		ArrayList<Integer> indexList;
@@ -359,6 +389,11 @@ class TaskHandler {
 		return indexList;
 	}
 	
+	/**
+	 * Gets the list of tasks that are either completed or incomplete
+	 * @param completed
+	 * @return List of completed tasks if completed is true, incomplete if false
+	 */
 	protected static ArrayList<Integer> getListOfTaskWithStatus(boolean completed) {
 		ArrayList<Task> list = Task.loadTasks();
 		ArrayList<Integer> indexList = new ArrayList<Integer>();
@@ -372,6 +407,10 @@ class TaskHandler {
 		return indexList;
 	}
 	
+	/**
+	 * Get the list of tasks which are overdue
+	 * @return list of overdue tasks
+	 */
 	private static ArrayList<Integer> getListOfOverdueTask() {
 		ArrayList<Task> list = Task.loadTasks();
 		ArrayList<Integer> indexList = new ArrayList<Integer>();
@@ -385,6 +424,11 @@ class TaskHandler {
 		return indexList;
 	}
 	
+	/**
+	 * Get the list of tasks with end or start date same as the specified date
+	 * @param input
+	 * @return lists of tasks that have the specified date
+	 */
 	private static ArrayList<Integer> getListOfTaskWithDate(String input) {
 		DateTime date = DateParser.setDate(input);
 		
@@ -426,19 +470,17 @@ class TaskHandler {
 			return new Feedback(MESSAGE_ERROR_DELETE_ARGUMENT);
 		}
 		
+		String feedback;
+		
 		if (taskID.equalsIgnoreCase("completed")) {
 			HistoryHandler.pushUndoStack();
 			deleteCompleted();
-			Task.saveTasks();
-			HistoryHandler.purgeRedoStack();
-			return new Feedback(MESSAGE_DELETE_COMPLETE);
+			feedback = MESSAGE_DELETE_COMPLETE;
 			
 		} else if (taskID.equalsIgnoreCase("all")) {
 			HistoryHandler.pushUndoStack();
 			deleteAll();
-			Task.saveTasks();
-			HistoryHandler.purgeRedoStack();
-			return new Feedback(MESSAGE_DELETE_ALL);
+			feedback = MESSAGE_DELETE_ALL;
 		} else {
 			ArrayList<Integer> listToDelete = getTaskIdFromString(taskID);
 			
@@ -448,12 +490,17 @@ class TaskHandler {
 			
 			HistoryHandler.pushUndoStack();
 			deleteList(listToDelete);
-			executePostCommandRoutine();
-			return new Feedback(MESSAGE_DELETE_SUCCESS);
+			feedback = MESSAGE_DELETE_SUCCESS;
 		}
 		
+		executePostCommandRoutine();
+		return new Feedback(feedback);
 	}
 	
+	/**
+	 * Deletes all tasks specified in the list
+	 * @param list
+	 */
 	private static void deleteList(ArrayList<Integer> list) {
 		ArrayList<Task> taskList = Task.getList();
 		for (int i = 0; i < list.size(); i++) {
@@ -462,6 +509,9 @@ class TaskHandler {
 		Task.setList(taskList);
 	}
 	
+	/**
+	 * Deletes all tasks marked as completed
+	 */
 	private static void deleteCompleted() {
 		ArrayList<Task> taskList = Task.getList();
 		
@@ -473,10 +523,18 @@ class TaskHandler {
 		}
 	}
 	
+	/**
+	 * Deletes all tasks from the taskList
+	 */
 	private static void deleteAll() {
 		Task.setList(new ArrayList<Task>());
 	}
 	
+	/**
+	 * Checks if the integer is within the size of the task list
+	 * @param index
+	 * @return true if index is withing the range of the list
+	 */
 	private static boolean isOutOfDeleteRange(int index) {
 		if (index >= 0 && index < Task.getList().size()) {
 			return false;
@@ -485,8 +543,13 @@ class TaskHandler {
 		}
 	}
 	
+	/**
+	 * Gets the list of task indices from the input string containing integers and/or aliases
+	 * @param list
+	 * @return Sorted list of task indices without duplicates
+	 */
 	private static ArrayList<Integer> getTaskIdFromString(String list) {
-		String[] tempList = list.split("\\s+");
+		String[] tempList = list.split(WHITESPACE);
 		Set<Integer> deleteList = new HashSet<Integer>();
 		
 		for (int i = 0; i < tempList.length; i++) {
@@ -512,8 +575,13 @@ class TaskHandler {
 	}
 	
 	////////////////SEARCH Functionality////////////////////
+	/**
+	 * Returns the indices of tasks that contain at least one the words.
+	 * @param searchKey
+	 * @return ArrayList of task indices
+	 */
 	protected static Feedback searchTasks(String searchKey) {
-		String[] keys = searchKey.split("\\s+");
+		String[] keys = searchKey.split(WHITESPACE);
 		if (keys.length == 0) {
 			return new Feedback(MESSAGE_ERROR_SEARCH);
 		}
@@ -532,6 +600,9 @@ class TaskHandler {
 		return new Feedback("Search for " + searchKey , indexList);
 	}
 	
+	/**
+	 * Executes the necessary methods after a user operation on the task list
+	 */
 	private static void executePostCommandRoutine() {
 		Task.sortList();
 		Task.saveTasks();
