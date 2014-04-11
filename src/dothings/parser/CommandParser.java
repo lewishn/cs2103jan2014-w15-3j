@@ -5,7 +5,7 @@ import java.util.ArrayList;
 import dothings.logic.Task;
 
 public class CommandParser {
-	private static final String timeIdentifier = "at @ by from for to on before until end start - , and";
+	private static final String timeIdentifier = "at @ by from for this to on before until end start - , and";
 	
 	/**
 	 * Returns the command type portion of the string

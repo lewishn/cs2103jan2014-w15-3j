@@ -267,11 +267,12 @@ class TaskHandler {
 			return new Feedback(MESSAGE_ERROR_MARK_NO_TASK, true);
 		}
 		
+		HistoryHandler.pushUndoStack();
 		for (int i = 0; i < listToMark.size(); i++) {
 			taskList.get((int)listToMark.get(i)).toggleStatus();
 		}
 		Task.setList(taskList);
-		Task.saveTasks();
+		executePostCommandRoutine();
 		return new Feedback(MESSAGE_TASK_MARK);
 	}
 	
@@ -596,7 +597,7 @@ class TaskHandler {
 		
 		for (int i = 0; i < taskList.size(); i++) {
 			for (int j = 0; j < keys.length; j++) {
-				if (taskList.get(i).getDescription().contains(keys[j])) {
+				if (taskList.get(i).getDescription().toLowerCase().contains(keys[j].toLowerCase())) {
 					indexList.add(i);
 					break;
 				}
