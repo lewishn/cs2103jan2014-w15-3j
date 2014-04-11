@@ -159,10 +159,14 @@ public class DoThingsGUI extends JFrame  {
 		createTaskPanel();
 		createTaskPanelScroll();
 		populateToDoListStartup();
-		setLocationRelativeTo(null);	// GUI appears in the middle of screen by default
+		setGUIAppearMiddleOfScreen();
 		setListeners();
 		setVrticalScrollBarSettings();
 	
+	}
+	
+	private void setGUIAppearMiddleOfScreen() {
+		setLocationRelativeTo(null);
 	}
 	
 	private void getIconImageForGUI() {
@@ -285,8 +289,6 @@ public class DoThingsGUI extends JFrame  {
 		setIconImage(iconImage);
 	}
 	
-	// Class recognizes KeyEvents even if focus is not on window 
-	// @author: Jiajie 
 	private class GlobalKeyPress implements WindowListener, NativeKeyListener{
 
 		Boolean isVisible = false;
