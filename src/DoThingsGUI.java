@@ -478,7 +478,7 @@ public class DoThingsGUI extends JFrame  {
 		private static final int HELP_FONT_SIZE = 13;
 		private static final String PLUTO_COND_EXLIGHT_FONT = "Pluto Sans Cond ExLight";
 		private static final String PLUTO_LIGHT_FONT = "Pluto Sans Light";
-		
+		// @author A0097082Y
 		private static void createTaskObjects(int aliasExtension, int descriptionExtension, int change, int i) {
 			createMessagePanel(aliasExtension, descriptionExtension, change, i);
 			createDateTimeField(descriptionExtension, i);
@@ -608,10 +608,16 @@ public class DoThingsGUI extends JFrame  {
 			}
 			return additionalHeight;
 		}
+		/**
+		 * updates panel height according to how many tasks are listed
+		 */
 		private static void setTaskPanelHeight() {
 			heightChange += TASK_OBJECT_FRAME_HEIGHT;
 			taskPanel.setPreferredSize(new Dimension(FRAME_WIDTH,heightChange));
 		}
+		/**
+		 * sets date time 
+		 */
 		private static void setFeedbackIntoRespectiveFields(int i) {
 			dateTime.get(i).setText(taskDate.get(i));
 			if (taskAlias.get(i) == null) {		
@@ -620,12 +626,19 @@ public class DoThingsGUI extends JFrame  {
 			}	
 			taskDescription.get(i).append(taskDesc.get(i));
 		}
+		/**
+		 * sets color schemes for message panel, task description font, alias font and date time font
+		 */
 		private static void setTaskObjectColorScheme(int i, Color messageBackground, Color fontColor) {
 			messagePanel.get(i).setBackground(messageBackground);
 			taskDescription.get(i).setForeground(fontColor);
 			alias.get(i).setForeground(fontColor);
 			dateTime.get(i).setForeground(fontColor);
 		}
+		/**
+		 * set Jpanels to new Jpanels, re initialising variables
+		 * @return number of tasks returned from user query
+		 */
 		private static int initialiseFeedbackVariables() {
 			int numOfTask = taskDesc.size();
 			inputField.setText("");  
@@ -637,7 +650,7 @@ public class DoThingsGUI extends JFrame  {
 			return numOfTask;
 		}
 		/**
-		 * Sets error message into feedback field and selects all text in inputfield
+		 * Sets error message into feedback field and selects all text in input field
 		 */
 		private static void errorProcessing(String feedbackDesc) {
 			feedbackLabel.setText(feedbackDesc);
