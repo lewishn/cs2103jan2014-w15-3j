@@ -262,15 +262,16 @@ class TaskHandler {
 	 */
 	protected static Feedback markTask(String taskID) {
 		ArrayList<Integer> listToMark = getTaskIdFromString(taskID);
-		ArrayList<Task> taskList = Task.getList();
 		if(listToMark.size() == 0) {
 			return new Feedback(MESSAGE_ERROR_MARK_NO_TASK, true);
 		}
 		
-		HistoryHandler.pushUndoStack();
+		ArrayList<Task> taskList = Task.getCloneList();
 		for (int i = 0; i < listToMark.size(); i++) {
 			taskList.get((int)listToMark.get(i)).toggleStatus();
 		}
+		
+		HistoryHandler.pushUndoStack();
 		Task.setList(taskList);
 		executePostCommandRoutine();
 		return new Feedback(MESSAGE_TASK_MARK);
