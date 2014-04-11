@@ -123,9 +123,9 @@ public class DoThingsGUI extends JFrame  {
 	private static SystemTray tray;
 	private static TrayIcon trayIcon;
 	private GlobalKeyPress globalKeyPress; 
-	private TriggerOnKeyAction triggerOnKeyReleased;
+	private TriggerOnKeyAction triggerOnKeyAction;
 	private TriggerOnMouseAction triggerOnMouseAction;
-	private static Image image;
+	private static Image iconImage;
 	
 	private static final Color HIGHLIGHT_FONT_DARK_BLUE = new Color(0,0,51); 
 	private static final Color HIGHLIGHT_Yellow = new Color(255,255,51);
@@ -150,12 +150,7 @@ public class DoThingsGUI extends JFrame  {
 
 	public DoThingsGUI () {
 		
-		globalKeyPress = new GlobalKeyPress(true);
-		triggerOnKeyReleased = new TriggerOnKeyAction();
-		triggerOnMouseAction = new TriggerOnMouseAction();
-		image = Toolkit.getDefaultToolkit().getImage("Task.png");
-		
-		// @author A0097082Y
+		getIconImageForGUI();
 		createContentPane();		
 		createInputField();
 		createFeedbackLabel();
@@ -169,15 +164,35 @@ public class DoThingsGUI extends JFrame  {
 		setVrticalScrollBarSettings();
 	
 	}
-
+	
+	private void getIconImageForGUI() {
+		iconImage = Toolkit.getDefaultToolkit().getImage("Task.png");
+	}
+	
 	private void setVrticalScrollBarSettings() {
 		verticalScrollBar = taskPanelScroll.getVerticalScrollBar();
 		verticalScrollBar.setUnitIncrement(FRAME_SCROLL_SPEED);
 	}
-	private void setListeners() {
-		addWindowListener(globalKeyPress);	
-		inputField.addKeyListener(triggerOnKeyReleased);
-		addMouseListener(triggerOnMouseAction);
+	
+	private void setListeners() {	
+		setWindowHideDisplayListener();
+		setInputFieldListener();
+		setHeadingLabelListener();
+	}
+	
+	private void setWindowHideDisplayListener() {
+		globalKeyPress = new GlobalKeyPress(true);
+		addWindowListener(globalKeyPress);
+	}
+	
+	private void setInputFieldListener() {
+		triggerOnKeyAction = new TriggerOnKeyAction();
+		inputField.addKeyListener(triggerOnKeyAction);
+	}
+	
+	private void setHeadingLabelListener() {
+		triggerOnMouseAction = new TriggerOnMouseAction();
+		headingLabel.addMouseListener(triggerOnMouseAction);
 		headingLabel.addMouseMotionListener(triggerOnMouseAction);
 	}
 	private void populateToDoListStartup() {
@@ -267,7 +282,7 @@ public class DoThingsGUI extends JFrame  {
 		setContentPane(contentPane);
 		contentPane.setLayout(null);
 		setShape(new RoundRectangle2D.Double(ZERO,ZERO,FRAME_WIDTH,FRAME_HEIGHT, SHAPE_DIMENSION, SHAPE_DIMENSION));
-		setIconImage(image);
+		setIconImage(iconImage);
 	}
 	
 	// Class recognizes KeyEvents even if focus is not on window 
@@ -395,8 +410,8 @@ public class DoThingsGUI extends JFrame  {
 		@Override
 		public void mousePressed(MouseEvent arg0) {	 
 	         // Get x,y and store them
-	         xCoordOfFrame=arg0.getXOnScreen();
-	         yCoordOfFrame=arg0.getYOnScreen();
+	         xCoordOfFrame=arg0.getX();
+	         yCoordOfFrame=arg0.getY();
 		}
 		
 		@Override
@@ -664,7 +679,7 @@ public class DoThingsGUI extends JFrame  {
         try{
         	PopupMenu popup = new PopupMenu();
         	tray=SystemTray.getSystemTray();   
-            trayIcon=new TrayIcon(image, "Do-Things", popup);
+            trayIcon=new TrayIcon(iconImage, "Do-Things", popup);
             trayIcon.setImageAutoSize(true);
             tray.add(trayIcon);
         }catch(Exception e){
