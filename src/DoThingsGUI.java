@@ -290,7 +290,9 @@ public class DoThingsGUI extends JFrame  {
 	}
 	
 	private class GlobalKeyPress implements WindowListener, NativeKeyListener{
-
+		
+		private static final String MESSAGE_REGISTER_NATIVE_HOOK_ERROR = "There was a problem registering the native hook.";
+		
 		Boolean isVisible = false;
 		
 		GlobalKeyPress(Boolean visible) {
@@ -304,13 +306,9 @@ public class DoThingsGUI extends JFrame  {
                     GlobalScreen.registerNativeHook();
             }
             catch (NativeHookException ex) {
-                    System.err.println("There was a problem registering the native hook.");
-                    System.err.println(ex.getMessage());
-                    ex.printStackTrace();
-
-                    System.exit(1);
+            	 printErrorMessage(ex);
+                 System.exit(1);
             }
-
             GlobalScreen.getInstance().addNativeKeyListener(this);
 		}
 		
@@ -320,6 +318,12 @@ public class DoThingsGUI extends JFrame  {
             GlobalScreen.unregisterNativeHook();
             System.runFinalization();
             System.exit(0);
+		}
+		
+		private void printErrorMessage(NativeHookException ex) {
+			System.err.println(MESSAGE_REGISTER_NATIVE_HOOK_ERROR);
+            System.err.println(ex.getMessage());
+            ex.printStackTrace();
 		}
 		
 		@Override
