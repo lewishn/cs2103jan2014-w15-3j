@@ -3,9 +3,14 @@ package dothings.parser;
 import java.util.ArrayList;
 
 import dothings.logic.Task;
+import dothings.storage.FileManager;
 
 public class CommandParser {
+	private static final String ESCAPE_CHARACTER = "\\";
+	private static final String ALIAS_IDENTIFIER = "alias:";
+	private static final String WHITESPACE = "\\s+";
 	private static final String timeIdentifier = "at @ by from for this to on before until end start - , and";
+	private static final String LOG_IS_INPUT_VALID = "CommandParser.isInputValid(%s, %d) : %b";
 	
 	/**
 	 * Returns the command type portion of the string
@@ -13,7 +18,9 @@ public class CommandParser {
 	 * @return command type portion of the input
 	 */
 	public static String getUserCommandType(String userInput) {
-		String[] tokens = userInput.split("\\s+");
+		assert(userInput != null);
+		
+		String[] tokens = userInput.split(WHITESPACE);
 		return tokens[0];
 	}
 
@@ -23,7 +30,9 @@ public class CommandParser {
 	 * @return description portion of the input
 	 */
 	public static String getUserCommandDesc(String userInput) {
-		String[] tokens = userInput.split("\\s+", 2);
+		assert(userInput != null);
+		
+		String[] tokens = userInput.split(WHITESPACE, 2);
 		if (tokens.length < 2) {
 			return null;
 		}
@@ -41,8 +50,11 @@ public class CommandParser {
 			return false;
 		}
 		
-		String[] tokens = userInput.split("\\s+");
-		return tokens.length >= length;
+		String[] tokens = userInput.split(WHITESPACE);
+		boolean isValid = (tokens.length >= length);
+		FileManager.log(String.format(LOG_IS_INPUT_VALID, userInput, length, isValid));
+		
+		return isValid;
 	}
 	
 	/**
@@ -109,7 +121,7 @@ public class CommandParser {
 	 * @return String without date and time
 	 */
 	public static String removeDateTimeFromString(String s) {
-		String[] tokens = s.split("\\s+");
+		String[] tokens = s.split(WHITESPACE);
 		
 		for(int i = 0; i < tokens.length; i++) {
 			if (DateParser.isDate(tokens[i]) || TimeParser.isTime(tokens[i])) {
@@ -130,13 +142,13 @@ public class CommandParser {
 	 * @return String with alias and escape character removed
 	 */
 	public static String removeAliasAndEscapeChar(String desc) {
-		String[] tokens = desc.split("\\s+");
+		String[] tokens = desc.split(WHITESPACE);
 		for (int i = 0; i < tokens.length; i++) {
 			
-			if (tokens[i].startsWith("\\")) {
+			if (tokens[i].startsWith(ESCAPE_CHARACTER)) {
 				tokens[i] = tokens[i].substring(1);
 			}
-			if (tokens[i].contains("alias:")) {
+			if (tokens[i].contains(ALIAS_IDENTIFIER)) {
 				tokens[i] = null;
 			}	
 		}
@@ -145,15 +157,15 @@ public class CommandParser {
 	}
 	
 	/**
-	 * Get the first occurence of an alias in the string
+	 * Get the first occurrence of an alias in the string
 	 * @param desc
 	 * @return
 	 */
 	public static String getAliasFromDescription(String desc) {
-		String[] tokens = desc.split("\\s+");
+		String[] tokens = desc.split(WHITESPACE);
 		for (int i = 0; i < tokens.length; i++) {
-			if (tokens[i].contains("alias:")) {
-				return tokens[i].substring("alias:".length());
+			if (tokens[i].contains(ALIAS_IDENTIFIER)) {
+				return tokens[i].substring(ALIAS_IDENTIFIER.length());
 			}
 		}
 		
@@ -185,6 +197,8 @@ public class CommandParser {
 	 * @return array s as String sentence
 	 */
 	protected static String arrayToString(String[] s) {
+		assert(s != null);
+		
 		String r = "";
 		for (int i = 0; i < s.length; i++) {
 			if (s[i] == null) continue;
@@ -204,6 +218,8 @@ public class CommandParser {
 	 * @return true is str is an integer
 	 */
 	public static boolean isInteger(String str) {
+		assert(str != null);
+		
 		try {
 			Integer.parseInt(str);
 			return true;

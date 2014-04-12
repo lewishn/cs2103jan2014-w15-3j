@@ -1,12 +1,14 @@
+//@author A0099727J
 package dothings.logic;
 
-//@author A0099727J
 import java.util.ArrayDeque;
 import java.util.ArrayList;
 
 import dothings.storage.FileManager;
 
 public class HistoryHandler {
+	private static final String LOG_SAVING_UNDO_HISTORY = "Saving undo history";
+	private static final String LOG_LOADING_UNDO_HISTORY = "Loading undo history.";
 	private static final String FILE_UNDO = "undo.txt";
 	private static final String DELIMITER = "!@#$%^&*()";
 	private static final int MAXIMUM_UNDO_STEPS = 100;
@@ -26,6 +28,7 @@ public class HistoryHandler {
 	 */
 	protected static Feedback undoCommand(int numberOfSteps) {
 		int successfulTries = 0;
+		numberOfSteps = (numberOfSteps < 0) ? 1 : numberOfSteps;
 		
 		while (numberOfSteps-- > 0) {
 			boolean tryUndo = popUndoStack();
@@ -38,6 +41,7 @@ public class HistoryHandler {
 
 		if(successfulTries > 0) {
 			Task.saveTasks();
+			saveUndoStack();
 			return new Feedback(String.format(UNDO_SUCCESS, successfulTries));
 		} else {
 			return new Feedback(UNDO_FAIL);
@@ -62,6 +66,7 @@ public class HistoryHandler {
 
 		if(successfulTries > 0) {
 			Task.saveTasks();
+			saveUndoStack();
 			return new Feedback(String.format(REDO_SUCCESS, successfulTries));
 		} else {
 			return new Feedback(REDO_FAIL);
@@ -133,6 +138,7 @@ public class HistoryHandler {
 	 * Saves undo history to a file
 	 */
 	private static void saveUndoStack() {
+		FileManager.log(LOG_SAVING_UNDO_HISTORY);
 		ArrayDeque<ArrayList<Task>> undoStack = (ArrayDeque<ArrayList<Task>>) taskUndoStack.clone();
 		ArrayList<String> saveList = new ArrayList<String>();
 		
@@ -154,6 +160,8 @@ public class HistoryHandler {
 	 * @return
 	 */
 	private static ArrayDeque<ArrayList<Task>> loadUndoStack() {
+		FileManager.log(LOG_LOADING_UNDO_HISTORY);
+		
 		ArrayList<String> list = FileManager.readFromFile(FILE_UNDO);
 		ArrayDeque<ArrayList<Task>> undoStack = new ArrayDeque<ArrayList<Task>>();
 		ArrayList<Task> stackEntry = new ArrayList<Task>();
@@ -170,5 +178,4 @@ public class HistoryHandler {
 		
 		return undoStack;
 	}
-	
 }

@@ -1,12 +1,17 @@
-package dothings.parser;
 //@author A0099727J
+package dothings.parser;
+
 import java.util.ArrayList;
 import java.util.Arrays;
+
 import org.joda.time.DateTime;
 import org.joda.time.format.DateTimeFormat;
 import org.joda.time.format.DateTimeFormatter;
 
+import dothings.storage.FileManager;
+
 public class TimeParser{
+	
 	private static final String TIME_FORMAT_0 = "HH:mm";
 	private static final String TIME_FORMAT_1 = "HH.mm";
 	private static final String TIME_FORMAT_2 = "HHmm";
@@ -52,6 +57,7 @@ public class TimeParser{
 	private static boolean isValidFormat(String input) {
 		DateTime date;
 		int i = 0;
+		
 		for ( ; i < timeFormats.size(); i++) {
 			try {
 				date = timeFormats.get(i).parseDateTime(input);
@@ -71,7 +77,7 @@ public class TimeParser{
 	}
 	
 	/**
-	 * Checks wheter the input string is a time
+	 * Checks whether the input string is a time
 	 * @param input
 	 * @return true if string is a time, false otherwise
 	 */

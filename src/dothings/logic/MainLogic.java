@@ -1,11 +1,14 @@
+// @author A0097082Y
+
 package dothings.logic;
 
-// @author A0097082Y
 import java.util.ArrayList;
 
 import dothings.parser.CommandParser;
+import dothings.storage.FileManager;
 
 public class MainLogic{
+	private static final String LOG_USER_INPUT = "User Input: %s";
 	private static final String MESSAGE_EXIT = "exiting..";
 	private static final String MESSAGE_INVALID = "Oops, please try again.";
 	private static final String MESSAGE_ERROR_CUSTOM ="Invalid custom command format";
@@ -89,6 +92,7 @@ public class MainLogic{
 	 * @return a Feedback object containing a String to be shown to the user
 	 */
 	public static ArrayList<ArrayList<String>> runLogic(String userInput) {
+		FileManager.log(String.format(LOG_USER_INPUT, userInput));
 		String command = CommandParser.getUserCommandType(userInput);
 		String commandDesc = CommandParser.getUserCommandDesc(userInput);
 		Feedback feed;
@@ -161,7 +165,6 @@ public class MainLogic{
 					return processFeedback(feed, DEFAULT_SEARCH);	
 				}
 				
-			
 			case MARK:
 				feed = TaskHandler.markTask(commandDesc);
 				return processFeedback(feed, DEFAULT_MARK);

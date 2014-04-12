@@ -140,6 +140,7 @@ public class DateParser{
 	 * @return true if date1 is the same as date 2
 	 */
 	public static boolean isSameDate(DateTime date1, DateTime date2) {
+		assert(date1 != null && date2 != null);
 		return (date1.getYear() == date2.getYear()) && (date1.getDayOfYear() == date2.getDayOfYear());
 	}
 	
@@ -223,7 +224,7 @@ public class DateParser{
 	}
 	
 	/**
-	 * Splits the day and month of the input dqate string into two integers
+	 * Splits the day and month of the input date string into two integers
 	 * @param date
 	 * @return integer array with the day of the month in index 0 and month of the year in index 1
 	 */

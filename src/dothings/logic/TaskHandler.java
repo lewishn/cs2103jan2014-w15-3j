@@ -14,6 +14,7 @@ import dothings.parser.TimeParser;
 
 class TaskHandler {
 	
+	private static final String MESSAGE_SHOW__ON_DATE = "Showing tasks on %s";
 	private static final String MESSAGE_ADDED_TASK = "Added \"%s\".";
 	private static final String MESSAGE_UPDATE_TASK = "Task has been updated.";	
 	private static final String MESSAGE_LIST_INCOMPLETE = "Showing incomplete tasks";
@@ -46,6 +47,11 @@ class TaskHandler {
 	private static final String UPDATE_FIELD_DESC1 = "desc";
 	private static final String UPDATE_FIELD_DESC2 = "description";
 	private static final String UPDATE_FIELD_ALIAS = "alias";
+	
+	private static final String TASK_STATUS_OVERDUE = "overdue";
+	private static final String TASK_STATUS_INCOMPLETE = "incompleted";
+	private static final String TASK_SELECT_ALL = "all";
+	private static final String TASK_STATUS_COMPLETE = "completed";
 	
 	
 	//////////ADD Functionality//////////
@@ -206,7 +212,7 @@ class TaskHandler {
 			return new Feedback(MESSAGE_ERROR_UPDATE_NO_SUCH_TASK);
 		}
 		
-		if (updateField.equalsIgnoreCase("start") || updateField.equalsIgnoreCase("end") || updateField.equalsIgnoreCase("time")) {
+		if (updateField.equalsIgnoreCase(UPDATE_FIELD_START) || updateField.equalsIgnoreCase(UPDATE_FIELD_END) || updateField.equalsIgnoreCase(UPDATE_FIELD_TIME)) {
 			if (!CommandParser.isInputValid(updateDesc, 1)) {
 				return new Feedback(MESSAGE_ERROR_UPDATE_ARGUMENT);
 			}
@@ -218,7 +224,7 @@ class TaskHandler {
 				return new Feedback(MESSAGE_ERROR_START_AFTER_END, true);
 			}
 			
-		} else if (updateField.equals("alias")) {
+		} else if (updateField.equals(UPDATE_FIELD_ALIAS)) {
 			String[] tokens = updateDesc.split(WHITESPACE);
 			if (tokens.length <= 0) {
 				return new Feedback(MESSAGE_ERROR_ALIAS, true);
@@ -233,7 +239,7 @@ class TaskHandler {
 			taskToUpdate = new Task(Task.getList().get(updateIndex));
 			taskToUpdate.setAlias(alias);
 			
-		} else if (updateField.equals("desc") || updateField.equals("description")) {
+		} else if (updateField.equals(UPDATE_FIELD_DESC1) || updateField.equals(UPDATE_FIELD_DESC2)) {
 			if (!CommandParser.isInputValid(updateDesc, 1)) {
 				return new Feedback(MESSAGE_ERROR_UPDATE_ARGUMENT, true);
 			}
@@ -286,10 +292,12 @@ class TaskHandler {
 	 * @return the updated task
 	 */
 	private static Task updateTaskTime(Task task, String field, String update) {
+		assert(field.equalsIgnoreCase(UPDATE_FIELD_TIME) || field.equalsIgnoreCase(UPDATE_FIELD_START) || field.equalsIgnoreCase(UPDATE_FIELD_END));
+		
 		ArrayList<String> updateTokens = new ArrayList<String>(Arrays.asList(update.split(WHITESPACE)));
 		String[] timeFields = CommandParser.getTaskFields(updateTokens);
 		
-		if (field.equalsIgnoreCase("time")) {
+		if (field.equalsIgnoreCase(UPDATE_FIELD_TIME)) {
 			Task tempTask = createTask(update);
 			if (tempTask == null) {
 				return null;
@@ -313,7 +321,7 @@ class TaskHandler {
 				return null;
 			}
 			
-			if (field.equalsIgnoreCase("start")) {
+			if (field.equalsIgnoreCase(UPDATE_FIELD_START)) {
 				task.setStartDateTime(dateTime);
 			} else {
 				task.setEndDateTime(dateTime);
@@ -364,19 +372,19 @@ class TaskHandler {
 			indexList = getListOfTaskWithStatus(false);
 			feedback = MESSAGE_LIST_INCOMPLETE;
 		} else {
-			if (userInput.equals("completed")) {
+			if (userInput.equals(TASK_STATUS_COMPLETE)) {
 				indexList = getListOfTaskWithStatus(true);
 				feedback = MESSAGE_LIST_COMPLETE;
-			} else if (userInput.equals("incompleted")) {
+			} else if (userInput.equals(TASK_STATUS_INCOMPLETE)) {
 				indexList = getListOfTaskWithStatus(false);
 				feedback = MESSAGE_LIST_INCOMPLETE;
-			} else if (userInput.equals("overdue")) {
+			} else if (userInput.equals(TASK_STATUS_OVERDUE)) {
 				indexList = getListOfOverdueTask();
 				feedback = MESSAGE_LIST_OVERDUE;
 			} else if (DateParser.isDate(userInput)) {
 				indexList = getListOfTaskWithDate(userInput);
-				feedback = "Showing tasks on " + userInput;
-			} else if (userInput.equals("all")) {
+				feedback = String.format(MESSAGE_SHOW__ON_DATE , userInput);
+			} else if (userInput.equals(TASK_SELECT_ALL)) {
 				indexList = getListOfAllTasks();
 				feedback = MESSAGE_LIST_ALL;
 			} else {
@@ -384,6 +392,7 @@ class TaskHandler {
 				feedback = MESSAGE_LIST_ERROR;
 			}
 		}
+		
 		return new Feedback(feedback , indexList);
 	}
 	
@@ -407,7 +416,7 @@ class TaskHandler {
 	 * @return List of completed tasks if completed is true, incomplete if false
 	 */
 	protected static ArrayList<Integer> getListOfTaskWithStatus(boolean completed) {
-		ArrayList<Task> list = Task.loadTasks();
+		ArrayList<Task> list = Task.getList();
 		ArrayList<Integer> indexList = new ArrayList<Integer>();
 		
 		for (int i = 0; i < list.size(); i++) {
@@ -424,7 +433,7 @@ class TaskHandler {
 	 * @return list of overdue tasks
 	 */
 	private static ArrayList<Integer> getListOfOverdueTask() {
-		ArrayList<Task> list = Task.loadTasks();
+		ArrayList<Task> list = Task.getCloneList();
 		ArrayList<Integer> indexList = new ArrayList<Integer>();
 		
 		for (int i = 0; i < list.size(); i++) {
@@ -444,7 +453,7 @@ class TaskHandler {
 	private static ArrayList<Integer> getListOfTaskWithDate(String input) {
 		DateTime date = DateParser.setDate(input);
 		
-		ArrayList<Task> list = Task.loadTasks();
+		ArrayList<Task> list = Task.getCloneList();
 		ArrayList<Integer> indexList = new ArrayList<Integer>();
 		
 		for (int i = 0; i < list.size(); i++) {
@@ -484,12 +493,12 @@ class TaskHandler {
 		
 		String feedback;
 		
-		if (taskID.equalsIgnoreCase("completed")) {
+		if (taskID.equalsIgnoreCase(TASK_STATUS_COMPLETE)) {
 			HistoryHandler.pushUndoStack();
 			deleteCompleted();
 			feedback = MESSAGE_DELETE_COMPLETE;
 			
-		} else if (taskID.equalsIgnoreCase("all")) {
+		} else if (taskID.equalsIgnoreCase(TASK_SELECT_ALL)) {
 			HistoryHandler.pushUndoStack();
 			deleteAll();
 			feedback = MESSAGE_DELETE_ALL;

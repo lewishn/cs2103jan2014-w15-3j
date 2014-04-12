@@ -1,6 +1,6 @@
+//@author A0100234E
 package dothings.logic;
 
-//Author: A0100234E
 import java.util.*;
 import java.text.*;
 
@@ -9,6 +9,10 @@ import org.joda.time.*;
 import dothings.storage.FileManager;
 
 public class Task implements Comparable<Task>{
+	private static final String LOG_SAVING_TASK_LIST = "Saving task list.";
+
+	private static final String LOG_LOADING_TASK_LIST = "Loading task list.";
+
 	private static final String FILE_TASK = "tasks.txt";
 
 	public static final int START_DATE = 0;
@@ -372,6 +376,7 @@ public class Task implements Comparable<Task>{
 	 * Saves the task list to text file.
 	 */
 	public static void saveTasks() {
+		FileManager.log(LOG_SAVING_TASK_LIST);
 		ArrayList<String> listToSave = new ArrayList<String>();
 		for (int i = 0; i < taskList.size(); i++) {
 			String taskStringForm = taskList.get(i).toString();
@@ -385,6 +390,7 @@ public class Task implements Comparable<Task>{
 	 * @return the task list. 
 	 */
 	public static ArrayList<Task> loadTasks() {
+		FileManager.log(LOG_LOADING_TASK_LIST);
 		ArrayList<Task> listOfTasks = new ArrayList<Task>();
 		ArrayList<String> list = FileManager.readFromFile(FILE_TASK);
 

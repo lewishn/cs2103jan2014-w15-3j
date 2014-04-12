@@ -1,3 +1,4 @@
+//@author A0100234E
 package dothings.logic;
 
 import java.util.ArrayList;
@@ -19,6 +20,7 @@ class Feedback {
 		exit = false;
 		indexList = TaskHandler.getListOfTaskWithStatus(false);
 	}
+	
 	/**
 	 * Constructs and initializes a feedback object with an error status and a description of the error.
 	 * @param desc the description of the new feedback object.
@@ -30,6 +32,7 @@ class Feedback {
 		exit = false;
 		indexList = TaskHandler.getListOfTaskWithStatus(false);
 	}
+	
 	/**
 	 * Constructs and initializes a feedback object with an error status, exit flag, and its description.
 	 * @param desc the description of the new feedback object.
@@ -42,6 +45,7 @@ class Feedback {
 		exit = isExit;
 		indexList = null;
 	}
+	
 	/**
 	 * Constructs and initializes a feedback object with a list of tasks to be displayed.
 	 * @param desc the description of the new feedback object.
@@ -53,6 +57,7 @@ class Feedback {
 		exit = false;
 		indexList = list;
 	}
+	
 	/**
 	 * Returns the description of this feedback object.
 	 * @return the description of this feedback object.
@@ -60,6 +65,7 @@ class Feedback {
 	protected String getDesc() {
 		return description;
 	}
+	
 	/**
 	 * Returns the exit flag of this feedback object.
 	 * @return the exit flag of this feedback object.
@@ -67,6 +73,7 @@ class Feedback {
 	protected boolean getExitFlag() {
 		return exit;
 	}
+	
 	/**
 	 * Returns the index list of this feedback object.
 	 * @return the index list of this feedback object.
@@ -74,6 +81,7 @@ class Feedback {
 	protected ArrayList<Integer> getIndexList() {
 		return indexList;
 	}
+	
 	/**
 	 * Returns the error flag of this feedback object.
 	 * @return the error flag of this feedback object.
@@ -81,6 +89,7 @@ class Feedback {
 	protected boolean getErrorFlag() {
 		return error;
 	}
+	
 	/**
 	 * Sets the description of this task to the specified description.
 	 * @param desc the specified description.
@@ -97,6 +106,7 @@ class Feedback {
 	public String toString(){
 		return description;
 	}
+	
 	/**
 	 * Checks whether this feedback object is the same as the specified feedback object.
 	 * @param other the feedback object to be compared.

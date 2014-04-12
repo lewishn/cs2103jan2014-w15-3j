@@ -24,10 +24,10 @@ public class TestParser {
 	
 	@Test
 	public void testIsValidCommand() {
-		//assertTrue(CommandParser.isValidCommand("add yolo"));
-		//assertFalse(CommandParser.isValidCommand("add"));
-		//assertFalse(CommandParser.isValidCommand("add "));
-		//assertFalse(CommandParser.isValidCommand(" add yolo"));
+		assertTrue(CommandParser.isInputValid("add yolo", 2));
+		assertTrue(CommandParser.isInputValid("add yolo forever and ever and ever", 2));
+		assertFalse(CommandParser.isInputValid("add", 2));
+		assertFalse(CommandParser.isInputValid("add ", 2));
 	}
 	
 	@Test
@@ -64,10 +64,18 @@ public class TestParser {
 	
 	@Test
 	public void testRemoveDateTimeFromString() {
-		assertEquals("do stuff ", CommandParser.removeDateTimeFromString("do stuff"));
-		assertEquals("do stuff with abby ", CommandParser.removeDateTimeFromString("do stuff on monday with abby"));
-		assertEquals("do stuff with abby ", CommandParser.removeDateTimeFromString("on monday do stuff with abby until tue"));
-		assertEquals("meeting with abby ", CommandParser.removeDateTimeFromString("from 5pm to 6pm meeting with abby on 12/12/12"));
+		assertEquals("do stuff", CommandParser.removeDateTimeFromString("do stuff"));
+		assertEquals("do stuff with abby", CommandParser.removeDateTimeFromString("do stuff on monday with abby"));
+		assertEquals("do stuff with abby", CommandParser.removeDateTimeFromString("on monday do stuff with abby until tue"));
+		assertEquals("meeting with abby", CommandParser.removeDateTimeFromString("from 5pm to 6pm meeting with abby on 12/12/12"));
+	}
+	
+	@Test
+	public void testRemoveAliasAndEscapeChar() {
+		assertEquals("do stuff", CommandParser.removeAliasAndEscapeChar("do stuff"));
+		assertEquals("do stuff on monday with abby", CommandParser.removeAliasAndEscapeChar("do stuff on \\monday with abby"));
+		assertEquals("do stuff with abby", CommandParser.removeAliasAndEscapeChar("alias:who do stuff with abby"));
+		assertEquals("meeting with abby on 12/12/12", CommandParser.removeAliasAndEscapeChar("alias:meat meeting with abby on \\12/12/12"));
 	}
 	
 	////////Tests for Date Parser /////////

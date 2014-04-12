@@ -1,6 +1,6 @@
+//@author A0099727J
 package dothings.logic;
 
-//@author A0099727J
 import java.util.ArrayList;
 import java.util.Arrays;
 
@@ -8,6 +8,12 @@ import dothings.storage.FileManager;
 
 
 class CustomCommandHandler {
+	private static final String LOG_DELETED_CUSTOM_COMMAND = "Deleted %s custom command from %s";
+	private static final String LOG_ADDED_COMMAND = "Added %s custom command to %s";
+	private static final String LOG_LOADING_CUSTOM_COMMANDS = "Loading custom commands.";
+	private static final String LOG_SAVING_CUSTOM_COMMANDS = "Saving custom commands.";
+	
+	private static final String WHITESPACE = "\\s+";
 	private static final String FILE_CUSTOM = "custom.txt";
 	
 	protected static final String HEADER_ADD = "[ADD]";
@@ -55,7 +61,7 @@ class CustomCommandHandler {
 	 */
 	protected static Feedback addCustomCommand(String userCommand, String commandType) {
 		// if user inputs a white space between two or more words, take only the first
-		userCommand = userCommand.split("\\s+")[0];
+		userCommand = userCommand.split(WHITESPACE)[0];
 		
 		if (isDuplicateCommand(userCommand) || MainLogic.isDefaultCommand(userCommand)) {
 			return new Feedback(MESSAGE_CUSTOM_DUPLICATE);
@@ -81,6 +87,8 @@ class CustomCommandHandler {
 			newCommandEntry.add(userCommand);
 			customCommandList.add(newCommandEntry);
 		}
+		
+		FileManager.log(String.format(LOG_ADDED_COMMAND, userCommand, commandType));
 	}
 
 	/**
@@ -140,6 +148,7 @@ class CustomCommandHandler {
 		for (int i = 0; i < customCommandList.size(); i++) {
 			for (int j = 0; j < customCommandList.get(i).size(); j++) {
 				if (customCommandList.get(i).get(j).equals(userCommand)) {
+					FileManager.log(String.format(LOG_DELETED_CUSTOM_COMMAND, userCommand, customCommandList.get(i).get(0)));
 					customCommandList.get(i).remove(j);
 					saveCustomCommands();
 					return new Feedback(String.format(MESSAGE_CUSTOM_DELETED, userCommand));
@@ -155,6 +164,7 @@ class CustomCommandHandler {
 	 * @return list of custom commands
 	 */
 	protected static ArrayList<ArrayList<String>> loadCustomCommands() {
+		FileManager.log(LOG_LOADING_CUSTOM_COMMANDS);
 		ArrayList<ArrayList<String>> commandList = new ArrayList<ArrayList<String>>();
 		ArrayList<String> loadedCommands = FileManager.readFromFile(FILE_CUSTOM);
 		
@@ -172,6 +182,7 @@ class CustomCommandHandler {
 	 * Saves the list of custom commands to the "customs.txt" file
 	 */
 	protected static void saveCustomCommands() {
+		FileManager.log(LOG_SAVING_CUSTOM_COMMANDS);
 		ArrayList<String> listToSave = new ArrayList<String>();
 		
 		for (int i = 0; i < customCommandList.size(); i++) {
