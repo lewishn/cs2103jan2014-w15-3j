@@ -1,3 +1,4 @@
+// @author A0101924R
 package dothings.gui;
 
 import java.awt.Color;
@@ -169,7 +170,6 @@ public class DoThingsGUI extends JFrame  {
 
 	}
 	
-	// @author A0101924R
 	private class GlobalKeyPress implements WindowListener, NativeKeyListener{
 
 		private static final String MESSAGE_REGISTER_NATIVE_HOOK_ERROR = "There was a problem registering the native hook.";
