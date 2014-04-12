@@ -115,8 +115,8 @@ public class DoThingsGUI extends JFrame  {
 	private JLabel headingLabel;
 	private JPanel textPanel;
 	private static JLabel feedbackLabel;
-	private JScrollPane taskPanelScroll;
-	private JScrollBar verticalScrollBar;
+	private static JScrollPane taskPanelScroll;
+	private static JScrollBar verticalScrollBar;
 	private static JTextArea help;
 	private static JPanel taskPanel;
 	private static ArrayList<JPanel> taskObjectPanel;
@@ -139,8 +139,6 @@ public class DoThingsGUI extends JFrame  {
 	private static final Color HIGHLIGHT_Yellow = new Color(255,255,51);
 	private static final Color INPUT_FIELD_BACKGROUND_LIGHT_BLUE= new Color(153, 204, 255);
 
-	private int xCoordOfFrame;
-	private int yCoordOfFrame;
 
 	public static void main(String[] args) {
 		EventQueue.invokeLater(new Runnable() {
@@ -168,7 +166,7 @@ public class DoThingsGUI extends JFrame  {
 		populateToDoListOnStartup();
 		setGUIAppearMiddleOfScreen();
 		setListeners();
-		setVerticalScrollBarSettings();
+		setVerticalScrollBarSrollSpeed();
 		
 	}
 	
@@ -267,7 +265,7 @@ public class DoThingsGUI extends JFrame  {
 			switch(key){
 			case COMMAND_ENTER:
 				String userInput = inputField.getText();
-				ResponsiveContent.drawTaskObjectField(userInput);
+				ResponsiveContent.drawTaskObjectField(userInput);	
 				break;
 			default:
 				break;	
@@ -301,10 +299,10 @@ public class DoThingsGUI extends JFrame  {
 				verticalMap.put(KeyStroke.getKeyStroke( "DOWN" ),"positiveUnitIncrement" );
 				break;
 			case COMMAND_SCROLL_TO_TOP:
-				verticalScrollBar.setValue(verticalScrollBar.getMinimum());
+				setVerticalScrollBarScrollToTop();
 				break;
 			case COMMAND_SCROLL_TO_BOTTOM:
-				verticalScrollBar.setValue(verticalScrollBar.getMaximum());
+				setVerticalScrollBarScrollToBottom();
 				break;
 			default:
 				break;
@@ -317,20 +315,37 @@ public class DoThingsGUI extends JFrame  {
 
 	private class TriggerOnMouseAction implements MouseListener, MouseMotionListener{
 		
+		private int xCoordOfFrame;
+		private int yCoordOfFrame;
+		
 		/**
 		 * Listens for mouse press and records the the x,y coordinates relative to the source component.
 		 */
 		@Override
 		public void mousePressed(MouseEvent me) {	 
-			// Get x,y and store them
-			xCoordOfFrame=me.getX();
-			yCoordOfFrame=me.getY();
+			getCoordinatesOfWindow(me);
 		}		
 		/**
 		 * Listens for mouse drag and shifts the frame to the end position.
 		 */
 		@Override
 		public void mouseDragged(MouseEvent me) {
+			setLocationOfWindow(me);
+
+		}
+		/**
+		 * Gets the coordinates of the window and records them into xCoordOfFrame and yCoordOfFrame
+		 * @param me
+		 */
+		private void getCoordinatesOfWindow(MouseEvent me){
+			xCoordOfFrame=me.getX();
+			yCoordOfFrame=me.getY();
+		}
+		/**
+		 * Set the new location of window by getting the latest coordinates minus the old coordinates
+		 * @param me
+		 */
+		private void setLocationOfWindow(MouseEvent me) {
 			setLocation(getX()+me.getX()-xCoordOfFrame,getY()+me.getY()-yCoordOfFrame);
 		}
 
@@ -380,10 +395,22 @@ public class DoThingsGUI extends JFrame  {
 	/**
 	 * Sets vertical scroll bar scrolling speed.
 	 */
-	private void setVerticalScrollBarSettings() {
+	private static void setVerticalScrollBarSrollSpeed() {
 		verticalScrollBar = taskPanelScroll.getVerticalScrollBar();
 		verticalScrollBar.setUnitIncrement(FRAME_SCROLL_SPEED);
 	}	
+	/**
+	 * Sets vertical scroll bar to scroll to top.
+	 */
+	private static void setVerticalScrollBarScrollToTop(){
+		verticalScrollBar.setValue(verticalScrollBar.getMinimum());
+	}
+	/**
+	 * Sets vertical scroll bar to scroll to bottom.
+	 */
+	private static void setVerticalScrollBarScrollToBottom(){
+		verticalScrollBar.setValue(verticalScrollBar.getMaximum());
+	}
 	/**
 	 * Sets various listeners to some GUI components.
 	 */
