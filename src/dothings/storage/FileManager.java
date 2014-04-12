@@ -12,17 +12,24 @@ import java.io.OutputStreamWriter;
 import java.io.UnsupportedEncodingException;
 import java.net.URLDecoder;
 import java.util.ArrayList;
+import java.util.logging.FileHandler;
+import java.util.logging.Level;
 import java.util.logging.Logger;
+import java.util.logging.SimpleFormatter;
 
 import dothings.gui.DoThingsGUI;
 
 public class FileManager {
+	private static final String LOG_FILE = "dothings.log";
 	private static final String MESSAGE_ERROR_LOGGER_READ = "Error reading from file ";
 	private static final String MESSAGE_ERROR_LOGGER_WRITE = "Error writing to file ";
+	private static final String MESSAGE_ERROR_ENCODING = "Unsupported file encoding";
+	private static final String MESSAGE_READING = "Reading from .";
+	private static final String MESSAGE_WRITING = "Writing to .";
 	@SuppressWarnings("deprecation")
 	public static final String filepath = new File(URLDecoder.decode(DoThingsGUI.class.getProtectionDomain().getCodeSource().getLocation().getPath())).getParent() + System.getProperty("file.separator");
-	private static Logger LOGGER = Logger.getLogger(FileManager.class.getName());
-	
+	//private static Logger LOGGER = Logger.getLogger(FileManager.class.getName());
+	private static final Logger logger = Logger.getLogger("DO THINGS LOGGER");
 	
 	/**
 	 * Get a new buffered reader with UTF8 encoding
@@ -37,7 +44,7 @@ public class FileManager {
 			bw = new BufferedReader(new InputStreamReader(new FileInputStream(file), "UTF8"));
 			return bw;
 		} catch (UnsupportedEncodingException e) {
-			//LOGGER.info("Unsupported file encoding");
+			log(MESSAGE_ERROR_ENCODING);
 			e.printStackTrace();
 		}
 		
@@ -56,13 +63,30 @@ public class FileManager {
 		return bw;
 	}
 	
+	private static void log(String message) {
+		FileHandler fh;
+		try {   
+	        fh = new FileHandler(filepath + LOG_FILE, true);  
+	        logger.addHandler(fh);
+	        SimpleFormatter formatter = new SimpleFormatter();  
+	        fh.setFormatter(formatter);  
+	        logger.info(message);
+		    fh.close(); 
+
+	    } catch (SecurityException e) {  
+	        e.printStackTrace();  
+	    } catch (IOException e) {  
+	        e.printStackTrace();  
+	    } 
+	}
+	
 	/**
 	 * Read from a text file
 	 * @param fileName
 	 * @return ArrayList of String with each line as an entry
 	 */
 	public static ArrayList<String> readFromFile(String fileName) {
-		//LOGGER.info("Reading from file " + fileName);
+		log(MESSAGE_READING + fileName);
 		ArrayList<String> list = new ArrayList<String>();
 		
 		try {
@@ -72,7 +96,7 @@ public class FileManager {
 				list.add(line);
 			}
 		} catch (IOException e) {
-			LOGGER.info( MESSAGE_ERROR_LOGGER_READ + fileName);
+			log(MESSAGE_ERROR_LOGGER_READ + fileName);
 		}
 		
 		return list;
@@ -84,7 +108,7 @@ public class FileManager {
 	 * @param list
 	 */
 	public static void writeToFile(String fileName, ArrayList<String> list) {
-		//LOGGER.info("Writing to file " + fileName);
+		log(MESSAGE_WRITING + fileName);
 		try {
 			BufferedWriter writer = getWriter(filepath + fileName);
 			for(int i = 0; i < list.size(); i++) {
@@ -93,7 +117,7 @@ public class FileManager {
 			writer.flush();
 			writer.close();
 		} catch (IOException e) {
-			//LOGGER.info(MESSAGE_ERROR_LOGGER_WRITE + fileName);
+			log(MESSAGE_ERROR_LOGGER_WRITE + fileName);
 			e.printStackTrace();
 		} finally {
 			
