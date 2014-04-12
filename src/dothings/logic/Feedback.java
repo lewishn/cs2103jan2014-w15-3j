@@ -4,7 +4,7 @@ package dothings.logic;
 import java.util.ArrayList;
 
 
-class Feedback {
+public class Feedback {
 	private String description;
 	private ArrayList<Integer> indexList;
 	private boolean exit;

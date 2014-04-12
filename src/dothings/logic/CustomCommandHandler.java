@@ -7,7 +7,7 @@ import java.util.Arrays;
 import dothings.storage.FileManager;
 
 
-class CustomCommandHandler {
+public class CustomCommandHandler {
 	private static final String LOG_DELETED_CUSTOM_COMMAND = "Deleted %s custom command from %s";
 	private static final String LOG_ADDED_COMMAND = "Added %s custom command to %s";
 	private static final String LOG_LOADING_CUSTOM_COMMANDS = "Loading custom commands.";
@@ -29,10 +29,10 @@ class CustomCommandHandler {
 	protected static final String HEADER_MARK = "[MARK]";
 	protected static final String HEADER_EXIT = "[EXIT]";
 
-	private static final String MESSAGE_CUSTOM_DUPLICATE = "Sorry, but this word is already in use.";
-	private static final String MESSAGE_CUSTOM_SUCCESS = "\"%s\" has been added to the command list.";
-	private static final String MESSAGE_CUSTOM_NONEXISTANT = "Error deleting. No such word in command list.";
-	private static final String MESSAGE_CUSTOM_DELETED = "\"%s\" has been deleted from the command list.";
+	public static final String MESSAGE_CUSTOM_DUPLICATE = "Sorry, but this word is already in use.";
+	public static final String MESSAGE_CUSTOM_SUCCESS = "\"%s\" has been added to the command list.";
+	public static final String MESSAGE_CUSTOM_NONEXISTANT = "Error deleting. No such word in command list.";
+	public static final String MESSAGE_CUSTOM_DELETED = "\"%s\" has been deleted from the command list.";
 	
 	protected static ArrayList<ArrayList<String>> customCommandList = loadCustomCommands();
 	
@@ -42,7 +42,7 @@ class CustomCommandHandler {
 	 * @param commandType
 	 * @return true if the keyword is a valid keyword of the commandType.
 	 */
-	protected static boolean isCustomCommand(String keyword, String commandType) {
+	public static boolean isCustomCommand(String keyword, String commandType) {
 		for (int i = 0; i < customCommandList.size(); i++) {
 			if (customCommandList.get(i).get(0).equals(commandType)) {
 				return customCommandList.get(i).contains(keyword);
@@ -59,7 +59,7 @@ class CustomCommandHandler {
 	 * @param commandType
 	 * @return a Feedback object containing the message that is to be shown to the user
 	 */
-	protected static Feedback addCustomCommand(String userCommand, String commandType) {
+	public static Feedback addCustomCommand(String userCommand, String commandType) {
 		// if user inputs a white space between two or more words, take only the first
 		userCommand = userCommand.split(WHITESPACE)[0];
 		
@@ -144,7 +144,7 @@ class CustomCommandHandler {
 	 * @param userCommand
 	 * @return a Feedback object containing the message that is to be shown to the user
 	 */
-	protected static Feedback deleteCustomCommand(String userCommand) {
+	public static Feedback deleteCustomCommand(String userCommand) {
 		for (int i = 0; i < customCommandList.size(); i++) {
 			for (int j = 0; j < customCommandList.get(i).size(); j++) {
 				if (customCommandList.get(i).get(j).equals(userCommand)) {
