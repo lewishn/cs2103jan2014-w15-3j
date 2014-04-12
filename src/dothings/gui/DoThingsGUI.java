@@ -134,6 +134,9 @@ public class DoThingsGUI extends JFrame  {
 	private TriggerOnKeyAction triggerOnKeyAction;
 	private TriggerOnMouseAction triggerOnMouseAction;
 	private static Image iconImage;
+	
+	private static int xCoordOfFrame;
+	private static int yCoordOfFrame;
 
 	private static final Color HIGHLIGHT_FONT_DARK_BLUE = new Color(0,0,51); 
 	private static final Color HIGHLIGHT_Yellow = new Color(255,255,51);
@@ -281,16 +284,20 @@ public class DoThingsGUI extends JFrame  {
 
 			switch(key){
 			case COMMAND_SHIFT_WINDOW_UP:
-				setLocation(getX(),getY()-FRAME_MOVEMENT);
+				getCoordinatesOfWindow();
+				setLocationOfWindow(xCoordOfFrame, yCoordOfFrame - FRAME_MOVEMENT);
 				break;
 			case COMMAND_SHIFT_WINDOW_DOWN:
-				setLocation(getX(),getY()+FRAME_MOVEMENT);
+				getCoordinatesOfWindow();
+				setLocationOfWindow(xCoordOfFrame, yCoordOfFrame + FRAME_MOVEMENT);
 				break;
 			case COMMAND_SHIFT_WINDOW_LEFT:
-				setLocation(getX()-FRAME_MOVEMENT,getY());
+				getCoordinatesOfWindow();
+				setLocationOfWindow(xCoordOfFrame - FRAME_MOVEMENT, yCoordOfFrame);
 				break;
 			case COMMAND_SHIFT_WINDOW_RIGHT:
-				setLocation(getX()+FRAME_MOVEMENT,getY());
+				getCoordinatesOfWindow();
+				setLocationOfWindow(xCoordOfFrame + FRAME_MOVEMENT, yCoordOfFrame);
 				break;
 			case COMMAND_SCROLL_UP:					
 				verticalMap.put(KeyStroke.getKeyStroke( "UP" ),"negativeUnitIncrement" );
@@ -315,9 +322,6 @@ public class DoThingsGUI extends JFrame  {
 
 	private class TriggerOnMouseAction implements MouseListener, MouseMotionListener{
 		
-		private int xCoordOfFrame;
-		private int yCoordOfFrame;
-		
 		/**
 		 * Listens for mouse press and records the the x,y coordinates relative to the source component.
 		 */
@@ -333,21 +337,6 @@ public class DoThingsGUI extends JFrame  {
 			setLocationOfWindow(me);
 
 		}
-		/**
-		 * Gets the coordinates of the window and records them into xCoordOfFrame and yCoordOfFrame
-		 * @param me
-		 */
-		private void getCoordinatesOfWindow(MouseEvent me){
-			xCoordOfFrame=me.getX();
-			yCoordOfFrame=me.getY();
-		}
-		/**
-		 * Set the new location of window by getting the latest coordinates minus the old coordinates
-		 * @param me
-		 */
-		private void setLocationOfWindow(MouseEvent me) {
-			setLocation(getX()+me.getX()-xCoordOfFrame,getY()+me.getY()-yCoordOfFrame);
-		}
 
 		@Override
 		public void mouseClicked(MouseEvent me) {}
@@ -359,7 +348,38 @@ public class DoThingsGUI extends JFrame  {
 		public void mouseReleased(MouseEvent me) {}
 		@Override
 		public void mouseMoved(MouseEvent me) {}
-	}	
+	}
+	
+	/**
+	 * Gets the coordinates of the window and records them into xCoordOfFrame and yCoordOfFrame
+	 * @param me
+	 */
+	private void getCoordinatesOfWindow(MouseEvent me){
+		xCoordOfFrame=me.getX();
+		yCoordOfFrame=me.getY();
+	}
+	/**
+	 * Set the new location of window by getting the latest coordinates minus the old coordinates
+	 * @param me
+	 */
+	private void setLocationOfWindow(MouseEvent me) {
+		setLocation(getX()+me.getX()-xCoordOfFrame,getY()+me.getY()-yCoordOfFrame);
+	}
+	/**
+	 * Gets the coordinates of the window and records them into xCoordOfFrame and yCoordOfFrame
+	 */
+	private void getCoordinatesOfWindow(){
+		xCoordOfFrame=getX();
+		yCoordOfFrame=getY();
+	}
+	/**
+	 * Set the new location of window by increasing or decreasing xCoordOfFrame and yCoordOfFrame
+	 * @param x
+	 * @param y
+	 */
+	private void setLocationOfWindow(int x, int y) {
+		setLocation(x,y);
+	}
 	/**
 	 * Hides program to system tray and creates tray icon in system tray
 	 */
