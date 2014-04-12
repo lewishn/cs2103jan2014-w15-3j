@@ -68,7 +68,7 @@ public class DoThingsGUI extends JFrame  {
 	private static final int TASK_DATE = 5;
 	private static final int TASK_TIME = 6;
 	private static final int COMMAND_ENTER = KeyEvent.VK_ENTER;
-	private static final int COMMAND_HIDE = NativeKeyEvent.VK_F8;
+	private static final int COMMAND_TOGGLE_HIDE_DISPLAY = NativeKeyEvent.VK_F8;
 	private static final int COMMAND_SHIFT_WINDOW_LEFT = KeyEvent.VK_F11;
 	private static final int COMMAND_SHIFT_WINDOW_RIGHT = KeyEvent.VK_F12;
 	private static final int COMMAND_SHIFT_WINDOW_UP = KeyEvent.VK_F9;
@@ -167,7 +167,7 @@ public class DoThingsGUI extends JFrame  {
 		setGUIAppearMiddleOfScreen();
 		setListeners();
 		setVerticalScrollBarSettings();
-
+		
 	}
 	
 	private class GlobalKeyPress implements WindowListener, NativeKeyListener{
@@ -180,7 +180,8 @@ public class DoThingsGUI extends JFrame  {
 			isVisible = visible;
 		}		
 		/**
-		 * Listens for opened window and registers native hook to the window. Adds NativeKeyListener to the window
+		 * Listens for opened window and registers native hook to the window. 
+		 * Adds NativeKeyListener to the window if it is opened.
 		 */
 		@Override
 		public void windowOpened(WindowEvent e) {
@@ -220,7 +221,7 @@ public class DoThingsGUI extends JFrame  {
 		@Override
 		public void nativeKeyReleased(NativeKeyEvent e) {
 			int keyCode = e.getKeyCode();
-			if (keyCode == COMMAND_HIDE) {
+			if (keyCode == COMMAND_TOGGLE_HIDE_DISPLAY) {
 				if (isVisible) {
 					inputField.requestFocus();
 					DoThingsGUI.this.setVisible(false);
@@ -312,29 +313,29 @@ public class DoThingsGUI extends JFrame  {
 		 * Listens for mouse press and records the the x,y coordinates relative to the source component.
 		 */
 		@Override
-		public void mousePressed(MouseEvent arg0) {	 
+		public void mousePressed(MouseEvent me) {	 
 			// Get x,y and store them
-			xCoordOfFrame=arg0.getX();
-			yCoordOfFrame=arg0.getY();
+			xCoordOfFrame=me.getX();
+			yCoordOfFrame=me.getY();
 		}		
 		/**
 		 * Listens for mouse drag and shifts the frame to the end position.
 		 */
 		@Override
-		public void mouseDragged(MouseEvent arg0) {
-			setLocation(getX()+arg0.getX()-xCoordOfFrame,getY()+arg0.getY()-yCoordOfFrame);
+		public void mouseDragged(MouseEvent me) {
+			setLocation(getX()+me.getX()-xCoordOfFrame,getY()+me.getY()-yCoordOfFrame);
 		}
 
 		@Override
-		public void mouseClicked(MouseEvent arg0) {}
+		public void mouseClicked(MouseEvent me) {}
 		@Override
-		public void mouseEntered(MouseEvent arg0) {}
+		public void mouseEntered(MouseEvent me) {}
 		@Override
-		public void mouseExited(MouseEvent arg0) {}
+		public void mouseExited(MouseEvent me) {}
 		@Override
-		public void mouseReleased(MouseEvent arg0) {}
+		public void mouseReleased(MouseEvent me) {}
 		@Override
-		public void mouseMoved(MouseEvent arg0) {}
+		public void mouseMoved(MouseEvent me) {}
 	}	
 	/**
 	 * Hides program to system tray and creates tray icon in system tray
