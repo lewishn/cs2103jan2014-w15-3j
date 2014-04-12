@@ -97,7 +97,7 @@ public class IntegrationTesting {
 		assertTrue(result.get(TASK_DESC).isEmpty());
 	}
 	@Test
-	public void undoNegNumFail() {
+	public void undoNegNumPass() {
 		ArrayList<ArrayList<String>> result = MainLogic.runLogic("delete all");
 		result = MainLogic.runLogic("add assignment due tomorrow");
 		result = MainLogic.runLogic("undo -1");
@@ -106,13 +106,11 @@ public class IntegrationTesting {
 		String feedbackType = result.get(FEEDBACK_TYPE).get(0);
 		assertEquals(expectedFeedbackType, feedbackType);
 				
-		String expectedFeedbackDes = "Nothing left to undo";
+		String expectedFeedbackDes = "1 step(s) undone";
 		String feedbackDesc = result.get(FEEDBACK_DESC).get(0);
 		assertEquals(expectedFeedbackDes, feedbackDesc);
-		
-		String expectedDesc = "1. assignment due";
-		String taskDesc = result.get(TASK_DESC).get(0);
-		assertEquals(expectedDesc, taskDesc);
+
+		assertTrue(result.get(TASK_DESC).isEmpty());
 	}
 	@Test
 	public void undoMultipleSuccess() {
@@ -177,7 +175,7 @@ public class IntegrationTesting {
 		assertEquals(expectedDesc, taskDesc);
 	}
 	@Test
-	public void redoNegNumFail() {
+	public void redoNegNumPass() {
 		ArrayList<ArrayList<String>> result = MainLogic.runLogic("delete all");
 		result = MainLogic.runLogic("add assignment due tomorrow");
 		result = MainLogic.runLogic("undo");
@@ -187,11 +185,13 @@ public class IntegrationTesting {
 		String feedbackType = result.get(FEEDBACK_TYPE).get(0);
 		assertEquals(expectedFeedbackType, feedbackType);
 				
-		String expectedFeedbackDes = "Nothing left to redo";
+		String expectedFeedbackDes = "1 step(s) redone";
 		String feedbackDesc = result.get(FEEDBACK_DESC).get(0);
 		assertEquals(expectedFeedbackDes, feedbackDesc);
-		
-		assertTrue(result.get(TASK_DESC).isEmpty());
+
+		String expectedDesc = "1. assignment due";
+		String taskDesc = result.get(TASK_DESC).get(0);
+		assertEquals(expectedDesc, taskDesc);
 	}
 	@Test
 	public void redoMultipleSuccess() {

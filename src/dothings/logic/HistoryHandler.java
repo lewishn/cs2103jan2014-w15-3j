@@ -54,6 +54,7 @@ public class HistoryHandler {
 	 */
 	protected static Feedback redoCommand(int numberOfSteps) {
 		int successfulTries = 0;
+		numberOfSteps = (numberOfSteps < 0) ? 1 : numberOfSteps;
 		
 		while (numberOfSteps-- > 0) {
 			boolean tryUndo = popRedoStack();
