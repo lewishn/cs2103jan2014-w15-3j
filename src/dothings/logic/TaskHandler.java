@@ -25,16 +25,16 @@ class TaskHandler {
 	private static final String MESSAGE_DELETE_COMPLETE = "All completed tasks have been deleted.";
 	private static final String MESSAGE_DELETE_ALL = "All tasks have been deleted.";
 	private static final String MESSAGE_DELETE_SUCCESS = "All specified tasks have been deleted.";
-	private static final String MESSAGE_TASK_MARK = "Tasks have been marked.";
+	private static final String MESSAGE_TASK_MARK = "Task(s) have been marked.";
 	private static final String MESSAGE_ERROR_ADD_NO_DESC = "Please add a task description.";
 	private static final String MESSAGE_ERROR_MARK_NO_TASK = "Nothing to mark.";
-	private static final String MESSAGE_ERROR_DELETE_ARGUMENT = "Incorrect delete format.";
+	private static final String MESSAGE_ERROR_DELETE_ARGUMENT = "Hmmm ... Please enter a task to delete";
 	private static final String MESSAGE_ERROR_UPDATE_NO_SUCH_TASK = "Please enter a valid task number to update.";
 	private static final String MESSAGE_ERROR_UPDATE_ARGUMENT = "Incorrect update format.";
 	private static final String MESSAGE_ERROR_START_AFTER_END ="Error, start time cannot be after end time.";
 	private static final String MESSAGE_ERROR_TASK_DESC_EMPTY = "Error, task description cannot be empty.";
 	private static final String MESSAGE_ERROR_ALIAS_IN_USE = "Alias is already in use";
-	private static final String MESSAGE_ERROR_DELETE = "No such tasks. Please enter a valid number or alias.";
+	private static final String MESSAGE_ERROR_DELETE = "No such task(s). Please enter a valid number or alias.";
 	private static final String MESSAGE_ERROR_SEARCH = "Please enter a search key.";
 	private static final String MESSAGE_ERROR_ALIAS = "Invalid alias";
 	private static final String MINUTE_LAST = "23:59";
@@ -488,7 +488,7 @@ class TaskHandler {
 	 */
 	protected static Feedback deleteTask(String taskID) {
 		if (!CommandParser.isInputValid(taskID, 1)) {
-			return new Feedback(MESSAGE_ERROR_DELETE_ARGUMENT);
+			return new Feedback(MESSAGE_ERROR_DELETE_ARGUMENT, true);
 		}
 		
 		String feedback;
