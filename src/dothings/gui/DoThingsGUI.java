@@ -75,6 +75,8 @@ public class DoThingsGUI extends JFrame  {
 	private static final int COMMAND_SHIFT_WINDOW_DOWN = KeyEvent.VK_F10;
 	private static final int COMMAND_SCROLL_UP = KeyEvent.VK_UP;
 	private static final int COMMAND_SCROLL_DOWN = KeyEvent.VK_DOWN;
+	private static final int COMMAND_SCROLL_TO_TOP = KeyEvent.VK_PAGE_UP;
+	private static final int COMMAND_SCROLL_TO_BOTTOM = KeyEvent.VK_PAGE_DOWN;
 	private static final int FRAME_MOVEMENT = 10;		
 	private static final int FRAME_SCROLL_SPEED = 75;
 	private static final int TASK_OBJECT_FRAME_HEIGHT = 53;
@@ -297,6 +299,12 @@ public class DoThingsGUI extends JFrame  {
 				break;
 			case COMMAND_SCROLL_DOWN:
 				verticalMap.put(KeyStroke.getKeyStroke( "DOWN" ),"positiveUnitIncrement" );
+				break;
+			case COMMAND_SCROLL_TO_TOP:
+				verticalScrollBar.setValue(verticalScrollBar.getMinimum());
+				break;
+			case COMMAND_SCROLL_TO_BOTTOM:
+				verticalScrollBar.setValue(verticalScrollBar.getMaximum());
 				break;
 			default:
 				break;
