@@ -209,12 +209,12 @@ class TaskHandler {
 		int updateIndex = getIndexToUpdate(taskID);
 		
 		if (updateIndex == -1) {
-			return new Feedback(MESSAGE_ERROR_UPDATE_NO_SUCH_TASK);
+			return new Feedback(MESSAGE_ERROR_UPDATE_NO_SUCH_TASK, true);
 		}
 		
 		if (updateField.equalsIgnoreCase(UPDATE_FIELD_START) || updateField.equalsIgnoreCase(UPDATE_FIELD_END) || updateField.equalsIgnoreCase(UPDATE_FIELD_TIME)) {
 			if (!CommandParser.isInputValid(updateDesc, 1)) {
-				return new Feedback(MESSAGE_ERROR_UPDATE_ARGUMENT);
+				return new Feedback(MESSAGE_ERROR_UPDATE_ARGUMENT, true);
 			}
 			
 			taskToUpdate = new Task(Task.getList().get(updateIndex));

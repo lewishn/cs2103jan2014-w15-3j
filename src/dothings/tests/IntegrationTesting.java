@@ -1306,10 +1306,34 @@ public class IntegrationTesting {
 		assertEquals(expectedAlias, result.get(TASK_ALIAS).get(0));
 	}
 	@Test
-	public void updateTasktimeValid() {
+	public void updateTaskDescriptionInvalidNumber() {
 		ArrayList<ArrayList<String>> result = MainLogic.runLogic("delete all");
 		result = MainLogic.runLogic("add assignment1 from today tomorrow alias:NUS0");
-		result = MainLogic.runLogic("update 1 time 1504");
+		result = MainLogic.runLogic("update 3 desc");
+		
+		String expectedFeedbackType = "error";
+		String feedbackType = result.get(FEEDBACK_TYPE).get(0);
+		assertEquals(expectedFeedbackType, feedbackType);
+		
+		String expectedFeedbackDes = "Please enter a valid task number to update.";
+		String feedbackDesc = result.get(FEEDBACK_DESC).get(0);
+		assertEquals(expectedFeedbackDes, feedbackDesc);
+
+		String expectedDesc = "1. assignment1";
+		String taskDesc = result.get(TASK_DESC).get(0);
+		assertEquals(expectedDesc, taskDesc);
+		
+		String expectedDate = "14 Apr 2014 00:00 to 15 Apr 2014 23:59";
+		assertEquals( expectedDate,result.get(TASK_DATE).get(0));
+		
+		String expectedAlias = "NUS0";
+		assertEquals(expectedAlias, result.get(TASK_ALIAS).get(0));
+	}
+	@Test
+	public void updateTaskTimeValid() {
+		ArrayList<ArrayList<String>> result = MainLogic.runLogic("delete all");
+		result = MainLogic.runLogic("add assignment1 from today tomorrow alias:NUS0");
+		result = MainLogic.runLogic("update 1 time 15042014 04:00");
 		
 		String expectedFeedbackType = "update";
 		String feedbackType = result.get(FEEDBACK_TYPE).get(0);
@@ -1323,7 +1347,103 @@ public class IntegrationTesting {
 		String taskDesc = result.get(TASK_DESC).get(0);
 		assertEquals(expectedDesc, taskDesc);
 		
+		String expectedDate = "15 Apr 2014 04:00";
+		assertEquals( expectedDate,result.get(TASK_DATE).get(0));
+		
+		String expectedAlias = "NUS0";
+		assertEquals(expectedAlias, result.get(TASK_ALIAS).get(0));
+	}
+	@Test
+	public void updateTaskTimeInvalidNumber() {
+		ArrayList<ArrayList<String>> result = MainLogic.runLogic("delete all");
+		result = MainLogic.runLogic("add assignment1 from today tomorrow alias:NUS0");
+		result = MainLogic.runLogic("update 3 time 15042014 04:00");
+		
+		String expectedFeedbackType = "error";
+		String feedbackType = result.get(FEEDBACK_TYPE).get(0);
+		assertEquals(expectedFeedbackType, feedbackType);
+		
+		String expectedFeedbackDes = "Please enter a valid task number to update.";
+		String feedbackDesc = result.get(FEEDBACK_DESC).get(0);
+		assertEquals(expectedFeedbackDes, feedbackDesc);
+
+		String expectedDesc = "1. assignment1";
+		String taskDesc = result.get(TASK_DESC).get(0);
+		assertEquals(expectedDesc, taskDesc);
+		
 		String expectedDate = "14 Apr 2014 00:00 to 15 Apr 2014 23:59";
+		assertEquals( expectedDate,result.get(TASK_DATE).get(0));
+		
+		String expectedAlias = "NUS0";
+		assertEquals(expectedAlias, result.get(TASK_ALIAS).get(0));
+	}
+/*	@Test
+	public void updateTaskTimeInvalid() {
+		ArrayList<ArrayList<String>> result = MainLogic.runLogic("delete all");
+		result = MainLogic.runLogic("add assignment1 from today tomorrow alias:NUS0");
+		result = MainLogic.runLogic("update 1 time 15132014 04:00");
+		
+		String expectedFeedbackType = "update";
+		String feedbackType = result.get(FEEDBACK_TYPE).get(0);
+		assertEquals(expectedFeedbackType, feedbackType);
+		
+		String expectedFeedbackDes = "Task has been updated.";
+		String feedbackDesc = result.get(FEEDBACK_DESC).get(0);
+		assertEquals(expectedFeedbackDes, feedbackDesc);
+
+		String expectedDesc = "1. assignment1";
+		String taskDesc = result.get(TASK_DESC).get(0);
+		assertEquals(expectedDesc, taskDesc);
+		
+		String expectedDate = "15 Apr 2014 04:00";
+		assertEquals( expectedDate,result.get(TASK_DATE).get(0));
+		
+		String expectedAlias = "NUS0";
+		assertEquals(expectedAlias, result.get(TASK_ALIAS).get(0));
+	}*/
+	@Test
+	public void updateTaskTimeInvalidBackwardDate() {
+		ArrayList<ArrayList<String>> result = MainLogic.runLogic("delete all");
+		result = MainLogic.runLogic("add assignment1 from today tomorrow alias:NUS0");
+		result = MainLogic.runLogic("update 1 time 15052014 04:00 13052014 03:00");
+		
+		String expectedFeedbackType = "error";
+		String feedbackType = result.get(FEEDBACK_TYPE).get(0);
+		assertEquals(expectedFeedbackType, feedbackType);
+		
+		String expectedFeedbackDes = "Error, start time cannot be after end time.";
+		String feedbackDesc = result.get(FEEDBACK_DESC).get(0);
+		assertEquals(expectedFeedbackDes, feedbackDesc);
+
+		String expectedDesc = "1. assignment1";
+		String taskDesc = result.get(TASK_DESC).get(0);
+		assertEquals(expectedDesc, taskDesc);
+		
+		String expectedDate = "14 Apr 2014 00:00 to 15 Apr 2014 23:59";
+		assertEquals( expectedDate,result.get(TASK_DATE).get(0));
+		
+		String expectedAlias = "NUS0";
+		assertEquals(expectedAlias, result.get(TASK_ALIAS).get(0));
+	}
+	@Test
+	public void updateTaskStartValid() {
+		ArrayList<ArrayList<String>> result = MainLogic.runLogic("delete all");
+		result = MainLogic.runLogic("add assignment1 from 15052014 0000 25052014 0000 alias:NUS0");
+		result = MainLogic.runLogic("update 1 start 16052014 04:00");
+		
+		String expectedFeedbackType = "update";
+		String feedbackType = result.get(FEEDBACK_TYPE).get(0);
+		assertEquals(expectedFeedbackType, feedbackType);
+		
+		String expectedFeedbackDes = "Task has been updated.";
+		String feedbackDesc = result.get(FEEDBACK_DESC).get(0);
+		assertEquals(expectedFeedbackDes, feedbackDesc);
+
+		String expectedDesc = "1. assignment1";
+		String taskDesc = result.get(TASK_DESC).get(0);
+		assertEquals(expectedDesc, taskDesc);
+		
+		String expectedDate = "16 May 2014 04:00 to 25 May 2014 00:00";
 		assertEquals( expectedDate,result.get(TASK_DATE).get(0));
 		
 		String expectedAlias = "NUS0";
