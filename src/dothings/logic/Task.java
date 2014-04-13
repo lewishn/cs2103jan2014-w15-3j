@@ -25,7 +25,7 @@ public class Task implements Comparable<Task>{
 	private static final String NULL_START = "NO_START_TIME";
 	private static final String NULL_END = "NO_END_TIME";
 	private static final String NULL_ALIAS = "NO_ALIAS";
-	private static final String DATE_DISPLAY_FORMAT_1 = "%s %s  to  %s %s";
+	private static final String DATE_DISPLAY_FORMAT_1 = "%s %s to %s %s";
 	private static final String DATE_DISPLAY_FORMAT_2 = "%s %s";
 
 	private static ArrayList<Task> taskList = loadTasks();
@@ -298,7 +298,7 @@ public class Task implements Comparable<Task>{
 			return null;
 		}
 
-		return date.toString("dd/MMM/YYYY");
+		return date.toString("dd MMM YYYY");
 	}
 
 	@Override

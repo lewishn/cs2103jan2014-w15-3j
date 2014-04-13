@@ -14,14 +14,17 @@ public class DateParser{
 	private static final String DATE_FORMAT_3 = "dd/MMM/YYYY";
 	private static final String DATE_FORMAT_4 = "dd-MMM-YYYY";
 	private static final String DATE_FORMAT_5 = "dd.MMM.YYYY";
-	private static final String DATE_FORMAT_6 = "dd/MM";
-	private static final String DATE_FORMAT_7 = "dd-MM";
-	private static final String DATE_FORMAT_8 = "dd/MMM";
-	private static final String DATE_FORMAT_9 = "dd-MMM";
-	private static final String DATE_FORMAT_10 = "E";
-	private static final int FORMAT_TYPE_0_INDEX = 6;	//format 0 : full date, with year
-	private static final int FORMAT_TYPE_1_INDEX = 10;	//format 1 : with day and month only
-	private static final int FORMAT_TYPE_2_INDEX = 11;	//format 2 : day of the week, Friday, etc.
+	private static final String DATE_FORMAT_6 = "ddMMMYYYY";
+	private static final String DATE_FORMAT_7 = "dd/MM";
+	private static final String DATE_FORMAT_8 = "dd-MM";
+	private static final String DATE_FORMAT_9 = "ddMM";
+	private static final String DATE_FORMAT_10 = "dd/MMM";
+	private static final String DATE_FORMAT_11 = "dd-MMM";
+	private static final String DATE_FORMAT_12 = "ddMMM";
+	private static final String DATE_FORMAT_13 = "E";
+	private static final int FORMAT_TYPE_0_INDEX = 8;	//format 0 : full date, with year
+	private static final int FORMAT_TYPE_1_INDEX = 13;	//format 1 : with day and month only
+	private static final int FORMAT_TYPE_2_INDEX = 14;	//format 2 : day of the week, Friday, etc.
 	
 	private static final String DATE_TODAY = "today";
 	private static final String DATE_TOMORROW = "tomorrow";
@@ -39,7 +42,10 @@ public class DateParser{
 			DateTimeFormat.forPattern(DATE_FORMAT_7), 
 			DateTimeFormat.forPattern(DATE_FORMAT_8), 
 			DateTimeFormat.forPattern(DATE_FORMAT_9), 
-			DateTimeFormat.forPattern(DATE_FORMAT_10)
+			DateTimeFormat.forPattern(DATE_FORMAT_10),
+			DateTimeFormat.forPattern(DATE_FORMAT_11),
+			DateTimeFormat.forPattern(DATE_FORMAT_12),
+			DateTimeFormat.forPattern(DATE_FORMAT_13)
 		));
 
 	
