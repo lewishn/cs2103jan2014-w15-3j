@@ -267,8 +267,13 @@ public class MainLogic {
 	}
 	
 	/**
-	 * Processes feedback before sending an ArrayList of ArrayList<String> to GUI which contains all
+	 * Processes feedback before sending an 
+	 * ArrayList of ArrayList<String> to GUI which contains all
 	 * the feedback information
+	 * 
+	 * It gets all various feedback types and convert it all
+	 * to Strings which the GUI can handle without calling
+	 * the other class files.
 	 * 
 	 * @param feed
 	 * @param type

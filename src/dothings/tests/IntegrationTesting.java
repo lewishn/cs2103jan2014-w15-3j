@@ -9,9 +9,11 @@ import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.Date;
 import java.util.GregorianCalendar;
+
 import org.junit.Test;
 
 import dothings.logic.MainLogic;
+import dothings.storage.FileManager;
 
 //@author A0097082Y
 public class IntegrationTesting {
@@ -93,26 +95,21 @@ public class IntegrationTesting {
 		String feedbackType = result.get(FEEDBACK_TYPE).get(0);
 		assertEquals(expectedType, feedbackType);
 		
-		String expectedDesc = "[ADD]\nadd \n\n[UPDATE]\nupdate \n\n[MARK]\nmark \n\n[DELETE]\ndelete \n\n[LIST]\nlist \n\n[SEARCH]\nsearch "
-				+ "\n\n[UNDO]\nundo \n\n[REDO]\nredo \n\n[CUSTOM]\ncustom \n\n[DELETE_CUSTOM]\ndcustom \n\n[HELP]\nhelp \n\n[EXIT]\nexit \n\n";
-		String helpDesc = result.get(TASK_DESC).get(0);
-		assertEquals(expectedDesc, helpDesc);
-		
 		String expectedFeedbackDes = "Need help? Your Commands:";
 		String feedbackDesc = result.get(FEEDBACK_DESC).get(0);
 		assertEquals(expectedFeedbackDes, feedbackDesc);
 	}
 	@Test
 	public void testHelpFail() {
-		ArrayList<ArrayList<String>> result = MainLogic.runLogic("help");
+		ArrayList<ArrayList<String>> result = MainLogic.runLogic("elp");
 
-		String expectedType = "elp";
+		String expectedType = "help";
 		String feedbackType = result.get(FEEDBACK_TYPE).get(0);
 		assertNotEquals(expectedType, feedbackType);
 				
 		String expectedFeedbackDes = "Oops, please try again.";
 		String feedbackDesc = result.get(FEEDBACK_DESC).get(0);
-		assertNotEquals(expectedFeedbackDes, feedbackDesc);
+		assertEquals(expectedFeedbackDes, feedbackDesc);
 	}
 	
 	@Test
