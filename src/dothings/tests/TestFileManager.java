@@ -12,7 +12,7 @@ public class TestFileManager {
 	private static final String TEST_FILE = "testFM.txt";
 	
 	@Test
-	public void test() {
+	public void testReadWrite() {
 		ArrayList<String> list = new ArrayList<String>();
 		FileManager.writeToFile(TEST_FILE, list);
 		assertTrue(FileManager.readFromFile(TEST_FILE).isEmpty());

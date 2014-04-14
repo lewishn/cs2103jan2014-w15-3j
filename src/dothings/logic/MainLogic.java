@@ -294,6 +294,8 @@ public class MainLogic{
 		}  
 		return result;
 	}
+	
+	//@author A0099727J
 	/**
 	 * Check whether a command input is a default command
 	 * @param s
