@@ -483,7 +483,7 @@ class TaskHandler {
 	}
 	
 	//////////DELETE Functionality//////////
-	
+	// @author A0101924R
 	/**
 	 * Removes a task from the taskList
 	 * @param taskID
