@@ -15,9 +15,7 @@ public class IntegrationTesting {
 	private static final int FEEDBACK_DESC = 1;
 	private static final int TASK_DESC = 2;
 	private static final int TASK_ALIAS = 3;
-	private static final int TASK_STATUS = 4;
 	private static final int TASK_DATE = 5;
-	private static final int TASK_TIME = 6;
 
 	@Test
 	public void invalidCommand() {
