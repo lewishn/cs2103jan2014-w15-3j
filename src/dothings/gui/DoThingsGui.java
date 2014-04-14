@@ -108,6 +108,10 @@ public class DoThingsGui extends JFrame {
 	private static final int CONTENT_PANE_WIDTH = FRAME_WIDTH;
 	private static final int CONTENT_PANE_HEIGHT = FRAME_HEIGHT;
 	private static final int SHAPE_DIMENSION = 20;
+	private static final Color HIGHLIGHT_FONT_DARK_BLUE = new Color(0, 0, 51);
+	private static final Color HIGHLIGHT_Yellow = new Color(255, 255, 51);
+	private static final Color INPUT_FIELD_BACKGROUND_LIGHT_BLUE = new Color(
+	        153, 204, 255);
 	private static int heightChange = 0;
 	
 	private JPanel contentPane;
@@ -138,10 +142,7 @@ public class DoThingsGui extends JFrame {
 	private static int xCoordOfFrame;
 	private static int yCoordOfFrame;
 	
-	private static final Color HIGHLIGHT_FONT_DARK_BLUE = new Color(0, 0, 51);
-	private static final Color HIGHLIGHT_Yellow = new Color(255, 255, 51);
-	private static final Color INPUT_FIELD_BACKGROUND_LIGHT_BLUE = new Color(
-	        153, 204, 255);
+
 	
 	public static void main(String[] args) {
 		EventQueue.invokeLater(new Runnable() {
@@ -175,7 +176,8 @@ public class DoThingsGui extends JFrame {
 	
 	private class GlobalKeyPress implements WindowListener, NativeKeyListener {
 		
-		private static final String MESSAGE_REGISTER_NATIVE_HOOK_ERROR = "There was a problem registering the native hook.";
+		private static final String MESSAGE_REGISTER_NATIVE_HOOK_ERROR = 
+				"There was a problem registering the native hook.";
 		
 		Boolean isVisible = false;
 		
