@@ -1,4 +1,4 @@
-//@author A0099727J
+
 package dothings.tests;
 
 import dothings.logic.CustomCommandHandler;
@@ -6,6 +6,7 @@ import dothings.logic.Feedback;
 import static org.junit.Assert.*;
 import org.junit.Test;
 
+//@author A0099727J
 public class TestCustomCommands {
 
 	@Test

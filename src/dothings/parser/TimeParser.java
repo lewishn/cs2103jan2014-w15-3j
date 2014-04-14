@@ -1,4 +1,4 @@
-//@author A0099727J
+
 package dothings.parser;
 
 import java.util.ArrayList;
@@ -10,6 +10,7 @@ import org.joda.time.format.DateTimeFormatter;
 
 import dothings.storage.FileManager;
 
+//@author A0099727J
 public class TimeParser{
 	
 	private static final String TIME_FORMAT_0 = "HH:mm";

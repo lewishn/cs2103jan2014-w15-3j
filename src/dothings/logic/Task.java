@@ -1,4 +1,4 @@
-//@author A0100234E
+
 package dothings.logic;
 
 import java.util.*;
@@ -8,6 +8,7 @@ import org.joda.time.*;
 
 import dothings.storage.FileManager;
 
+//@author A0100234E
 public class Task implements Comparable<Task>{
 	private static final String LOG_SAVING_TASK_LIST = "Saving task list.";
 

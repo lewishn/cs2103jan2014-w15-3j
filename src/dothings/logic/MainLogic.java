@@ -1,4 +1,4 @@
-// @author A0097082Y
+
 
 package dothings.logic;
 
@@ -7,6 +7,7 @@ import java.util.ArrayList;
 import dothings.parser.CommandParser;
 import dothings.storage.FileManager;
 
+//@author A0097082Y
 public class MainLogic{
 	private static final String LOG_USER_INPUT = "User Input: %s";
 	private static final String MESSAGE_EXIT = "exiting..";

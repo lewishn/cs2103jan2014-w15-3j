@@ -1,4 +1,4 @@
-//@author A0099727J
+
 package dothings.logic;
 
 import java.util.ArrayList;
@@ -6,7 +6,7 @@ import java.util.Arrays;
 
 import dothings.storage.FileManager;
 
-
+//@author A0099727J
 public class CustomCommandHandler {
 	private static final String LOG_DELETED_CUSTOM_COMMAND = "Deleted %s custom command from %s";
 	private static final String LOG_ADDED_COMMAND = "Added %s custom command to %s";

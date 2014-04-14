@@ -1,9 +1,9 @@
-//@author A0100234E
+
 package dothings.logic;
 
 import java.util.ArrayList;
 
-
+//@author A0100234E
 public class Feedback {
 	private String description;
 	private ArrayList<Integer> indexList;

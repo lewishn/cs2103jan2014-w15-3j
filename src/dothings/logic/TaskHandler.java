@@ -12,6 +12,7 @@ import dothings.parser.CommandParser;
 import dothings.parser.DateParser;
 import dothings.parser.TimeParser;
 
+//@author A0099727J
 class TaskHandler {
 	
 	private static final String MESSAGE_SHOW__ON_DATE = "Showing tasks on %s";
@@ -188,6 +189,8 @@ class TaskHandler {
 		return new Task(null, start, end, null);
 	}
 	
+	
+	//@author A0100234E
 	//////////UPDATE Functionality//////////
 	/**
 	 * Updates a task in the specified field
@@ -356,7 +359,7 @@ class TaskHandler {
 		return index;
 	}
 	
-	
+	//@author A0101924R
 	//////////READ Functionality//////////
 	/**
 	 * Gets the lists of task to display from the input parameter
@@ -595,6 +598,7 @@ class TaskHandler {
 		return dList;
 	}
 	
+	//@author A0100234E
 	////////////////SEARCH Functionality////////////////////
 	/**
 	 * Returns the indices of tasks that contain at least one the words.

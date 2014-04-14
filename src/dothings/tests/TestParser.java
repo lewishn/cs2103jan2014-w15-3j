@@ -1,4 +1,4 @@
-//@author A0099727J
+
 package dothings.tests;
 
 import static org.junit.Assert.*;
@@ -10,6 +10,7 @@ import dothings.parser.CommandParser;
 import dothings.parser.DateParser;
 import dothings.parser.TimeParser;
 
+//@author A0099727J
 public class TestParser {
 	////////Tests for Command Parser /////////
 	

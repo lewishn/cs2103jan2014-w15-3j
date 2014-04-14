@@ -1,4 +1,4 @@
-//@author A0099727J
+
 package dothings.logic;
 
 import java.util.ArrayDeque;
@@ -6,6 +6,7 @@ import java.util.ArrayList;
 
 import dothings.storage.FileManager;
 
+//@author A0099727J
 public class HistoryHandler {
 	private static final String LOG_SAVING_UNDO_HISTORY = "Saving undo history";
 	private static final String LOG_LOADING_UNDO_HISTORY = "Loading undo history.";

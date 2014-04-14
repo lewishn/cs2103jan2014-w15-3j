@@ -1,4 +1,4 @@
-//@author A0099727J
+
 package dothings.storage;
 
 import java.io.BufferedReader;
@@ -19,6 +19,7 @@ import java.util.logging.SimpleFormatter;
 
 import dothings.gui.DoThingsGUI;
 
+//@author A0099727J
 public class FileManager {
 	private static final String ENCODING_UTF8 = "UTF8";
 	private static final String LOG_FILE = "dothings.log";
@@ -62,6 +63,10 @@ public class FileManager {
 		return bw;
 	}
 	
+	/**
+	 * Appends any log messages to the log file 
+	 * @param message
+	 */
 	public static void log(String message) {
 		FileHandler fh;
 		try {   
@@ -80,7 +85,7 @@ public class FileManager {
 	}
 	
 	/**
-	 * Read from a text file
+	 * Read lines from a text file
 	 * @param fileName
 	 * @return ArrayList of String with each line as an entry
 	 */
@@ -101,7 +106,7 @@ public class FileManager {
 	}
 	
 	/**
-	 * Save arraylist of string to a file
+	 * Saves ArrayList of String to a file
 	 * @param fileName
 	 * @param list
 	 */

@@ -9,7 +9,7 @@ import org.junit.Test;
 
 import dothings.logic.MainLogic;
 
-// @author A0097082Y
+//@author A0097082Y
 public class IntegrationTesting {
 	private static final int FEEDBACK_TYPE = 0;
 	private static final int FEEDBACK_DESC = 1;

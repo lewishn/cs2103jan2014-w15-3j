@@ -1,10 +1,11 @@
-//@author A0099727J
+
 package dothings.parser;
 import java.util.ArrayList;
 
 import dothings.logic.Task;
 import dothings.storage.FileManager;
 
+//@author A0099727J
 public class CommandParser {
 	private static final String ESCAPE_CHARACTER = "\\";
 	private static final String ALIAS_IDENTIFIER = "alias:";
@@ -40,10 +41,9 @@ public class CommandParser {
 	}
 	
 	/**
-	 * Finds whether the command input by the user is valid,
-	 * with at least two words in length.
+	 * Checks if the user input has at least the specified number of words
 	 * @param userInput
-	 * @return true if the command is at least 2 words long, false otherwise
+	 * @return true if the command has at least length words long, false otherwise
 	 */
 	public static boolean isInputValid(String userInput, int length) {
 		if (userInput == null || userInput.length() == 0 || userInput.equals("")) {

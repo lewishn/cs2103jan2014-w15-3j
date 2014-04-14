@@ -1,4 +1,3 @@
-// @author A0101924R
 package dothings.gui;
 
 import java.awt.Color;
@@ -43,6 +42,8 @@ import org.jnativehook.keyboard.NativeKeyListener;
 
 import dothings.logic.MainLogic;
 
+
+//@author A0101924R
 @SuppressWarnings("serial")
 public class DoThingsGUI extends JFrame  {
 	private static final String DEFAULT_EXIT = "exit";
@@ -462,7 +463,7 @@ public class DoThingsGUI extends JFrame  {
 		headingLabel.addMouseMotionListener(triggerOnMouseAction);
 	}
 	
-	// @author A0097082Y
+	//@author A0097082Y
 	/**
 	 * populates to do list on startup
 	 */
