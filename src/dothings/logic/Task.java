@@ -256,7 +256,6 @@ public class Task implements Comparable<Task> {
 		} else if (endDateTime != null) {
 			return today.equals(endDateTime.withTimeAtStartOfDay());
 		}
-		
 		return false;
 	}
 	
