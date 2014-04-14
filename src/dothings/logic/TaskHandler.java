@@ -17,12 +17,12 @@ class TaskHandler {
 	
 	private static final String MESSAGE_SHOW__ON_DATE = "Showing tasks on %s";
 	private static final String MESSAGE_ADDED_TASK = "Added \"%s\".";
-	private static final String MESSAGE_UPDATE_TASK = "Task has been updated.";	
+	private static final String MESSAGE_UPDATE_TASK = "Task has been updated.";
 	private static final String MESSAGE_LIST_INCOMPLETE = "Showing incomplete tasks";
 	private static final String MESSAGE_LIST_ERROR = "Oh no! Please enter a valid date or status";
 	private static final String MESSAGE_LIST_COMPLETE = "Showing completed tasks";
 	private static final String MESSAGE_LIST_OVERDUE = "Showing overdue tasks";
-	private static final String MESSAGE_LIST_ALL = "Showing all tasks";	
+	private static final String MESSAGE_LIST_ALL = "Showing all tasks";
 	private static final String MESSAGE_DELETE_COMPLETE = "All completed tasks have been deleted.";
 	private static final String MESSAGE_DELETE_ALL = "All tasks have been deleted.";
 	private static final String MESSAGE_DELETE_SUCCESS = "All specified tasks have been deleted.";
@@ -32,7 +32,7 @@ class TaskHandler {
 	private static final String MESSAGE_ERROR_DELETE_ARGUMENT = "Hmmm ... Please enter a task to delete";
 	private static final String MESSAGE_ERROR_UPDATE_NO_SUCH_TASK = "Please enter a valid task number to update.";
 	private static final String MESSAGE_ERROR_UPDATE_ARGUMENT = "Incorrect update format.";
-	private static final String MESSAGE_ERROR_START_AFTER_END ="Error, start time cannot be after end time.";
+	private static final String MESSAGE_ERROR_START_AFTER_END = "Error, start time cannot be after end time.";
 	private static final String MESSAGE_ERROR_TASK_DESC_EMPTY = "Error, task description cannot be empty.";
 	private static final String MESSAGE_ERROR_ALIAS_IN_USE = "Alias is already in use";
 	private static final String MESSAGE_ERROR_DELETE = "No such task(s). Please enter a valid number or alias.";
@@ -54,11 +54,11 @@ class TaskHandler {
 	private static final String TASK_SELECT_ALL = "all";
 	private static final String TASK_STATUS_COMPLETE = "completed";
 	
-	
-	//////////ADD Functionality//////////
+	// ////////ADD Functionality//////////
 	
 	/**
 	 * Add a task using the user input
+	 * 
 	 * @param userInput
 	 * @return a Feedback object to be shown to the user
 	 */
@@ -71,7 +71,7 @@ class TaskHandler {
 		
 		if (newTask == null) {
 			return new Feedback(MESSAGE_ERROR_START_AFTER_END, true);
-		} 
+		}
 		
 		if (newTask.getDescription().trim().length() == 0) {
 			return new Feedback(MESSAGE_ERROR_TASK_DESC_EMPTY, true);
@@ -85,15 +85,18 @@ class TaskHandler {
 	
 	/**
 	 * Creates a task from the given userInput
+	 * 
 	 * @param userInput
 	 * @return Task created from the userInput
 	 */
 	protected static Task createTask(String userInput) {
 		String[] inputTokens = userInput.split(WHITESPACE);
-		ArrayList<String> input = new ArrayList<String>(Arrays.asList(inputTokens));
+		ArrayList<String> input = new ArrayList<String>(
+		        Arrays.asList(inputTokens));
 		
 		String alias = CommandParser.getAliasFromDescription(userInput);
-		alias = (Task.isAliasValid(alias) || CommandParser.isInteger(alias)) ? null : alias;
+		alias = (Task.isAliasValid(alias) || CommandParser.isInteger(alias)) ? null
+		        : alias;
 		userInput = CommandParser.removeDateTimeFromString(userInput);
 		userInput = CommandParser.removeAliasAndEscapeChar(userInput);
 		
@@ -102,7 +105,8 @@ class TaskHandler {
 		return createTaskFromFields(fields, userInput, alias);
 	}
 	
-	private static Task createTaskFromFields(String[] fields, String input, String alias) {
+	private static Task createTaskFromFields(String[] fields, String input,
+	                                         String alias) {
 		Task newTask = null;
 		
 		if (fields[Task.START_DATE] == null) {
@@ -111,7 +115,9 @@ class TaskHandler {
 			newTask = createTaskWithStartDate(fields);
 		}
 		
-		if (newTask.getStartDateTime() != null && newTask.getEndDateTime() != null && newTask.getStartDateTime().isAfter(newTask.getEndDateTime())) {
+		if (newTask.getStartDateTime() != null
+		        && newTask.getEndDateTime() != null
+		        && newTask.getStartDateTime().isAfter(newTask.getEndDateTime())) {
 			return null;
 		} else {
 			newTask.setDescription(input);
@@ -119,7 +125,7 @@ class TaskHandler {
 			return newTask;
 		}
 	}
-
+	
 	private static Task createTaskWithoutStartDate(String[] fields) {
 		DateTime start = null;
 		DateTime end = null;
@@ -132,7 +138,7 @@ class TaskHandler {
 			if (fields[Task.END_TIME] != null) {
 				end = DateParser.setDate();
 				end = TimeParser.setTime(start, fields[Task.END_TIME]);
-			} 
+			}
 		}
 		
 		return new Task(null, start, end, null);
@@ -189,24 +195,26 @@ class TaskHandler {
 		return new Task(null, start, end, null);
 	}
 	
-	
-	//@author A0100234E
-	//////////UPDATE Functionality//////////
+	// @author A0100234E
+	// ////////UPDATE Functionality//////////
 	/**
-	 * Updates a task in the specified field
-	 * Input format is [task number/alias][field to update][update]
+	 * Updates a task in the specified field Input format is [task number/alias][field to
+	 * update][update]
+	 * 
 	 * @param update
 	 * @return a Feedback object to be shown to the user
 	 */
-	protected static Feedback updateTask(String update) {	
+	protected static Feedback updateTask(String update) {
 		if (!CommandParser.isInputValid(update, 2)) {
 			return new Feedback(MESSAGE_ERROR_UPDATE_ARGUMENT);
 		}
 		
 		String taskID = CommandParser.getUserCommandType(update);
 		String updateStringWithoutID = CommandParser.getUserCommandDesc(update);
-		String updateField = CommandParser.getUserCommandType(updateStringWithoutID);
-		String updateDesc = CommandParser.getUserCommandDesc(updateStringWithoutID);
+		String updateField = CommandParser
+		        .getUserCommandType(updateStringWithoutID);
+		String updateDesc = CommandParser
+		        .getUserCommandDesc(updateStringWithoutID);
 		
 		Task taskToUpdate = null;
 		int updateIndex = getIndexToUpdate(taskID);
@@ -215,7 +223,9 @@ class TaskHandler {
 			return new Feedback(MESSAGE_ERROR_UPDATE_NO_SUCH_TASK, true);
 		}
 		
-		if (updateField.equalsIgnoreCase(UPDATE_FIELD_START) || updateField.equalsIgnoreCase(UPDATE_FIELD_END) || updateField.equalsIgnoreCase(UPDATE_FIELD_TIME)) {
+		if (updateField.equalsIgnoreCase(UPDATE_FIELD_START)
+		        || updateField.equalsIgnoreCase(UPDATE_FIELD_END)
+		        || updateField.equalsIgnoreCase(UPDATE_FIELD_TIME)) {
 			if (!CommandParser.isInputValid(updateDesc, 1)) {
 				return new Feedback(MESSAGE_ERROR_UPDATE_ARGUMENT, true);
 			}
@@ -232,17 +242,18 @@ class TaskHandler {
 			if (tokens.length <= 0) {
 				return new Feedback(MESSAGE_ERROR_ALIAS, true);
 			}
-
-			String alias = tokens[0];	
+			
+			String alias = tokens[0];
 			if (Task.isAliasValid(alias) || CommandParser.isInteger(alias)) {
 				return new Feedback(MESSAGE_ERROR_ALIAS_IN_USE, true);
-			
+				
 			}
 			
 			taskToUpdate = new Task(Task.getList().get(updateIndex));
 			taskToUpdate.setAlias(alias);
 			
-		} else if (updateField.equals(UPDATE_FIELD_DESC1) || updateField.equals(UPDATE_FIELD_DESC2)) {
+		} else if (updateField.equals(UPDATE_FIELD_DESC1)
+		        || updateField.equals(UPDATE_FIELD_DESC2)) {
 			if (!CommandParser.isInputValid(updateDesc, 1)) {
 				return new Feedback(MESSAGE_ERROR_UPDATE_ARGUMENT, true);
 			}
@@ -267,18 +278,19 @@ class TaskHandler {
 	
 	/**
 	 * Toggles the status of the specified tasks.
+	 * 
 	 * @param taskID
 	 * @return Feedback object containing the information to be shown to the user.
 	 */
 	protected static Feedback markTask(String taskID) {
 		ArrayList<Integer> listToMark = getTaskIdFromString(taskID);
-		if(listToMark.size() == 0) {
+		if (listToMark.size() == 0) {
 			return new Feedback(MESSAGE_ERROR_MARK_NO_TASK, true);
 		}
 		
 		ArrayList<Task> taskList = Task.getCloneList();
 		for (int i = 0; i < listToMark.size(); i++) {
-			taskList.get((int)listToMark.get(i)).toggleStatus();
+			taskList.get((int) listToMark.get(i)).toggleStatus();
 		}
 		
 		HistoryHandler.pushUndoStack();
@@ -289,15 +301,19 @@ class TaskHandler {
 	
 	/**
 	 * Updates the time of the input task
+	 * 
 	 * @param task
 	 * @param field
 	 * @param update
 	 * @return the updated task
 	 */
 	private static Task updateTaskTime(Task task, String field, String update) {
-		assert(field.equalsIgnoreCase(UPDATE_FIELD_TIME) || field.equalsIgnoreCase(UPDATE_FIELD_START) || field.equalsIgnoreCase(UPDATE_FIELD_END));
+		assert (field.equalsIgnoreCase(UPDATE_FIELD_TIME)
+		        || field.equalsIgnoreCase(UPDATE_FIELD_START) || field
+		            .equalsIgnoreCase(UPDATE_FIELD_END));
 		
-		ArrayList<String> updateTokens = new ArrayList<String>(Arrays.asList(update.split(WHITESPACE)));
+		ArrayList<String> updateTokens = new ArrayList<String>(
+		        Arrays.asList(update.split(WHITESPACE)));
 		String[] timeFields = CommandParser.getTaskFields(updateTokens);
 		
 		if (field.equalsIgnoreCase(UPDATE_FIELD_TIME)) {
@@ -317,7 +333,8 @@ class TaskHandler {
 				dateTime = TimeParser.setTime(dateTime, time);
 			} else if (date != null) {
 				DateTime temp = DateParser.setDate(date);
-				dateTime = TimeParser.setTime(temp, Task.getTimeString(dateTime));
+				dateTime = TimeParser.setTime(temp,
+				        Task.getTimeString(dateTime));
 			} else if (time != null) {
 				dateTime = TimeParser.setTime(dateTime, time);
 			} else {
@@ -340,6 +357,7 @@ class TaskHandler {
 	
 	/**
 	 * Get the index of the task from the taskID
+	 * 
 	 * @param taskID
 	 * @return
 	 */
@@ -359,10 +377,11 @@ class TaskHandler {
 		return index;
 	}
 	
-	//@author A0101924R
-	//////////READ Functionality//////////
+	// @author A0101924R
+	// ////////READ Functionality//////////
 	/**
 	 * Gets the lists of task to display from the input parameter
+	 * 
 	 * @param userInput
 	 * @return Feedback object containing the list of tasks to be displayed
 	 */
@@ -386,7 +405,7 @@ class TaskHandler {
 				feedback = MESSAGE_LIST_OVERDUE;
 			} else if (DateParser.isDate(userInput)) {
 				indexList = getListOfTaskWithDate(userInput);
-				feedback = String.format(MESSAGE_SHOW__ON_DATE , userInput);
+				feedback = String.format(MESSAGE_SHOW__ON_DATE, userInput);
 			} else if (userInput.equals(TASK_SELECT_ALL)) {
 				indexList = getListOfAllTasks();
 				feedback = MESSAGE_LIST_ALL;
@@ -396,11 +415,12 @@ class TaskHandler {
 			}
 		}
 		
-		return new Feedback(feedback , indexList);
+		return new Feedback(feedback, indexList);
 	}
 	
 	/**
 	 * Displays all the tasks in order of date
+	 * 
 	 * @return a Feedback Object to be shown to the user
 	 */
 	private static ArrayList<Integer> getListOfAllTasks() {
@@ -415,6 +435,7 @@ class TaskHandler {
 	
 	/**
 	 * Gets the list of tasks that are either completed or incomplete
+	 * 
 	 * @param completed
 	 * @return List of completed tasks if completed is true, incomplete if false
 	 */
@@ -433,6 +454,7 @@ class TaskHandler {
 	
 	/**
 	 * Get the list of tasks which are overdue
+	 * 
 	 * @return list of overdue tasks
 	 */
 	private static ArrayList<Integer> getListOfOverdueTask() {
@@ -450,6 +472,7 @@ class TaskHandler {
 	
 	/**
 	 * Get the list of tasks with end or start date same as the specified date
+	 * 
 	 * @param input
 	 * @return lists of tasks that have the specified date
 	 */
@@ -463,10 +486,11 @@ class TaskHandler {
 			DateTime start = list.get(i).getStartDateTime();
 			DateTime end = list.get(i).getEndDateTime();
 			
-			if (start != null && end != null) { 
-				if (DateParser.isSameDate(start, date) || DateParser.isSameDate(end, date)) {
+			if (start != null && end != null) {
+				if (DateParser.isSameDate(start, date)
+				        || DateParser.isSameDate(end, date)) {
 					indexList.add(i);
-				} 
+				}
 			} else if (start != null) {
 				if (DateParser.isSameDate(start, date)) {
 					indexList.add(i);
@@ -482,10 +506,11 @@ class TaskHandler {
 		return indexList;
 	}
 	
-	//////////DELETE Functionality//////////
+	// ////////DELETE Functionality//////////
 	
 	/**
 	 * Removes a task from the taskList
+	 * 
 	 * @param taskID
 	 * @return a Feedback object to be shown to the user
 	 */
@@ -523,12 +548,13 @@ class TaskHandler {
 	
 	/**
 	 * Deletes all tasks specified in the list
+	 * 
 	 * @param list
 	 */
 	private static void deleteList(ArrayList<Integer> list) {
 		ArrayList<Task> taskList = Task.getList();
 		for (int i = 0; i < list.size(); i++) {
-			taskList.remove((int)list.get(i));
+			taskList.remove((int) list.get(i));
 		}
 		Task.setList(taskList);
 	}
@@ -556,6 +582,7 @@ class TaskHandler {
 	
 	/**
 	 * Checks if the integer is within the size of the task list
+	 * 
 	 * @param index
 	 * @return true if index is withing the range of the list
 	 */
@@ -569,6 +596,7 @@ class TaskHandler {
 	
 	/**
 	 * Gets the list of task indices from the input string containing integers and/or aliases
+	 * 
 	 * @param list
 	 * @return Sorted list of task indices without duplicates
 	 */
@@ -583,7 +611,7 @@ class TaskHandler {
 				index = Integer.parseInt(tempList[i]) - 1;
 			} else if (Task.isAliasValid(tempList[i])) {
 				index = Task.getTaskIndexFromAlias(tempList[i]);
-			} 
+			}
 			
 			if (!isOutOfDeleteRange(index)) {
 				deleteList.add(index);
@@ -598,10 +626,11 @@ class TaskHandler {
 		return dList;
 	}
 	
-	//@author A0100234E
-	////////////////SEARCH Functionality////////////////////
+	// @author A0100234E
+	// //////////////SEARCH Functionality////////////////////
 	/**
 	 * Returns the indices of tasks that contain at least one the words.
+	 * 
 	 * @param searchKey
 	 * @return ArrayList of task indices
 	 */
@@ -615,14 +644,15 @@ class TaskHandler {
 		
 		for (int i = 0; i < taskList.size(); i++) {
 			for (int j = 0; j < keys.length; j++) {
-				if (taskList.get(i).getDescription().toLowerCase().contains(keys[j].toLowerCase())) {
+				if (taskList.get(i).getDescription().toLowerCase()
+				        .contains(keys[j].toLowerCase())) {
 					indexList.add(i);
 					break;
 				}
 			}
 		}
 		
-		return new Feedback("Search for " + searchKey , indexList);
+		return new Feedback("Search for " + searchKey, indexList);
 	}
 	
 	/**

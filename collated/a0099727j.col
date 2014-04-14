@@ -1,0 +1,1673 @@
+//@author: a0099727j
+
+
+
+	/**
+	 * origin: D:\Workspace\CS2103T NEW\src\dothings\logic\CustomCommandHandler.java
+	 */
+
+public class CustomCommandHandler {
+	private static final String LOG_DELETED_CUSTOM_COMMAND = "Deleted %s custom command from %s";
+	private static final String LOG_ADDED_COMMAND = "Added %s custom command to %s";
+	private static final String LOG_LOADING_CUSTOM_COMMANDS = "Loading custom commands.";
+	private static final String LOG_SAVING_CUSTOM_COMMANDS = "Saving custom commands.";
+	
+	private static final String WHITESPACE = "\\s+";
+	private static final String FILE_CUSTOM = "custom.txt";
+	
+	protected static final String HEADER_ADD = "[ADD]";
+	protected static final String HEADER_READ = "[LIST]";
+	protected static final String HEADER_UPDATE = "[UPDATE]";
+	protected static final String HEADER_DELETE = "[DELETE]";
+	protected static final String HEADER_SEARCH = "[SEARCH]";
+	protected static final String HEADER_UNDO = "[UNDO]";
+	protected static final String HEADER_REDO = "[REDO]";
+	protected static final String HEADER_CUSTOM = "[CUSTOM]";
+	protected static final String HEADER_DELETE_CUSTOM = "[DELETE_CUSTOM]";
+	protected static final String HEADER_HELP = "[HELP]";
+	protected static final String HEADER_MARK = "[MARK]";
+	protected static final String HEADER_EXIT = "[EXIT]";
+
+	public static final String MESSAGE_CUSTOM_DUPLICATE = "Sorry, but this word is already in use.";
+	public static final String MESSAGE_CUSTOM_SUCCESS = "\"%s\" has been added to the command list.";
+	public static final String MESSAGE_CUSTOM_DELETED = "\"%s\" has been deleted from the command list.";
+	public static final String MESSAGE_CUSTOM_NONEXISTANT = "Error deleting. No such word in command list.";
+	
+	protected static ArrayList<ArrayList<String>> customCommandList = loadCustomCommands();
+	
+	/**
+	 * Returns true if the keyword is a valid keyword of the commandType.
+	 * @param keyword
+	 * @param commandType
+	 * @return true if the keyword is a valid keyword of the commandType.
+	 */
+	public static boolean isCustomCommand(String keyword, String commandType) {
+		for (int i = 0; i < customCommandList.size(); i++) {
+			if (customCommandList.get(i).get(0).equals(commandType)) {
+				return customCommandList.get(i).contains(keyword);
+			}
+		}
+		
+		return false;
+	}
+	
+	/**
+	 * Adds a custom command to the current list of custom commands and saves the
+	 * list to the file.
+	 * @param userCommand
+	 * @param commandType
+	 * @return a Feedback object containing the message that is to be shown to the user
+	 */
+	public static Feedback addCustomCommand(String userCommand, String commandType) {
+		// if user inputs a white space between two or more words, take only the first
+		userCommand = userCommand.split(WHITESPACE)[0];
+		
+		if (isDuplicateCommand(userCommand) || MainLogic.isDefaultCommand(userCommand)) {
+			return new Feedback(MESSAGE_CUSTOM_DUPLICATE);
+		}
+		
+		addCommandToList(userCommand, commandType);
+		saveCustomCommands();
+		return new Feedback(String.format(MESSAGE_CUSTOM_SUCCESS, userCommand));
+	}
+	
+	/**
+	 * Add the userCommand to the list of custom command, depending on the commandType
+	 * @param userCommand
+	 * @param commandType
+	 */
+	private static void addCommandToList(String userCommand, String commandType) {
+		int index = getCommandHeaderIndex(commandType);
+		if (index >= 0) {
+			customCommandList.get(index).add(userCommand);
+		} else {
+			ArrayList<String> newCommandEntry = new ArrayList<String>();
+			newCommandEntry.add(commandType);
+			newCommandEntry.add(userCommand);
+			customCommandList.add(newCommandEntry);
+		}
+		
+		FileManager.log(String.format(LOG_ADDED_COMMAND, userCommand, commandType));
+	}
+
+	/**
+	 * Get the index of the specific command header in the customCommandList
+	 * Returns -1 if not found.
+	 * @return index of the specific command header
+	 */
+	private static int getCommandHeaderIndex(String commandType) {
+		for (int i = 0; i < customCommandList.size(); i++) {
+			if (customCommandList.get(i).get(0).equals(commandType)) {
+				return i;
+			}
+		}
+		
+		return -1;
+	}
+	
+	/**
+	 * Get a String containing all the custom commands for the specified header
+	 * @param header
+	 * @return
+	 */
+	protected static String getListOfCustomCommands(String header) {
+		int index = getCommandHeaderIndex(header);
+		String list = " ";
+		
+		if (index != -1) {
+			for (int i = 1; i < customCommandList.get(index).size(); i++) {
+				list += " " + customCommandList.get(index).get(i);
+			}
+		}
+		
+		return list;
+	}
+	
+	/**
+	 * Check if the input custom command is already in use
+	 * @param command
+	 * @return true if the command is already in use.
+	 */
+	private static boolean isDuplicateCommand(String command) {
+		for (int i = 0; i < customCommandList.size(); i++) {
+			if (customCommandList.get(i).contains(command)) {
+				return true;
+			}
+		}
+		return false;
+	}
+	
+	/**
+	 * Deletes a custom command from the list of custom commands 
+	 * and saves the list to the file.
+	 * @param userCommand
+	 * @return a Feedback object containing the message that is to be shown to the user
+	 */
+	public static Feedback deleteCustomCommand(String userCommand) {
+		for (int i = 0; i < customCommandList.size(); i++) {
+			for (int j = 0; j < customCommandList.get(i).size(); j++) {
+				if (customCommandList.get(i).get(j).equals(userCommand)) {
+					FileManager.log(String.format(LOG_DELETED_CUSTOM_COMMAND, userCommand, customCommandList.get(i).get(0)));
+					customCommandList.get(i).remove(j);
+					saveCustomCommands();
+					return new Feedback(String.format(MESSAGE_CUSTOM_DELETED, userCommand));
+				}
+			}
+		}
+		
+		return new Feedback(MESSAGE_CUSTOM_NONEXISTANT, false);
+	}	
+	
+	/**
+	 * Reads custom commands from the "custom.txt" file
+	 * @return list of custom commands
+	 */
+	protected static ArrayList<ArrayList<String>> loadCustomCommands() {
+		FileManager.log(LOG_LOADING_CUSTOM_COMMANDS);
+		ArrayList<ArrayList<String>> commandList = new ArrayList<ArrayList<String>>();
+		ArrayList<String> loadedCommands = FileManager.readFromFile(FILE_CUSTOM);
+		
+		for (int i = 0; i < loadedCommands.size(); i++) {
+			String[] tokens = loadedCommands.get(i).split(" ");
+			ArrayList<String> tempList = new ArrayList<String>(Arrays.asList(tokens));
+			commandList.add(tempList);
+		}
+		
+		return commandList;
+	}
+	
+	
+	/**
+	 * Saves the list of custom commands to the "customs.txt" file
+	 */
+	protected static void saveCustomCommands() {
+		FileManager.log(LOG_SAVING_CUSTOM_COMMANDS);
+		ArrayList<String> listToSave = new ArrayList<String>();
+		
+		for (int i = 0; i < customCommandList.size(); i++) {
+			String line = "";
+			for (int j = 0; j < customCommandList.get(i).size(); j++) {
+				line += (customCommandList.get(i).get(j) + " ");
+			}
+			listToSave.add(line);
+		}
+		
+		FileManager.writeToFile(FILE_CUSTOM, listToSave);
+	}
+}
+
+	// End of segment: D:\Workspace\CS2103T NEW\src\dothings\logic\CustomCommandHandler.java
+
+
+
+
+
+	/**
+	 * origin: D:\Workspace\CS2103T NEW\src\dothings\logic\HistoryHandler.java
+	 */
+
+public class HistoryHandler {
+	private static final String LOG_SAVING_UNDO_HISTORY = "Saving undo history";
+	private static final String LOG_LOADING_UNDO_HISTORY = "Loading undo history.";
+	private static final String FILE_UNDO = "undo.txt";
+	private static final String DELIMITER = "!@#$%^&*()";
+	private static final int MAXIMUM_UNDO_STEPS = 100;
+	private static final int MAXIMUM_SAVE_STACK_SIZE = 10;
+	
+	private static final String UNDO_SUCCESS = "%d step(s) undone";
+	private static final String UNDO_FAIL = "Nothing left to undo";
+	private static final String REDO_SUCCESS = "%d step(s) redone";
+	private static final String REDO_FAIL = "Nothing left to redo";
+	
+	private static ArrayDeque<ArrayList<Task>> taskUndoStack = loadUndoStack();
+	private static ArrayDeque<ArrayList<Task>> taskRedoStack = new ArrayDeque<ArrayList<Task>>();
+	
+	/**
+	 * Undo the previous actions which manipulates the task list numberOfSteps times
+	 * @return a Feedback object to be shown to the user, indicating success or failure in undoing
+	 */
+	protected static Feedback undoCommand(int numberOfSteps) {
+		int successfulTries = 0;
+		numberOfSteps = (numberOfSteps < 0) ? 1 : numberOfSteps;
+		
+		while (numberOfSteps-- > 0) {
+			boolean tryUndo = popUndoStack();
+			if (tryUndo) {
+				successfulTries++;
+			} else {
+				break;
+			}
+		}
+
+		if(successfulTries > 0) {
+			Task.saveTasks();
+			saveUndoStack();
+			return new Feedback(String.format(UNDO_SUCCESS, successfulTries));
+		} else {
+			return new Feedback(UNDO_FAIL);
+		}
+	}
+	
+	/**
+	 * redo the previous undo actions numberOfSteps times
+	 * @return a Feedback object to be shown to the user, indicating success or failure in redoing
+	 */
+	protected static Feedback redoCommand(int numberOfSteps) {
+		int successfulTries = 0;
+		numberOfSteps = (numberOfSteps < 0) ? 1 : numberOfSteps;
+		
+		while (numberOfSteps-- > 0) {
+			boolean tryUndo = popRedoStack();
+			if (tryUndo) {
+				successfulTries++;
+			} else {
+				break;
+			}
+		}
+
+		if(successfulTries > 0) {
+			Task.saveTasks();
+			saveUndoStack();
+			return new Feedback(String.format(REDO_SUCCESS, successfulTries));
+		} else {
+			return new Feedback(REDO_FAIL);
+		}
+	}
+
+	/**
+	 * Pushes a copy of the taskList and CustomCommandList into the undo stack.
+	 */
+	protected static void pushUndoStack() {
+		ArrayList<Task> taskNewList = Task.getCloneList();		
+		taskUndoStack.add(taskNewList);
+		reduceStackSize();
+		saveUndoStack();
+	}
+	
+	/**
+	 * Removes from entries from the undo history until the maximum size is reached
+	 */
+	private static void reduceStackSize() {
+		while (taskUndoStack.size() > MAXIMUM_UNDO_STEPS) {
+			taskUndoStack.pollFirst();
+		}
+	}
+	
+	private static void pushRedoStack() {
+		ArrayList<Task> taskNewList = Task.getCloneList();		
+		taskRedoStack.add(taskNewList);
+	}
+	
+	/**
+	 * Get the top of the undo stack
+	 * @return true if stack size is greater than zero, false otherwise
+	 */
+	private static boolean popUndoStack() {
+		if (taskUndoStack.size() > 0) {
+			pushRedoStack();
+			ArrayList<Task> taskList = taskUndoStack.pollLast();
+			Task.setList(taskList);
+			return true;
+		} else {
+			return false;
+		}
+	}
+	
+	/**
+	 * Get the top of the redo stack
+	 * @return true if stack size is greater than zero, false otherwise
+	 */
+	private static boolean popRedoStack() {
+		if (taskRedoStack.size() > 0) {
+			pushUndoStack();
+			ArrayList<Task> taskList = taskRedoStack.pollLast();
+			Task.setList(taskList);
+			return true;
+		} else {
+			return false;
+		}
+	}
+	
+	/**
+	 * Empties the redo history
+	 */
+	protected static void purgeRedoStack() {
+		taskRedoStack = new ArrayDeque<ArrayList<Task>>();
+	}
+	
+	/**
+	 * Saves undo history to a file
+	 */
+	private static void saveUndoStack() {
+		FileManager.log(LOG_SAVING_UNDO_HISTORY);
+		ArrayDeque<ArrayList<Task>> undoStack = (ArrayDeque<ArrayList<Task>>) taskUndoStack.clone();
+		ArrayList<String> saveList = new ArrayList<String>();
+		
+		for (int i = 0; i < MAXIMUM_SAVE_STACK_SIZE; i++) {
+			if (undoStack.size() > 0) {
+				ArrayList<Task> stackEntry = undoStack.pop();
+				for (int j = 0; j < stackEntry.size(); j++) {
+					saveList.add(stackEntry.get(j).toString());
+				}
+				saveList.add(DELIMITER);
+			}
+		}
+		
+		FileManager.writeToFile(FILE_UNDO, saveList);
+	}
+	
+	/**
+	 * Loads undo history from a file
+	 * @return
+	 */
+	private static ArrayDeque<ArrayList<Task>> loadUndoStack() {
+		FileManager.log(LOG_LOADING_UNDO_HISTORY);
+		
+		ArrayList<String> list = FileManager.readFromFile(FILE_UNDO);
+		ArrayDeque<ArrayList<Task>> undoStack = new ArrayDeque<ArrayList<Task>>();
+		ArrayList<Task> stackEntry = new ArrayList<Task>();
+		
+		for (int i = 0; i < list.size(); i++) {
+			if (list.get(i).equals(DELIMITER)) {
+				undoStack.add(stackEntry);
+				stackEntry = new ArrayList<Task>();
+				continue;
+			}
+			
+			stackEntry.add(Task.parseTaskFromString(list.get(i)));
+		}
+		
+		return undoStack;
+	}
+}
+
+	// End of segment: D:\Workspace\CS2103T NEW\src\dothings\logic\HistoryHandler.java
+
+
+
+
+
+	/**
+	 * origin: D:\Workspace\CS2103T NEW\src\dothings\logic\MainLogic.java
+	 */
+
+	/**
+	 * Check whether a command input is a default command
+	 * @param s
+	 * @return true or false
+	 */
+	protected static boolean isDefaultCommand(String s) {
+		String[] defaultCommandList = {
+				DEFAULT_ADD, DEFAULT_UPDATE, DEFAULT_MARK,
+				DEFAULT_DELETE, DEFAULT_LIST, DEFAULT_SEARCH,
+				DEFAULT_UNDO, DEFAULT_REDO, DEFAULT_CUSTOM,
+				DEFAULT_DELETE_CUSTOM,  DEFAULT_HELP, DEFAULT_EXIT
+		};
+		
+		for (int i = 0; i < defaultCommandList.length; i++) {
+			if (s.equals(defaultCommandList[i])) {
+				return true;
+			}
+		}
+		return false;
+	}
+	/**
+	 * creates help description
+	 * @return longHelpDescription
+	 */
+	private static String helpDescription() {
+		String[] commandList = {
+				DEFAULT_ADD, DEFAULT_UPDATE, DEFAULT_MARK,
+				DEFAULT_DELETE, DEFAULT_LIST, DEFAULT_SEARCH,
+				DEFAULT_UNDO, DEFAULT_REDO, DEFAULT_CUSTOM,
+				DEFAULT_DELETE_CUSTOM,  DEFAULT_HELP, DEFAULT_EXIT
+		};
+		
+		String longHelpDescription = "";
+		
+		for (int i = 0; i < commandList.length; i++) {
+			String commandHeader = getCustomHeader(commandList[i]);
+			longHelpDescription += (commandHeader + "\n");
+			longHelpDescription += (commandList[i] + CustomCommandHandler.getListOfCustomCommands(commandHeader) + "\n\n");
+		}
+		return longHelpDescription;
+	}
+}
+
+
+
+	// End of segment: D:\Workspace\CS2103T NEW\src\dothings\logic\MainLogic.java
+
+
+
+
+
+	/**
+	 * origin: D:\Workspace\CS2103T NEW\src\dothings\logic\TaskHandler.java
+	 */
+
+class TaskHandler {
+	
+	private static final String MESSAGE_SHOW__ON_DATE = "Showing tasks on %s";
+	private static final String MESSAGE_ADDED_TASK = "Added \"%s\".";
+	private static final String MESSAGE_UPDATE_TASK = "Task has been updated.";	
+	private static final String MESSAGE_LIST_INCOMPLETE = "Showing incomplete tasks";
+	private static final String MESSAGE_LIST_ERROR = "Oh no! Please enter a valid date or status";
+	private static final String MESSAGE_LIST_COMPLETE = "Showing completed tasks";
+	private static final String MESSAGE_LIST_OVERDUE = "Showing overdue tasks";
+	private static final String MESSAGE_LIST_ALL = "Showing all tasks";	
+	private static final String MESSAGE_DELETE_COMPLETE = "All completed tasks have been deleted.";
+	private static final String MESSAGE_DELETE_ALL = "All tasks have been deleted.";
+	private static final String MESSAGE_DELETE_SUCCESS = "All specified tasks have been deleted.";
+	private static final String MESSAGE_TASK_MARK = "Task(s) have been marked.";
+	private static final String MESSAGE_ERROR_ADD_NO_DESC = "Please add a task description.";
+	private static final String MESSAGE_ERROR_MARK_NO_TASK = "Nothing to mark.";
+	private static final String MESSAGE_ERROR_DELETE_ARGUMENT = "Hmmm ... Please enter a task to delete";
+	private static final String MESSAGE_ERROR_UPDATE_NO_SUCH_TASK = "Please enter a valid task number to update.";
+	private static final String MESSAGE_ERROR_UPDATE_ARGUMENT = "Incorrect update format.";
+	private static final String MESSAGE_ERROR_START_AFTER_END ="Error, start time cannot be after end time.";
+	private static final String MESSAGE_ERROR_TASK_DESC_EMPTY = "Error, task description cannot be empty.";
+	private static final String MESSAGE_ERROR_ALIAS_IN_USE = "Alias is already in use";
+	private static final String MESSAGE_ERROR_DELETE = "No such task(s). Please enter a valid number or alias.";
+	private static final String MESSAGE_ERROR_SEARCH = "Please enter a search key.";
+	private static final String MESSAGE_ERROR_ALIAS = "Invalid alias";
+	private static final String MINUTE_LAST = "23:59";
+	private static final String MINUTE_FIRST = "00:00";
+	private static final String WHITESPACE = "\\s+";
+	
+	private static final String UPDATE_FIELD_TIME = "time";
+	private static final String UPDATE_FIELD_START = "start";
+	private static final String UPDATE_FIELD_END = "end";
+	private static final String UPDATE_FIELD_DESC1 = "desc";
+	private static final String UPDATE_FIELD_DESC2 = "description";
+	private static final String UPDATE_FIELD_ALIAS = "alias";
+	
+	private static final String TASK_STATUS_OVERDUE = "overdue";
+	private static final String TASK_STATUS_INCOMPLETE = "incompleted";
+	private static final String TASK_SELECT_ALL = "all";
+	private static final String TASK_STATUS_COMPLETE = "completed";
+	
+	
+	//////////ADD Functionality//////////
+	
+	/**
+	 * Add a task using the user input
+	 * @param userInput
+	 * @return a Feedback object to be shown to the user
+	 */
+	protected static Feedback addTask(String userInput) {
+		if (!CommandParser.isInputValid(userInput, 1)) {
+			return new Feedback(MESSAGE_ERROR_ADD_NO_DESC);
+		}
+		
+		Task newTask = createTask(userInput);
+		
+		if (newTask == null) {
+			return new Feedback(MESSAGE_ERROR_START_AFTER_END, true);
+		} 
+		
+		if (newTask.getDescription().trim().length() == 0) {
+			return new Feedback(MESSAGE_ERROR_TASK_DESC_EMPTY, true);
+		}
+		
+		HistoryHandler.pushUndoStack();
+		Task.getList().add(newTask);
+		executePostCommandRoutine();
+		return new Feedback(String.format(MESSAGE_ADDED_TASK, userInput));
+	}
+	
+	/**
+	 * Creates a task from the given userInput
+	 * @param userInput
+	 * @return Task created from the userInput
+	 */
+	protected static Task createTask(String userInput) {
+		String[] inputTokens = userInput.split(WHITESPACE);
+		ArrayList<String> input = new ArrayList<String>(Arrays.asList(inputTokens));
+		
+		String alias = CommandParser.getAliasFromDescription(userInput);
+		alias = (Task.isAliasValid(alias) || CommandParser.isInteger(alias)) ? null : alias;
+		userInput = CommandParser.removeDateTimeFromString(userInput);
+		userInput = CommandParser.removeAliasAndEscapeChar(userInput);
+		
+		String[] fields = CommandParser.getTaskFields(input);
+		
+		return createTaskFromFields(fields, userInput, alias);
+	}
+	
+	private static Task createTaskFromFields(String[] fields, String input, String alias) {
+		Task newTask = null;
+		
+		if (fields[Task.START_DATE] == null) {
+			newTask = createTaskWithoutStartDate(fields);
+		} else {
+			newTask = createTaskWithStartDate(fields);
+		}
+		
+		if (newTask.getStartDateTime() != null && newTask.getEndDateTime() != null && newTask.getStartDateTime().isAfter(newTask.getEndDateTime())) {
+			return null;
+		} else {
+			newTask.setDescription(input);
+			newTask.setAlias(alias);
+			return newTask;
+		}
+	}
+
+	private static Task createTaskWithoutStartDate(String[] fields) {
+		DateTime start = null;
+		DateTime end = null;
+		
+		if (fields[Task.START_TIME] != null) {
+			start = DateParser.setDate();
+			start = TimeParser.setTime(start, fields[Task.START_TIME]);
+			
+			// If null, Deadline Task with today's date. Else, Scheduled Task with today's date
+			if (fields[Task.END_TIME] != null) {
+				end = DateParser.setDate();
+				end = TimeParser.setTime(start, fields[Task.END_TIME]);
+			} 
+		}
+		
+		return new Task(null, start, end, null);
+	}
+	
+	private static Task createTaskWithStartDate(String[] fields) {
+		if (fields[Task.START_TIME] == null) {
+			return createTaskWithStartDateNoStartTime(fields);
+		} else {
+			return createTaskWithStartDateAndTime(fields);
+		}
+	}
+	
+	private static Task createTaskWithStartDateNoStartTime(String[] fields) {
+		DateTime start = DateParser.setDate(fields[Task.START_DATE]);
+		DateTime end = null;
+		
+		if (fields[Task.END_DATE] == null) {
+			// "Deadline" Task with only start date
+			start = TimeParser.setTime(start, MINUTE_LAST);
+		} else {
+			// Timed Task with start and end dates but no time
+			start = TimeParser.setTime(start, MINUTE_FIRST);
+			end = DateParser.setDate(fields[Task.END_DATE]);
+			end = TimeParser.setTime(end, MINUTE_LAST);
+		}
+		
+		return new Task(null, start, end, null);
+	}
+	
+	private static Task createTaskWithStartDateAndTime(String[] fields) {
+		DateTime start = DateParser.setDate(fields[Task.START_DATE]);
+		start = TimeParser.setTime(start, fields[Task.START_TIME]);
+		DateTime end = null;
+		
+		if (fields[Task.END_DATE] == null) {
+			if (fields[Task.END_TIME] != null) {
+				// Timed Task with start and end times within one specific date
+				end = DateParser.setDate(fields[Task.START_DATE]);
+				end = TimeParser.setTime(end, fields[Task.END_TIME]);
+			}
+		} else {
+			end = DateParser.setDate(fields[Task.END_DATE]);
+			
+			if (fields[Task.END_TIME] == null) {
+				// Timed Task with start time, start and end dates, but no end time
+				end = TimeParser.setTime(end, MINUTE_LAST);
+			} else {
+				// Timed Task with start and end time/dates
+				end = TimeParser.setTime(end, fields[Task.END_TIME]);
+			}
+		}
+		
+		return new Task(null, start, end, null);
+	}
+	
+	
+	// End of segment: D:\Workspace\CS2103T NEW\src\dothings\logic\TaskHandler.java
+
+
+
+
+
+	/**
+	 * origin: D:\Workspace\CS2103T NEW\src\dothings\parser\CommandParser.java
+	 */
+
+public class CommandParser {
+	private static final String ESCAPE_CHARACTER = "\\";
+	private static final String ALIAS_IDENTIFIER = "alias:";
+	private static final String WHITESPACE = "\\s+";
+	private static final String timeIdentifier = "at @ by from for this to on before until end start - , and";
+	private static final String LOG_IS_INPUT_VALID = "CommandParser.isInputValid(%s, %d) : %b";
+	
+	/**
+	 * Returns the command type portion of the string
+	 * @param userInput
+	 * @return command type portion of the input
+	 */
+	public static String getUserCommandType(String userInput) {
+		assert(userInput != null);
+		
+		String[] tokens = userInput.split(WHITESPACE);
+		return tokens[0];
+	}
+
+	/**
+	 * Returns the description portion of the string
+	 * @param userInput
+	 * @return description portion of the input
+	 */
+	public static String getUserCommandDesc(String userInput) {
+		assert(userInput != null);
+		
+		String[] tokens = userInput.split(WHITESPACE, 2);
+		if (tokens.length < 2) {
+			return null;
+		}
+		return tokens[1];
+	}
+	
+	/**
+	 * Checks if the user input has at least the specified number of words
+	 * @param userInput
+	 * @return true if the command has at least length words long, false otherwise
+	 */
+	public static boolean isInputValid(String userInput, int length) {
+		if (userInput == null || userInput.length() == 0 || userInput.equals("")) {
+			return false;
+		}
+		
+		String[] tokens = userInput.split(WHITESPACE);
+		boolean isValid = (tokens.length >= length);
+		FileManager.log(String.format(LOG_IS_INPUT_VALID, userInput, length, isValid));
+		
+		return isValid;
+	}
+	
+	/**
+	 * Returns an array of string of length 4 containing the start and end
+	 * dates and times of the input. Index 0 and 1 contains the start date
+	 * and time respectively. Index 2 and 3 contains the end date and time.
+	 * @param input
+	 * @return a String array containing start and end date/times
+	 */
+	public static String[] getTaskFields(ArrayList<String> input) {
+		String[] fields = new String[Task.TASK_FIELD_SIZE];
+		fields = getDateFields(input, fields);
+		fields = getTimeFields(input, fields);
+		return fields;
+	}
+	
+	/**
+	 * Returns an array of string of length 4 containing the start and end
+	 * dates of the input at index 0 and 2 of the array respectively.
+	 * @param input
+	 * @param fields
+	 * @return a String array containing the start and end date
+	 */
+	private static String[] getDateFields(ArrayList<String> input, String[] fields) {
+		for (int i = 0; i < input.size(); i++) {
+			if (DateParser.isDate(input.get(i))) {
+				if (fields[Task.START_DATE] == null) {
+					fields[Task.START_DATE] = input.get(i);
+				} else if (fields[Task.END_DATE] == null) {
+					fields[Task.END_DATE] = input.get(i);
+					break;
+				}
+			}
+		}
+		
+		return fields;
+	}
+	
+	/**
+	 * Returns an array of string of length 4 containing the start and end
+	 * times of the input at index 1 and 3 of the array respectively.
+	 * @param input
+	 * @param fields
+	 * @return a String array containing the start and end date
+	 */
+	private static String[] getTimeFields(ArrayList<String> input, String[] fields) {
+		for (int i = 0; i < input.size(); i++) {
+			if (TimeParser.isTime(input.get(i))) {
+				if (fields[Task.START_TIME] == null) {
+					fields[Task.START_TIME] = input.get(i);
+				} else if (fields[Task.END_TIME] == null) {
+					fields[Task.END_TIME] = input.get(i);
+					break;
+				}
+			}
+		}
+		
+		return fields;
+	}
+	
+	/**
+	 * Removes date and time from the string
+	 * @param s
+	 * @return String without date and time
+	 */
+	public static String removeDateTimeFromString(String s) {
+		String[] tokens = s.split(WHITESPACE);
+		
+		for(int i = 0; i < tokens.length; i++) {
+			if (DateParser.isDate(tokens[i]) || TimeParser.isTime(tokens[i])) {
+				int j = i - 1;
+				while (j >= 0 && isDateTimeIdentifier(tokens[j])) {
+					tokens[j--] = null;
+				}
+				tokens[i] = null;
+			}
+		}
+		
+		return arrayToString(tokens);
+	}
+	
+	/**
+	 * Removes all occurrences of "alias:<string>" and escape character "\" from the string
+	 * @param desc
+	 * @return String with alias and escape character removed
+	 */
+	public static String removeAliasAndEscapeChar(String desc) {
+		String[] tokens = desc.split(WHITESPACE);
+		for (int i = 0; i < tokens.length; i++) {
+			
+			if (tokens[i].startsWith(ESCAPE_CHARACTER)) {
+				tokens[i] = tokens[i].substring(1);
+			}
+			if (tokens[i].contains(ALIAS_IDENTIFIER)) {
+				tokens[i] = null;
+			}	
+		}
+		
+		return arrayToString(tokens);
+	}
+	
+	/**
+	 * Get the first occurrence of an alias in the string
+	 * @param desc
+	 * @return
+	 */
+	public static String getAliasFromDescription(String desc) {
+		String[] tokens = desc.split(WHITESPACE);
+		for (int i = 0; i < tokens.length; i++) {
+			if (tokens[i].contains(ALIAS_IDENTIFIER)) {
+				return tokens[i].substring(ALIAS_IDENTIFIER.length());
+			}
+		}
+		
+		return null;
+	}
+	
+	/**
+	 * Checks if the string is a time identifier
+	 * @param s
+	 * @return true if s is a time identifier
+	 */
+	private static boolean isDateTimeIdentifier(String s) {
+		String[] identifierList = timeIdentifier.split(" ");
+		
+		if (s == null) {
+			return false;
+		}
+		
+		for(String identifier: identifierList) {
+			if (s.equals(identifier)) return true;
+		}
+		
+		return false;
+	}
+	
+	/**
+	 * Converts a String array to a sentence
+	 * @param s
+	 * @return array s as String sentence
+	 */
+	protected static String arrayToString(String[] s) {
+		assert(s != null);
+		
+		String r = "";
+		for (int i = 0; i < s.length; i++) {
+			if (s[i] == null) continue;
+			if (i == s.length) {
+				r = r + s[i];
+			} else {
+				r = r + s[i] + " ";
+			}
+		}
+		
+		return r.trim();
+	}
+	
+	/**
+	 * Checks if the String is a valid integer
+	 * @param str
+	 * @return true is str is an integer
+	 */
+	public static boolean isInteger(String str) {
+		assert(str != null);
+		
+		try {
+			Integer.parseInt(str);
+			return true;
+		} catch (NumberFormatException e) {
+			return false;
+		}
+	}
+}
+
+	// End of segment: D:\Workspace\CS2103T NEW\src\dothings\parser\CommandParser.java
+
+
+
+
+
+	/**
+	 * origin: D:\Workspace\CS2103T NEW\src\dothings\parser\DateParser.java
+	 */
+
+public class DateParser{
+	private static final String DATE_FORMAT_0 = "dd/MM/YYYY";
+	private static final String DATE_FORMAT_1 = "dd-MM-YYYY";
+	private static final String DATE_FORMAT_2 = "dd.MM.YYYY";
+	private static final String DATE_FORMAT_3 = "ddMMYYYY";
+	private static final String DATE_FORMAT_4 = "dd/MMM/YYYY";
+	private static final String DATE_FORMAT_5 = "dd-MMM-YYYY";
+	private static final String DATE_FORMAT_6 = "dd.MMM.YYYY";
+	private static final String DATE_FORMAT_7 = "dd/MM";
+	private static final String DATE_FORMAT_8 = "dd-MM";
+	private static final String DATE_FORMAT_9 = "dd/MMM";
+	private static final String DATE_FORMAT_10 = "dd-MMM";
+	private static final String DATE_FORMAT_11 = "E";
+	private static final int FORMAT_TYPE_0_INDEX = 7;	//format 0 : full date, with year
+	private static final int FORMAT_TYPE_1_INDEX = 11;	//format 1 : with day and month only
+	private static final int FORMAT_TYPE_2_INDEX = 12;	//format 2 : day of the week, Friday, etc.
+	
+	private static final String DATE_TODAY = "today";
+	private static final String DATE_TOMORROW = "tomorrow";
+	private static final String DATE_YESTERDAY = "yesterday";
+	
+	private static ArrayList<DateTimeFormatter> dateFormats = 
+		new ArrayList<DateTimeFormatter> (Arrays.asList( 
+			DateTimeFormat.forPattern(DATE_FORMAT_0), 
+			DateTimeFormat.forPattern(DATE_FORMAT_1), 
+			DateTimeFormat.forPattern(DATE_FORMAT_2), 	
+			DateTimeFormat.forPattern(DATE_FORMAT_3), 
+			DateTimeFormat.forPattern(DATE_FORMAT_4), 
+			DateTimeFormat.forPattern(DATE_FORMAT_5), 
+			DateTimeFormat.forPattern(DATE_FORMAT_6),
+			DateTimeFormat.forPattern(DATE_FORMAT_7), 
+			DateTimeFormat.forPattern(DATE_FORMAT_8), 
+			DateTimeFormat.forPattern(DATE_FORMAT_9), 
+			DateTimeFormat.forPattern(DATE_FORMAT_10),
+			DateTimeFormat.forPattern(DATE_FORMAT_11)
+		));
+
+	
+	/**
+	 * Sets the date to the one from the input.
+	 * @param input
+	 * @return a DateTime object with the date to the input
+	 */
+	public static DateTime setDate(String input) {
+		int formatType = getDateFormatType(input);
+		DateTime date = new DateTime();
+
+		if (formatType == 0) {
+			date = parseDateFormat0(input);
+		} else if (formatType == 1) {
+			date = parseDateFormat1(input, date);
+		} else if (formatType == 2) { 
+			date = parseDateFormat2(input, date);
+		} else if (formatType == 3) {
+			date = parseDateFormat3(input);
+		}
+		
+		return date;
+	}
+	
+	/**
+	 * Set the date to today's date
+	 * @return a DateTime object with the date set to today.
+	 */
+	public static DateTime setDate() {
+		return new DateTime();
+	}
+
+	/**
+	 * Get the date format type of the input.
+	 * returns 0 if date contains day, month and year
+	 * returns 1 if date contains day and month only
+	 * returns 2 if date is written in English (Tuesday, wed etc)
+	 * returns 3 if date is yesterday/today/tomorrow
+	 * returns -1 if invalid
+	 * @param input
+	 * @return the format of the input date
+	 */
+	private static int getDateFormatType(String input) {
+		DateTime date;
+		int i = 0;
+		for ( ; i < dateFormats.size(); i++) {
+			try {
+				date = dateFormats.get(i).parseDateTime(input);
+				break;
+			} catch (IllegalArgumentException e) {
+				continue;
+			}
+		}
+		
+		if (i < FORMAT_TYPE_0_INDEX) {
+			return 0;
+		} else if (i < FORMAT_TYPE_1_INDEX) {
+			return 1;
+		} else if (i < FORMAT_TYPE_2_INDEX) {
+			return 2;
+		} else if (isFormat3(input)) {
+			return 3;
+		}
+			
+		return -1;
+	}
+	
+	/**
+	 * Checks if input String is a date with format 3 (yesterday, today, tomorrow)
+	 * @param input
+	 * @return true if input is format3
+	 */
+	private static boolean isFormat3(String input) {
+		return input.equalsIgnoreCase(DATE_TODAY) || input.equalsIgnoreCase(DATE_TOMORROW) || input.equalsIgnoreCase(DATE_YESTERDAY);
+	}
+	
+	/**
+	 * Finds if the input string is a valid date
+	 * @param input
+	 * @return true if the input string is a valid date
+	 */
+	public static boolean isDate(String input) {
+		int formatType = getDateFormatType(input);
+		assert(formatType >= -1 && formatType <=3);
+		
+		if (formatType == -1) {
+			return false;
+		} else {
+			return true;
+		}
+	}
+	
+	/**
+	 * Checks if two dates are the same day
+	 * @param date1
+	 * @param date2
+	 * @return true if date1 is the same as date 2
+	 */
+	public static boolean isSameDate(DateTime date1, DateTime date2) {
+		assert(date1 != null && date2 != null);
+		return (date1.getYear() == date2.getYear()) && (date1.getDayOfYear() == date2.getDayOfYear());
+	}
+	
+	/**
+	 * Parse the input string with date format type 0 and returns a
+	 * DateTime object with the corresponding date
+	 * @param input
+	 * @return a DateTime object with the date set to the input date
+	 */
+	private static DateTime parseDateFormat0(String input){
+		DateTime date = null;
+		
+		for (int i = 0; i < FORMAT_TYPE_0_INDEX; i++) {
+			try {
+				date = dateFormats.get(i).parseDateTime(input);
+			} catch (IllegalArgumentException e) {
+				continue;
+			}
+		}
+		
+		return date;
+	}
+	
+	/**
+	 * Parse the input string with date format type 1 and returns a
+	 * DateTime object with the corresponding date
+	 * @param input
+	 * @return a DateTime object with the date set to the input date
+	 */
+	private static DateTime parseDateFormat1(String input, DateTime date) {
+		int[] dateTokens = splitDayMonth(input);
+		int targetDay = dateTokens[0];
+		int targetMonth = dateTokens[1];
+		int currentDay = date.getDayOfMonth();
+		int currentMonth = date.getMonthOfYear();
+		
+		// Target day to be set has already passed, so set it to next year
+		if (targetMonth < currentMonth || (targetMonth == currentMonth && targetDay < currentDay)) {
+			date = new DateTime(date.getYear()+1 , targetMonth, targetDay, 0, 0);
+		} else {
+			date = new DateTime(date.getYear(), targetMonth, targetDay, 0, 0);
+		}
+		return date;
+	}
+	
+	/**
+	 * Parse the input string with date format type 2 and returns a
+	 * DateTime object with the corresponding date
+	 * @param input
+	 * @return a DateTime object with the date set to the input date
+	 */
+	private static DateTime parseDateFormat2(String input, DateTime date) {
+		DateTime tempDate = dateFormats.get(FORMAT_TYPE_2_INDEX - 1).parseDateTime(input);
+		int targetDayOfWeek = tempDate.getDayOfWeek();
+		int currentDayOfWeek = date.getDayOfWeek();
+		
+		if (targetDayOfWeek < currentDayOfWeek) {
+			date = date.plusWeeks(1);
+		} 
+		
+		date = date.withDayOfWeek(targetDayOfWeek);
+		return date;
+	}
+	
+	/**
+	 * Parse the input string with date format type 3 and returns a
+	 * DateTime object with the corresponding date
+	 * @param input
+	 * @return a DateTime object with the date set to the input date
+	 */
+	private static DateTime parseDateFormat3(String input) {
+		DateTime today = new DateTime();
+		
+		if (input.equalsIgnoreCase(DATE_YESTERDAY)) {
+			return today.minusDays(1);
+		} else if (input.equalsIgnoreCase(DATE_TOMORROW)) {
+			return today.plusDays(1);
+		}
+		
+		return today;
+	}
+	
+	/**
+	 * Splits the day and month of the input date string into two integers
+	 * @param date
+	 * @return integer array with the day of the month in index 0 and month of the year in index 1
+	 */
+	private static int[] splitDayMonth(String date) {
+		String[] tokens = new String[2];
+		if (date.contains("/")) {
+			tokens = date.split("/");
+		} else if (date.contains("-")) {
+			tokens = date.split("-");
+		}
+		
+		int[] intTokens = new int[tokens.length];
+		for (int i = 0; i < tokens.length; i++) {
+			try {	
+				intTokens[i] = Integer.parseInt(tokens[i]);
+			} catch (NumberFormatException e) {
+				DateTime tempDate = DateTimeFormat.forPattern("MMM").parseDateTime(tokens[i]);
+				intTokens[i] = tempDate.getMonthOfYear();
+			}
+		}
+		
+		return intTokens;
+	}
+}
+
+	// End of segment: D:\Workspace\CS2103T NEW\src\dothings\parser\DateParser.java
+
+
+
+
+
+	/**
+	 * origin: D:\Workspace\CS2103T NEW\src\dothings\parser\TimeParser.java
+	 */
+
+public class TimeParser{
+	
+	private static final String TIME_FORMAT_0 = "HH:mm";
+	private static final String TIME_FORMAT_1 = "HH.mm";
+	private static final String TIME_FORMAT_2 = "HHmm";
+	private static final String TIME_FORMAT_3 = "hh:mmaa";
+	private static final String TIME_FORMAT_4 = "hh.mmaa";
+	private static final String TIME_FORMAT_5 = "hhmmaa";
+	private static final String TIME_FORMAT_6 = "hhaa";
+	private static final String TIME_FORMAT_7 = "haa";
+	private static final int FORMAT_SIZE = 8;
+	
+	private static ArrayList<DateTimeFormatter> timeFormats = 
+		new ArrayList<DateTimeFormatter> (Arrays.asList( 
+			DateTimeFormat.forPattern(TIME_FORMAT_0), 
+			DateTimeFormat.forPattern(TIME_FORMAT_1), 
+			DateTimeFormat.forPattern(TIME_FORMAT_2), 	
+			DateTimeFormat.forPattern(TIME_FORMAT_3), 
+			DateTimeFormat.forPattern(TIME_FORMAT_4), 
+			DateTimeFormat.forPattern(TIME_FORMAT_5), 
+			DateTimeFormat.forPattern(TIME_FORMAT_6),
+			DateTimeFormat.forPattern(TIME_FORMAT_7)
+		));
+	
+	/**
+	 * Alters the time component of the input DateTime object with the input time string
+	 * @param date
+	 * @param input
+	 * @return a DateTime object with date and time already set
+	 */
+	public static DateTime setTime(DateTime date, String input) {
+		if (isValidFormat(input)) {
+			date = parseTimeFormat(date, input);
+			return date;
+		} else {
+			return date;
+		}
+	}
+
+	/**
+	 * Checks if the input string is a valid date format
+	 * @param input
+	 * @return true if valid, false otherwise
+	 */
+	private static boolean isValidFormat(String input) {
+		DateTime date;
+		int i = 0;
+		
+		for ( ; i < timeFormats.size(); i++) {
+			try {
+				date = timeFormats.get(i).parseDateTime(input);
+				break;
+			} catch (IllegalArgumentException e) {
+				continue;
+			} catch (NullPointerException e) {
+				continue;
+			}
+		}
+		
+		if (i < FORMAT_SIZE) {
+			return true;
+		} else {
+			return false;
+		}
+	}
+	
+	/**
+	 * Checks whether the input string is a time
+	 * @param input
+	 * @return true if string is a time, false otherwise
+	 */
+	public static boolean isTime(String input) {
+		return isValidFormat(input);
+	}
+	
+	/**
+	 * Sets the time of the DateTime object to the input time
+	 * @param date
+	 * @param input
+	 * @return DateTime object with the input time
+	 */
+	private static DateTime parseTimeFormat(DateTime date, String input){
+		DateTime time = null;
+		
+		for (int i = 0; i < FORMAT_SIZE; i++) {
+			try {
+				time = timeFormats.get(i).parseDateTime(input);
+			} catch (IllegalArgumentException e) {
+				continue;
+			}
+		}
+		
+		return new DateTime(date.getYear(), date.getMonthOfYear(), date.getDayOfMonth(), time.getHourOfDay(), time.getMinuteOfHour());
+	}
+	
+}
+
+	// End of segment: D:\Workspace\CS2103T NEW\src\dothings\parser\TimeParser.java
+
+
+
+
+
+	/**
+	 * origin: D:\Workspace\CS2103T NEW\src\dothings\storage\FileManager.java
+	 */
+
+public class FileManager {
+	private static final String ENCODING_UTF8 = "UTF8";
+	private static final String LOG_FILE = "dothings.log";
+	private static final String MESSAGE_ERROR_LOGGER_READ = "Error reading from file ";
+	private static final String MESSAGE_ERROR_LOGGER_WRITE = "Error writing to file ";
+	private static final String MESSAGE_ERROR_ENCODING = "Unsupported file encoding";
+	@SuppressWarnings("deprecation")
+	public static final String FILEPATH = new File(URLDecoder.decode(DoThingsGUI.class.getProtectionDomain().getCodeSource().getLocation().getPath())).getParent() + System.getProperty("file.separator");
+	
+	private static Logger logger = Logger.getLogger(FileManager.class.getName());
+	
+	/**
+	 * Get a new buffered reader with UTF8 encoding
+	 * @param fileName
+	 * @return buffered reader
+	 * @throws FileNotFoundException
+	 */
+	private static BufferedReader getReader(String fileName) throws FileNotFoundException {
+		File file = new File(fileName);
+		BufferedReader bw;
+		try {
+			bw = new BufferedReader(new InputStreamReader(new FileInputStream(file), ENCODING_UTF8));
+			return bw;
+		} catch (UnsupportedEncodingException e) {
+			log(MESSAGE_ERROR_ENCODING);
+			e.printStackTrace();
+		}
+		
+		return null;
+	}
+	
+	/**
+	 * Get a new buffered writer with UTF8 encoding
+	 * @param fileName
+	 * @return buffered writer
+	 * @throws FileNotFoundException
+	 */
+	private static BufferedWriter getWriter(String fileName) throws IOException {
+		File file = new File(fileName);
+		BufferedWriter bw = new BufferedWriter(new OutputStreamWriter(new FileOutputStream(file), "UTF8"));
+		return bw;
+	}
+	
+	/**
+	 * Appends any log messages to the log file 
+	 * @param message
+	 */
+	public static void log(String message) {
+		FileHandler fh;
+		try {   
+	        fh = new FileHandler(FILEPATH + LOG_FILE, true);  
+	        logger.addHandler(fh);
+	        SimpleFormatter formatter = new SimpleFormatter();  
+	        fh.setFormatter(formatter);  
+	        logger.info(message);
+		    fh.close(); 
+
+	    } catch (SecurityException e) {  
+	        e.printStackTrace();  
+	    } catch (IOException e) {  
+	        e.printStackTrace();  
+	    } 
+	}
+	
+	/**
+	 * Read lines from a text file
+	 * @param fileName
+	 * @return ArrayList of String with each line as an entry
+	 */
+	public static ArrayList<String> readFromFile(String fileName) {
+		ArrayList<String> list = new ArrayList<String>();
+		
+		try {
+			BufferedReader reader = getReader(FILEPATH + fileName);
+			String line;
+			while ((line = reader.readLine()) != null) {
+				list.add(line);
+			}
+		} catch (IOException e) {
+			log(MESSAGE_ERROR_LOGGER_READ + fileName);
+		}
+		
+		return list;
+	}
+	
+	/**
+	 * Saves ArrayList of String to a file
+	 * @param fileName
+	 * @param list
+	 */
+	public static void writeToFile(String fileName, ArrayList<String> list) {
+		try {
+			BufferedWriter writer = getWriter(FILEPATH + fileName);
+			for(int i = 0; i < list.size(); i++) {
+				writer.write(list.get(i) + System.getProperty("line.separator"));
+			}
+			writer.flush();
+			writer.close();
+		} catch (IOException e) {
+			log(MESSAGE_ERROR_LOGGER_WRITE + fileName);
+			e.printStackTrace();
+		} finally {
+			
+		}
+	}
+}
+
+	// End of segment: D:\Workspace\CS2103T NEW\src\dothings\storage\FileManager.java
+
+
+
+
+
+	/**
+	 * origin: D:\Workspace\CS2103T NEW\src\dothings\tests\TestFileManager.java
+	 */
+
+public class TestFileManager {
+	private static final String TEST_FILE = "testFM.txt";
+	
+	@Test
+	public void testReadWrite() {
+		ArrayList<String> list = new ArrayList<String>();
+		FileManager.writeToFile(TEST_FILE, list);
+		assertTrue(FileManager.readFromFile(TEST_FILE).isEmpty());
+		
+		for (int i = 0; i < 10; i++) {
+			list.add("line " + i);
+		}
+		FileManager.writeToFile("testFM.txt", list);
+		ArrayList<String> readList = FileManager.readFromFile(TEST_FILE);
+		for (int i = 0; i < 10; i++) {
+			assertEquals("line " + i , list.get(i));;
+		}
+		
+	}
+
+}
+
+	// End of segment: D:\Workspace\CS2103T NEW\src\dothings\tests\TestFileManager.java
+
+
+
+
+
+	/**
+	 * origin: D:\Workspace\CS2103T NEW\src\dothings\tests\TestLogic.java
+	 */
+
+public class TestLogic {
+
+	@Test
+	public void testCustomCommandHandler() {
+		CustomCommandHandler.deleteCustomCommand("insert");
+		CustomCommandHandler.addCustomCommand("insert", "[ADD]");
+		assertTrue(CustomCommandHandler.isCustomCommand("insert", "[ADD]"));
+		assertFalse(CustomCommandHandler.isCustomCommand("insert", "[DELETE]"));
+		
+		Feedback feedback = CustomCommandHandler.addCustomCommand("insert", "[ADD]");
+		assertEquals(feedback.toString(), CustomCommandHandler.MESSAGE_CUSTOM_DUPLICATE);
+		
+		feedback = CustomCommandHandler.addCustomCommand("insert", "[DELETE]");
+		assertEquals(feedback.toString(), CustomCommandHandler.MESSAGE_CUSTOM_DUPLICATE);
+	}
+	
+	@Test
+	public void testTaskSetGetMethods() {
+		Task task = new Task("This is the first task");
+		assertNull(task.getStartDateTime());
+		assertNull(task.getEndDateTime());
+		assertFalse(task.getStatus());
+		assertEquals("This is the first task", task.getDescription());
+		assertNull(task.getAlias());
+		
+		task.setDescription("The first task is being edited");
+		assertEquals("The first task is being edited", task.getDescription());
+		
+		task.toggleStatus();
+		assertTrue(task.getStatus());
+		
+		task.setAlias("hama");
+		assertEquals("hama", task.getAlias());
+		
+		DateTime time = new DateTime();
+		task.setStartDateTime(time);
+		assertEquals(time, task.getStartDateTime());
+		task.setEndDateTime(time);
+		assertEquals(time, task.getEndDateTime());
+		
+		
+		Task task2 = new Task("This is the second task");
+		Task.setList(new ArrayList<Task>());
+		Task.getList().add(task);
+		Task.getList().add(task2);
+		assertEquals(2, Task.getList().size());
+		
+		ArrayList<Task> cloneList = Task.getCloneList();
+		cloneList.remove(0);
+		assertEquals(2, Task.getList().size());
+	}
+	
+	@Test
+	public void testTaskTimeMethods() {
+		Task task1 = new Task("This is a dummy scheduled task", new DateTime().minusDays(2), null, "yolo");
+		assertTrue(task1.isOverdue());
+		assertFalse(task1.isUnscheduled());
+
+		Task task2 = new Task("This is a second dummy scheduled task", new DateTime(), new DateTime(), "yolo");
+		assertFalse(task2.isOverdue());
+		assertTrue(task2.isToday());
+		assertFalse(task2.isUnscheduled());
+		
+		Task task3 = new Task("This is a dummy unscheduled task");
+		assertFalse(task3.isOverdue());
+		assertFalse(task3.isToday());
+		assertTrue(task3.isUnscheduled());
+	}
+	
+	@Test
+	public void testTaskOtherMethods() {
+		// test toString()
+		Task task = new Task("This is to test the string methods", null, null, "trippy");
+		String expectedString = "NO_START_TIME ~~ NO_END_TIME ~~ trippy ~~ false ~~ This is to test the string methods";
+		assertEquals(expectedString,task.toString());
+		
+		// test parseTaskFromString()
+		task = Task.parseTaskFromString(expectedString);
+		assertEquals("This is to test the string methods", task.getDescription());
+		assertEquals("trippy", task.getAlias());
+		assertNull(task.getStartDateTime());
+		assertNull(task.getEndDateTime());
+		assertFalse(task.getStatus());	
+		
+		// test compareTo()
+		Task task1 = new Task("This is the a scheduled task", new DateTime(), new DateTime(), "yoko");
+		Task task2 = new Task("This is the a scheduled task", new DateTime(), new DateTime(), "hama");
+		Task task3 = new Task("This is the another scheduled task", new DateTime().plusHours(1), null, "coco");
+		Task task4 = new Task("A");
+		Task task5 = new Task("B",  null, null, "loco");
+		
+		assertTrue(task1.compareTo(task2) < 0);
+		assertTrue(task1.compareTo(task3) < 0);
+		assertTrue(task1.compareTo(task4) < 0);
+		assertTrue(task1.compareTo(task5) < 0);
+
+		assertTrue(task2.compareTo(task3) < 0);
+		assertTrue(task2.compareTo(task4) < 0);
+		assertTrue(task2.compareTo(task5) < 0);
+		
+		assertTrue(task3.compareTo(task4) < 0);
+		assertTrue(task3.compareTo(task5) < 0);
+		
+		assertTrue(task4.compareTo(task5) < 0);
+		
+		// test getTaskIndexFromAlias and sortList()
+		Task.setList(new ArrayList<Task>());
+		Task.getList().add(task1);
+		Task.getList().add(task2);
+		Task.getList().add(task3);
+		Task.getList().add(task4);
+		Task.getList().add(task5);
+		Task.sortList();
+		assertEquals(0, Task.getTaskIndexFromAlias("yoko"));
+		assertEquals(1, Task.getTaskIndexFromAlias("hama"));
+		assertEquals(2, Task.getTaskIndexFromAlias("coco"));
+		assertEquals(4, Task.getTaskIndexFromAlias("loco"));
+		
+		// test isAliasValid()
+		assertTrue(Task.isAliasValid("yoko"));
+		assertFalse(Task.isAliasValid("jajaja"));
+	}
+}
+
+	// End of segment: D:\Workspace\CS2103T NEW\src\dothings\tests\TestLogic.java
+
+
+
+
+
+	/**
+	 * origin: D:\Workspace\CS2103T NEW\src\dothings\tests\TestParser.java
+	 */
+
+public class TestParser {
+	////////Tests for Command Parser /////////
+	
+	@Test 
+	public void testGetUserCommand() {
+		assertEquals("add", CommandParser.getUserCommandType("add meeting with john"));
+		assertEquals("meeting with jack", CommandParser.getUserCommandDesc("add meeting with jack"));
+		assertNull(CommandParser.getUserCommandDesc("add"));
+	}
+	
+	@Test
+	public void testIsValidCommand() {
+		assertTrue(CommandParser.isInputValid("add yolo", 2));
+		assertTrue(CommandParser.isInputValid("add yolo forever and ever and ever", 2));
+		assertFalse(CommandParser.isInputValid("add", 2));
+		assertFalse(CommandParser.isInputValid("add ", 2));
+	}
+	
+	@Test
+	public void testGetTaskFields() {
+		String[] expected = new String[4];
+		String[] input;
+		ArrayList<String> actual;
+		
+		input = "do stuff".split(" ");
+		actual = new ArrayList<String>(Arrays.asList(input));
+		assertArrayEquals(expected, CommandParser.getTaskFields(actual));
+		
+		expected[1] = "5pm";
+		input = "do stuff from 5pm".split(" ");
+		actual = new ArrayList<String>(Arrays.asList(input));
+		assertArrayEquals(expected, CommandParser.getTaskFields(actual));
+		
+		expected[3] = "1800";
+		input = "do stuff from 5pm to 1800".split(" ");
+		actual = new ArrayList<String>(Arrays.asList(input));
+		assertArrayEquals(expected, CommandParser.getTaskFields(actual));
+		
+		expected[0] = "monday";
+		input = "do stuff on monday from 5pm to 1800".split(" ");
+		actual = new ArrayList<String>(Arrays.asList(input));
+		assertArrayEquals(expected, CommandParser.getTaskFields(actual));
+		
+		expected[2] = "13/01/2033";
+		input = "do stuff from monday 5pm to 13/01/2033 1800".split(" ");
+		actual = new ArrayList<String>(Arrays.asList(input));
+		assertArrayEquals(expected, CommandParser.getTaskFields(actual));
+		
+	}
+	
+	@Test
+	public void testRemoveDateTimeFromString() {
+		assertEquals("do stuff", CommandParser.removeDateTimeFromString("do stuff"));
+		assertEquals("do stuff with abby", CommandParser.removeDateTimeFromString("do stuff on monday with abby"));
+		assertEquals("do stuff with abby", CommandParser.removeDateTimeFromString("on monday do stuff with abby until tue"));
+		assertEquals("meeting with abby", CommandParser.removeDateTimeFromString("from 5pm to 6pm meeting with abby on 12/12/12"));
+	}
+	
+	@Test
+	public void testRemoveAliasAndEscapeChar() {
+		assertEquals("do stuff", CommandParser.removeAliasAndEscapeChar("do stuff"));
+		assertEquals("do stuff on monday with abby", CommandParser.removeAliasAndEscapeChar("do stuff on \\monday with abby"));
+		assertEquals("do stuff with abby", CommandParser.removeAliasAndEscapeChar("alias:who do stuff with abby"));
+		assertEquals("meeting with abby on 12/12/12", CommandParser.removeAliasAndEscapeChar("alias:meat meeting with abby on \\12/12/12"));
+	}
+	
+	////////Tests for Date Parser /////////
+	
+	@Test
+	public void testIsDate() {
+		// Test for accepted date formats partition
+		assertTrue(DateParser.isDate("12/12/2012"));
+		assertTrue(DateParser.isDate("12-12-2012"));
+		assertTrue(DateParser.isDate("12.12.2012"));
+		assertTrue(DateParser.isDate("12/12"));
+		assertTrue(DateParser.isDate("12-12"));
+		assertTrue(DateParser.isDate("12/Feb/2012"));
+		assertTrue(DateParser.isDate("12-March-2012"));
+		assertTrue(DateParser.isDate("12.Dec.2012"));
+		assertTrue(DateParser.isDate("Tuesday"));
+		assertTrue(DateParser.isDate("Tomorrow"));
+		
+		// Test for unsupported date formats partition
+		assertFalse(DateParser.isDate("12-Decem-2013"));
+		assertFalse(DateParser.isDate("12.12"));
+		assertFalse(DateParser.isDate("yolo"));
+		
+		// Test for accepted date formats with escape characters
+		assertFalse(DateParser.isDate("/tomorrow"));
+	}
+	
+	@Test
+	public void testSetDate() {
+		DateTime dt;
+		dt = DateParser.setDate("11/12/2012");
+		assertEquals("11/12/2012", dt.toString("dd/MM/YYYY"));
+		dt = DateParser.setDate("11-12-2012");
+		assertEquals("11/12/2012", dt.toString("dd/MM/YYYY"));
+		dt = DateParser.setDate("11.12.2012");
+		assertEquals("11/12/2012", dt.toString("dd/MM/YYYY"));
+		dt = DateParser.setDate("11/12");
+		assertEquals("11/12", dt.toString("dd/MM"));
+		dt = DateParser.setDate("11-12");
+		assertEquals("11/12", dt.toString("dd/MM"));
+		dt = DateParser.setDate("11-March-2012");
+		assertEquals("11/03/2012", dt.toString("dd/MM/YYYY"));
+		dt = DateParser.setDate("11.Dec.2012");
+		assertEquals("11/12/2012", dt.toString("dd/MM/YYYY"));
+	}
+	
+	//////// Tests for Time Parser /////////
+	
+	@Test
+	public void testIsTime() {
+		// Test for accepted time formats
+		assertTrue(TimeParser.isTime("12:13"));
+		assertTrue(TimeParser.isTime("23.45"));
+		assertTrue(TimeParser.isTime("2359"));
+		assertTrue(TimeParser.isTime("11:30am"));
+		assertTrue(TimeParser.isTime("12.20pm"));
+		assertTrue(TimeParser.isTime("1130pm"));
+		assertTrue(TimeParser.isTime("11pm"));
+		assertTrue(TimeParser.isTime("1am"));
+		
+		// Test for unsupported time formats
+		assertFalse(TimeParser.isTime("24:00"));
+		
+		// Test for supported time formats with escape characters
+		assertFalse(TimeParser.isTime("/1235"));
+	}
+	
+	@Test
+	public void testSetTime() {
+		DateTime dt = new DateTime();
+		dt = TimeParser.setTime(dt, "12:13");
+		assertEquals("12:13", dt.toString("HH:mm"));
+		dt = TimeParser.setTime(dt, "23.45");
+		assertEquals("23:45", dt.toString("HH:mm"));
+		dt = TimeParser.setTime(dt, "2359");
+		assertEquals("23:59", dt.toString("HH:mm"));
+		dt = TimeParser.setTime(dt, "11:30am");
+		assertEquals("11:30", dt.toString("HH:mm"));
+		dt = TimeParser.setTime(dt, "12.20pm");
+		assertEquals("12:20", dt.toString("HH:mm"));
+		dt = TimeParser.setTime(dt, "1130pm");
+		assertEquals("23:30", dt.toString("HH:mm"));
+		dt = TimeParser.setTime(dt, "11pm");
+		assertEquals("23:00", dt.toString("HH:mm"));
+		dt = TimeParser.setTime(dt, "1am");
+		assertEquals("01:00", dt.toString("HH:mm"));
+	}
+}
+
+
+	// End of segment: D:\Workspace\CS2103T NEW\src\dothings\tests\TestParser.java
+
+
+
+
+

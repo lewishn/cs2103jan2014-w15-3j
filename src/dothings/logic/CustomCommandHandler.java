@@ -1,4 +1,3 @@
-
 package dothings.logic;
 
 import java.util.ArrayList;
@@ -28,7 +27,7 @@ public class CustomCommandHandler {
 	protected static final String HEADER_HELP = "[HELP]";
 	protected static final String HEADER_MARK = "[MARK]";
 	protected static final String HEADER_EXIT = "[EXIT]";
-
+	
 	public static final String MESSAGE_CUSTOM_DUPLICATE = "Sorry, but this word is already in use.";
 	public static final String MESSAGE_CUSTOM_SUCCESS = "\"%s\" has been added to the command list.";
 	public static final String MESSAGE_CUSTOM_DELETED = "\"%s\" has been deleted from the command list.";
@@ -38,6 +37,7 @@ public class CustomCommandHandler {
 	
 	/**
 	 * Returns true if the keyword is a valid keyword of the commandType.
+	 * 
 	 * @param keyword
 	 * @param commandType
 	 * @return true if the keyword is a valid keyword of the commandType.
@@ -53,17 +53,20 @@ public class CustomCommandHandler {
 	}
 	
 	/**
-	 * Adds a custom command to the current list of custom commands and saves the
-	 * list to the file.
+	 * Adds a custom command to the current list of custom commands and saves the list to the file.
+	 * 
 	 * @param userCommand
 	 * @param commandType
 	 * @return a Feedback object containing the message that is to be shown to the user
 	 */
-	public static Feedback addCustomCommand(String userCommand, String commandType) {
-		// if user inputs a white space between two or more words, take only the first
+	public static Feedback addCustomCommand(String userCommand,
+	                                        String commandType) {
+		// if user inputs a white space between two or more words, take only the
+		// first
 		userCommand = userCommand.split(WHITESPACE)[0];
 		
-		if (isDuplicateCommand(userCommand) || MainLogic.isDefaultCommand(userCommand)) {
+		if (isDuplicateCommand(userCommand)
+		        || MainLogic.isDefaultCommand(userCommand)) {
 			return new Feedback(MESSAGE_CUSTOM_DUPLICATE);
 		}
 		
@@ -74,6 +77,7 @@ public class CustomCommandHandler {
 	
 	/**
 	 * Add the userCommand to the list of custom command, depending on the commandType
+	 * 
 	 * @param userCommand
 	 * @param commandType
 	 */
@@ -88,12 +92,14 @@ public class CustomCommandHandler {
 			customCommandList.add(newCommandEntry);
 		}
 		
-		FileManager.log(String.format(LOG_ADDED_COMMAND, userCommand, commandType));
+		FileManager.log(String.format(LOG_ADDED_COMMAND, userCommand,
+		        commandType));
 	}
-
+	
 	/**
-	 * Get the index of the specific command header in the customCommandList
+	 * Get the index of the specific command header in the customCommandList 
 	 * Returns -1 if not found.
+	 * 
 	 * @return index of the specific command header
 	 */
 	private static int getCommandHeaderIndex(String commandType) {
@@ -108,6 +114,7 @@ public class CustomCommandHandler {
 	
 	/**
 	 * Get a String containing all the custom commands for the specified header
+	 * 
 	 * @param header
 	 * @return
 	 */
@@ -126,6 +133,7 @@ public class CustomCommandHandler {
 	
 	/**
 	 * Check if the input custom command is already in use
+	 * 
 	 * @param command
 	 * @return true if the command is already in use.
 	 */
@@ -139,8 +147,8 @@ public class CustomCommandHandler {
 	}
 	
 	/**
-	 * Deletes a custom command from the list of custom commands 
-	 * and saves the list to the file.
+	 * Deletes a custom command from the list of custom commands and saves the list to the file.
+	 * 
 	 * @param userCommand
 	 * @return a Feedback object containing the message that is to be shown to the user
 	 */
@@ -148,35 +156,40 @@ public class CustomCommandHandler {
 		for (int i = 0; i < customCommandList.size(); i++) {
 			for (int j = 0; j < customCommandList.get(i).size(); j++) {
 				if (customCommandList.get(i).get(j).equals(userCommand)) {
-					FileManager.log(String.format(LOG_DELETED_CUSTOM_COMMAND, userCommand, customCommandList.get(i).get(0)));
+					FileManager.log(String.format(LOG_DELETED_CUSTOM_COMMAND,
+					        userCommand, customCommandList.get(i).get(0)));
 					customCommandList.get(i).remove(j);
 					saveCustomCommands();
-					return new Feedback(String.format(MESSAGE_CUSTOM_DELETED, userCommand));
+					return new Feedback(String.format(MESSAGE_CUSTOM_DELETED,
+					        userCommand));
 				}
 			}
 		}
 		
 		return new Feedback(MESSAGE_CUSTOM_NONEXISTANT, false);
-	}	
+	}
 	
 	/**
 	 * Reads custom commands from the "custom.txt" file
+	 * 
 	 * @return list of custom commands
 	 */
 	protected static ArrayList<ArrayList<String>> loadCustomCommands() {
 		FileManager.log(LOG_LOADING_CUSTOM_COMMANDS);
-		ArrayList<ArrayList<String>> commandList = new ArrayList<ArrayList<String>>();
-		ArrayList<String> loadedCommands = FileManager.readFromFile(FILE_CUSTOM);
+		ArrayList<ArrayList<String>> commandList =
+		        new ArrayList<ArrayList<String>>();
+		ArrayList<String> loadedCommands =
+		        FileManager.readFromFile(FILE_CUSTOM);
 		
 		for (int i = 0; i < loadedCommands.size(); i++) {
 			String[] tokens = loadedCommands.get(i).split(" ");
-			ArrayList<String> tempList = new ArrayList<String>(Arrays.asList(tokens));
+			ArrayList<String> tempList =
+			        new ArrayList<String>(Arrays.asList(tokens));
 			commandList.add(tempList);
 		}
 		
 		return commandList;
 	}
-	
 	
 	/**
 	 * Saves the list of custom commands to the "customs.txt" file

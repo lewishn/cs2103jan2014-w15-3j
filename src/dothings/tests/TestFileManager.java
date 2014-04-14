@@ -8,6 +8,7 @@ import org.junit.Test;
 
 import dothings.storage.FileManager;
 
+//@author A0099727J
 public class TestFileManager {
 	private static final String TEST_FILE = "testFM.txt";
 	
@@ -23,9 +24,9 @@ public class TestFileManager {
 		FileManager.writeToFile("testFM.txt", list);
 		ArrayList<String> readList = FileManager.readFromFile(TEST_FILE);
 		for (int i = 0; i < 10; i++) {
-			assertEquals("line " + i , list.get(i));;
+			assertEquals("line " + i, list.get(i));;
 		}
 		
 	}
-
+	
 }
