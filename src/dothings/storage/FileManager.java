@@ -16,7 +16,7 @@ import java.util.logging.FileHandler;
 import java.util.logging.Logger;
 import java.util.logging.SimpleFormatter;
 
-import dothings.gui.DoThingsGUI;
+import dothings.gui.DoThingsGui;
 
 //@author A0099727J
 public class FileManager {
@@ -27,7 +27,7 @@ public class FileManager {
 	private static final String MESSAGE_ERROR_ENCODING = "Unsupported file encoding";
 	@SuppressWarnings("deprecation")
 	public static final String FILEPATH = new File(
-	        URLDecoder.decode(DoThingsGUI.class.getProtectionDomain()
+	        URLDecoder.decode(DoThingsGui.class.getProtectionDomain()
 	                .getCodeSource().getLocation().getPath())).getParent()
 	        + System.getProperty("file.separator");
 	

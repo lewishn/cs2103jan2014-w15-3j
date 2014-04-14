@@ -44,7 +44,7 @@ import dothings.logic.MainLogic;
 
 //@author A0101924R
 @SuppressWarnings("serial")
-public class DoThingsGUI extends JFrame {
+public class DoThingsGui extends JFrame {
 	private static final String DEFAULT_EXIT = "exit";
 	private static final String MESSAGE_STARTUP = "Get ready to Do Things!";
 	private static final String STARTUP_COMMAND = "list";
@@ -147,7 +147,7 @@ public class DoThingsGUI extends JFrame {
 		EventQueue.invokeLater(new Runnable() {
 			public void run() {
 				try {
-					DoThingsGUI frame = new DoThingsGUI();
+					DoThingsGui frame = new DoThingsGui();
 					frame.setVisible(true);
 				} catch (Exception e) {
 					e.printStackTrace();
@@ -156,7 +156,7 @@ public class DoThingsGUI extends JFrame {
 		});
 	}
 	
-	public DoThingsGUI() {
+	public DoThingsGui() {
 		
 		getIconImageForGUI();
 		createContentPane();
@@ -231,13 +231,13 @@ public class DoThingsGUI extends JFrame {
 			if (keyCode == COMMAND_TOGGLE_HIDE_DISPLAY) {
 				if (isVisible) {
 					inputField.requestFocus();
-					DoThingsGUI.this.setVisible(false);
+					DoThingsGui.this.setVisible(false);
 					isVisible = false;
 					hideToSytemTray();
 					
 				} else {
 					inputField.requestFocus();
-					DoThingsGUI.this.setVisible(true);
+					DoThingsGui.this.setVisible(true);
 					isVisible = true;
 					removeFromSystemTray();
 				}
@@ -969,7 +969,7 @@ public class DoThingsGUI extends JFrame {
 		}
 		
 		/**
-		 * set Jpanels to new Jpanels, re initialising variables
+		 * set Jpanels to new Jpanels, reinitialising variables
 		 * 
 		 * @return numOfTask
 		 */
