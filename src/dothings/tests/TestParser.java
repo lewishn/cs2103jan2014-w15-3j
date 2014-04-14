@@ -1,4 +1,3 @@
-
 package dothings.tests;
 
 import static org.junit.Assert.*;
@@ -12,19 +11,22 @@ import dothings.parser.TimeParser;
 
 //@author A0099727J
 public class TestParser {
-	////////Tests for Command Parser /////////
+	// //////Tests for Command Parser /////////
 	
-	@Test 
+	@Test
 	public void testGetUserCommand() {
-		assertEquals("add", CommandParser.getUserCommandType("add meeting with john"));
-		assertEquals("meeting with jack", CommandParser.getUserCommandDesc("add meeting with jack"));
+		assertEquals("add",
+		        CommandParser.getUserCommandType("add meeting with john"));
+		assertEquals("meeting with jack",
+		        CommandParser.getUserCommandDesc("add meeting with jack"));
 		assertNull(CommandParser.getUserCommandDesc("add"));
 	}
 	
 	@Test
 	public void testIsValidCommand() {
 		assertTrue(CommandParser.isInputValid("add yolo", 2));
-		assertTrue(CommandParser.isInputValid("add yolo forever and ever and ever", 2));
+		assertTrue(CommandParser.isInputValid(
+		        "add yolo forever and ever and ever", 2));
 		assertFalse(CommandParser.isInputValid("add", 2));
 		assertFalse(CommandParser.isInputValid("add ", 2));
 	}
@@ -63,21 +65,41 @@ public class TestParser {
 	
 	@Test
 	public void testRemoveDateTimeFromString() {
-		assertEquals("do stuff", CommandParser.removeDateTimeFromString("do stuff"));
-		assertEquals("do stuff with abby", CommandParser.removeDateTimeFromString("do stuff on monday with abby"));
-		assertEquals("do stuff with abby", CommandParser.removeDateTimeFromString("on monday do stuff with abby until tue"));
-		assertEquals("meeting with abby", CommandParser.removeDateTimeFromString("from 5pm to 6pm meeting with abby on 12/12/12"));
+		assertEquals("do stuff",
+		        CommandParser.removeDateTimeFromString("do stuff"));
+		assertEquals(
+		        "do stuff with abby",
+		        CommandParser
+		                .removeDateTimeFromString("do stuff on monday with abby"));
+		assertEquals(
+		        "do stuff with abby",
+		        CommandParser
+		                .removeDateTimeFromString("on monday do stuff with abby until tue"));
+		assertEquals(
+		        "meeting with abby",
+		        CommandParser
+		                .removeDateTimeFromString("from 5pm to 6pm meeting with abby on 12/12/12"));
 	}
 	
 	@Test
 	public void testRemoveAliasAndEscapeChar() {
-		assertEquals("do stuff", CommandParser.removeAliasAndEscapeChar("do stuff"));
-		assertEquals("do stuff on monday with abby", CommandParser.removeAliasAndEscapeChar("do stuff on \\monday with abby"));
-		assertEquals("do stuff with abby", CommandParser.removeAliasAndEscapeChar("alias:who do stuff with abby"));
-		assertEquals("meeting with abby on 12/12/12", CommandParser.removeAliasAndEscapeChar("alias:meat meeting with abby on \\12/12/12"));
+		assertEquals("do stuff",
+		        CommandParser.removeAliasAndEscapeChar("do stuff"));
+		assertEquals(
+		        "do stuff on monday with abby",
+		        CommandParser
+		                .removeAliasAndEscapeChar("do stuff on \\monday with abby"));
+		assertEquals(
+		        "do stuff with abby",
+		        CommandParser
+		                .removeAliasAndEscapeChar("alias:who do stuff with abby"));
+		assertEquals(
+		        "meeting with abby on 12/12/12",
+		        CommandParser
+		                .removeAliasAndEscapeChar("alias:meat meeting with abby on \\12/12/12"));
 	}
 	
-	////////Tests for Date Parser /////////
+	// //////Tests for Date Parser /////////
 	
 	@Test
 	public void testIsDate() {
@@ -121,7 +143,7 @@ public class TestParser {
 		assertEquals("11/12/2012", dt.toString("dd/MM/YYYY"));
 	}
 	
-	//////// Tests for Time Parser /////////
+	// ////// Tests for Time Parser /////////
 	
 	@Test
 	public void testIsTime() {
@@ -163,4 +185,3 @@ public class TestParser {
 		assertEquals("01:00", dt.toString("HH:mm"));
 	}
 }
-

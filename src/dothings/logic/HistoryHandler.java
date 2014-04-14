@@ -1,4 +1,3 @@
-
 package dothings.logic;
 
 import java.util.ArrayDeque;
@@ -25,6 +24,7 @@ public class HistoryHandler {
 	
 	/**
 	 * Undo the previous actions which manipulates the task list numberOfSteps times
+	 * 
 	 * @return a Feedback object to be shown to the user, indicating success or failure in undoing
 	 */
 	protected static Feedback undoCommand(int numberOfSteps) {
@@ -39,8 +39,8 @@ public class HistoryHandler {
 				break;
 			}
 		}
-
-		if(successfulTries > 0) {
+		
+		if (successfulTries > 0) {
 			Task.saveTasks();
 			saveUndoStack();
 			return new Feedback(String.format(UNDO_SUCCESS, successfulTries));
@@ -51,6 +51,7 @@ public class HistoryHandler {
 	
 	/**
 	 * redo the previous undo actions numberOfSteps times
+	 * 
 	 * @return a Feedback object to be shown to the user, indicating success or failure in redoing
 	 */
 	protected static Feedback redoCommand(int numberOfSteps) {
@@ -65,8 +66,8 @@ public class HistoryHandler {
 				break;
 			}
 		}
-
-		if(successfulTries > 0) {
+		
+		if (successfulTries > 0) {
 			Task.saveTasks();
 			saveUndoStack();
 			return new Feedback(String.format(REDO_SUCCESS, successfulTries));
@@ -74,12 +75,12 @@ public class HistoryHandler {
 			return new Feedback(REDO_FAIL);
 		}
 	}
-
+	
 	/**
 	 * Pushes a copy of the taskList and CustomCommandList into the undo stack.
 	 */
 	protected static void pushUndoStack() {
-		ArrayList<Task> taskNewList = Task.getCloneList();		
+		ArrayList<Task> taskNewList = Task.getCloneList();
 		taskUndoStack.add(taskNewList);
 		reduceStackSize();
 		saveUndoStack();
@@ -95,12 +96,13 @@ public class HistoryHandler {
 	}
 	
 	private static void pushRedoStack() {
-		ArrayList<Task> taskNewList = Task.getCloneList();		
+		ArrayList<Task> taskNewList = Task.getCloneList();
 		taskRedoStack.add(taskNewList);
 	}
 	
 	/**
 	 * Get the top of the undo stack
+	 * 
 	 * @return true if stack size is greater than zero, false otherwise
 	 */
 	private static boolean popUndoStack() {
@@ -116,6 +118,7 @@ public class HistoryHandler {
 	
 	/**
 	 * Get the top of the redo stack
+	 * 
 	 * @return true if stack size is greater than zero, false otherwise
 	 */
 	private static boolean popRedoStack() {
@@ -141,7 +144,8 @@ public class HistoryHandler {
 	 */
 	private static void saveUndoStack() {
 		FileManager.log(LOG_SAVING_UNDO_HISTORY);
-		ArrayDeque<ArrayList<Task>> undoStack = (ArrayDeque<ArrayList<Task>>) taskUndoStack.clone();
+		ArrayDeque<ArrayList<Task>> undoStack =
+		        (ArrayDeque<ArrayList<Task>>) taskUndoStack.clone();
 		ArrayList<String> saveList = new ArrayList<String>();
 		
 		for (int i = 0; i < MAXIMUM_SAVE_STACK_SIZE; i++) {
@@ -159,6 +163,7 @@ public class HistoryHandler {
 	
 	/**
 	 * Loads undo history from a file
+	 * 
 	 * @return
 	 */
 	private static ArrayDeque<ArrayList<Task>> loadUndoStack() {

@@ -1,0 +1,2175 @@
+//@author: a0097082y
+
+
+
+	/**
+	 * origin: D:\Workspace\CS2103T NEW\src\dothings\gui\DoThingsGUI.java
+	 */
+
+	/**
+	 * populates to do list on startup
+	 */
+	private void populateToDoListOnStartup() {
+		ResponsiveContent.drawTaskObjectField(STARTUP_COMMAND);
+		feedbackLabel.setText(MESSAGE_STARTUP);
+	}
+	/**
+	 * creates task panel scroll which sits below the input field (i.e. white box). Gives scroll property to panel within it.
+	 */
+	private void createTaskPanelScroll() {
+		taskPanelScroll = new JScrollPane(taskPanel);
+		taskPanelScroll.setFocusable(false);
+		GroupLayout gl_taskPanel = new GroupLayout(taskPanel);
+		gl_taskPanel.setHorizontalGroup(
+				gl_taskPanel.createParallelGroup(Alignment.LEADING)
+				.addGap(0, 320, Short.MAX_VALUE)
+				);
+		gl_taskPanel.setVerticalGroup(
+				gl_taskPanel.createParallelGroup(Alignment.LEADING)
+				.addGap(0, 485, Short.MAX_VALUE)
+				);
+		taskPanel.setLayout(gl_taskPanel);
+		taskPanelScroll.setOpaque(false);
+		taskPanelScroll.setHorizontalScrollBarPolicy(ScrollPaneConstants.HORIZONTAL_SCROLLBAR_NEVER);
+		taskPanelScroll.setBorder(null);
+		taskPanelScroll.setBounds(0, 97, FRAME_WIDTH, 603);
+		contentPane.add(taskPanelScroll);
+	}
+	/**
+	 * Creates task panel. It is inserted to taskPanelScroll.
+	 */
+	private void createTaskPanel() {
+		taskPanel = new JPanel();
+		taskPanel.setFocusable(false);
+		taskPanel.setBounds(0, 0, 171, 485);
+		taskPanel.setOpaque(false);
+		taskPanel.setBackground(new Color(255, 204, 51));
+		contentPane.add(taskPanel);
+	}
+	/**
+	 * creates text panel to sit behind the input field. 
+	 */
+	private void createTextPanel() {
+		textPanel = new JPanel();
+		textPanel.setFocusable(false);
+		textPanel.setBackground(Color.white);
+		textPanel.setBounds(TEXT_PANEL_X_OFFSET, TEXT_PANEL_Y_OFFSET, TEXT_PANEL_WIDTH, TEXT_PANEL_HEIGHT);
+		contentPane.add(textPanel);
+	}
+	/**
+	 * creates title label
+	 */
+	private void createTitleLabel() {
+		headingLabel = new JLabel(HEADING_LABEL);
+		headingLabel.setForeground(Color.GRAY);
+		headingLabel.setVerticalAlignment(SwingConstants.TOP);
+		headingLabel.setVerticalTextPosition(SwingConstants.TOP);
+		headingLabel.setBorder(new EmptyBorder(HEADING_LABEL_BUFFER, HEADING_LABEL_BUFFER, HEADING_LABEL_BUFFER, HEADING_LABEL_BUFFER));
+		headingLabel.setOpaque(true);
+		headingLabel.setBackground(Color.white);
+		headingLabel.setFont(new Font(PLUTO_COND_LIGHT, Font.PLAIN, HEADING_LABEL_FONT_SIZE));
+		headingLabel.setHorizontalAlignment(SwingConstants.CENTER);
+		headingLabel.setBounds(HEADING_LABEL_X_OFFSET, HEADING_LABEL_Y_OFFSET, HEADING_LABEL_WIDTH, HEADING_LABEL_HEIGHT);
+		contentPane.add(headingLabel);
+	}
+	/**
+	 * creates feedback label which sits below the title. Feedback for users are printed here.
+	 */
+	private void createFeedbackLabel() {
+		feedbackLabel = new JLabel();
+		feedbackLabel.setFocusable(false);
+		feedbackLabel.setForeground(Color.GRAY);
+		feedbackLabel.setFont(new Font(PLUTO_EXLIGHT, Font.PLAIN, FEEDBACK_FONT_SIZE));
+		feedbackLabel.setHorizontalAlignment(SwingConstants.CENTER);
+		feedbackLabel.setBounds(FEEDBACK_X_OFFSET, FEEDBACK_Y_OFFSET, FEEDBACK_WIDTH, FEEDBACK_HEIGHT);
+		contentPane.add(feedbackLabel);
+	}
+	/**
+	 * creates text input field where user types in commands
+	 */
+	private void createInputField() {
+		inputField = new JTextField();
+		inputField.setSelectedTextColor(HIGHLIGHT_FONT_DARK_BLUE);
+		inputField.setSelectionColor(HIGHLIGHT_Yellow);
+		inputField.setBounds(INPUT_FIELD_X_OFFSET, INPUT_FIELD_Y_OFFSET, INPUT_FIELD_WIDTH, INPUT_FIELD_HEIGHT);
+		inputField.setBorder(null);
+		inputField.setBackground(INPUT_FIELD_BACKGROUND_LIGHT_BLUE);
+		inputField.setForeground(Color.BLACK);
+		inputField.setFont(new Font(PLUTO_EXLIGHT, Font.PLAIN, INPUT_FIELD_FONT_SIZE));
+		contentPane.add(inputField);
+	}
+	/**
+	 *  creates Content pane which holds everything
+	 */
+	private void createContentPane() {
+		setForeground(Color.BLACK);
+		setTitle(CONTENT_PANE_TITLE);
+		setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
+		setBackground(Color.BLACK);
+		setBounds(CONTENT_PANE_X_OFFSET, CONTENT_PANE_Y_OFFSET, CONTENT_PANE_WIDTH, CONTENT_PANE_HEIGHT);
+		setUndecorated(true);
+		contentPane = new JPanel();
+		contentPane.setAutoscrolls(true);
+		contentPane.setToolTipText("");
+		contentPane.setBackground(Color.BLACK);
+		contentPane.setForeground(Color.BLACK);
+		contentPane.setBorder(null);
+		setContentPane(contentPane);
+		contentPane.setLayout(null);
+		setShape(new RoundRectangle2D.Double(ZERO,ZERO,FRAME_WIDTH,FRAME_HEIGHT, SHAPE_DIMENSION, SHAPE_DIMENSION));
+		setIconImage(iconImage);
+	}
+
+	public static class ResponsiveContent {
+
+		private static final Color MESSAGE_ELSE_TIME_BACKGROUND_GREEN = new Color(153,204,102);
+		private static final Color FONT_ELSE_TIME_WHITE = new Color(255,255,255);
+		private static final Color MESSAGE_OVERDUE_BACKGROUND_RED = new Color(204,51,61);
+		private static final Color FONT_OVERDUE_WHITE = new Color(255,255,255);
+		private static final Color MESSAGE_TODAY_BACKGROUND_YELLOW = new Color(255,255,51);
+		private static final Color FONT_TODAY_DARK_GREY = new Color(102,102,102);
+		private static final Color FONT_FLOAT_WHITE = new Color(255,255,255); 
+		private static final Color MESSAGE_FLOAT_BACKGROUND_TURQUOISE = new Color(153, 204, 153); 
+		private static final Color MESSAGE_MARKED_BACKGROUND_LIGHT_GREY = new Color(204, 204, 204); 
+		private static final Color FONT_MARKED_GREY = new Color(153,153,153); 
+		private static final int TASK_DESCRIPTION_FONT_SIZE = 18;
+		private static final int ALIAS_FONT_SIZE = 11;
+		private static final int DATE_TIME_FONT_SIZE = ALIAS_FONT_SIZE;
+		private static final int TASK_DESCRIPTION_X_OFFSET = 10;
+		private static final int TASK_DESCRIPTION_Y_OFFSET = 10;
+		private static final int TASK_DESCRIPTION_WIDTH = 25;
+		private static final int TASK_DESCRIPTION_HEIGHT = 23;
+		private static final int ALIAS_X_OFFSET = 265;
+		private static final int ALIAS_Y_OFFSET = 31;
+		private static final int ALIAS_WIDTH = 120;
+		private static final int ALIAS_HEIGHT = 22;
+		private static final int DATE_TIME_X_OFFSET = 10;
+		private static final int DATE_TIME_Y_OFFSET = 31;
+		private static final int DATE_TIME_WIDTH = 250;
+		private static final int DATE_TIME_HEIGHT = 22;
+		private static final int MESSAGE_PANEL_HEIGHT = 51;
+		private static final int ZERO = 0;
+		private static final int NUM_CHAR_FIRST_LINE = 31;
+		private static final int NUM_CHAR_LINE = 34;
+		private static final int HEIGHT_OF_ONE_LINE = 25;
+		private static final int NUM_CHAR_ALIAS_FIRST_LINE = 14;
+		private static final int NUM_CHAR_ALIAS_LINE = 19;
+		private static final int HELP_X_OFFSET = 10;
+		private static final int HELP_Y_OFFSET = 10;
+		private static final int HELP_WIDTH = FRAME_WIDTH;
+		private static final int HELP_HEIGHT = 700;
+		private static final int HELP_FONT_SIZE = 13;
+		private static final String PLUTO_COND_EXLIGHT_FONT = "Pluto Sans Cond ExLight";
+		private static final String PLUTO_LIGHT_FONT = "Pluto Sans Light";
+		/**
+		 * function to create task object panel which holds task description, alias and date & time text areas
+		 * @param aliasExtension
+		 * @param descriptionExtension
+		 * @param change
+		 * @param i
+		 */
+		private static void createTaskObjects(int aliasExtension, int descriptionExtension, int change, int i) {
+			taskObjectPanel(aliasExtension, descriptionExtension, change, i);
+			createDateTimeField(descriptionExtension, i);
+			createAliasField(aliasExtension, descriptionExtension, i);
+			createTaskDescription(descriptionExtension, i);
+		}
+		/**
+		 * creates task description text area within the task object panel
+		 * @param descriptionExtension
+		 * @param i
+		 */
+		private static void createTaskDescription(int descriptionExtension, int i) {
+			taskDescription.add(new JTextArea());	
+			taskDescription.get(i).setFont(new Font(PLUTO_LIGHT_FONT, Font.PLAIN, TASK_DESCRIPTION_FONT_SIZE));	
+			taskDescription.get(i).setBounds(TASK_DESCRIPTION_X_OFFSET,TASK_DESCRIPTION_Y_OFFSET, FRAME_WIDTH - TASK_DESCRIPTION_WIDTH,TASK_DESCRIPTION_HEIGHT + descriptionExtension); //55 characters
+			taskDescription.get(i).setLineWrap(true);
+			taskDescription.get(i).setWrapStyleWord(true);
+			taskDescription.get(i).setEditable(false);
+			taskDescription.get(i).setOpaque(false);
+			taskObjectPanel.get(i).add(taskDescription.get(i));
+		}
+		/**
+		 * creates alias text area within task object panel
+		 * @param aliasExtension
+		 * @param descriptionExtension
+		 * @param i
+		 */
+		private static void createAliasField(int aliasExtension, int descriptionExtension,int i) {
+			alias.add(new JTextArea());
+			alias.get(i).setFont(new Font(PLUTO_COND_EXLIGHT_FONT, Font.PLAIN, ALIAS_FONT_SIZE));
+			alias.get(i).setBounds(ALIAS_X_OFFSET, ALIAS_Y_OFFSET + descriptionExtension, ALIAS_WIDTH, ALIAS_HEIGHT + aliasExtension);
+			alias.get(i).setLineWrap(true);
+			alias.get(i).setWrapStyleWord(true);
+			alias.get(i).setOpaque(false);
+			alias.get(i).setEditable(false);
+			taskObjectPanel.get(i).add(alias.get(i));
+		}
+		/**
+		 * Creates date & time text area within task object panel
+		 * @param descriptionExtension
+		 * @param i
+		 */
+		private static void createDateTimeField(int descriptionExtension ,int i) {
+			dateTime.add(new JTextArea());
+			dateTime.get(i).setFont(new Font(PLUTO_COND_EXLIGHT_FONT, Font.PLAIN, DATE_TIME_FONT_SIZE));
+			dateTime.get(i).setBounds(DATE_TIME_X_OFFSET, DATE_TIME_Y_OFFSET + descriptionExtension, DATE_TIME_WIDTH, DATE_TIME_HEIGHT);
+			dateTime.get(i).setOpaque(false);
+			dateTime.get(i).setEditable(false);
+			taskObjectPanel.get(i).add(dateTime.get(i));
+		}
+		/**
+		 * Creates task object which is one panel holding all the description, alias and date & time text fields 
+		 * @param aliasExtension
+		 * @param descriptionExtension
+		 * @param change
+		 * @param i
+		 */
+		private static void taskObjectPanel(int aliasExtension, int descriptionExtension, int change, int i) {
+			taskObjectPanel.add(new JPanel());
+			taskObjectPanel.get(i).setBounds(ZERO, ZERO + change, FRAME_WIDTH, MESSAGE_PANEL_HEIGHT + descriptionExtension + aliasExtension);
+			taskObjectPanel.get(i).setLayout(null);
+			taskPanel.add(taskObjectPanel.get(i));
+			taskPanel.revalidate();
+			taskPanel.repaint();
+		}
+		/**
+		 * updates panel height according to how many tasks are listed
+		 * @param userInput 
+		 */
+		private static void drawTaskObjectField(String userInput) {
+			ArrayList<ArrayList<String>> result = MainLogic.runLogic(userInput);
+			String feedbackType = result.get(FEEDBACK_TYPE).get(ZERO);
+			if(feedbackType.equals(DEFAULT_EXIT)) {
+				System.exit(ZERO);
+			} else if (feedbackType.equals(ERROR_CODE)) {
+				String feedbackDesc = result.get(FEEDBACK_DESC).get(ZERO);
+				errorProcessing(feedbackDesc);
+			} else {
+				String feedbackDesc = result.get(FEEDBACK_DESC).get(ZERO);
+				refreshTaskPanel();
+
+				if (feedbackType.equals(DEFAULT_HELP)) {
+					String helpDesc = result.get(TASK_DESC).get(ZERO);
+					feedbackLabel.setText(feedbackDesc);
+					printHelp(helpDesc);
+				} else {
+					if (feedbackType.equals(ERROR_CODE)) {
+						errorProcessing(feedbackDesc);
+					} else {
+						taskDesc = result.get(TASK_DESC);
+						taskAlias = result.get(TASK_ALIAS);
+						taskStatus = result.get(TASK_STATUS);
+						taskDate = result.get(TASK_DATE);
+						taskTime = result.get(TASK_TIME);
+						int numOfTask = initialiseFeedbackVariables();
+						for(int i=ZERO; i<numOfTask; i++) {	
+
+							int descriptionOverflowExtension = heightForDescriptionTextOverflow(i);
+							int aliasOverflowExtension = heightForAliasTextOverflow(i);
+							createTaskObjects(aliasOverflowExtension, descriptionOverflowExtension, heightChange, i);
+							heightChange += descriptionOverflowExtension;
+							heightChange += aliasOverflowExtension;
+
+							if (taskStatus.get(i).equals(MARK_CODE)) {
+								setTaskObjectColorScheme(i, MESSAGE_MARKED_BACKGROUND_LIGHT_GREY, FONT_MARKED_GREY);
+							} else if (taskTime.get(i).equals(FLOATING)) {
+								setTaskObjectColorScheme(i, MESSAGE_FLOAT_BACKGROUND_TURQUOISE, FONT_FLOAT_WHITE);
+							} else if (taskTime.get(i).equals(DUE_TODAY)) {
+								setTaskObjectColorScheme(i, MESSAGE_TODAY_BACKGROUND_YELLOW, FONT_TODAY_DARK_GREY);
+							} else if (taskTime.get(i).equals(OVERDUE)) {
+								setTaskObjectColorScheme(i, MESSAGE_OVERDUE_BACKGROUND_RED, FONT_OVERDUE_WHITE);
+							} else {
+								setTaskObjectColorScheme(i, MESSAGE_ELSE_TIME_BACKGROUND_GREEN, FONT_ELSE_TIME_WHITE);
+							}
+							setFeedbackIntoRespectiveFields(i);
+							setTaskPanelHeight();
+						}
+						feedbackLabel.setText(feedbackDesc);
+					}			
+				}
+			}
+		}
+		/**
+		 * determines additional height that needs to be added to the task object to fit text overflow in alias field
+		 * @param i
+		 * @return additionalHeight
+		 */
+		private static int heightForAliasTextOverflow(int i) {
+			int additionalHeight = ZERO;
+			if(taskAlias.get(i) != null) {
+				int charLength = taskAlias.get(i).length();
+
+				if(charLength > NUM_CHAR_ALIAS_FIRST_LINE) {
+					additionalHeight += HEIGHT_OF_ONE_LINE;
+					charLength -= NUM_CHAR_FIRST_LINE;
+					while (charLength>NUM_CHAR_ALIAS_LINE) {
+						additionalHeight += HEIGHT_OF_ONE_LINE;
+						charLength-=NUM_CHAR_LINE;
+					}
+				}
+			}
+			return additionalHeight;
+		}
+		/**
+		 * determines additional height that needs to be added to the task object panel to fit text overflow in description field
+		 * @param i
+		 * @return additionalHeight
+		 */
+		private static int heightForDescriptionTextOverflow(int i) {
+			int charLength = taskDesc.get(i).length();
+			int additionalHeight = ZERO; 
+			if (charLength > NUM_CHAR_FIRST_LINE) {
+				additionalHeight += HEIGHT_OF_ONE_LINE;
+				charLength -= NUM_CHAR_FIRST_LINE;
+				while (charLength>NUM_CHAR_LINE) {
+					additionalHeight += HEIGHT_OF_ONE_LINE;
+					charLength-=NUM_CHAR_LINE;
+				}
+			}
+			return additionalHeight;
+		}
+		/**
+		 * updates panel height according to how many tasks are listed
+		 */
+		private static void setTaskPanelHeight() {
+			heightChange += TASK_OBJECT_FRAME_HEIGHT;
+			taskPanel.setPreferredSize(new Dimension(FRAME_WIDTH,heightChange));
+		}
+		/**
+		 * sets date time 
+		 * @param i
+		 */
+		private static void setFeedbackIntoRespectiveFields(int i) {
+			dateTime.get(i).setText(taskDate.get(i));
+			if (taskAlias.get(i) == null) {		
+			} else {
+				alias.get(i).setText(ALIAS + taskAlias.get(i));
+			}	
+			taskDescription.get(i).append(taskDesc.get(i));
+		}
+		/**
+		 * sets color schemes for message panel, task description font, alias font and date time font
+		 * @param i
+		 * @param messageBackground
+		 * @param fontColor
+		 */
+		private static void setTaskObjectColorScheme(int i, Color messageBackground, Color fontColor) {
+			taskObjectPanel.get(i).setBackground(messageBackground);
+			taskDescription.get(i).setForeground(fontColor);
+			alias.get(i).setForeground(fontColor);
+			dateTime.get(i).setForeground(fontColor);
+		}
+		/**
+		 * set Jpanels to new Jpanels, re initialising variables
+		 * @return numOfTask
+		 */
+		private static int initialiseFeedbackVariables() {
+			int numOfTask = taskDesc.size();
+			inputField.setText("");  
+			taskObjectPanel = new ArrayList<JPanel>();
+			dateTime = new ArrayList<JTextArea>();
+			alias = new ArrayList<JTextArea>();
+			taskDescription = new ArrayList<JTextArea>();
+			heightChange=ZERO;
+			return numOfTask;
+		}
+		/**
+		 * Sets error message into feedback field and selects all text in input field
+		 * @param feedbackDesc
+		 */
+		private static void errorProcessing(String feedbackDesc) {
+			feedbackLabel.setText(feedbackDesc);
+			inputField.selectAll();
+		}
+		/**
+		 * removes all panels added to taskPanel
+		 */
+		private static void refreshTaskPanel() {
+			taskPanel.removeAll();
+			taskPanel.updateUI();
+		}
+		/**
+		 * Function called when Help command is input by user
+		 * @param desc
+		 */
+		private static void printHelp(String desc) {
+			refreshTaskPanel(); 
+			createHelpTextarea(desc);
+			
+			inputField.setText("");
+		}
+		/**
+		 * Creates Text field when Help command is called
+		 */
+		private static void createHelpTextarea(String desc) {
+			help = new JTextArea();
+			help.setFont(new Font(PLUTO_COND_EXLIGHT_FONT, Font.PLAIN, HELP_FONT_SIZE));
+			help.append(desc);
+			help.setBounds(HELP_X_OFFSET, HELP_Y_OFFSET, HELP_WIDTH, HELP_HEIGHT);
+			help.setLineWrap(true);
+			help.setWrapStyleWord(true);
+			help.setOpaque(false);
+			help.setEditable(false);
+			taskPanel.setBounds(ZERO, ZERO, FRAME_WIDTH, help.getHeight());
+			taskPanel.add(help);
+			taskPanel.revalidate();
+			taskPanel.repaint();
+		}
+	}
+}
+
+	// End of segment: D:\Workspace\CS2103T NEW\src\dothings\gui\DoThingsGUI.java
+
+
+
+
+
+	/**
+	 * origin: D:\Workspace\CS2103T NEW\src\dothings\logic\MainLogic.java
+	 */
+
+public class MainLogic{
+	private static final String LOG_USER_INPUT = "User Input: %s";
+	private static final String MESSAGE_EXIT = "exiting..";
+	private static final String MESSAGE_INVALID = "Oops, please try again.";
+	private static final String MESSAGE_ERROR_CUSTOM ="Invalid custom command format";
+	private static final String MESSAGE_ERROR_CUSTOM_FORMAT = "Invalid custom command format";
+	private static final String DEFAULT_ADD = "add";
+	private static final String DEFAULT_UPDATE = "update";
+	private static final String DEFAULT_DELETE = "delete";
+	private static final String DEFAULT_LIST = "list";
+	private static final String DEFAULT_UNDO = "undo";
+	private static final String DEFAULT_REDO = "redo";
+	private static final String DEFAULT_CUSTOM = "custom";
+	private static final String DEFAULT_DELETE_CUSTOM = "dcustom";
+	private static final String DEFAULT_MARK = "mark";
+	private static final String DEFAULT_HELP = "help";
+	private static final String DEFAULT_SEARCH = "search";
+	private static final String DEFAULT_EXIT = "exit";
+	private static final String HELP_FEEDBACK_MSG = "Need help? Your Commands:";
+	private static final String MESSAGE_ERROR_SEARCH = "Please enter something to search.";
+	
+	private static final String ERROR_CODE = "error";
+	private static final String DOT = ". ";
+	private static final String MARK_CODE = "marked";
+	private static final String UNMARK_CODE = "unmarked";
+	private static final String OVERDUE = "overdue";
+	private static final String DUE_TODAY = "today";
+	private static final String DUE_OTHER = "others";
+	private static final String FLOATING = "floating";
+	
+	private static final int FEEDBACK_TYPE = 0;
+	private static final int FEEDBACK_DESC = 1;
+	private static final int TASK_DESC = 2;
+	private static final int TASK_ALIAS = 3;
+	private static final int TASK_STATUS = 4;
+	private static final int TASK_DATE = 5;
+	private static final int TASK_TIME = 6;
+	private static final int NUM_OF_FEEDBACK = 7;
+	
+	private enum CommandType {
+		ADD, DELETE, UPDATE, LIST, UNDO, REDO, SEARCH, CUSTOM, DELETE_CUSTOM, MARK, HELP, EXIT, INVALID;
+	}	
+
+	/**
+	 * Get the CommandType from the user input
+	 * @param com
+	 * @return a CommandType enum indicating the command type
+	 */
+	private static CommandType getCommandType(String com) {
+		
+		if (com.equalsIgnoreCase(DEFAULT_ADD) || CustomCommandHandler.isCustomCommand(com, CustomCommandHandler.HEADER_ADD)) {
+			return CommandType.ADD;
+		} else if (com.equalsIgnoreCase(DEFAULT_LIST) || CustomCommandHandler.isCustomCommand(com, CustomCommandHandler.HEADER_READ)) {
+			return CommandType.LIST;
+		} else if (com.equalsIgnoreCase(DEFAULT_UPDATE) || CustomCommandHandler.isCustomCommand(com, CustomCommandHandler.HEADER_UPDATE)) {
+			return CommandType.UPDATE;
+		} else if (com.equalsIgnoreCase(DEFAULT_DELETE) || CustomCommandHandler.isCustomCommand(com, CustomCommandHandler.HEADER_DELETE)) {
+			return CommandType.DELETE;
+		} else if (com.equalsIgnoreCase(DEFAULT_UNDO) || CustomCommandHandler.isCustomCommand(com, CustomCommandHandler.HEADER_UNDO)) {
+			return CommandType.UNDO;
+		} else if (com.equalsIgnoreCase(DEFAULT_REDO) || CustomCommandHandler.isCustomCommand(com, CustomCommandHandler.HEADER_REDO)) {
+			return CommandType.REDO;
+		} else if (com.equalsIgnoreCase(DEFAULT_CUSTOM) || CustomCommandHandler.isCustomCommand(com, CustomCommandHandler.HEADER_CUSTOM)) {
+			return CommandType.CUSTOM;
+		} else if (com.equalsIgnoreCase(DEFAULT_DELETE_CUSTOM) || CustomCommandHandler.isCustomCommand(com, CustomCommandHandler.HEADER_DELETE_CUSTOM)) {
+			return CommandType.DELETE_CUSTOM;
+		} else if (com.equalsIgnoreCase(DEFAULT_HELP) || CustomCommandHandler.isCustomCommand(com, CustomCommandHandler.HEADER_HELP)) {
+			return CommandType.HELP;
+		} else if (com.equalsIgnoreCase(DEFAULT_EXIT) || CustomCommandHandler.isCustomCommand(com, CustomCommandHandler.HEADER_EXIT)) {
+			return CommandType.EXIT;
+		} else if (com.equalsIgnoreCase(DEFAULT_SEARCH) || CustomCommandHandler.isCustomCommand(com, CustomCommandHandler.HEADER_SEARCH)) {
+			return CommandType.SEARCH;
+		} else if (com.equalsIgnoreCase(DEFAULT_MARK) || CustomCommandHandler.isCustomCommand(com, CustomCommandHandler.HEADER_MARK)) {
+			return CommandType.MARK;
+		} else {
+			return CommandType.INVALID;
+		}
+	} 
+
+	/**
+	 * Takes in the user input and executes the relevant methods in the TaskHandler/CustomCommandHandler/HistoryHandler
+	 * @param userInput
+	 * @return a Feedback object containing a String to be shown to the user
+	 */
+	public static ArrayList<ArrayList<String>> runLogic(String userInput) {
+		FileManager.log(String.format(LOG_USER_INPUT, userInput));
+		String command = CommandParser.getUserCommandType(userInput);
+		String commandDesc = CommandParser.getUserCommandDesc(userInput);
+		Feedback feed;
+		
+		CommandType commandType = getCommandType(command);
+		
+		switch (commandType) {
+			case ADD:
+				feed = TaskHandler.addTask(commandDesc);
+				return processFeedback(feed, DEFAULT_ADD); 
+				
+			case LIST:
+				feed =TaskHandler.listTasks(commandDesc);
+				return processFeedback(feed, DEFAULT_LIST);
+				
+			case UPDATE:
+				feed =TaskHandler.updateTask(commandDesc);	
+				return processFeedback(feed, DEFAULT_UPDATE);
+				
+			case DELETE:
+				feed =TaskHandler.deleteTask(commandDesc);
+				return processFeedback(feed, DEFAULT_DELETE);
+			
+			case HELP:
+				Feedback feedback = new Feedback(HELP_FEEDBACK_MSG);
+				return processFeedback(feedback, DEFAULT_HELP);
+				
+			case CUSTOM:
+				if (!CommandParser.isInputValid(commandDesc, 2)) {
+					feed = new Feedback(MESSAGE_ERROR_CUSTOM);
+					return processFeedback(feed, DEFAULT_CUSTOM);
+				}
+				
+				String type = getCustomHeader(commandDesc);
+				
+				if (type == null) {
+					feed = new Feedback(MESSAGE_ERROR_CUSTOM_FORMAT);
+					return processFeedback(feed, DEFAULT_CUSTOM);
+				}
+				String customToBeAdded = CommandParser.getUserCommandDesc(commandDesc);
+				feed = CustomCommandHandler.addCustomCommand(customToBeAdded, type);
+				return processFeedback(feed, DEFAULT_CUSTOM);
+				
+			case DELETE_CUSTOM:	
+				feed = CustomCommandHandler.deleteCustomCommand(commandDesc);
+				return processFeedback(feed, DEFAULT_DELETE_CUSTOM);
+				
+			case UNDO:
+				if (CommandParser.isInteger(commandDesc)) {
+					feed = HistoryHandler.undoCommand(Integer.parseInt(commandDesc));
+				} else {
+					feed = HistoryHandler.undoCommand(1);
+				}
+				return processFeedback(feed, DEFAULT_UNDO);
+			
+			case REDO:
+				if (CommandParser.isInteger(commandDesc)) {
+					feed = HistoryHandler.redoCommand(Integer.parseInt(commandDesc));
+				} else {
+					feed = HistoryHandler.redoCommand(1);
+				}
+				return processFeedback(feed, DEFAULT_REDO);
+				
+			case SEARCH:
+				if (commandDesc == null) {
+					feed = new Feedback(MESSAGE_ERROR_SEARCH);
+					return processFeedback(feed, DEFAULT_SEARCH);
+				} else {
+					feed = TaskHandler.searchTasks(commandDesc);
+					return processFeedback(feed, DEFAULT_SEARCH);	
+				}
+				
+			case MARK:
+				feed = TaskHandler.markTask(commandDesc);
+				return processFeedback(feed, DEFAULT_MARK);
+				
+			case EXIT:
+				feed = new Feedback(MESSAGE_EXIT, false, true);
+				return processFeedback(feed, DEFAULT_EXIT);
+				
+			default:
+				feed = new Feedback(MESSAGE_INVALID, true);
+				return processFeedback(feed, ERROR_CODE);
+		}
+	}
+	
+	/**
+	 * Get the header for the custom command from the user input
+	 * @param userInput
+	 * @return a string containing the custom command header
+	 */
+	private static String getCustomHeader(String userInput) {
+		String command = CommandParser.getUserCommandType(userInput);
+		
+		CommandType commandType = getCommandType(command);
+		
+		switch (commandType) {
+			case ADD:
+				return CustomCommandHandler.HEADER_ADD;
+				
+			case LIST:
+				return CustomCommandHandler.HEADER_READ;
+				
+			case UPDATE:
+				return CustomCommandHandler.HEADER_UPDATE;
+				
+			case DELETE:
+				return CustomCommandHandler.HEADER_DELETE;
+			
+			case HELP:
+				return CustomCommandHandler.HEADER_HELP;
+				
+			case CUSTOM:
+				return CustomCommandHandler.HEADER_CUSTOM;
+				
+			case DELETE_CUSTOM:	
+				return CustomCommandHandler.HEADER_DELETE_CUSTOM;
+				
+			case UNDO:
+				return CustomCommandHandler.HEADER_UNDO;
+				
+			case REDO:
+				return CustomCommandHandler.HEADER_REDO;
+				
+			case SEARCH:
+				return CustomCommandHandler.HEADER_SEARCH;
+			
+			case MARK:
+				return CustomCommandHandler.HEADER_MARK;
+				
+			case EXIT:
+				return CustomCommandHandler.HEADER_EXIT;
+				
+			default:
+				return null;
+		}
+	}
+	/**
+	 * Processes feedback before sending an ArrayList of ArrayList<String> to GUI which contains all the feedback information
+	 * @param feed
+	 * @param type
+	 * @return ArrayList<ArrayList<String>> result
+	 */
+	private static ArrayList<ArrayList<String>> processFeedback(Feedback feed, String type) {
+		ArrayList<ArrayList<String>> result = new ArrayList<ArrayList<String>>();
+		for(int i=0; i<NUM_OF_FEEDBACK; i++) {
+			result.add(new ArrayList<String>());
+		}
+		
+		if (feed.getExitFlag()) {
+			result.get(FEEDBACK_TYPE).add(DEFAULT_EXIT);
+			return result;
+		} else if (feed.getErrorFlag()) {
+			result.get(FEEDBACK_TYPE).add(ERROR_CODE);
+		} else {
+			result.get(FEEDBACK_TYPE).add(type);
+		} 
+		result.get(FEEDBACK_DESC).add(feed.getDesc());
+		
+		if (type.equals(DEFAULT_HELP)) {
+			result.get(TASK_DESC).add(helpDescription());
+		}
+		else {
+			ArrayList<Task>taskList = Task.getList();
+			ArrayList<Integer> numberList = feed.getIndexList();
+			
+			for(int i=0; i<numberList.size(); i++) {
+				Integer number = numberList.get(i);
+				Task task = taskList.get(number);
+				Integer numberToString = number + 1;
+				result.get(TASK_DESC).add(numberToString.toString() + DOT + task.getDescription());
+				result.get(TASK_ALIAS).add(task.getAlias());
+				result.get(TASK_DATE).add(task.getDateTimeString());
+				if (task.getStatus()) {
+					result.get(TASK_STATUS).add(MARK_CODE);					
+					if (task.isOverdue()) {
+						result.get(TASK_TIME).add(OVERDUE);
+					} else if (task.isToday()) {
+						result.get(TASK_TIME).add(DUE_TODAY);
+					} else if (task.isUnscheduled()) {
+						result.get(TASK_TIME).add(FLOATING);
+					} else {
+						result.get(TASK_TIME).add(DUE_OTHER);
+					}
+				} else {
+					result.get(TASK_STATUS).add(UNMARK_CODE);
+					if (task.isOverdue()) {
+						result.get(TASK_TIME).add(OVERDUE);
+					} else if (task.isToday()) {
+						result.get(TASK_TIME).add(DUE_TODAY);
+					} else if (task.isUnscheduled()) {
+						result.get(TASK_TIME).add(FLOATING);
+					} else {
+						result.get(TASK_TIME).add(DUE_OTHER);
+					}
+				}
+			}
+		}  
+		return result;
+	}
+	
+	// End of segment: D:\Workspace\CS2103T NEW\src\dothings\logic\MainLogic.java
+
+
+
+
+
+	/**
+	 * origin: D:\Workspace\CS2103T NEW\src\dothings\tests\IntegrationTesting.java
+	 */
+
+public class IntegrationTesting {
+	private static final int FEEDBACK_TYPE = 0;
+	private static final int FEEDBACK_DESC = 1;
+	private static final int TASK_DESC = 2;
+	private static final int TASK_ALIAS = 3;
+	private static final int TASK_STATUS = 4;
+	private static final int TASK_DATE = 5;
+	private static final int TASK_TIME = 6;
+
+	@Test
+	public void invalidCommand() {
+		ArrayList<ArrayList<String>> result = MainLogic.runLogic("delete all");
+		result = MainLogic.runLogic("blah iu21s");
+
+		String expectedFeedbackType = "error";
+		String feedbackType = result.get(FEEDBACK_TYPE).get(0);
+		assertEquals(expectedFeedbackType, feedbackType);
+				
+		String expectedFeedbackDes = "Oops, please try again.";
+		String feedbackDesc = result.get(FEEDBACK_DESC).get(0);
+		assertEquals(expectedFeedbackDes, feedbackDesc);
+
+		assertTrue(result.get(TASK_DESC).isEmpty());
+	}
+	
+	@Test
+	public void testHelpSuccess() {
+		ArrayList<ArrayList<String>> result = MainLogic.runLogic("help");
+		
+		String expectedType = "help";
+		String feedbackType = result.get(FEEDBACK_TYPE).get(0);
+		assertEquals(expectedType, feedbackType);
+		
+		String expectedDesc = "[ADD]\nadd \n\n[UPDATE]\nupdate \n\n[MARK]\nmark \n\n[DELETE]\ndelete \n\n[LIST]\nlist \n\n[SEARCH]\nsearch "
+				+ "\n\n[UNDO]\nundo \n\n[REDO]\nredo \n\n[CUSTOM]\ncustom \n\n[DELETE_CUSTOM]\ndcustom \n\n[HELP]\nhelp \n\n[EXIT]\nexit \n\n";
+		String helpDesc = result.get(TASK_DESC).get(0);
+		assertEquals(expectedDesc, helpDesc);
+		
+		String expectedFeedbackDes = "Need help? Your Commands:";
+		String feedbackDesc = result.get(FEEDBACK_DESC).get(0);
+		assertEquals(expectedFeedbackDes, feedbackDesc);
+	}
+	@Test
+	public void testHelpFail() {
+		ArrayList<ArrayList<String>> result = MainLogic.runLogic("help");
+
+		String expectedType = "elp";
+		String feedbackType = result.get(FEEDBACK_TYPE).get(0);
+		assertNotEquals(expectedType, feedbackType);
+				
+		String expectedFeedbackDes = "Oops, please try again.";
+		String feedbackDesc = result.get(FEEDBACK_DESC).get(0);
+		assertNotEquals(expectedFeedbackDes, feedbackDesc);
+	}
+	
+	@Test
+	public void undoSuccess() {
+		ArrayList<ArrayList<String>> result = MainLogic.runLogic("delete all");
+		result = MainLogic.runLogic("add assignment due tomorrow");
+		result = MainLogic.runLogic("undo");
+
+		String expectedFeedbackType = "undo";
+		String feedbackType = result.get(FEEDBACK_TYPE).get(0);
+		assertEquals(expectedFeedbackType, feedbackType);
+				
+		String expectedFeedbackDes = "1 step(s) undone";
+		String feedbackDesc = result.get(FEEDBACK_DESC).get(0);
+		assertEquals(expectedFeedbackDes, feedbackDesc);
+		
+		assertTrue(result.get(TASK_DESC).isEmpty());
+	}
+	@Test
+	public void undoExtraWordsSuccess() {
+		ArrayList<ArrayList<String>> result = MainLogic.runLogic("delete all");
+		result = MainLogic.runLogic("add assignment due tomorrow");
+		result = MainLogic.runLogic("undo asdqwegwegkljhgqeg");
+
+		String expectedFeedbackType = "undo";
+		String feedbackType = result.get(FEEDBACK_TYPE).get(0);
+		assertEquals(expectedFeedbackType, feedbackType);
+				
+		String expectedFeedbackDes = "1 step(s) undone";
+		String feedbackDesc = result.get(FEEDBACK_DESC).get(0);
+		assertEquals(expectedFeedbackDes, feedbackDesc);
+		
+		assertTrue(result.get(TASK_DESC).isEmpty());
+	}
+	@Test
+	public void undoNegNumPass() {
+		ArrayList<ArrayList<String>> result = MainLogic.runLogic("delete all");
+		result = MainLogic.runLogic("add assignment due tomorrow");
+		result = MainLogic.runLogic("undo -1");
+
+		String expectedFeedbackType = "undo";
+		String feedbackType = result.get(FEEDBACK_TYPE).get(0);
+		assertEquals(expectedFeedbackType, feedbackType);
+				
+		String expectedFeedbackDes = "1 step(s) undone";
+		String feedbackDesc = result.get(FEEDBACK_DESC).get(0);
+		assertEquals(expectedFeedbackDes, feedbackDesc);
+
+		assertTrue(result.get(TASK_DESC).isEmpty());
+	}
+	@Test
+	public void undoMultipleSuccess() {
+		ArrayList<ArrayList<String>> result = MainLogic.runLogic("delete all");
+		result = MainLogic.runLogic("add assignment1 due tomorrow");
+		result = MainLogic.runLogic("add assignment2 due tomorrow");
+		result = MainLogic.runLogic("add assignment3 due tomorrow");
+		result = MainLogic.runLogic("add assignment4 due tomorrow");
+		result = MainLogic.runLogic("add assignment5 due tomorrow");
+		result = MainLogic.runLogic("add assignment6 due tomorrow");
+		result = MainLogic.runLogic("undo 5");
+
+		String expectedFeedbackType = "undo";
+		String feedbackType = result.get(FEEDBACK_TYPE).get(0);
+		assertEquals(expectedFeedbackType, feedbackType);
+				
+		String expectedFeedbackDes = "5 step(s) undone";
+		String feedbackDesc = result.get(FEEDBACK_DESC).get(0);
+		assertEquals(expectedFeedbackDes, feedbackDesc);
+		
+		String expectedDesc = "1. assignment1 due";
+		String taskDesc = result.get(TASK_DESC).get(0);
+		assertEquals(expectedDesc, taskDesc);
+	}
+	
+	@Test
+	public void redoSuccess() {
+		ArrayList<ArrayList<String>> result = MainLogic.runLogic("delete all");
+		result = MainLogic.runLogic("add assignment due tomorrow");
+		result = MainLogic.runLogic("undo");
+		result = MainLogic.runLogic("redo");
+
+		String expectedFeedbackType = "redo";
+		String feedbackType = result.get(FEEDBACK_TYPE).get(0);
+		assertEquals(expectedFeedbackType, feedbackType);
+				
+		String expectedFeedbackDes = "1 step(s) redone";
+		String feedbackDesc = result.get(FEEDBACK_DESC).get(0);
+		assertEquals(expectedFeedbackDes, feedbackDesc);
+
+		String expectedDesc = "1. assignment due";
+		String taskDesc = result.get(TASK_DESC).get(0);
+		assertEquals(expectedDesc, taskDesc);
+	}
+	@Test
+	public void redoExtraWordsSuccess() {
+		ArrayList<ArrayList<String>> result = MainLogic.runLogic("delete all");
+		result = MainLogic.runLogic("add assignment due tomorrow");
+		result = MainLogic.runLogic("undo");
+		result = MainLogic.runLogic("redo asdqwfeqgtrsjk");
+
+		String expectedFeedbackType = "redo";
+		String feedbackType = result.get(FEEDBACK_TYPE).get(0);
+		assertEquals(expectedFeedbackType, feedbackType);
+				
+		String expectedFeedbackDes = "1 step(s) redone";
+		String feedbackDesc = result.get(FEEDBACK_DESC).get(0);
+		assertEquals(expectedFeedbackDes, feedbackDesc);
+
+		String expectedDesc = "1. assignment due";
+		String taskDesc = result.get(TASK_DESC).get(0);
+		assertEquals(expectedDesc, taskDesc);
+	}
+	@Test
+	public void redoNegNumPass() {
+		ArrayList<ArrayList<String>> result = MainLogic.runLogic("delete all");
+		result = MainLogic.runLogic("add assignment due tomorrow");
+		result = MainLogic.runLogic("undo");
+		result = MainLogic.runLogic("redo -1");
+
+		String expectedFeedbackType = "redo";
+		String feedbackType = result.get(FEEDBACK_TYPE).get(0);
+		assertEquals(expectedFeedbackType, feedbackType);
+				
+		String expectedFeedbackDes = "1 step(s) redone";
+		String feedbackDesc = result.get(FEEDBACK_DESC).get(0);
+		assertEquals(expectedFeedbackDes, feedbackDesc);
+
+		String expectedDesc = "1. assignment due";
+		String taskDesc = result.get(TASK_DESC).get(0);
+		assertEquals(expectedDesc, taskDesc);
+	}
+	@Test
+	public void redoMultipleSuccess() {
+		ArrayList<ArrayList<String>> result = MainLogic.runLogic("delete all");
+		result = MainLogic.runLogic("add assignment1 due tomorrow");
+		result = MainLogic.runLogic("add assignment2 due tomorrow");
+		result = MainLogic.runLogic("add assignment3 due tomorrow");
+		result = MainLogic.runLogic("add assignment4 due tomorrow");
+		result = MainLogic.runLogic("add assignment5 due tomorrow");
+		result = MainLogic.runLogic("add assignment6 due tomorrow");
+		result = MainLogic.runLogic("undo 5");
+		result = MainLogic.runLogic("redo 5");
+		
+		String expectedFeedbackType = "redo";
+		String feedbackType = result.get(FEEDBACK_TYPE).get(0);
+		assertEquals(expectedFeedbackType, feedbackType);
+				
+		String expectedFeedbackDes = "5 step(s) redone";
+		String feedbackDesc = result.get(FEEDBACK_DESC).get(0);
+		assertEquals(expectedFeedbackDes, feedbackDesc);
+		
+		String expectedDesc = "1. assignment1 due";
+		String taskDesc = result.get(TASK_DESC).get(0);
+		assertEquals(expectedDesc, taskDesc);
+		
+		expectedDesc = "2. assignment2 due";
+		taskDesc = result.get(TASK_DESC).get(1);
+		assertEquals(expectedDesc, taskDesc);
+		
+		expectedDesc = "3. assignment3 due";
+		taskDesc = result.get(TASK_DESC).get(2);
+		assertEquals(expectedDesc, taskDesc);
+
+		expectedDesc = "4. assignment4 due";
+		taskDesc = result.get(TASK_DESC).get(3);
+		assertEquals(expectedDesc, taskDesc);
+
+		expectedDesc = "5. assignment5 due";
+		taskDesc = result.get(TASK_DESC).get(4);
+		assertEquals(expectedDesc, taskDesc);
+
+		expectedDesc = "6. assignment6 due";
+		taskDesc = result.get(TASK_DESC).get(5);
+		assertEquals(expectedDesc, taskDesc);
+	}
+	
+	@Test
+	public void searchSuccess() {
+		ArrayList<ArrayList<String>> result = MainLogic.runLogic("delete all");
+		result = MainLogic.runLogic("add assignment due tomorrow");
+		result = MainLogic.runLogic("search assignment");
+
+		String expectedFeedbackType = "search";
+		String feedbackType = result.get(FEEDBACK_TYPE).get(0);
+		assertEquals(expectedFeedbackType, feedbackType);
+				
+		String expectedFeedbackDes = "Search for assignment";
+		String feedbackDesc = result.get(FEEDBACK_DESC).get(0);
+		assertEquals(expectedFeedbackDes, feedbackDesc);
+
+		String expectedDesc = "1. assignment due";
+		String taskDesc = result.get(TASK_DESC).get(0);
+		assertEquals(expectedDesc, taskDesc);
+	}
+	@Test
+	public void searchMultipleSuccess() {
+		ArrayList<ArrayList<String>> result = MainLogic.runLogic("delete all");
+		result = MainLogic.runLogic("add assignment1 due tomorrow");
+		result = MainLogic.runLogic("add assignment2 due tomorrow");
+		result = MainLogic.runLogic("add assignment3 due tomorrow");
+		result = MainLogic.runLogic("search assignment");
+
+		String expectedFeedbackType = "search";
+		String feedbackType = result.get(FEEDBACK_TYPE).get(0);
+		assertEquals(expectedFeedbackType, feedbackType);
+				
+		String expectedFeedbackDes = "Search for assignment";
+		String feedbackDesc = result.get(FEEDBACK_DESC).get(0);
+		assertEquals(expectedFeedbackDes, feedbackDesc);
+
+		String expectedDesc = "1. assignment1 due";
+		String taskDesc = result.get(TASK_DESC).get(0);
+		assertEquals(expectedDesc, taskDesc);
+		
+		expectedDesc = "2. assignment2 due";
+		taskDesc = result.get(TASK_DESC).get(1);
+		assertEquals(expectedDesc, taskDesc);
+		
+		expectedDesc = "3. assignment3 due";
+		taskDesc = result.get(TASK_DESC).get(2);
+		assertEquals(expectedDesc, taskDesc);
+	}	
+	@Test
+	public void searchFail() {
+		ArrayList<ArrayList<String>> result = MainLogic.runLogic("delete all");
+		result = MainLogic.runLogic("add assignment due tomorrow");
+		result = MainLogic.runLogic("search");
+
+		String expectedFeedbackType = "search";
+		String feedbackType = result.get(FEEDBACK_TYPE).get(0);
+		assertEquals(expectedFeedbackType, feedbackType);
+				
+		String expectedFeedbackDes = "Please enter something to search.";
+		String feedbackDesc = result.get(FEEDBACK_DESC).get(0);
+		assertEquals(expectedFeedbackDes, feedbackDesc);
+
+		String expectedDesc = "1. assignment due";
+		String taskDesc = result.get(TASK_DESC).get(0);
+		assertEquals(expectedDesc, taskDesc);
+	}
+	@Test
+	public void searchInvalidDescription() {
+		ArrayList<ArrayList<String>> result = MainLogic.runLogic("delete all");
+		result = MainLogic.runLogic("add assignment due tomorrow");
+		result = MainLogic.runLogic("search banana");
+
+		String expectedFeedbackType = "search";
+		String feedbackType = result.get(FEEDBACK_TYPE).get(0);
+		assertEquals(expectedFeedbackType, feedbackType);
+				
+		String expectedFeedbackDes = "Search for banana";
+		String feedbackDesc = result.get(FEEDBACK_DESC).get(0);
+		assertEquals(expectedFeedbackDes, feedbackDesc);
+
+		assertTrue(result.get(TASK_DESC).isEmpty());
+	}
+	
+	@Test
+	public void listAll() {
+		ArrayList<ArrayList<String>> result = MainLogic.runLogic("delete all");
+		result = MainLogic.runLogic("add assignment due tomorrow");
+		result = MainLogic.runLogic("list all");
+
+		String expectedFeedbackType = "list";
+		String feedbackType = result.get(FEEDBACK_TYPE).get(0);
+		assertEquals(expectedFeedbackType, feedbackType);
+				
+		String expectedFeedbackDes = "Showing all tasks";
+		String feedbackDesc = result.get(FEEDBACK_DESC).get(0);
+		assertEquals(expectedFeedbackDes, feedbackDesc);
+
+		String expectedDesc = "1. assignment due";
+		String taskDesc = result.get(TASK_DESC).get(0);
+		assertEquals(expectedDesc, taskDesc);
+	}
+	@Test
+	public void listAllEmpty() {
+		ArrayList<ArrayList<String>> result = MainLogic.runLogic("delete all");
+		result = MainLogic.runLogic("list all");
+
+		String expectedFeedbackType = "list";
+		String feedbackType = result.get(FEEDBACK_TYPE).get(0);
+		assertEquals(expectedFeedbackType, feedbackType);
+				
+		String expectedFeedbackDes = "Showing all tasks";
+		String feedbackDesc = result.get(FEEDBACK_DESC).get(0);
+		assertEquals(expectedFeedbackDes, feedbackDesc);
+
+		assertTrue(result.get(TASK_DESC).isEmpty());
+	}
+	@Test
+	public void listOverdueTrue() {
+		ArrayList<ArrayList<String>> result = MainLogic.runLogic("delete all");
+		result = MainLogic.runLogic("add assignment due yesterday");
+		result = MainLogic.runLogic("list overdue");
+
+		String expectedFeedbackType = "list";
+		String feedbackType = result.get(FEEDBACK_TYPE).get(0);
+		assertEquals(expectedFeedbackType, feedbackType);
+				
+		String expectedFeedbackDes = "Showing overdue tasks";
+		String feedbackDesc = result.get(FEEDBACK_DESC).get(0);
+		assertEquals(expectedFeedbackDes, feedbackDesc);
+
+		String expectedDesc = "1. assignment due";
+		String taskDesc = result.get(TASK_DESC).get(0);
+		assertEquals(expectedDesc, taskDesc);
+	}
+	@Test
+	public void listOverdueFail() {
+		ArrayList<ArrayList<String>> result = MainLogic.runLogic("delete all");
+		result = MainLogic.runLogic("add assignment due today");
+		result = MainLogic.runLogic("list overdue");
+
+		String expectedFeedbackType = "list";
+		String feedbackType = result.get(FEEDBACK_TYPE).get(0);
+		assertEquals(expectedFeedbackType, feedbackType);
+				
+		String expectedFeedbackDes = "Showing overdue tasks";
+		String feedbackDesc = result.get(FEEDBACK_DESC).get(0);
+		assertEquals(expectedFeedbackDes, feedbackDesc);
+		
+		assertTrue(result.get(TASK_DESC).isEmpty());
+	}
+	@Test
+	public void listCompletedTrue() {
+		ArrayList<ArrayList<String>> result = MainLogic.runLogic("delete all");
+		result = MainLogic.runLogic("add assignment due today");
+		result = MainLogic.runLogic("mark 1");
+		result = MainLogic.runLogic("list completed");
+
+		String expectedFeedbackType = "list";
+		String feedbackType = result.get(FEEDBACK_TYPE).get(0);
+		assertEquals(expectedFeedbackType, feedbackType);
+				
+		String expectedFeedbackDes = "Showing completed tasks";
+		String feedbackDesc = result.get(FEEDBACK_DESC).get(0);
+		assertEquals(expectedFeedbackDes, feedbackDesc);
+
+		String expectedDesc = "1. assignment due";
+		String taskDesc = result.get(TASK_DESC).get(0);
+		assertEquals(expectedDesc, taskDesc);
+	}
+	@Test
+	public void listCompletedFail() {
+		ArrayList<ArrayList<String>> result = MainLogic.runLogic("delete all");
+		result = MainLogic.runLogic("add assignment due today");
+		result = MainLogic.runLogic("list completed");
+
+		String expectedFeedbackType = "list";
+		String feedbackType = result.get(FEEDBACK_TYPE).get(0);
+		assertEquals(expectedFeedbackType, feedbackType);
+				
+		String expectedFeedbackDes = "Showing completed tasks";
+		String feedbackDesc = result.get(FEEDBACK_DESC).get(0);
+		assertEquals(expectedFeedbackDes, feedbackDesc);
+
+		assertTrue(result.get(TASK_DESC).isEmpty());
+	}
+	@Test
+	public void listIncommpletedFail() {
+		ArrayList<ArrayList<String>> result = MainLogic.runLogic("delete all");
+		result = MainLogic.runLogic("add assignment due today");
+		result = MainLogic.runLogic("mark 1");
+		result = MainLogic.runLogic("list incompleted");
+
+		String expectedFeedbackType = "list";
+		String feedbackType = result.get(FEEDBACK_TYPE).get(0);
+		assertEquals(expectedFeedbackType, feedbackType);
+				
+		String expectedFeedbackDes = "Showing incomplete tasks";
+		String feedbackDesc = result.get(FEEDBACK_DESC).get(0);
+		assertEquals(expectedFeedbackDes, feedbackDesc);
+
+		assertTrue(result.get(TASK_DESC).isEmpty());
+	}
+	@Test
+	public void listInCompletedTrue() {
+		ArrayList<ArrayList<String>> result = MainLogic.runLogic("delete all");
+		result = MainLogic.runLogic("add assignment due today");
+		result = MainLogic.runLogic("list incompleted");
+
+		String expectedFeedbackType = "list";
+		String feedbackType = result.get(FEEDBACK_TYPE).get(0);
+		assertEquals(expectedFeedbackType, feedbackType);
+				
+		String expectedFeedbackDes = "Showing incomplete tasks";
+		String feedbackDesc = result.get(FEEDBACK_DESC).get(0);
+		assertEquals(expectedFeedbackDes, feedbackDesc);
+
+		String expectedDesc = "1. assignment due";
+		String taskDesc = result.get(TASK_DESC).get(0);
+		assertEquals(expectedDesc, taskDesc);
+	}
+	@Test
+	public void listDateTrue() {
+		ArrayList<ArrayList<String>> result = MainLogic.runLogic("delete all");
+		result = MainLogic.runLogic("add assignment due today");
+		result = MainLogic.runLogic("list today");
+
+		String expectedFeedbackType = "list";
+		String feedbackType = result.get(FEEDBACK_TYPE).get(0);
+		assertEquals(expectedFeedbackType, feedbackType);
+				
+		String expectedFeedbackDes = "Showing tasks on today";
+		String feedbackDesc = result.get(FEEDBACK_DESC).get(0);
+		assertEquals(expectedFeedbackDes, feedbackDesc);
+
+		String expectedDesc = "1. assignment due";
+		String taskDesc = result.get(TASK_DESC).get(0);
+		assertEquals(expectedDesc, taskDesc);
+	}
+	@Test
+	public void listDateFalse() {
+		ArrayList<ArrayList<String>> result = MainLogic.runLogic("delete all");
+		result = MainLogic.runLogic("add assignment due yesterday");
+		result = MainLogic.runLogic("list 18.04.2014");
+
+		String expectedFeedbackType = "list";
+		String feedbackType = result.get(FEEDBACK_TYPE).get(0);
+		assertEquals(expectedFeedbackType, feedbackType);
+				
+		String expectedFeedbackDes = "Showing tasks on 18.04.2014";
+		String feedbackDesc = result.get(FEEDBACK_DESC).get(0);
+		assertEquals(expectedFeedbackDes, feedbackDesc);
+
+		assertTrue(result.get(TASK_DESC).isEmpty());
+	}
+	@Test
+	public void listDateInvalid() {
+		ArrayList<ArrayList<String>> result = MainLogic.runLogic("delete all");
+		result = MainLogic.runLogic("add assignment due yesterday");
+		result = MainLogic.runLogic("list 18.20.2014");
+
+		String expectedFeedbackType = "list";
+		String feedbackType = result.get(FEEDBACK_TYPE).get(0);
+		assertEquals(expectedFeedbackType, feedbackType);
+				
+		String expectedFeedbackDes = "Oh no! Please enter a valid date or status";
+		String feedbackDesc = result.get(FEEDBACK_DESC).get(0);
+		assertEquals(expectedFeedbackDes, feedbackDesc);
+
+		String expectedDesc = "1. assignment due";
+		String taskDesc = result.get(TASK_DESC).get(0);
+		assertEquals(expectedDesc, taskDesc);
+	}
+	
+	@Test
+	public void exitValid() {
+		ArrayList<ArrayList<String>> result = MainLogic.runLogic("delete all");
+		result = MainLogic.runLogic("exit");
+
+		String expectedFeedbackType = "exit";
+		String feedbackType = result.get(FEEDBACK_TYPE).get(0);
+		assertEquals(expectedFeedbackType, feedbackType);
+	}
+	@Test
+	public void exitExtraNum() {
+		ArrayList<ArrayList<String>> result = MainLogic.runLogic("delete all");
+		result = MainLogic.runLogic("exit 1253");
+
+		String expectedFeedbackType = "exit";
+		String feedbackType = result.get(FEEDBACK_TYPE).get(0);
+		assertEquals(expectedFeedbackType, feedbackType);
+	}
+	@Test
+	public void exitExtraText() {
+		ArrayList<ArrayList<String>> result = MainLogic.runLogic("delete all");
+		result = MainLogic.runLogic("exit ase");
+
+		String expectedFeedbackType = "exit";
+		String feedbackType = result.get(FEEDBACK_TYPE).get(0);
+		assertEquals(expectedFeedbackType, feedbackType);
+	}
+	
+	@Test
+	public void customValidCommandValidCustom() {
+		ArrayList<ArrayList<String>> result = MainLogic.runLogic("delete all");
+		result = MainLogic.runLogic("add assignment due tomorrow");
+		result = MainLogic.runLogic("custom add +");
+
+		String expectedFeedbackType = "custom";
+		String feedbackType = result.get(FEEDBACK_TYPE).get(0);
+		assertEquals(expectedFeedbackType, feedbackType);
+		
+		String expectedFeedbackDes = "\"+\" has been added to the command list.";
+		String feedbackDesc = result.get(FEEDBACK_DESC).get(0);
+		assertEquals(expectedFeedbackDes, feedbackDesc);
+		
+		String expectedDesc = "1. assignment due";
+		String taskDesc = result.get(TASK_DESC).get(0);
+		assertEquals(expectedDesc, taskDesc);
+		
+		result = MainLogic.runLogic("dcustom +");
+	}
+	@Test
+	public void customValidCommandInvalidCustom() {
+		ArrayList<ArrayList<String>> result = MainLogic.runLogic("delete all");
+		result = MainLogic.runLogic("add assignment due tomorrow");
+		result = MainLogic.runLogic("custom add add");
+
+		String expectedFeedbackType = "custom";
+		String feedbackType = result.get(FEEDBACK_TYPE).get(0);
+		assertEquals(expectedFeedbackType, feedbackType);
+		
+		String expectedFeedbackDes = "Sorry, but this word is already in use.";
+		String feedbackDesc = result.get(FEEDBACK_DESC).get(0);
+		assertEquals(expectedFeedbackDes, feedbackDesc);
+		
+		String expectedDesc = "1. assignment due";
+		String taskDesc = result.get(TASK_DESC).get(0);
+		assertEquals(expectedDesc, taskDesc);
+	}
+	@Test
+	public void customInvalidCommandValidCustom() {
+		ArrayList<ArrayList<String>> result = MainLogic.runLogic("delete all");
+		result = MainLogic.runLogic("add assignment due tomorrow");
+		result = MainLogic.runLogic("custom addy +");
+
+		String expectedFeedbackType = "custom";
+		String feedbackType = result.get(FEEDBACK_TYPE).get(0);
+		assertEquals(expectedFeedbackType, feedbackType);
+		
+		String expectedFeedbackDes = "Invalid custom command format";
+		String feedbackDesc = result.get(FEEDBACK_DESC).get(0);
+		assertEquals(expectedFeedbackDes, feedbackDesc);
+		
+		String expectedDesc = "1. assignment due";
+		String taskDesc = result.get(TASK_DESC).get(0);
+		assertEquals(expectedDesc, taskDesc);
+	}
+	@Test
+	public void customInvalidCommandInvalidCustom() {
+		ArrayList<ArrayList<String>> result = MainLogic.runLogic("delete all");
+		result = MainLogic.runLogic("add assignment due tomorrow");
+		result = MainLogic.runLogic("custom addy add");
+
+		String expectedFeedbackType = "custom";
+		String feedbackType = result.get(FEEDBACK_TYPE).get(0);
+		assertEquals(expectedFeedbackType, feedbackType);
+		
+		String expectedFeedbackDes = "Invalid custom command format";
+		String feedbackDesc = result.get(FEEDBACK_DESC).get(0);
+		assertEquals(expectedFeedbackDes, feedbackDesc);
+		
+		String expectedDesc = "1. assignment due";
+		String taskDesc = result.get(TASK_DESC).get(0);
+		assertEquals(expectedDesc, taskDesc);
+	}
+	@Test
+	public void customEmptyCommandValidCustom() {
+		ArrayList<ArrayList<String>> result = MainLogic.runLogic("delete all");
+		result = MainLogic.runLogic("add assignment due tomorrow");
+		result = MainLogic.runLogic("custom +");
+
+		String expectedFeedbackType = "custom";
+		String feedbackType = result.get(FEEDBACK_TYPE).get(0);
+		assertEquals(expectedFeedbackType, feedbackType);
+		
+		String expectedFeedbackDes = "Invalid custom command format";
+		String feedbackDesc = result.get(FEEDBACK_DESC).get(0);
+		assertEquals(expectedFeedbackDes, feedbackDesc);
+		
+		String expectedDesc = "1. assignment due";
+		String taskDesc = result.get(TASK_DESC).get(0);
+		assertEquals(expectedDesc, taskDesc);
+	}
+	@Test
+	public void customValidCommandEmptyCustom() {
+		ArrayList<ArrayList<String>> result = MainLogic.runLogic("delete all");
+		result = MainLogic.runLogic("add assignment due tomorrow");
+		result = MainLogic.runLogic("custom add");
+
+		String expectedFeedbackType = "custom";
+		String feedbackType = result.get(FEEDBACK_TYPE).get(0);
+		assertEquals(expectedFeedbackType, feedbackType);
+		
+		String expectedFeedbackDes = "Invalid custom command format";
+		String feedbackDesc = result.get(FEEDBACK_DESC).get(0);
+		assertEquals(expectedFeedbackDes, feedbackDesc);
+		
+		String expectedDesc = "1. assignment due";
+		String taskDesc = result.get(TASK_DESC).get(0);
+		assertEquals(expectedDesc, taskDesc);
+	}
+	
+	@Test
+	public void dcustomInvalidCustom() {
+		ArrayList<ArrayList<String>> result = MainLogic.runLogic("delete all");
+		result = MainLogic.runLogic("add assignment due tomorrow");
+		result = MainLogic.runLogic("dcustom big");
+
+		String expectedFeedbackType = "dcustom";
+		String feedbackType = result.get(FEEDBACK_TYPE).get(0);
+		assertEquals(expectedFeedbackType, feedbackType);
+		
+		String expectedFeedbackDes = "Error deleting. No such word in command list.";
+		String feedbackDesc = result.get(FEEDBACK_DESC).get(0);
+		assertEquals(expectedFeedbackDes, feedbackDesc);
+		
+		String expectedDesc = "1. assignment due";
+		String taskDesc = result.get(TASK_DESC).get(0);
+		assertEquals(expectedDesc, taskDesc);
+	}
+	@Test
+	public void dcustomValidCustom() {
+		ArrayList<ArrayList<String>> result = MainLogic.runLogic("delete all");
+		result = MainLogic.runLogic("add assignment due tomorrow");
+		result = MainLogic.runLogic("custom add +");
+		result = MainLogic.runLogic("dcustom +");
+
+		String expectedFeedbackType = "dcustom";
+		String feedbackType = result.get(FEEDBACK_TYPE).get(0);
+		assertEquals(expectedFeedbackType, feedbackType);
+		
+		String expectedFeedbackDes = "\"+\" has been deleted from the command list.";
+		String feedbackDesc = result.get(FEEDBACK_DESC).get(0);
+		assertEquals(expectedFeedbackDes, feedbackDesc);
+		
+		String expectedDesc = "1. assignment due";
+		String taskDesc = result.get(TASK_DESC).get(0);
+		assertEquals(expectedDesc, taskDesc);
+	}
+	@Test
+	public void dcustomEmpty() {
+		ArrayList<ArrayList<String>> result = MainLogic.runLogic("delete all");
+		result = MainLogic.runLogic("add assignment due tomorrow");
+		result = MainLogic.runLogic("dcustom");
+
+		String expectedFeedbackType = "dcustom";
+		String feedbackType = result.get(FEEDBACK_TYPE).get(0);
+		assertEquals(expectedFeedbackType, feedbackType);
+		
+		String expectedFeedbackDes = "Error deleting. No such word in command list.";
+		String feedbackDesc = result.get(FEEDBACK_DESC).get(0);
+		assertEquals(expectedFeedbackDes, feedbackDesc);
+		
+		String expectedDesc = "1. assignment due";
+		String taskDesc = result.get(TASK_DESC).get(0);
+		assertEquals(expectedDesc, taskDesc);
+	}
+	
+	@Test
+	public void markUnmarkedTask() {
+		ArrayList<ArrayList<String>> result = MainLogic.runLogic("delete all");
+		result = MainLogic.runLogic("add assignment due tomorrow");
+		result = MainLogic.runLogic("mark 1");
+
+		String expectedFeedbackType = "mark";
+		String feedbackType = result.get(FEEDBACK_TYPE).get(0);
+		assertEquals(expectedFeedbackType, feedbackType);
+		
+		String expectedFeedbackDes = "Task(s) have been marked.";
+		String feedbackDesc = result.get(FEEDBACK_DESC).get(0);
+		assertEquals(expectedFeedbackDes, feedbackDesc);
+		
+		assertTrue(result.get(TASK_DESC).isEmpty());
+	}
+	@Test
+	public void markMarkedTask() {
+		ArrayList<ArrayList<String>> result = MainLogic.runLogic("delete all");
+		result = MainLogic.runLogic("add assignment due tomorrow");
+		result = MainLogic.runLogic("mark 1");
+		result = MainLogic.runLogic("mark 1");
+
+		String expectedFeedbackType = "mark";
+		String feedbackType = result.get(FEEDBACK_TYPE).get(0);
+		assertEquals(expectedFeedbackType, feedbackType);
+		
+		String expectedFeedbackDes = "Task(s) have been marked.";
+		String feedbackDesc = result.get(FEEDBACK_DESC).get(0);
+		assertEquals(expectedFeedbackDes, feedbackDesc);
+		
+		String expectedDesc = "1. assignment due";
+		String taskDesc = result.get(TASK_DESC).get(0);
+		assertEquals(expectedDesc, taskDesc);
+	}
+	@Test
+	public void markUnmarkedAlias() {
+		ArrayList<ArrayList<String>> result = MainLogic.runLogic("delete all");
+		result = MainLogic.runLogic("add assignment due tomorrow alias:NUS");
+		result = MainLogic.runLogic("mark NUS");
+
+		String expectedFeedbackType = "mark";
+		String feedbackType = result.get(FEEDBACK_TYPE).get(0);
+		assertEquals(expectedFeedbackType, feedbackType);
+		
+		String expectedFeedbackDes = "Task(s) have been marked.";
+		String feedbackDesc = result.get(FEEDBACK_DESC).get(0);
+		assertEquals(expectedFeedbackDes, feedbackDesc);
+		
+		assertTrue(result.get(TASK_DESC).isEmpty());
+	}
+	@Test
+	public void markMarkedAlias() {
+		ArrayList<ArrayList<String>> result = MainLogic.runLogic("delete all");
+		result = MainLogic.runLogic("add assignment due tomorrow alias:NUS");
+		result = MainLogic.runLogic("mark NUS");
+		result = MainLogic.runLogic("mark NUS");
+
+		String expectedFeedbackType = "mark";
+		String feedbackType = result.get(FEEDBACK_TYPE).get(0);
+		assertEquals(expectedFeedbackType, feedbackType);
+		
+		String expectedFeedbackDes = "Task(s) have been marked.";
+		String feedbackDesc = result.get(FEEDBACK_DESC).get(0);
+		assertEquals(expectedFeedbackDes, feedbackDesc);
+		
+		String expectedDesc = "1. assignment due";
+		String taskDesc = result.get(TASK_DESC).get(0);
+		assertEquals(expectedDesc, taskDesc);
+	}
+	@Test
+	public void markInvalidTask() {
+		ArrayList<ArrayList<String>> result = MainLogic.runLogic("delete all");
+		result = MainLogic.runLogic("add assignment due tomorrow alias:NUS");
+		result = MainLogic.runLogic("mark 3");
+
+		String expectedFeedbackType = "error";
+		String feedbackType = result.get(FEEDBACK_TYPE).get(0);
+		assertEquals(expectedFeedbackType, feedbackType);
+		
+		String expectedFeedbackDes = "Nothing to mark.";
+		String feedbackDesc = result.get(FEEDBACK_DESC).get(0);
+		assertEquals(expectedFeedbackDes, feedbackDesc);
+		
+		String expectedDesc = "1. assignment due";
+		String taskDesc = result.get(TASK_DESC).get(0);
+		assertEquals(expectedDesc, taskDesc);
+	}
+	@Test
+	public void markInvalidAlias() {
+		ArrayList<ArrayList<String>> result = MainLogic.runLogic("delete all");
+		result = MainLogic.runLogic("add assignment due tomorrow alias:NUS");
+		result = MainLogic.runLogic("mark NTU");
+
+		String expectedFeedbackType = "error";
+		String feedbackType = result.get(FEEDBACK_TYPE).get(0);
+		assertEquals(expectedFeedbackType, feedbackType);
+		
+		String expectedFeedbackDes = "Nothing to mark.";
+		String feedbackDesc = result.get(FEEDBACK_DESC).get(0);
+		assertEquals(expectedFeedbackDes, feedbackDesc);
+		
+		String expectedDesc = "1. assignment due";
+		String taskDesc = result.get(TASK_DESC).get(0);
+		assertEquals(expectedDesc, taskDesc);
+	}
+	
+	@Test
+	public void deleteOneTask() {
+		ArrayList<ArrayList<String>> result = MainLogic.runLogic("delete all");
+		result = MainLogic.runLogic("add assignment due tomorrow alias:NUS");
+		result = MainLogic.runLogic("delete 1");
+
+		String expectedFeedbackType = "delete";
+		String feedbackType = result.get(FEEDBACK_TYPE).get(0);
+		assertEquals(expectedFeedbackType, feedbackType);
+		
+		String expectedFeedbackDes = "All specified tasks have been deleted.";
+		String feedbackDesc = result.get(FEEDBACK_DESC).get(0);
+		assertEquals(expectedFeedbackDes, feedbackDesc);
+
+		assertTrue(result.get(TASK_DESC).isEmpty());
+	}
+	@Test
+	public void deleteMultipleTask() {
+		ArrayList<ArrayList<String>> result = MainLogic.runLogic("delete all");
+		result = MainLogic.runLogic("add assignment1 due tomorrow alias:NUS");
+		result = MainLogic.runLogic("add assignment2 due tomorrow alias:NUS");
+		result = MainLogic.runLogic("add assignment3 due tomorrow alias:NUS");
+		result = MainLogic.runLogic("add assignment4 due tomorrow alias:NUS");
+		result = MainLogic.runLogic("add assignment5 due tomorrow alias:NUS");
+		result = MainLogic.runLogic("delete 1 3 5");
+		
+		String expectedFeedbackType = "delete";
+		String feedbackType = result.get(FEEDBACK_TYPE).get(0);
+		assertEquals(expectedFeedbackType, feedbackType);
+		
+		String expectedFeedbackDes = "All specified tasks have been deleted.";
+		String feedbackDesc = result.get(FEEDBACK_DESC).get(0);
+		assertEquals(expectedFeedbackDes, feedbackDesc);
+
+		String expectedDesc = "1. assignment2 due";
+		String taskDesc = result.get(TASK_DESC).get(0);
+		assertEquals(expectedDesc, taskDesc);
+
+		expectedDesc = "2. assignment4 due";
+		taskDesc = result.get(TASK_DESC).get(1);
+		assertEquals(expectedDesc, taskDesc);
+	}
+	@Test
+	public void deleteOneAlias() {
+		ArrayList<ArrayList<String>> result = MainLogic.runLogic("delete all");
+		result = MainLogic.runLogic("add assignment due tomorrow alias:NUS");
+		result = MainLogic.runLogic("delete NUS");
+
+		String expectedFeedbackType = "delete";
+		String feedbackType = result.get(FEEDBACK_TYPE).get(0);
+		assertEquals(expectedFeedbackType, feedbackType);
+		
+		String expectedFeedbackDes = "All specified tasks have been deleted.";
+		String feedbackDesc = result.get(FEEDBACK_DESC).get(0);
+		assertEquals(expectedFeedbackDes, feedbackDesc);
+
+		assertTrue(result.get(TASK_DESC).isEmpty());
+	}
+	@Test
+	public void deleteMultipleAlias() {
+		ArrayList<ArrayList<String>> result = MainLogic.runLogic("delete all");
+		result = MainLogic.runLogic("add assignment1 due tomorrow alias:NUS0");
+		result = MainLogic.runLogic("add assignment2 due tomorrow alias:NUS1");
+		result = MainLogic.runLogic("add assignment3 due tomorrow alias:NUS2");
+		result = MainLogic.runLogic("add assignment4 due tomorrow alias:NUS3");
+		result = MainLogic.runLogic("add assignment5 due tomorrow alias:NUS4");
+		result = MainLogic.runLogic("delete NUS0 NUS2 NUS4");
+		
+		String expectedFeedbackType = "delete";
+		String feedbackType = result.get(FEEDBACK_TYPE).get(0);
+		assertEquals(expectedFeedbackType, feedbackType);
+		
+		String expectedFeedbackDes = "All specified tasks have been deleted.";
+		String feedbackDesc = result.get(FEEDBACK_DESC).get(0);
+		assertEquals(expectedFeedbackDes, feedbackDesc);
+
+		String expectedDesc = "1. assignment2 due";
+		String taskDesc = result.get(TASK_DESC).get(0);
+		assertEquals(expectedDesc, taskDesc);
+
+		expectedDesc = "2. assignment4 due";
+		taskDesc = result.get(TASK_DESC).get(1);
+		assertEquals(expectedDesc, taskDesc);
+	}
+	@Test
+	public void deleteOneTaskOneAlias() {
+		ArrayList<ArrayList<String>> result = MainLogic.runLogic("delete all");
+		result = MainLogic.runLogic("add assignment1 due tomorrow alias:NUS0");
+		result = MainLogic.runLogic("add assignment2 due tomorrow alias:NUS1");
+		result = MainLogic.runLogic("delete 1 NUS1");
+		
+		String expectedFeedbackType = "delete";
+		String feedbackType = result.get(FEEDBACK_TYPE).get(0);
+		assertEquals(expectedFeedbackType, feedbackType);
+		
+		String expectedFeedbackDes = "All specified tasks have been deleted.";
+		String feedbackDesc = result.get(FEEDBACK_DESC).get(0);
+		assertEquals(expectedFeedbackDes, feedbackDesc);
+
+		assertTrue(result.get(TASK_DESC).isEmpty());
+	}
+	@Test
+	public void deleteOneTaskMultipleAlias() {
+		ArrayList<ArrayList<String>> result = MainLogic.runLogic("delete all");
+		result = MainLogic.runLogic("add assignment1 due tomorrow alias:NUS0");
+		result = MainLogic.runLogic("add assignment2 due tomorrow alias:NUS1");
+		result = MainLogic.runLogic("add assignment3 due tomorrow alias:NUS2");
+		result = MainLogic.runLogic("add assignment4 due tomorrow alias:NUS3");
+		result = MainLogic.runLogic("add assignment5 due tomorrow alias:NUS4");
+		result = MainLogic.runLogic("delete 1 NUS2 NUS4");
+		
+		String expectedFeedbackType = "delete";
+		String feedbackType = result.get(FEEDBACK_TYPE).get(0);
+		assertEquals(expectedFeedbackType, feedbackType);
+		
+		String expectedFeedbackDes = "All specified tasks have been deleted.";
+		String feedbackDesc = result.get(FEEDBACK_DESC).get(0);
+		assertEquals(expectedFeedbackDes, feedbackDesc);
+
+		String expectedDesc = "1. assignment2 due";
+		String taskDesc = result.get(TASK_DESC).get(0);
+		assertEquals(expectedDesc, taskDesc);
+
+		expectedDesc = "2. assignment4 due";
+		taskDesc = result.get(TASK_DESC).get(1);
+		assertEquals(expectedDesc, taskDesc);
+	}
+	@Test
+	public void deleteMultipleTaskOneAlias() {
+		ArrayList<ArrayList<String>> result = MainLogic.runLogic("delete all");
+		result = MainLogic.runLogic("add assignment1 due tomorrow alias:NUS0");
+		result = MainLogic.runLogic("add assignment2 due tomorrow alias:NUS1");
+		result = MainLogic.runLogic("add assignment3 due tomorrow alias:NUS2");
+		result = MainLogic.runLogic("add assignment4 due tomorrow alias:NUS3");
+		result = MainLogic.runLogic("add assignment5 due tomorrow alias:NUS4");
+		result = MainLogic.runLogic("delete 1 3 NUS4");
+		
+		String expectedFeedbackType = "delete";
+		String feedbackType = result.get(FEEDBACK_TYPE).get(0);
+		assertEquals(expectedFeedbackType, feedbackType);
+		
+		String expectedFeedbackDes = "All specified tasks have been deleted.";
+		String feedbackDesc = result.get(FEEDBACK_DESC).get(0);
+		assertEquals(expectedFeedbackDes, feedbackDesc);
+
+		String expectedDesc = "1. assignment2 due";
+		String taskDesc = result.get(TASK_DESC).get(0);
+		assertEquals(expectedDesc, taskDesc);
+
+		expectedDesc = "2. assignment4 due";
+		taskDesc = result.get(TASK_DESC).get(1);
+		assertEquals(expectedDesc, taskDesc);
+	}
+	@Test
+	public void deleteMultipleTaskMultipleAlias() {
+		ArrayList<ArrayList<String>> result = MainLogic.runLogic("delete all");
+		result = MainLogic.runLogic("add assignment1 due tomorrow alias:NUS0");
+		result = MainLogic.runLogic("add assignment2 due tomorrow alias:NUS1");
+		result = MainLogic.runLogic("add assignment3 due tomorrow alias:NUS2");
+		result = MainLogic.runLogic("add assignment4 due tomorrow alias:NUS3");
+		result = MainLogic.runLogic("add assignment5 due tomorrow alias:NUS4");
+		result = MainLogic.runLogic("add assignment6 due tomorrow alias:NUS5");
+		result = MainLogic.runLogic("delete 1 3 NUS4 NUS5");
+		
+		String expectedFeedbackType = "delete";
+		String feedbackType = result.get(FEEDBACK_TYPE).get(0);
+		assertEquals(expectedFeedbackType, feedbackType);
+		
+		String expectedFeedbackDes = "All specified tasks have been deleted.";
+		String feedbackDesc = result.get(FEEDBACK_DESC).get(0);
+		assertEquals(expectedFeedbackDes, feedbackDesc);
+
+		String expectedDesc = "1. assignment2 due";
+		String taskDesc = result.get(TASK_DESC).get(0);
+		assertEquals(expectedDesc, taskDesc);
+
+		expectedDesc = "2. assignment4 due";
+		taskDesc = result.get(TASK_DESC).get(1);
+		assertEquals(expectedDesc, taskDesc);
+	}
+	@Test
+	public void deleteZero() {
+		ArrayList<ArrayList<String>> result = MainLogic.runLogic("delete all");
+		result = MainLogic.runLogic("add assignment1 due tomorrow alias:NUS0");
+		result = MainLogic.runLogic("delete 0");
+		
+		String expectedFeedbackType = "error";
+		String feedbackType = result.get(FEEDBACK_TYPE).get(0);
+		assertEquals(expectedFeedbackType, feedbackType);
+		
+		String expectedFeedbackDes = "No such task(s). Please enter a valid number or alias.";
+		String feedbackDesc = result.get(FEEDBACK_DESC).get(0);
+		assertEquals(expectedFeedbackDes, feedbackDesc);
+
+		String expectedDesc = "1. assignment1 due";
+		String taskDesc = result.get(TASK_DESC).get(0);
+		assertEquals(expectedDesc, taskDesc);
+	}
+	@Test
+	public void deleteMaxPlusOne() {
+		ArrayList<ArrayList<String>> result = MainLogic.runLogic("delete all");
+		result = MainLogic.runLogic("add assignment1 due tomorrow alias:NUS0");
+		result = MainLogic.runLogic("delete 2");
+		
+		String expectedFeedbackType = "error";
+		String feedbackType = result.get(FEEDBACK_TYPE).get(0);
+		assertEquals(expectedFeedbackType, feedbackType);
+		
+		String expectedFeedbackDes = "No such task(s). Please enter a valid number or alias.";
+		String feedbackDesc = result.get(FEEDBACK_DESC).get(0);
+		assertEquals(expectedFeedbackDes, feedbackDesc);
+
+		String expectedDesc = "1. assignment1 due";
+		String taskDesc = result.get(TASK_DESC).get(0);
+		assertEquals(expectedDesc, taskDesc);
+	}
+	@Test
+	public void deleteInvalidAlias() {
+		ArrayList<ArrayList<String>> result = MainLogic.runLogic("delete all");
+		result = MainLogic.runLogic("add assignment1 due tomorrow alias:NUS0");
+		result = MainLogic.runLogic("delete NUS1");
+		
+		String expectedFeedbackType = "error";
+		String feedbackType = result.get(FEEDBACK_TYPE).get(0);
+		assertEquals(expectedFeedbackType, feedbackType);
+		
+		String expectedFeedbackDes = "No such task(s). Please enter a valid number or alias.";
+		String feedbackDesc = result.get(FEEDBACK_DESC).get(0);
+		assertEquals(expectedFeedbackDes, feedbackDesc);
+
+		String expectedDesc = "1. assignment1 due";
+		String taskDesc = result.get(TASK_DESC).get(0);
+		assertEquals(expectedDesc, taskDesc);
+	}
+	@Test
+	public void deleteEmpty() {
+		ArrayList<ArrayList<String>> result = MainLogic.runLogic("delete all");
+		result = MainLogic.runLogic("add assignment1 due tomorrow alias:NUS0");
+		result = MainLogic.runLogic("delete");
+		
+		String expectedFeedbackType = "error";
+		String feedbackType = result.get(FEEDBACK_TYPE).get(0);
+		assertEquals(expectedFeedbackType, feedbackType);
+		
+		String expectedFeedbackDes = "Hmmm ... Please enter a task to delete";
+		String feedbackDesc = result.get(FEEDBACK_DESC).get(0);
+		assertEquals(expectedFeedbackDes, feedbackDesc);
+
+		String expectedDesc = "1. assignment1 due";
+		String taskDesc = result.get(TASK_DESC).get(0);
+		assertEquals(expectedDesc, taskDesc);
+	}
+	
+	@Test
+	public void updateEmpty() {
+		ArrayList<ArrayList<String>> result = MainLogic.runLogic("delete all");
+		result = MainLogic.runLogic("add assignment1 due tomorrow alias:NUS0");
+		result = MainLogic.runLogic("update");
+		
+		String expectedFeedbackType = "update";
+		String feedbackType = result.get(FEEDBACK_TYPE).get(0);
+		assertEquals(expectedFeedbackType, feedbackType);
+		
+		String expectedFeedbackDes = "Incorrect update format.";
+		String feedbackDesc = result.get(FEEDBACK_DESC).get(0);
+		assertEquals(expectedFeedbackDes, feedbackDesc);
+
+		String expectedDesc = "1. assignment1 due";
+		String taskDesc = result.get(TASK_DESC).get(0);
+		assertEquals(expectedDesc, taskDesc);
+	}
+	@Test
+	public void updateSingleDescription() {
+		ArrayList<ArrayList<String>> result = MainLogic.runLogic("delete all");
+		result = MainLogic.runLogic("add assignment1 from today tomorrow alias:NUS0");
+		result = MainLogic.runLogic("update 1 assignment2");
+		
+		String expectedFeedbackType = "update";
+		String feedbackType = result.get(FEEDBACK_TYPE).get(0);
+		assertEquals(expectedFeedbackType, feedbackType);
+		
+		String expectedFeedbackDes = "Task has been updated.";
+		String feedbackDesc = result.get(FEEDBACK_DESC).get(0);
+		assertEquals(expectedFeedbackDes, feedbackDesc);
+
+		String expectedDesc = "1. assignment2";
+		String taskDesc = result.get(TASK_DESC).get(0);
+		assertEquals(expectedDesc, taskDesc);
+	}
+	@Test
+	public void updateSingleDescriptionSingleTime() {
+		ArrayList<ArrayList<String>> result = MainLogic.runLogic("delete all");
+		result = MainLogic.runLogic("add assignment1 from today tomorrow alias:NUS0");
+		result = MainLogic.runLogic("update 1 assignment2 0700");
+		
+		String expectedFeedbackType = "update";
+		String feedbackType = result.get(FEEDBACK_TYPE).get(0);
+		assertEquals(expectedFeedbackType, feedbackType);
+		
+		String expectedFeedbackDes = "Task has been updated.";
+		String feedbackDesc = result.get(FEEDBACK_DESC).get(0);
+		assertEquals(expectedFeedbackDes, feedbackDesc);
+
+		String expectedDesc = "1. assignment2";
+		String taskDesc = result.get(TASK_DESC).get(0);
+		assertEquals(expectedDesc, taskDesc);
+		
+		String expectedDate = "14 Apr 2014 07:00";
+		assertEquals( expectedDate,result.get(TASK_DATE).get(0));
+	}
+	@Test
+	public void updateSingleDescriptionSingleTimeSingleDate() {
+		ArrayList<ArrayList<String>> result = MainLogic.runLogic("delete all");
+		result = MainLogic.runLogic("add assignment1 from today tomorrow alias:NUS0");
+		result = MainLogic.runLogic("update 1 assignment2 0700 15-04-2014");
+		
+		String expectedFeedbackType = "update";
+		String feedbackType = result.get(FEEDBACK_TYPE).get(0);
+		assertEquals(expectedFeedbackType, feedbackType);
+		
+		String expectedFeedbackDes = "Task has been updated.";
+		String feedbackDesc = result.get(FEEDBACK_DESC).get(0);
+		assertEquals(expectedFeedbackDes, feedbackDesc);
+
+		String expectedDesc = "1. assignment2";
+		String taskDesc = result.get(TASK_DESC).get(0);
+		assertEquals(expectedDesc, taskDesc);
+		
+		String expectedDate = "15 Apr 2014 07:00";
+		assertEquals( expectedDate,result.get(TASK_DATE).get(0));
+	}
+	@Test
+	public void updateSingleDescriptionSingleTimeSingleDateSingleAlias() {
+		ArrayList<ArrayList<String>> result = MainLogic.runLogic("delete all");
+		result = MainLogic.runLogic("add assignment1 from today tomorrow alias:NUS0");
+		result = MainLogic.runLogic("update 1 assignment2 0700 15-04-2014 alias:NUS1");
+		
+		String expectedFeedbackType = "update";
+		String feedbackType = result.get(FEEDBACK_TYPE).get(0);
+		assertEquals(expectedFeedbackType, feedbackType);
+		
+		String expectedFeedbackDes = "Task has been updated.";
+		String feedbackDesc = result.get(FEEDBACK_DESC).get(0);
+		assertEquals(expectedFeedbackDes, feedbackDesc);
+
+		String expectedDesc = "1. assignment2";
+		String taskDesc = result.get(TASK_DESC).get(0);
+		assertEquals(expectedDesc, taskDesc);
+		
+		String expectedDate = "15 Apr 2014 07:00";
+		assertEquals( expectedDate,result.get(TASK_DATE).get(0));
+		
+		String expectedAlias = "NUS1";
+		assertEquals(expectedAlias, result.get(TASK_ALIAS).get(0));
+	}
+	@Test
+	public void updateSingleDescriptionSingleDate() {
+		ArrayList<ArrayList<String>> result = MainLogic.runLogic("delete all");
+		result = MainLogic.runLogic("add assignment1 from today tomorrow alias:NUS0");
+		result = MainLogic.runLogic("update 1 assignment2 15-04-2014");
+		
+		String expectedFeedbackType = "update";
+		String feedbackType = result.get(FEEDBACK_TYPE).get(0);
+		assertEquals(expectedFeedbackType, feedbackType);
+		
+		String expectedFeedbackDes = "Task has been updated.";
+		String feedbackDesc = result.get(FEEDBACK_DESC).get(0);
+		assertEquals(expectedFeedbackDes, feedbackDesc);
+
+		String expectedDesc = "1. assignment2";
+		String taskDesc = result.get(TASK_DESC).get(0);
+		assertEquals(expectedDesc, taskDesc);
+		
+		String expectedDate = "15 Apr 2014 23:59";
+		assertEquals( expectedDate,result.get(TASK_DATE).get(0));
+	}
+	@Test
+	public void updateSingleDescriptionSingleDateSingleAlias() {
+		ArrayList<ArrayList<String>> result = MainLogic.runLogic("delete all");
+		result = MainLogic.runLogic("add assignment1 from today tomorrow alias:NUS0");
+		result = MainLogic.runLogic("update 1 assignment2 15-04-2014 alias:NUS1");
+		
+		String expectedFeedbackType = "update";
+		String feedbackType = result.get(FEEDBACK_TYPE).get(0);
+		assertEquals(expectedFeedbackType, feedbackType);
+		
+		String expectedFeedbackDes = "Task has been updated.";
+		String feedbackDesc = result.get(FEEDBACK_DESC).get(0);
+		assertEquals(expectedFeedbackDes, feedbackDesc);
+
+		String expectedDesc = "1. assignment2";
+		String taskDesc = result.get(TASK_DESC).get(0);
+		assertEquals(expectedDesc, taskDesc);
+		
+		String expectedDate = "15 Apr 2014 23:59";
+		assertEquals( expectedDate,result.get(TASK_DATE).get(0));
+		
+		String expectedAlias = "NUS1";
+		assertEquals(expectedAlias, result.get(TASK_ALIAS).get(0));
+	}
+	@Test
+	public void updateSingleDescriptionSingleAlias() {
+		ArrayList<ArrayList<String>> result = MainLogic.runLogic("delete all");
+		result = MainLogic.runLogic("add assignment1 from today tomorrow alias:NUS0");
+		result = MainLogic.runLogic("update 1 assignment2 alias:NUS1");
+		
+		String expectedFeedbackType = "update";
+		String feedbackType = result.get(FEEDBACK_TYPE).get(0);
+		assertEquals(expectedFeedbackType, feedbackType);
+		
+		String expectedFeedbackDes = "Task has been updated.";
+		String feedbackDesc = result.get(FEEDBACK_DESC).get(0);
+		assertEquals(expectedFeedbackDes, feedbackDesc);
+
+		String expectedDesc = "1. assignment2";
+		String taskDesc = result.get(TASK_DESC).get(0);
+		assertEquals(expectedDesc, taskDesc);
+		
+		String expectedAlias = "NUS1";
+		assertEquals(expectedAlias, result.get(TASK_ALIAS).get(0));
+	}
+	@Test
+	public void updateSingleDescriptionSingleTimeSingleAlias() {
+		ArrayList<ArrayList<String>> result = MainLogic.runLogic("delete all");
+		result = MainLogic.runLogic("add assignment1 from today tomorrow alias:NUS0");
+		result = MainLogic.runLogic("update 1 assignment2 0700 alias:NUS1");
+		
+		String expectedFeedbackType = "update";
+		String feedbackType = result.get(FEEDBACK_TYPE).get(0);
+		assertEquals(expectedFeedbackType, feedbackType);
+		
+		String expectedFeedbackDes = "Task has been updated.";
+		String feedbackDesc = result.get(FEEDBACK_DESC).get(0);
+		assertEquals(expectedFeedbackDes, feedbackDesc);
+
+		String expectedDesc = "1. assignment2";
+		String taskDesc = result.get(TASK_DESC).get(0);
+		assertEquals(expectedDesc, taskDesc);
+		
+		String expectedDate = "14 Apr 2014 07:00";
+		assertEquals( expectedDate,result.get(TASK_DATE).get(0));
+		
+		String expectedAlias = "NUS1";
+		assertEquals(expectedAlias, result.get(TASK_ALIAS).get(0));
+	}
+	@Test
+	public void updateTaskDescriptionValid() {
+		ArrayList<ArrayList<String>> result = MainLogic.runLogic("delete all");
+		result = MainLogic.runLogic("add assignment1 from today tomorrow alias:NUS0");
+		result = MainLogic.runLogic("update 1 desc assignment2");
+		
+		String expectedFeedbackType = "update";
+		String feedbackType = result.get(FEEDBACK_TYPE).get(0);
+		assertEquals(expectedFeedbackType, feedbackType);
+		
+		String expectedFeedbackDes = "Task has been updated.";
+		String feedbackDesc = result.get(FEEDBACK_DESC).get(0);
+		assertEquals(expectedFeedbackDes, feedbackDesc);
+
+		String expectedDesc = "1. assignment2";
+		String taskDesc = result.get(TASK_DESC).get(0);
+		assertEquals(expectedDesc, taskDesc);
+		
+		String expectedDate = "14 Apr 2014 00:00 to 15 Apr 2014 23:59";
+		assertEquals( expectedDate,result.get(TASK_DATE).get(0));
+		
+		String expectedAlias = "NUS0";
+		assertEquals(expectedAlias, result.get(TASK_ALIAS).get(0));
+	}
+	@Test
+	public void updateTaskDescriptionInvalid() {
+		ArrayList<ArrayList<String>> result = MainLogic.runLogic("delete all");
+		result = MainLogic.runLogic("add assignment1 from today tomorrow alias:NUS0");
+		result = MainLogic.runLogic("update 1 desc");
+		
+		String expectedFeedbackType = "error";
+		String feedbackType = result.get(FEEDBACK_TYPE).get(0);
+		assertEquals(expectedFeedbackType, feedbackType);
+		
+		String expectedFeedbackDes = "Incorrect update format.";
+		String feedbackDesc = result.get(FEEDBACK_DESC).get(0);
+		assertEquals(expectedFeedbackDes, feedbackDesc);
+
+		String expectedDesc = "1. assignment1";
+		String taskDesc = result.get(TASK_DESC).get(0);
+		assertEquals(expectedDesc, taskDesc);
+		
+		String expectedDate = "14 Apr 2014 00:00 to 15 Apr 2014 23:59";
+		assertEquals( expectedDate,result.get(TASK_DATE).get(0));
+		
+		String expectedAlias = "NUS0";
+		assertEquals(expectedAlias, result.get(TASK_ALIAS).get(0));
+	}
+	@Test
+	public void updateTaskDescriptionInvalidNumber() {
+		ArrayList<ArrayList<String>> result = MainLogic.runLogic("delete all");
+		result = MainLogic.runLogic("add assignment1 from today tomorrow alias:NUS0");
+		result = MainLogic.runLogic("update 3 desc");
+		
+		String expectedFeedbackType = "error";
+		String feedbackType = result.get(FEEDBACK_TYPE).get(0);
+		assertEquals(expectedFeedbackType, feedbackType);
+		
+		String expectedFeedbackDes = "Please enter a valid task number to update.";
+		String feedbackDesc = result.get(FEEDBACK_DESC).get(0);
+		assertEquals(expectedFeedbackDes, feedbackDesc);
+
+		String expectedDesc = "1. assignment1";
+		String taskDesc = result.get(TASK_DESC).get(0);
+		assertEquals(expectedDesc, taskDesc);
+		
+		String expectedDate = "14 Apr 2014 00:00 to 15 Apr 2014 23:59";
+		assertEquals( expectedDate,result.get(TASK_DATE).get(0));
+		
+		String expectedAlias = "NUS0";
+		assertEquals(expectedAlias, result.get(TASK_ALIAS).get(0));
+	}
+	@Test
+	public void updateTaskTimeValid() {
+		ArrayList<ArrayList<String>> result = MainLogic.runLogic("delete all");
+		result = MainLogic.runLogic("add assignment1 from today tomorrow alias:NUS0");
+		result = MainLogic.runLogic("update 1 time 15042014 04:00");
+		
+		String expectedFeedbackType = "update";
+		String feedbackType = result.get(FEEDBACK_TYPE).get(0);
+		assertEquals(expectedFeedbackType, feedbackType);
+		
+		String expectedFeedbackDes = "Task has been updated.";
+		String feedbackDesc = result.get(FEEDBACK_DESC).get(0);
+		assertEquals(expectedFeedbackDes, feedbackDesc);
+
+		String expectedDesc = "1. assignment1";
+		String taskDesc = result.get(TASK_DESC).get(0);
+		assertEquals(expectedDesc, taskDesc);
+		
+		String expectedDate = "15 Apr 2014 04:00";
+		assertEquals( expectedDate,result.get(TASK_DATE).get(0));
+		
+		String expectedAlias = "NUS0";
+		assertEquals(expectedAlias, result.get(TASK_ALIAS).get(0));
+	}
+	@Test
+	public void updateTaskTimeInvalidNumber() {
+		ArrayList<ArrayList<String>> result = MainLogic.runLogic("delete all");
+		result = MainLogic.runLogic("add assignment1 from today tomorrow alias:NUS0");
+		result = MainLogic.runLogic("update 3 time 15042014 04:00");
+		
+		String expectedFeedbackType = "error";
+		String feedbackType = result.get(FEEDBACK_TYPE).get(0);
+		assertEquals(expectedFeedbackType, feedbackType);
+		
+		String expectedFeedbackDes = "Please enter a valid task number to update.";
+		String feedbackDesc = result.get(FEEDBACK_DESC).get(0);
+		assertEquals(expectedFeedbackDes, feedbackDesc);
+
+		String expectedDesc = "1. assignment1";
+		String taskDesc = result.get(TASK_DESC).get(0);
+		assertEquals(expectedDesc, taskDesc);
+		
+		String expectedDate = "14 Apr 2014 00:00 to 15 Apr 2014 23:59";
+		assertEquals( expectedDate,result.get(TASK_DATE).get(0));
+		
+		String expectedAlias = "NUS0";
+		assertEquals(expectedAlias, result.get(TASK_ALIAS).get(0));
+	}
+/*	@Test
+	public void updateTaskTimeInvalid() {
+		ArrayList<ArrayList<String>> result = MainLogic.runLogic("delete all");
+		result = MainLogic.runLogic("add assignment1 from today tomorrow alias:NUS0");
+		result = MainLogic.runLogic("update 1 time 15132014 04:00");
+		
+		String expectedFeedbackType = "update";
+		String feedbackType = result.get(FEEDBACK_TYPE).get(0);
+		assertEquals(expectedFeedbackType, feedbackType);
+		
+		String expectedFeedbackDes = "Task has been updated.";
+		String feedbackDesc = result.get(FEEDBACK_DESC).get(0);
+		assertEquals(expectedFeedbackDes, feedbackDesc);
+
+		String expectedDesc = "1. assignment1";
+		String taskDesc = result.get(TASK_DESC).get(0);
+		assertEquals(expectedDesc, taskDesc);
+		
+		String expectedDate = "15 Apr 2014 04:00";
+		assertEquals( expectedDate,result.get(TASK_DATE).get(0));
+		
+		String expectedAlias = "NUS0";
+		assertEquals(expectedAlias, result.get(TASK_ALIAS).get(0));
+	}*/
+	@Test
+	public void updateTaskTimeInvalidBackwardDate() {
+		ArrayList<ArrayList<String>> result = MainLogic.runLogic("delete all");
+		result = MainLogic.runLogic("add assignment1 from today tomorrow alias:NUS0");
+		result = MainLogic.runLogic("update 1 time 15052014 04:00 13052014 03:00");
+		
+		String expectedFeedbackType = "error";
+		String feedbackType = result.get(FEEDBACK_TYPE).get(0);
+		assertEquals(expectedFeedbackType, feedbackType);
+		
+		String expectedFeedbackDes = "Error, start time cannot be after end time.";
+		String feedbackDesc = result.get(FEEDBACK_DESC).get(0);
+		assertEquals(expectedFeedbackDes, feedbackDesc);
+
+		String expectedDesc = "1. assignment1";
+		String taskDesc = result.get(TASK_DESC).get(0);
+		assertEquals(expectedDesc, taskDesc);
+		
+		String expectedDate = "14 Apr 2014 00:00 to 15 Apr 2014 23:59";
+		assertEquals( expectedDate,result.get(TASK_DATE).get(0));
+		
+		String expectedAlias = "NUS0";
+		assertEquals(expectedAlias, result.get(TASK_ALIAS).get(0));
+	}
+	@Test
+	public void updateTaskStartValid() {
+		ArrayList<ArrayList<String>> result = MainLogic.runLogic("delete all");
+		result = MainLogic.runLogic("add assignment1 from 15052014 0000 25052014 0000 alias:NUS0");
+		result = MainLogic.runLogic("update 1 start 16052014 04:00");
+		
+		String expectedFeedbackType = "update";
+		String feedbackType = result.get(FEEDBACK_TYPE).get(0);
+		assertEquals(expectedFeedbackType, feedbackType);
+		
+		String expectedFeedbackDes = "Task has been updated.";
+		String feedbackDesc = result.get(FEEDBACK_DESC).get(0);
+		assertEquals(expectedFeedbackDes, feedbackDesc);
+
+		String expectedDesc = "1. assignment1";
+		String taskDesc = result.get(TASK_DESC).get(0);
+		assertEquals(expectedDesc, taskDesc);
+		
+		String expectedDate = "16 May 2014 04:00 to 25 May 2014 00:00";
+		assertEquals( expectedDate,result.get(TASK_DATE).get(0));
+		
+		String expectedAlias = "NUS0";
+		assertEquals(expectedAlias, result.get(TASK_ALIAS).get(0));
+	}
+}
+
+	// End of segment: D:\Workspace\CS2103T NEW\src\dothings\tests\IntegrationTesting.java
+
+
+
+
+

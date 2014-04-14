@@ -24,9 +24,9 @@ public class TestFileManager {
 		FileManager.writeToFile("testFM.txt", list);
 		ArrayList<String> readList = FileManager.readFromFile(TEST_FILE);
 		for (int i = 0; i < 10; i++) {
-			assertEquals("line " + i , list.get(i));;
+			assertEquals("line " + i, list.get(i));;
 		}
 		
 	}
-
+	
 }

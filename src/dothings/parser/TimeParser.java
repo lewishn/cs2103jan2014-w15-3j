@@ -1,4 +1,3 @@
-
 package dothings.parser;
 
 import java.util.ArrayList;
@@ -11,7 +10,7 @@ import org.joda.time.format.DateTimeFormatter;
 import dothings.storage.FileManager;
 
 //@author A0099727J
-public class TimeParser{
+public class TimeParser {
 	
 	private static final String TIME_FORMAT_0 = "HH:mm";
 	private static final String TIME_FORMAT_1 = "HH.mm";
@@ -23,20 +22,21 @@ public class TimeParser{
 	private static final String TIME_FORMAT_7 = "haa";
 	private static final int FORMAT_SIZE = 8;
 	
-	private static ArrayList<DateTimeFormatter> timeFormats = 
-		new ArrayList<DateTimeFormatter> (Arrays.asList( 
-			DateTimeFormat.forPattern(TIME_FORMAT_0), 
-			DateTimeFormat.forPattern(TIME_FORMAT_1), 
-			DateTimeFormat.forPattern(TIME_FORMAT_2), 	
-			DateTimeFormat.forPattern(TIME_FORMAT_3), 
-			DateTimeFormat.forPattern(TIME_FORMAT_4), 
-			DateTimeFormat.forPattern(TIME_FORMAT_5), 
-			DateTimeFormat.forPattern(TIME_FORMAT_6),
-			DateTimeFormat.forPattern(TIME_FORMAT_7)
-		));
+	private static ArrayList<DateTimeFormatter> timeFormats =
+	        new ArrayList<DateTimeFormatter>(Arrays.asList(
+	                DateTimeFormat.forPattern(TIME_FORMAT_0),
+	                DateTimeFormat.forPattern(TIME_FORMAT_1),
+	                DateTimeFormat.forPattern(TIME_FORMAT_2),
+	                DateTimeFormat.forPattern(TIME_FORMAT_3),
+	                DateTimeFormat.forPattern(TIME_FORMAT_4),
+	                DateTimeFormat.forPattern(TIME_FORMAT_5),
+	                DateTimeFormat.forPattern(TIME_FORMAT_6),
+	                DateTimeFormat.forPattern(TIME_FORMAT_7)
+	                ));
 	
 	/**
 	 * Alters the time component of the input DateTime object with the input time string
+	 * 
 	 * @param date
 	 * @param input
 	 * @return a DateTime object with date and time already set
@@ -49,9 +49,10 @@ public class TimeParser{
 			return date;
 		}
 	}
-
+	
 	/**
 	 * Checks if the input string is a valid date format
+	 * 
 	 * @param input
 	 * @return true if valid, false otherwise
 	 */
@@ -59,7 +60,7 @@ public class TimeParser{
 		DateTime date;
 		int i = 0;
 		
-		for ( ; i < timeFormats.size(); i++) {
+		for (; i < timeFormats.size(); i++) {
 			try {
 				date = timeFormats.get(i).parseDateTime(input);
 				break;
@@ -79,6 +80,7 @@ public class TimeParser{
 	
 	/**
 	 * Checks whether the input string is a time
+	 * 
 	 * @param input
 	 * @return true if string is a time, false otherwise
 	 */
@@ -88,11 +90,12 @@ public class TimeParser{
 	
 	/**
 	 * Sets the time of the DateTime object to the input time
+	 * 
 	 * @param date
 	 * @param input
 	 * @return DateTime object with the input time
 	 */
-	private static DateTime parseTimeFormat(DateTime date, String input){
+	private static DateTime parseTimeFormat(DateTime date, String input) {
 		DateTime time = null;
 		
 		for (int i = 0; i < FORMAT_SIZE; i++) {
@@ -103,7 +106,9 @@ public class TimeParser{
 			}
 		}
 		
-		return new DateTime(date.getYear(), date.getMonthOfYear(), date.getDayOfMonth(), time.getHourOfDay(), time.getMinuteOfHour());
+		return new DateTime(date.getYear(), date.getMonthOfYear(),
+		        date.getDayOfMonth(), time.getHourOfDay(),
+		        time.getMinuteOfHour());
 	}
 	
 }
