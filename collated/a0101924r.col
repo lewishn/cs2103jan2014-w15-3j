@@ -3,11 +3,11 @@
 
 
 	/**
-	 * origin: D:\Workspace\CS2103T NEW\src\dothings\gui\DoThingsGUI.java
+	 * origin: D:\Workspace\CS2103T NEW\src\dothings\gui\DoThingsGui.java
 	 */
 
 @SuppressWarnings("serial")
-public class DoThingsGUI extends JFrame  {
+public class DoThingsGui extends JFrame {
 	private static final String DEFAULT_EXIT = "exit";
 	private static final String MESSAGE_STARTUP = "Get ready to Do Things!";
 	private static final String STARTUP_COMMAND = "list";
@@ -40,7 +40,7 @@ public class DoThingsGUI extends JFrame  {
 	private static final int COMMAND_SCROLL_DOWN = KeyEvent.VK_DOWN;
 	private static final int COMMAND_SCROLL_TO_TOP = KeyEvent.VK_PAGE_UP;
 	private static final int COMMAND_SCROLL_TO_BOTTOM = KeyEvent.VK_PAGE_DOWN;
-	private static final int FRAME_MOVEMENT = 10;		
+	private static final int FRAME_MOVEMENT = 10;
 	private static final int FRAME_SCROLL_SPEED = 75;
 	private static final int TASK_OBJECT_FRAME_HEIGHT = 53;
 	private static final int FRAME_WIDTH = 400;
@@ -71,8 +71,12 @@ public class DoThingsGUI extends JFrame  {
 	private static final int CONTENT_PANE_WIDTH = FRAME_WIDTH;
 	private static final int CONTENT_PANE_HEIGHT = FRAME_HEIGHT;
 	private static final int SHAPE_DIMENSION = 20;
-	private static int heightChange =0;
-
+	private static final Color HIGHLIGHT_FONT_DARK_BLUE = new Color(0, 0, 51);
+	private static final Color HIGHLIGHT_Yellow = new Color(255, 255, 51);
+	private static final Color INPUT_FIELD_BACKGROUND_LIGHT_BLUE = new Color(
+	        153, 204, 255);
+	private static int heightChange = 0;
+	
 	private JPanel contentPane;
 	private static JTextField inputField;
 	private JLabel headingLabel;
@@ -93,24 +97,21 @@ public class DoThingsGUI extends JFrame  {
 	private static ArrayList<String> taskTime;
 	private static SystemTray tray;
 	private static TrayIcon trayIcon;
-	private GlobalKeyPress globalKeyPress; 
+	private GlobalKeyPress globalKeyPress;
 	private TriggerOnKeyAction triggerOnKeyAction;
 	private TriggerOnMouseAction triggerOnMouseAction;
 	private static Image iconImage;
 	
 	private static int xCoordOfFrame;
 	private static int yCoordOfFrame;
+	
 
-	private static final Color HIGHLIGHT_FONT_DARK_BLUE = new Color(0,0,51); 
-	private static final Color HIGHLIGHT_Yellow = new Color(255,255,51);
-	private static final Color INPUT_FIELD_BACKGROUND_LIGHT_BLUE= new Color(153, 204, 255);
-
-
+	
 	public static void main(String[] args) {
 		EventQueue.invokeLater(new Runnable() {
 			public void run() {
 				try {
-					DoThingsGUI frame = new DoThingsGUI();
+					DoThingsGui frame = new DoThingsGui();
 					frame.setVisible(true);
 				} catch (Exception e) {
 					e.printStackTrace();
@@ -118,15 +119,15 @@ public class DoThingsGUI extends JFrame  {
 			}
 		});
 	}
-
-	public DoThingsGUI () {
-
+	
+	public DoThingsGui() {
+		
 		getIconImageForGUI();
-		createContentPane();		
+		createContentPane();
 		createInputField();
 		createFeedbackLabel();
 		createTitleLabel();
-		createTextPanel();	
+		createTextPanel();
 		createTaskPanel();
 		createTaskPanelScroll();
 		populateToDoListOnStartup();
@@ -136,53 +137,58 @@ public class DoThingsGUI extends JFrame  {
 		
 	}
 	
-	private class GlobalKeyPress implements WindowListener, NativeKeyListener{
-
-		private static final String MESSAGE_REGISTER_NATIVE_HOOK_ERROR = "There was a problem registering the native hook.";
-
+	private class GlobalKeyPress implements WindowListener, NativeKeyListener {
+		
+		private static final String MESSAGE_REGISTER_NATIVE_HOOK_ERROR = 
+				"There was a problem registering the native hook.";
+		
 		Boolean isVisible = false;
-
+		
 		GlobalKeyPress(Boolean visible) {
 			isVisible = visible;
-		}		
+		}
+		
 		/**
-		 * Listens for opened window and registers native hook to the window. 
-		 * Adds NativeKeyListener to the window if it is opened.
+		 * Listens for opened window and registers native hook to the window. Adds NativeKeyListener
+		 * to the window if it is opened.
 		 */
 		@Override
 		public void windowOpened(WindowEvent e) {
-			//Initialize native hook.
+			// Initialize native hook.
 			try {
 				GlobalScreen.registerNativeHook();
-			}
-			catch (NativeHookException ex) {
+			} catch (NativeHookException ex) {
 				printErrorMessage(ex);
 				System.exit(1);
 			}
 			GlobalScreen.getInstance().addNativeKeyListener(this);
-		}		
+		}
+		
 		/**
 		 * Listens for closed window and unregisters native hook from the window.
 		 */
 		@Override
 		public void windowClosed(WindowEvent e) {
-			//Clean up the native hook.
+			// Clean up the native hook.
 			GlobalScreen.unregisterNativeHook();
 			System.runFinalization();
 			System.exit(0);
-		}	
+		}
+		
 		/**
 		 * Prints error message when window fails to register native hook
+		 * 
 		 * @param ex
 		 */
 		private void printErrorMessage(NativeHookException ex) {
 			System.err.println(MESSAGE_REGISTER_NATIVE_HOOK_ERROR);
 			System.err.println(ex.getMessage());
 			ex.printStackTrace();
-		}		
+		}
+		
 		/**
-		 * Listens for global key press. If window is visible, sets window to invisible and hide it to system tray. 
-		 * If window is not visible, sets window to visible and remove system tray.  
+		 * Listens for global key press. If window is visible, sets window to invisible and hide it
+		 * to system tray. If window is not visible, sets window to visible and remove system tray.
 		 */
 		@Override
 		public void nativeKeyReleased(NativeKeyEvent e) {
@@ -190,36 +196,49 @@ public class DoThingsGUI extends JFrame  {
 			if (keyCode == COMMAND_TOGGLE_HIDE_DISPLAY) {
 				if (isVisible) {
 					inputField.requestFocus();
-					DoThingsGUI.this.setVisible(false);
+					DoThingsGui.this.setVisible(false);
 					isVisible = false;
 					hideToSytemTray();
-
+					
 				} else {
 					inputField.requestFocus();
-					DoThingsGUI.this.setVisible(true);
+					DoThingsGui.this.setVisible(true);
 					isVisible = true;
 					removeFromSystemTray();
 				}
 			}
 		}
-		@Override
-		public void windowActivated(WindowEvent e) {}
-		@Override
-		public void windowClosing(WindowEvent e) {}
-		@Override
-		public void windowDeactivated(WindowEvent e) {}
-		@Override
-		public void windowDeiconified(WindowEvent e) {}
-		@Override
-		public void windowIconified(WindowEvent e) {}
-		@Override
-		public void nativeKeyPressed(NativeKeyEvent e) {}
 		
 		@Override
-		public void nativeKeyTyped(NativeKeyEvent arg0) {}
+		public void windowActivated(WindowEvent e) {
+		}
+		
+		@Override
+		public void windowClosing(WindowEvent e) {
+		}
+		
+		@Override
+		public void windowDeactivated(WindowEvent e) {
+		}
+		
+		@Override
+		public void windowDeiconified(WindowEvent e) {
+		}
+		
+		@Override
+		public void windowIconified(WindowEvent e) {
+		}
+		
+		@Override
+		public void nativeKeyPressed(NativeKeyEvent e) {
+		}
+		
+		@Override
+		public void nativeKeyTyped(NativeKeyEvent arg0) {
+		}
 	}
-
-	private class TriggerOnKeyAction implements KeyListener{
+	
+	private class TriggerOnKeyAction implements KeyListener {
 		
 		/**
 		 * Listens for key released. If user press and releases ENTER key, execute user commands
@@ -227,195 +246,236 @@ public class DoThingsGUI extends JFrame  {
 		@Override
 		public void keyReleased(KeyEvent e) {
 			int key = e.getKeyCode();
-
-			switch(key){
-			case COMMAND_ENTER:
-				String userInput = inputField.getText();
-				ResponsiveContent.drawTaskObjectField(userInput);	
-				break;
-			default:
-				break;	
-			}	
-		}	
+			
+			switch (key)
+				{
+					case COMMAND_ENTER:
+						String userInput = inputField.getText();
+						ResponsiveContent.drawTaskObjectField(userInput);
+						break;
+					default:
+						break;
+				}
+		}
+		
 		/**
 		 * Listens and executes key pressed.
 		 */
 		@Override
 		public void keyPressed(KeyEvent e) {
 			int key = e.getKeyCode();
-			InputMap verticalMap = verticalScrollBar.getInputMap(JComponent.WHEN_IN_FOCUSED_WINDOW );
-
-			switch(key){
-			case COMMAND_SHIFT_WINDOW_UP:
-				getCoordinatesOfWindow();
-				setLocationOfWindow(xCoordOfFrame, yCoordOfFrame - FRAME_MOVEMENT);
-				break;
-			case COMMAND_SHIFT_WINDOW_DOWN:
-				getCoordinatesOfWindow();
-				setLocationOfWindow(xCoordOfFrame, yCoordOfFrame + FRAME_MOVEMENT);
-				break;
-			case COMMAND_SHIFT_WINDOW_LEFT:
-				getCoordinatesOfWindow();
-				setLocationOfWindow(xCoordOfFrame - FRAME_MOVEMENT, yCoordOfFrame);
-				break;
-			case COMMAND_SHIFT_WINDOW_RIGHT:
-				getCoordinatesOfWindow();
-				setLocationOfWindow(xCoordOfFrame + FRAME_MOVEMENT, yCoordOfFrame);
-				break;
-			case COMMAND_SCROLL_UP:					
-				verticalMap.put(KeyStroke.getKeyStroke( "UP" ),"negativeUnitIncrement" );
-				break;
-			case COMMAND_SCROLL_DOWN:
-				verticalMap.put(KeyStroke.getKeyStroke( "DOWN" ),"positiveUnitIncrement" );
-				break;
-			case COMMAND_SCROLL_TO_TOP:
-				setVerticalScrollBarScrollToTop();
-				break;
-			case COMMAND_SCROLL_TO_BOTTOM:
-				setVerticalScrollBarScrollToBottom();
-				break;
-			default:
-				break;
-			}
+			InputMap verticalMap = verticalScrollBar
+			        .getInputMap(JComponent.WHEN_IN_FOCUSED_WINDOW);
+			
+			switch (key)
+				{
+					case COMMAND_SHIFT_WINDOW_UP:
+						getCoordinatesOfWindow();
+						setLocationOfWindow(xCoordOfFrame, yCoordOfFrame
+						        - FRAME_MOVEMENT);
+						break;
+					case COMMAND_SHIFT_WINDOW_DOWN:
+						getCoordinatesOfWindow();
+						setLocationOfWindow(xCoordOfFrame, yCoordOfFrame
+						        + FRAME_MOVEMENT);
+						break;
+					case COMMAND_SHIFT_WINDOW_LEFT:
+						getCoordinatesOfWindow();
+						setLocationOfWindow(xCoordOfFrame - FRAME_MOVEMENT,
+						        yCoordOfFrame);
+						break;
+					case COMMAND_SHIFT_WINDOW_RIGHT:
+						getCoordinatesOfWindow();
+						setLocationOfWindow(xCoordOfFrame + FRAME_MOVEMENT,
+						        yCoordOfFrame);
+						break;
+					case COMMAND_SCROLL_UP:
+						verticalMap.put(KeyStroke.getKeyStroke("UP"),
+						        "negativeUnitIncrement");
+						break;
+					case COMMAND_SCROLL_DOWN:
+						verticalMap.put(KeyStroke.getKeyStroke("DOWN"),
+						        "positiveUnitIncrement");
+						break;
+					case COMMAND_SCROLL_TO_TOP:
+						setVerticalScrollBarScrollToTop();
+						break;
+					case COMMAND_SCROLL_TO_BOTTOM:
+						setVerticalScrollBarScrollToBottom();
+						break;
+					default:
+						break;
+				}
 		}
 		
 		@Override
-		public void keyTyped(KeyEvent e) {}	
+		public void keyTyped(KeyEvent e) {
+		}
 	}
-
-	private class TriggerOnMouseAction implements MouseListener, MouseMotionListener{
+	
+	private class TriggerOnMouseAction implements MouseListener,
+	        MouseMotionListener {
 		
 		/**
-		 * Listens for mouse press and records the the x,y coordinates relative to the source component.
+		 * Listens for mouse press and records the the x,y coordinates relative to the source
+		 * component.
 		 */
 		@Override
-		public void mousePressed(MouseEvent me) {	 
+		public void mousePressed(MouseEvent me) {
 			getCoordinatesOfWindow(me);
-		}		
+		}
+		
 		/**
 		 * Listens for mouse drag and shifts the frame to the end position.
 		 */
 		@Override
 		public void mouseDragged(MouseEvent me) {
 			setLocationOfWindow(me);
-
+			
 		}
-
+		
 		@Override
-		public void mouseClicked(MouseEvent me) {}
+		public void mouseClicked(MouseEvent me) {
+		}
+		
 		@Override
-		public void mouseEntered(MouseEvent me) {}
+		public void mouseEntered(MouseEvent me) {
+		}
+		
 		@Override
-		public void mouseExited(MouseEvent me) {}
+		public void mouseExited(MouseEvent me) {
+		}
+		
 		@Override
-		public void mouseReleased(MouseEvent me) {}
+		public void mouseReleased(MouseEvent me) {
+		}
+		
 		@Override
-		public void mouseMoved(MouseEvent me) {}
+		public void mouseMoved(MouseEvent me) {
+		}
 	}
 	
 	/**
 	 * Gets the coordinates of the window and records them into xCoordOfFrame and yCoordOfFrame
+	 * 
 	 * @param me
 	 */
-	private void getCoordinatesOfWindow(MouseEvent me){
-		xCoordOfFrame=me.getX();
-		yCoordOfFrame=me.getY();
+	private void getCoordinatesOfWindow(MouseEvent me) {
+		xCoordOfFrame = me.getX();
+		yCoordOfFrame = me.getY();
 	}
+	
 	/**
 	 * Set the new location of window by getting the latest coordinates minus the old coordinates
+	 * 
 	 * @param me
 	 */
 	private void setLocationOfWindow(MouseEvent me) {
-		setLocation(getX()+me.getX()-xCoordOfFrame,getY()+me.getY()-yCoordOfFrame);
+		setLocation(getX() + me.getX() - xCoordOfFrame, getY() + me.getY()
+		        - yCoordOfFrame);
 	}
+	
 	/**
 	 * Gets the coordinates of the window and records them into xCoordOfFrame and yCoordOfFrame
 	 */
-	private void getCoordinatesOfWindow(){
-		xCoordOfFrame=getX();
-		yCoordOfFrame=getY();
+	private void getCoordinatesOfWindow() {
+		xCoordOfFrame = getX();
+		yCoordOfFrame = getY();
 	}
+	
 	/**
 	 * Set the new location of window by increasing or decreasing xCoordOfFrame and yCoordOfFrame
+	 * 
 	 * @param x
 	 * @param y
 	 */
 	private void setLocationOfWindow(int x, int y) {
-		setLocation(x,y);
+		setLocation(x, y);
 	}
+	
 	/**
 	 * Hides program to system tray and creates tray icon in system tray
 	 */
-	private void hideToSytemTray(){
-		try{
+	private void hideToSytemTray() {
+		try {
 			PopupMenu popup = new PopupMenu();
-			tray = SystemTray.getSystemTray();   
+			tray = SystemTray.getSystemTray();
 			trayIcon = new TrayIcon(iconImage, "Do-Things", popup);
 			trayIcon.setImageAutoSize(true);
-			tray.add(trayIcon);		
-		}catch(Exception e){
+			tray.add(trayIcon);
+		} catch (Exception e) {
 			System.out.println(MESSAGE_ERROR_SYSTEM_TRAY);
 		}
-	}	
+	}
+	
 	/**
 	 * Removes tray icon from system tray.
 	 */
-	private void removeFromSystemTray(){
+	private void removeFromSystemTray() {
 		tray.remove(trayIcon);
-	}	
+	}
+	
 	/**
 	 * Sets GUI to appear in the middle of the screen by default.
 	 */
 	private void setGUIAppearMiddleOfScreen() {
 		setLocationRelativeTo(null);
-	}	
+	}
+	
 	/**
 	 * Gets the icon image from home directory.
 	 */
 	private void getIconImageForGUI() {
 		iconImage = Toolkit.getDefaultToolkit().getImage("Task.png");
-	}	
+	}
+	
 	/**
 	 * Sets vertical scroll bar scrolling speed.
 	 */
 	private static void setVerticalScrollBarSrollSpeed() {
 		verticalScrollBar = taskPanelScroll.getVerticalScrollBar();
 		verticalScrollBar.setUnitIncrement(FRAME_SCROLL_SPEED);
-	}	
+	}
+	
 	/**
 	 * Sets vertical scroll bar to scroll to top.
 	 */
-	private static void setVerticalScrollBarScrollToTop(){
+	private static void setVerticalScrollBarScrollToTop() {
 		verticalScrollBar.setValue(verticalScrollBar.getMinimum());
 	}
+	
 	/**
 	 * Sets vertical scroll bar to scroll to bottom.
 	 */
-	private static void setVerticalScrollBarScrollToBottom(){
+	private static void setVerticalScrollBarScrollToBottom() {
 		verticalScrollBar.setValue(verticalScrollBar.getMaximum());
 	}
+	
 	/**
 	 * Sets various listeners to some GUI components.
 	 */
-	private void setListeners() {	
+	private void setListeners() {
 		setWindowHideDisplayListener();
 		setInputFieldListener();
 		setHeadingLabelListener();
-	}	
+	}
+	
 	/**
 	 * Sets windowListener to GUI to listen for global key press.
 	 */
 	private void setWindowHideDisplayListener() {
 		globalKeyPress = new GlobalKeyPress(true);
 		addWindowListener(globalKeyPress);
-	}	
+	}
+	
 	/**
 	 * Sets keyListener to input field.
 	 */
 	private void setInputFieldListener() {
 		triggerOnKeyAction = new TriggerOnKeyAction();
 		inputField.addKeyListener(triggerOnKeyAction);
-	}	
+	}
+	
 	/**
 	 * Sets mouseListener and mouseActionListener to Heading Label.
 	 */
@@ -425,7 +485,7 @@ public class DoThingsGUI extends JFrame  {
 		headingLabel.addMouseMotionListener(triggerOnMouseAction);
 	}
 	
-	// End of segment: D:\Workspace\CS2103T NEW\src\dothings\gui\DoThingsGUI.java
+	// End of segment: D:\Workspace\CS2103T NEW\src\dothings\gui\DoThingsGui.java
 
 
 
@@ -435,9 +495,10 @@ public class DoThingsGUI extends JFrame  {
 	 * origin: D:\Workspace\CS2103T NEW\src\dothings\logic\TaskHandler.java
 	 */
 
-	//////////READ Functionality//////////
+	// ////////READ Functionality//////////
 	/**
 	 * Gets the lists of task to display from the input parameter
+	 * 
 	 * @param userInput
 	 * @return Feedback object containing the list of tasks to be displayed
 	 */
@@ -461,7 +522,7 @@ public class DoThingsGUI extends JFrame  {
 				feedback = MESSAGE_LIST_OVERDUE;
 			} else if (DateParser.isDate(userInput)) {
 				indexList = getListOfTaskWithDate(userInput);
-				feedback = String.format(MESSAGE_SHOW__ON_DATE , userInput);
+				feedback = String.format(MESSAGE_SHOW__ON_DATE, userInput);
 			} else if (userInput.equals(TASK_SELECT_ALL)) {
 				indexList = getListOfAllTasks();
 				feedback = MESSAGE_LIST_ALL;
@@ -471,11 +532,12 @@ public class DoThingsGUI extends JFrame  {
 			}
 		}
 		
-		return new Feedback(feedback , indexList);
+		return new Feedback(feedback, indexList);
 	}
 	
 	/**
 	 * Displays all the tasks in order of date
+	 * 
 	 * @return a Feedback Object to be shown to the user
 	 */
 	private static ArrayList<Integer> getListOfAllTasks() {
@@ -490,6 +552,7 @@ public class DoThingsGUI extends JFrame  {
 	
 	/**
 	 * Gets the list of tasks that are either completed or incomplete
+	 * 
 	 * @param completed
 	 * @return List of completed tasks if completed is true, incomplete if false
 	 */
@@ -508,6 +571,7 @@ public class DoThingsGUI extends JFrame  {
 	
 	/**
 	 * Get the list of tasks which are overdue
+	 * 
 	 * @return list of overdue tasks
 	 */
 	private static ArrayList<Integer> getListOfOverdueTask() {
@@ -525,6 +589,7 @@ public class DoThingsGUI extends JFrame  {
 	
 	/**
 	 * Get the list of tasks with end or start date same as the specified date
+	 * 
 	 * @param input
 	 * @return lists of tasks that have the specified date
 	 */
@@ -538,10 +603,11 @@ public class DoThingsGUI extends JFrame  {
 			DateTime start = list.get(i).getStartDateTime();
 			DateTime end = list.get(i).getEndDateTime();
 			
-			if (start != null && end != null) { 
-				if (DateParser.isSameDate(start, date) || DateParser.isSameDate(end, date)) {
+			if (start != null && end != null) {
+				if (DateParser.isSameDate(start, date)
+				        || DateParser.isSameDate(end, date)) {
 					indexList.add(i);
-				} 
+				}
 			} else if (start != null) {
 				if (DateParser.isSameDate(start, date)) {
 					indexList.add(i);
@@ -557,10 +623,20 @@ public class DoThingsGUI extends JFrame  {
 		return indexList;
 	}
 	
-	//////////DELETE Functionality//////////
-	
+	// ////////DELETE Functionality//////////
+	// End of segment: D:\Workspace\CS2103T NEW\src\dothings\logic\TaskHandler.java
+
+
+
+
+
+	/**
+	 * origin: D:\Workspace\CS2103T NEW\src\dothings\logic\TaskHandler.java
+	 */
+
 	/**
 	 * Removes a task from the taskList
+	 * 
 	 * @param taskID
 	 * @return a Feedback object to be shown to the user
 	 */
@@ -598,12 +674,13 @@ public class DoThingsGUI extends JFrame  {
 	
 	/**
 	 * Deletes all tasks specified in the list
+	 * 
 	 * @param list
 	 */
 	private static void deleteList(ArrayList<Integer> list) {
 		ArrayList<Task> taskList = Task.getList();
 		for (int i = 0; i < list.size(); i++) {
-			taskList.remove((int)list.get(i));
+			taskList.remove((int) list.get(i));
 		}
 		Task.setList(taskList);
 	}
@@ -631,6 +708,7 @@ public class DoThingsGUI extends JFrame  {
 	
 	/**
 	 * Checks if the integer is within the size of the task list
+	 * 
 	 * @param index
 	 * @return true if index is withing the range of the list
 	 */
@@ -644,6 +722,7 @@ public class DoThingsGUI extends JFrame  {
 	
 	/**
 	 * Gets the list of task indices from the input string containing integers and/or aliases
+	 * 
 	 * @param list
 	 * @return Sorted list of task indices without duplicates
 	 */
@@ -658,7 +737,7 @@ public class DoThingsGUI extends JFrame  {
 				index = Integer.parseInt(tempList[i]) - 1;
 			} else if (Task.isAliasValid(tempList[i])) {
 				index = Task.getTaskIndexFromAlias(tempList[i]);
-			} 
+			}
 			
 			if (!isOutOfDeleteRange(index)) {
 				deleteList.add(index);
@@ -674,6 +753,1012 @@ public class DoThingsGUI extends JFrame  {
 	}
 	
 	// End of segment: D:\Workspace\CS2103T NEW\src\dothings\logic\TaskHandler.java
+
+
+
+
+
+	/**
+	 * origin: D:\Workspace\CS2103T NEW\src\dothings\tests\IntegrationTestingAdd.java
+	 */
+
+public class IntegrationTestingAdd {
+	
+	private static final int FEEDBACK_TYPE = 0;
+	private static final int FEEDBACK_DESC = 1;
+	private static final int TASK_DESC = 2;
+	private static final int TASK_ALIAS = 3;
+	private static final int TASK_DATE = 5;
+	private static final int TASK_TIME = 6;
+	
+	// Success tests
+	
+	@Test
+	public void testAddNoDateNoTimeNoAlias() {
+		ArrayList<ArrayList<String>> result = MainLogic.runLogic("delete all");
+		
+		// Task with no date, no time, no alias
+		result = MainLogic.runLogic("add assignment1");
+		
+		String expectedFeedbackType = "add";
+		String feedbackType = result.get(FEEDBACK_TYPE).get(0);
+		assertEquals(expectedFeedbackType, feedbackType);
+		
+		String expectedFeedbackDes = result.get(FEEDBACK_DESC).get(0);
+		String feedbackDes = "Added \"assignment1\".";
+		assertEquals(expectedFeedbackDes, feedbackDes);
+		
+		String expectedDesc = "1. assignment1";
+		String taskDesc = result.get(TASK_DESC).get(0);
+		assertEquals(expectedDesc, taskDesc);
+	}
+	
+	@Test
+	public void testAddNoDateNoTimeWithAlias() {
+		ArrayList<ArrayList<String>> result = MainLogic.runLogic("delete all");
+		
+		// Task with no date, no time, with alias
+		result = MainLogic.runLogic("add assignment1 alias:a1");
+		
+		String expectedFeedbackType = "add";
+		String feedbackType = result.get(FEEDBACK_TYPE).get(0);
+		assertEquals(expectedFeedbackType, feedbackType);
+		
+		String expectedFeedbackDes = result.get(FEEDBACK_DESC).get(0);
+		String feedbackDes = "Added \"assignment1 alias:a1\".";
+		assertEquals(expectedFeedbackDes, feedbackDes);
+		
+		String expectedDesc = "1. assignment1";
+		String taskDesc = result.get(TASK_DESC).get(0);
+		assertEquals(expectedDesc, taskDesc);
+		
+		String expectedAlias = "a1";
+		String taskAlias = result.get(TASK_ALIAS).get(0);
+		assertEquals(expectedAlias, taskAlias);
+	}
+	
+	@Test
+	public void testAddNoDateOneTimeNoAlias() {
+		ArrayList<ArrayList<String>> result = MainLogic.runLogic("delete all");
+		
+		// Task with no date, 1 time, without alias
+		result = MainLogic.runLogic("add assignment1 by 2359");
+		
+		String expectedFeedbackType = "add";
+		String feedbackType = result.get(FEEDBACK_TYPE).get(0);
+		assertEquals(expectedFeedbackType, feedbackType);
+		
+		String expectedFeedbackDes = result.get(FEEDBACK_DESC).get(0);
+		String feedbackDes = "Added \"assignment1 by 2359\".";
+		assertEquals(expectedFeedbackDes, feedbackDes);
+		
+		String expectedDesc = "1. assignment1";
+		String taskDesc = result.get(TASK_DESC).get(0);
+		assertEquals(expectedDesc, taskDesc);
+		
+		String expectedTime = "today";
+		String taskTime = result.get(TASK_TIME).get(0);
+		assertEquals(expectedTime, taskTime);
+		
+	}
+	
+	@Test
+	public void testAddNoDateOneTimeWithAlias() {
+		ArrayList<ArrayList<String>> result = MainLogic.runLogic("delete all");
+		
+		// Task with no date, 1 time, with alias
+		result = MainLogic.runLogic("add assignment1 on 0001 alias:a1");
+		
+		String expectedFeedbackType = "add";
+		String feedbackType = result.get(FEEDBACK_TYPE).get(0);
+		assertEquals(expectedFeedbackType, feedbackType);
+		
+		String expectedFeedbackDes = result.get(FEEDBACK_DESC).get(0);
+		String feedbackDes = "Added \"assignment1 on 0001 alias:a1\".";
+		assertEquals(expectedFeedbackDes, feedbackDes);
+		
+		String expectedDesc = "1. assignment1";
+		String taskDesc = result.get(TASK_DESC).get(0);
+		assertEquals(expectedDesc, taskDesc);
+		
+		String expectedTime = "overdue";
+		String taskTime = result.get(TASK_TIME).get(0);
+		assertEquals(expectedTime, taskTime);
+		
+		String expectedAlias = "a1";
+		String taskAlias = result.get(TASK_ALIAS).get(0);
+		assertEquals(expectedAlias, taskAlias);
+		
+	}
+	
+	@Test
+	public void testAddNoDateTwoTimeNoAlias() {
+		ArrayList<ArrayList<String>> result = MainLogic.runLogic("delete all");
+		
+		// Task with no date, 2 time, without alias
+		result = MainLogic.runLogic("add assignment1 on 1130 by 2359");
+		
+		String expectedFeedbackType = "add";
+		String feedbackType = result.get(FEEDBACK_TYPE).get(0);
+		assertEquals(expectedFeedbackType, feedbackType);
+		
+		String expectedFeedbackDes = result.get(FEEDBACK_DESC).get(0);
+		String feedbackDes = "Added \"assignment1 on 1130 by 2359\".";
+		assertEquals(expectedFeedbackDes, feedbackDes);
+		
+		String expectedDesc = "1. assignment1";
+		String taskDesc = result.get(TASK_DESC).get(0);
+		assertEquals(expectedDesc, taskDesc);
+		
+		String expectedTime = "today";
+		String taskTime = result.get(TASK_TIME).get(0);
+		assertEquals(expectedTime, taskTime);
+	}
+	
+	@Test
+	public void testAddNoDateTwoTimeWithAlias() {
+		ArrayList<ArrayList<String>> result = MainLogic.runLogic("delete all");
+		
+		// Task with no date, 2 time, without alias
+		result = MainLogic.runLogic("add assignment1 on 1130 by 2359 alias:a1");
+		
+		String expectedFeedbackType = "add";
+		String feedbackType = result.get(FEEDBACK_TYPE).get(0);
+		assertEquals(expectedFeedbackType, feedbackType);
+		
+		String expectedFeedbackDes = result.get(FEEDBACK_DESC).get(0);
+		String feedbackDes = "Added \"assignment1 on 1130 by 2359 alias:a1\".";
+		assertEquals(expectedFeedbackDes, feedbackDes);
+		
+		String expectedDesc = "1. assignment1";
+		String taskDesc = result.get(TASK_DESC).get(0);
+		assertEquals(expectedDesc, taskDesc);
+		
+		String expectedTime = "today";
+		String taskTime = result.get(TASK_TIME).get(0);
+		assertEquals(expectedTime, taskTime);
+		
+		String expectedAlias = "a1";
+		String taskAlias = result.get(TASK_ALIAS).get(0);
+		assertEquals(expectedAlias, taskAlias);
+	}
+	
+	@Test
+	public void testAddOneDateNoTimeNoAlias() {
+		ArrayList<ArrayList<String>> result = MainLogic.runLogic("delete all");
+		
+		// Task with 1 date, 0 time, without alias
+		result = MainLogic.runLogic("add assignment1 on 08/08/2015");
+		
+		String expectedFeedbackType = "add";
+		String feedbackType = result.get(FEEDBACK_TYPE).get(0);
+		assertEquals(expectedFeedbackType, feedbackType);
+		
+		String expectedFeedbackDes = result.get(FEEDBACK_DESC).get(0);
+		String feedbackDes = "Added \"assignment1 on 08/08/2015\".";
+		assertEquals(expectedFeedbackDes, feedbackDes);
+		
+		String expectedDesc = "1. assignment1";
+		String taskDesc = result.get(TASK_DESC).get(0);
+		assertEquals(expectedDesc, taskDesc);
+		
+		String expectedDate = "08 Aug 2015 23:59";
+		String taskDate = result.get(TASK_DATE).get(0);
+		assertEquals(expectedDate, taskDate);
+		
+	}
+	
+	@Test
+	public void testAddOneDateNoTimeWithAlias() {
+		ArrayList<ArrayList<String>> result = MainLogic.runLogic("delete all");
+		
+		// Task with 1 date, 0 time, without alias
+		result = MainLogic.runLogic("add assignment1 on 08/08/2015 alias:a1");
+		
+		String expectedFeedbackType = "add";
+		String feedbackType = result.get(FEEDBACK_TYPE).get(0);
+		assertEquals(expectedFeedbackType, feedbackType);
+		
+		String expectedFeedbackDes = result.get(FEEDBACK_DESC).get(0);
+		String feedbackDes = "Added \"assignment1 on 08/08/2015 alias:a1\".";
+		assertEquals(expectedFeedbackDes, feedbackDes);
+		
+		String expectedDesc = "1. assignment1";
+		String taskDesc = result.get(TASK_DESC).get(0);
+		assertEquals(expectedDesc, taskDesc);
+		
+		String expectedDate = "08 Aug 2015 23:59";
+		String taskDate = result.get(TASK_DATE).get(0);
+		assertEquals(expectedDate, taskDate);
+		
+		String expectedAlias = "a1";
+		String taskAlias = result.get(TASK_ALIAS).get(0);
+		assertEquals(expectedAlias, taskAlias);
+		
+	}
+	
+	@Test
+	public void testAddOneDateOneTimeNoAlias() {
+		ArrayList<ArrayList<String>> result = MainLogic.runLogic("delete all");
+		
+		// Task with 1 date, 1 time, without alias
+		result = MainLogic.runLogic("add assignment1 on 08/08/2015 1800");
+		
+		String expectedFeedbackType = "add";
+		String feedbackType = result.get(FEEDBACK_TYPE).get(0);
+		assertEquals(expectedFeedbackType, feedbackType);
+		
+		String expectedFeedbackDes = result.get(FEEDBACK_DESC).get(0);
+		String feedbackDes = "Added \"assignment1 on 08/08/2015 1800\".";
+		assertEquals(expectedFeedbackDes, feedbackDes);
+		
+		String expectedDesc = "1. assignment1";
+		String taskDesc = result.get(TASK_DESC).get(0);
+		assertEquals(expectedDesc, taskDesc);
+		
+		String expectedDate = "08 Aug 2015 18:00";
+		String taskDate = result.get(TASK_DATE).get(0);
+		assertEquals(expectedDate, taskDate);
+		
+	}
+	
+	@Test
+	public void testAddOneDateOneTimeWithAlias() {
+		ArrayList<ArrayList<String>> result = MainLogic.runLogic("delete all");
+		
+		// Task with 1 date, 1 time, without alias
+		result = MainLogic
+		        .runLogic("add alias:a1 assignment1 on 08/08/2015 1800");
+		
+		String expectedFeedbackType = "add";
+		String feedbackType = result.get(FEEDBACK_TYPE).get(0);
+		assertEquals(expectedFeedbackType, feedbackType);
+		
+		String expectedFeedbackDes = result.get(FEEDBACK_DESC).get(0);
+		String feedbackDes = "Added \"alias:a1 assignment1 on 08/08/2015 1800\".";
+		assertEquals(expectedFeedbackDes, feedbackDes);
+		
+		String expectedDesc = "1. assignment1";
+		String taskDesc = result.get(TASK_DESC).get(0);
+		assertEquals(expectedDesc, taskDesc);
+		
+		String expectedDate = "08 Aug 2015 18:00";
+		String taskDate = result.get(TASK_DATE).get(0);
+		assertEquals(expectedDate, taskDate);
+		
+		String expectedAlias = "a1";
+		String taskAlias = result.get(TASK_ALIAS).get(0);
+		assertEquals(expectedAlias, taskAlias);
+		
+	}
+	
+	@Test
+	public void testAddOneDateTwoTimeNoAlias() {
+		ArrayList<ArrayList<String>> result = MainLogic.runLogic("delete all");
+		
+		// Task with 1 date, 2 time, without alias
+		result = MainLogic
+		        .runLogic("add assignment1 on 08/08/2015 1800 by 2000");
+		
+		String expectedFeedbackType = "add";
+		String feedbackType = result.get(FEEDBACK_TYPE).get(0);
+		assertEquals(expectedFeedbackType, feedbackType);
+		
+		String expectedFeedbackDes = result.get(FEEDBACK_DESC).get(0);
+		String feedbackDes = "Added \"assignment1 on 08/08/2015 1800 by 2000\".";
+		assertEquals(expectedFeedbackDes, feedbackDes);
+		
+		String expectedDesc = "1. assignment1";
+		String taskDesc = result.get(TASK_DESC).get(0);
+		assertEquals(expectedDesc, taskDesc);
+		
+		String expectedDate = "08 Aug 2015 18:00 to 08 Aug 2015 20:00";
+		String taskDate = result.get(TASK_DATE).get(0);
+		assertEquals(expectedDate, taskDate);
+	}
+	
+	@Test
+	public void testAddOneDateTwoTimeWithAlias() {
+		ArrayList<ArrayList<String>> result = MainLogic.runLogic("delete all");
+		
+		// Task with 1 date, 2 time, with alias
+		result = MainLogic
+		        .runLogic("add assignment1 on 08/08/2015 1800 by 2000 alias:a1");
+		
+		String expectedFeedbackType = "add";
+		String feedbackType = result.get(FEEDBACK_TYPE).get(0);
+		assertEquals(expectedFeedbackType, feedbackType);
+		
+		String expectedFeedbackDes = result.get(FEEDBACK_DESC).get(0);
+		String feedbackDes = "Added \"assignment1 on 08/08/2015 1800 by 2000 alias:a1\".";
+		assertEquals(expectedFeedbackDes, feedbackDes);
+		
+		String expectedDesc = "1. assignment1";
+		String taskDesc = result.get(TASK_DESC).get(0);
+		assertEquals(expectedDesc, taskDesc);
+		
+		String expectedDate = "08 Aug 2015 18:00 to 08 Aug 2015 20:00";
+		String taskDate = result.get(TASK_DATE).get(0);
+		assertEquals(expectedDate, taskDate);
+		
+		String expectedAlias = "a1";
+		String taskAlias = result.get(TASK_ALIAS).get(0);
+		assertEquals(expectedAlias, taskAlias);
+		
+	}
+	
+	@Test
+	public void testAddTwoDateNoTimeNoAlias() {
+		ArrayList<ArrayList<String>> result = MainLogic.runLogic("delete all");
+		
+		// Task with 2 date, no time, no alias
+		result = MainLogic
+		        .runLogic("add assignment1 on 08/08/2015 to 09082015");
+		
+		String expectedFeedbackType = "add";
+		String feedbackType = result.get(FEEDBACK_TYPE).get(0);
+		assertEquals(expectedFeedbackType, feedbackType);
+		
+		String expectedFeedbackDes = result.get(FEEDBACK_DESC).get(0);
+		String feedbackDes = "Added \"assignment1 on 08/08/2015 to 09082015\".";
+		assertEquals(expectedFeedbackDes, feedbackDes);
+		
+		String expectedDesc = "1. assignment1";
+		String taskDesc = result.get(TASK_DESC).get(0);
+		assertEquals(expectedDesc, taskDesc);
+		
+		String expectedDate = "08 Aug 2015 00:00 to 09 Aug 2015 23:59";
+		String taskDate = result.get(TASK_DATE).get(0);
+		assertEquals(expectedDate, taskDate);
+		
+	}
+	
+	@Test
+	public void testAddTwoDateNoTimeWithAlias() {
+		ArrayList<ArrayList<String>> result = MainLogic.runLogic("delete all");
+		
+		// Task with 2 date, no time, with alias
+		result = MainLogic
+		        .runLogic("add assignment1 on 08/08/2015 to 09082015 alias:a1");
+		
+		String expectedFeedbackType = "add";
+		String feedbackType = result.get(FEEDBACK_TYPE).get(0);
+		assertEquals(expectedFeedbackType, feedbackType);
+		
+		String expectedFeedbackDes = result.get(FEEDBACK_DESC).get(0);
+		String feedbackDes = "Added \"assignment1 on 08/08/2015 to 09082015 alias:a1\".";
+		assertEquals(expectedFeedbackDes, feedbackDes);
+		
+		String expectedDesc = "1. assignment1";
+		String taskDesc = result.get(TASK_DESC).get(0);
+		assertEquals(expectedDesc, taskDesc);
+		
+		String expectedDate = "08 Aug 2015 00:00 to 09 Aug 2015 23:59";
+		String taskDate = result.get(TASK_DATE).get(0);
+		assertEquals(expectedDate, taskDate);
+		
+		String expectedAlias = "a1";
+		String taskAlias = result.get(TASK_ALIAS).get(0);
+		assertEquals(expectedAlias, taskAlias);
+		
+	}
+	
+	@Test
+	public void testAddTwoDateOneTimeNoAlias() {
+		ArrayList<ArrayList<String>> result = MainLogic.runLogic("delete all");
+		
+		// Task with 2 date, 1 time, no alias
+		result = MainLogic
+		        .runLogic("add assignment1 on 08/08/2015 to 09082015 1000");
+		
+		String expectedFeedbackType = "add";
+		String feedbackType = result.get(FEEDBACK_TYPE).get(0);
+		assertEquals(expectedFeedbackType, feedbackType);
+		
+		String expectedFeedbackDes = result.get(FEEDBACK_DESC).get(0);
+		String feedbackDes = "Added \"assignment1 on 08/08/2015 to 09082015 1000\".";
+		assertEquals(expectedFeedbackDes, feedbackDes);
+		
+		String expectedDesc = "1. assignment1";
+		String taskDesc = result.get(TASK_DESC).get(0);
+		assertEquals(expectedDesc, taskDesc);
+		
+		String expectedDate = "08 Aug 2015 10:00 to 09 Aug 2015 23:59";
+		String taskDate = result.get(TASK_DATE).get(0);
+		assertEquals(expectedDate, taskDate);
+		
+	}
+	
+	@Test
+	public void testAddTwoDateOneTimeWithAlias() {
+		ArrayList<ArrayList<String>> result = MainLogic.runLogic("delete all");
+		
+		// Task with 2 date, 1 time, with alias
+		result = MainLogic
+		        .runLogic("add assignment1 on 08/08/2015 to 09082015 1000 alias:a1");
+		
+		String expectedFeedbackType = "add";
+		String feedbackType = result.get(FEEDBACK_TYPE).get(0);
+		assertEquals(expectedFeedbackType, feedbackType);
+		
+		String expectedFeedbackDes = result.get(FEEDBACK_DESC).get(0);
+		String feedbackDes = "Added \"assignment1 on 08/08/2015 to 09082015 1000 alias:a1\".";
+		assertEquals(expectedFeedbackDes, feedbackDes);
+		
+		String expectedDesc = "1. assignment1";
+		String taskDesc = result.get(TASK_DESC).get(0);
+		assertEquals(expectedDesc, taskDesc);
+		
+		String expectedDate = "08 Aug 2015 10:00 to 09 Aug 2015 23:59";
+		String taskDate = result.get(TASK_DATE).get(0);
+		assertEquals(expectedDate, taskDate);
+		
+		String expectedAlias = "a1";
+		String taskAlias = result.get(TASK_ALIAS).get(0);
+		assertEquals(expectedAlias, taskAlias);
+		
+	}
+	
+	@Test
+	public void testAddTwoDateTwoTimeNoAlias() {
+		ArrayList<ArrayList<String>> result = MainLogic.runLogic("delete all");
+		
+		// Task with 2 date, 2 time, no alias
+		result = MainLogic
+		        .runLogic("add assignment1 on 08/08/2015 to 09082015 1000 to 1800");
+		
+		String expectedFeedbackType = "add";
+		String feedbackType = result.get(FEEDBACK_TYPE).get(0);
+		assertEquals(expectedFeedbackType, feedbackType);
+		
+		String expectedFeedbackDes = result.get(FEEDBACK_DESC).get(0);
+		String feedbackDes = "Added \"assignment1 on 08/08/2015 to 09082015 1000 to 1800\".";
+		assertEquals(expectedFeedbackDes, feedbackDes);
+		
+		String expectedDesc = "1. assignment1";
+		String taskDesc = result.get(TASK_DESC).get(0);
+		assertEquals(expectedDesc, taskDesc);
+		
+		String expectedDate = "08 Aug 2015 10:00 to 09 Aug 2015 18:00";
+		String taskDate = result.get(TASK_DATE).get(0);
+		assertEquals(expectedDate, taskDate);
+		
+	}
+	
+	@Test
+	public void testAddTwoDateTwoTimeWithAlias() {
+		ArrayList<ArrayList<String>> result = MainLogic.runLogic("delete all");
+		
+		// Task with 2 date, 2 time, no alias
+		result = MainLogic
+		        .runLogic("add assignment1 on 08/08/2015 to 09082015 1000 to 1800 alias:a1");
+		
+		String expectedFeedbackType = "add";
+		String feedbackType = result.get(FEEDBACK_TYPE).get(0);
+		assertEquals(expectedFeedbackType, feedbackType);
+		
+		String expectedFeedbackDes = result.get(FEEDBACK_DESC).get(0);
+		String feedbackDes = "Added \"assignment1 on 08/08/2015 to 09082015 1000 to 1800 alias:a1\".";
+		assertEquals(expectedFeedbackDes, feedbackDes);
+		
+		String expectedDesc = "1. assignment1";
+		String taskDesc = result.get(TASK_DESC).get(0);
+		assertEquals(expectedDesc, taskDesc);
+		
+		String expectedDate = "08 Aug 2015 10:00 to 09 Aug 2015 18:00";
+		String taskDate = result.get(TASK_DATE).get(0);
+		assertEquals(expectedDate, taskDate);
+		
+		String expectedAlias = "a1";
+		String taskAlias = result.get(TASK_ALIAS).get(0);
+		assertEquals(expectedAlias, taskAlias);
+		
+	}
+	
+	// Fail cases
+	
+	@Test
+	public void testAddNoDateNoTimeNoAliasFail() {
+		ArrayList<ArrayList<String>> result = MainLogic.runLogic("delete all");
+		
+		// Task with no date, no time, no alias
+		// Wrong command typed
+		result = MainLogic.runLogic("ad assignment1");
+		
+		String expectedFeedbackType = "error";
+		String feedbackType = result.get(FEEDBACK_TYPE).get(0);
+		assertEquals(expectedFeedbackType, feedbackType);
+		
+		String expectedFeedbackDes = result.get(FEEDBACK_DESC).get(0);
+		String feedbackDes = "Oops, please try again.";
+		assertEquals(expectedFeedbackDes, feedbackDes);
+		
+		assertTrue(result.get(TASK_DESC).isEmpty());
+	}
+	
+	@Test
+	public void testAddNoDateNoTimeWithAliasFail() {
+		ArrayList<ArrayList<String>> result = MainLogic.runLogic("delete all");
+		
+		// Task with no date, no time, with alias
+		// Wrong alias format
+		result = MainLogic.runLogic("add assignment1 alias a1");
+		
+		String expectedFeedbackType = "add";
+		String feedbackType = result.get(FEEDBACK_TYPE).get(0);
+		assertEquals(expectedFeedbackType, feedbackType);
+		
+		String expectedFeedbackDes = result.get(FEEDBACK_DESC).get(0);
+		String feedbackDes = "Added \"assignment1 alias a1\".";
+		assertEquals(expectedFeedbackDes, feedbackDes);
+		
+		String expectedDesc = "1. assignment1 alias a1";
+		String taskDesc = result.get(TASK_DESC).get(0);
+		assertEquals(expectedDesc, taskDesc);
+		
+		String expectedAlias = "a1";
+		String taskAlias = result.get(TASK_ALIAS).get(0);
+		assertNotEquals(expectedAlias, taskAlias);
+		
+	}
+	
+	@Test
+	public void testAddNoDateOneTimeNoAliasFail() {
+		ArrayList<ArrayList<String>> result = MainLogic.runLogic("delete all");
+		
+		// Task with no date, 1 time, without alias
+		// Wrong time format
+		result = MainLogic.runLogic("add assignment1 by 2359am");
+		
+		String expectedFeedbackType = "add";
+		String feedbackType = result.get(FEEDBACK_TYPE).get(0);
+		assertEquals(expectedFeedbackType, feedbackType);
+		
+		String expectedFeedbackDes = result.get(FEEDBACK_DESC).get(0);
+		String feedbackDes = "Added \"assignment1 by 2359am\".";
+		assertEquals(expectedFeedbackDes, feedbackDes);
+		
+		String expectedDesc = "1. assignment1 by 2359am";
+		String taskDesc = result.get(TASK_DESC).get(0);
+		assertEquals(expectedDesc, taskDesc);
+		
+		String expectedTime = "today";
+		String taskTime = result.get(TASK_TIME).get(0);
+		assertNotEquals(expectedTime, taskTime);
+		
+	}
+	
+	@Test
+	public void testAddNoDateOneTimeWithAliasFail() {
+		ArrayList<ArrayList<String>> result = MainLogic.runLogic("delete all");
+		
+		// Task with no date, 1 time, with alias
+		// Wrong alias format
+		result = MainLogic.runLogic("add assignment1 on 0001 alias a1");
+		
+		String expectedFeedbackType = "add";
+		String feedbackType = result.get(FEEDBACK_TYPE).get(0);
+		assertEquals(expectedFeedbackType, feedbackType);
+		
+		String expectedFeedbackDes = result.get(FEEDBACK_DESC).get(0);
+		String feedbackDes = "Added \"assignment1 on 0001 alias a1\".";
+		assertEquals(expectedFeedbackDes, feedbackDes);
+		
+		String expectedDesc = "1. assignment1 alias a1";
+		String taskDesc = result.get(TASK_DESC).get(0);
+		assertEquals(expectedDesc, taskDesc);
+		
+		String expectedTime = "overdue";
+		String taskTime = result.get(TASK_TIME).get(0);
+		assertEquals(expectedTime, taskTime);
+		
+		String expectedAlias = "a1";
+		String taskAlias = result.get(TASK_ALIAS).get(0);
+		assertNotEquals(expectedAlias, taskAlias);
+		
+	}
+	
+	@Test
+	public void testAddNoDateTwoTimeNoAliasFail() {
+		ArrayList<ArrayList<String>> result = MainLogic.runLogic("delete all");
+		
+		// Task with no date, 2 time, without alias
+		// Wrong time format
+		result = MainLogic.runLogic("add assignment1 on 0000 by 2359am");
+		
+		String expectedFeedbackType = "add";
+		String feedbackType = result.get(FEEDBACK_TYPE).get(0);
+		assertEquals(expectedFeedbackType, feedbackType);
+		
+		String expectedFeedbackDes = result.get(FEEDBACK_DESC).get(0);
+		String feedbackDes = "Added \"assignment1 on 0000 by 2359am\".";
+		assertEquals(expectedFeedbackDes, feedbackDes);
+		
+		String expectedDesc = "1. assignment1 by 2359am";
+		String taskDesc = result.get(TASK_DESC).get(0);
+		assertEquals(expectedDesc, taskDesc);
+		
+		String expectedTime = "today";
+		String taskTime = result.get(TASK_TIME).get(0);
+		assertNotEquals(expectedTime, taskTime);
+	}
+	
+	@Test
+	public void testAddNoDateTwoTimeWithAliasFail() {
+		ArrayList<ArrayList<String>> result = MainLogic.runLogic("delete all");
+		
+		// Task with no date, 2 time, without alias
+		// Wrong alias format
+		result = MainLogic.runLogic("add assignment1 on 1130 by 2359 alias a1");
+		
+		String expectedFeedbackType = "add";
+		String feedbackType = result.get(FEEDBACK_TYPE).get(0);
+		assertEquals(expectedFeedbackType, feedbackType);
+		
+		String expectedFeedbackDes = result.get(FEEDBACK_DESC).get(0);
+		String feedbackDes = "Added \"assignment1 on 1130 by 2359 alias a1\".";
+		assertEquals(expectedFeedbackDes, feedbackDes);
+		
+		String expectedDesc = "1. assignment1 alias a1";
+		String taskDesc = result.get(TASK_DESC).get(0);
+		assertEquals(expectedDesc, taskDesc);
+		
+		String expectedTime = "today";
+		String taskTime = result.get(TASK_TIME).get(0);
+		assertEquals(expectedTime, taskTime);
+		
+		String expectedAlias = "a1";
+		String taskAlias = result.get(TASK_ALIAS).get(0);
+		assertNotEquals(expectedAlias, taskAlias);
+	}
+	
+	@Test
+	public void testAddOneDateNoTimeNoAliasFail() {
+		ArrayList<ArrayList<String>> result = MainLogic.runLogic("delete all");
+		
+		// Task with 1 date, 0 time, without alias
+		// Wrong date format
+		result = MainLogic.runLogic("add assignment1 on 29/29/2015");
+		
+		String expectedFeedbackType = "add";
+		String feedbackType = result.get(FEEDBACK_TYPE).get(0);
+		assertEquals(expectedFeedbackType, feedbackType);
+		
+		String expectedFeedbackDes = result.get(FEEDBACK_DESC).get(0);
+		String feedbackDes = "Added \"assignment1 on 29/29/2015\".";
+		assertEquals(expectedFeedbackDes, feedbackDes);
+		
+		String expectedDesc = "1. assignment1 on 29/29/2015";
+		String taskDesc = result.get(TASK_DESC).get(0);
+		assertEquals(expectedDesc, taskDesc);
+		
+		String expectedDate = "29 29 2015 23:59";
+		String taskDate = result.get(TASK_DATE).get(0);
+		assertNotEquals(expectedDate, taskDate);
+		
+	}
+	
+	@Test
+	public void testAddOneDateNoTimeWithAliasFail() {
+		ArrayList<ArrayList<String>> result = MainLogic.runLogic("delete all");
+		
+		// Task with 1 date, 0 time, with alias
+		// Wrong alias format
+		result = MainLogic.runLogic("add assignment1 on 08/08/2015 alias a1");
+		
+		String expectedFeedbackType = "add";
+		String feedbackType = result.get(FEEDBACK_TYPE).get(0);
+		assertEquals(expectedFeedbackType, feedbackType);
+		
+		String expectedFeedbackDes = result.get(FEEDBACK_DESC).get(0);
+		String feedbackDes = "Added \"assignment1 on 08/08/2015 alias a1\".";
+		assertEquals(expectedFeedbackDes, feedbackDes);
+		
+		String expectedDesc = "1. assignment1";
+		String taskDesc = result.get(TASK_DESC).get(0);
+		assertNotEquals(expectedDesc, taskDesc);
+		
+		String expectedDate = "08 Aug 2015 23:59";
+		String taskDate = result.get(TASK_DATE).get(0);
+		assertEquals(expectedDate, taskDate);
+		
+		String expectedAlias = "a1";
+		String taskAlias = result.get(TASK_ALIAS).get(0);
+		assertNotEquals(expectedAlias, taskAlias);
+		
+	}
+	
+	@Test
+	public void testAddOneDateOneTimeNoAliasFail() {
+		ArrayList<ArrayList<String>> result = MainLogic.runLogic("delete all");
+		
+		// Task with 1 date, 1 time, without alias
+		// Wrong date format
+		result = MainLogic.runLogic("add assignment1 on 29/29/2015 1800");
+		
+		String expectedFeedbackType = "add";
+		String feedbackType = result.get(FEEDBACK_TYPE).get(0);
+		assertEquals(expectedFeedbackType, feedbackType);
+		
+		String expectedFeedbackDes = result.get(FEEDBACK_DESC).get(0);
+		String feedbackDes = "Added \"assignment1 on 29/29/2015 1800\".";
+		assertEquals(expectedFeedbackDes, feedbackDes);
+		
+		String expectedDesc = "1. assignment1 on 29/29/2015";
+		String taskDesc = result.get(TASK_DESC).get(0);
+		assertEquals(expectedDesc, taskDesc);
+		
+		String expectedDate = "29 29 2015 18:00";
+		String taskDate = result.get(TASK_DATE).get(0);
+		assertNotEquals(expectedDate, taskDate);
+		
+	}
+	
+	@Test
+	public void testAddOneDateOneTimeWithAliasFail() {
+		ArrayList<ArrayList<String>> result = MainLogic.runLogic("delete all");
+		
+		// Task with 1 date, 1 time, with alias
+		// Wrong alias format
+		result = MainLogic
+		        .runLogic("add alias a1 assignment1 on 08/08/2015 1800");
+		
+		String expectedFeedbackType = "add";
+		String feedbackType = result.get(FEEDBACK_TYPE).get(0);
+		assertEquals(expectedFeedbackType, feedbackType);
+		
+		String expectedFeedbackDes = result.get(FEEDBACK_DESC).get(0);
+		String feedbackDes = "Added \"alias a1 assignment1 on 08/08/2015 1800\".";
+		assertEquals(expectedFeedbackDes, feedbackDes);
+		
+		String expectedDesc = "1. alias a1 assignment1";
+		String taskDesc = result.get(TASK_DESC).get(0);
+		assertEquals(expectedDesc, taskDesc);
+		
+		String expectedDate = "08 Aug 2015 18:00";
+		String taskDate = result.get(TASK_DATE).get(0);
+		assertEquals(expectedDate, taskDate);
+		
+		String expectedAlias = "a1";
+		String taskAlias = result.get(TASK_ALIAS).get(0);
+		assertNotEquals(expectedAlias, taskAlias);
+		
+	}
+	
+	@Test
+	public void testAddOneDateTwoTimeNoAliasFail() {
+		ArrayList<ArrayList<String>> result = MainLogic.runLogic("delete all");
+		
+		// Task with 1 date, 2 time, without alias
+		// Wrong time format
+		result = MainLogic
+		        .runLogic("add assignment1 on 08/08/2015 1800 by 2359am");
+		
+		String expectedFeedbackType = "add";
+		String feedbackType = result.get(FEEDBACK_TYPE).get(0);
+		assertEquals(expectedFeedbackType, feedbackType);
+		
+		String expectedFeedbackDes = result.get(FEEDBACK_DESC).get(0);
+		String feedbackDes = "Added \"assignment1 on 08/08/2015 1800 by 2359am\".";
+		assertEquals(expectedFeedbackDes, feedbackDes);
+		
+		String expectedDesc = "1. assignment1";
+		String taskDesc = result.get(TASK_DESC).get(0);
+		assertNotEquals(expectedDesc, taskDesc);
+		
+		String expectedDate = "08 Aug 2015 18:00 to 08 Aug 2015 20:00";
+		String taskDate = result.get(TASK_DATE).get(0);
+		assertNotEquals(expectedDate, taskDate);
+	}
+	
+	@Test
+	public void testAddOneDateTwoTimeWithAliasFail() {
+		ArrayList<ArrayList<String>> result = MainLogic.runLogic("delete all");
+		
+		// Task with 1 date, 2 time, with alias
+		// Wrong alias format
+		result = MainLogic
+		        .runLogic("add assignment1 on 08/08/2015 1800 by 2000 alias a1");
+		
+		String expectedFeedbackType = "add";
+		String feedbackType = result.get(FEEDBACK_TYPE).get(0);
+		assertEquals(expectedFeedbackType, feedbackType);
+		
+		String expectedFeedbackDes = result.get(FEEDBACK_DESC).get(0);
+		String feedbackDes = "Added \"assignment1 on 08/08/2015 1800 by 2000 alias a1\".";
+		assertEquals(expectedFeedbackDes, feedbackDes);
+		
+		String expectedDesc = "1. assignment1";
+		String taskDesc = result.get(TASK_DESC).get(0);
+		assertNotEquals(expectedDesc, taskDesc);
+		
+		String expectedDate = "08 Aug 2015 18:00 to 08 Aug 2015 20:00";
+		String taskDate = result.get(TASK_DATE).get(0);
+		assertEquals(expectedDate, taskDate);
+		
+		String expectedAlias = "a1";
+		String taskAlias = result.get(TASK_ALIAS).get(0);
+		assertNotEquals(expectedAlias, taskAlias);
+		
+	}
+	
+	@Test
+	public void testAddTwoDateNoTimeNoAliasFail() {
+		ArrayList<ArrayList<String>> result = MainLogic.runLogic("delete all");
+		
+		// Task with 2 date, no time, no alias
+		// Wrong date format
+		result = MainLogic
+		        .runLogic("add assignment1 on 08/08/2015 to 09292015");
+		
+		String expectedFeedbackType = "add";
+		String feedbackType = result.get(FEEDBACK_TYPE).get(0);
+		assertEquals(expectedFeedbackType, feedbackType);
+		
+		String expectedFeedbackDes = result.get(FEEDBACK_DESC).get(0);
+		String feedbackDes = "Added \"assignment1 on 08/08/2015 to 09292015\".";
+		assertEquals(expectedFeedbackDes, feedbackDes);
+		
+		String expectedDesc = "1. assignment1";
+		String taskDesc = result.get(TASK_DESC).get(0);
+		assertNotEquals(expectedDesc, taskDesc);
+		
+		String expectedDate = "08 Aug 2015 00:00 to 09 Aug 2015 23:59";
+		String taskDate = result.get(TASK_DATE).get(0);
+		assertNotEquals(expectedDate, taskDate);
+		
+	}
+	
+	@Test
+	public void testAddTwoDateNoTimeWithAliasFail() {
+		ArrayList<ArrayList<String>> result = MainLogic.runLogic("delete all");
+		
+		// Task with 2 date, no time, with alias
+		// Wrong alias format
+		result = MainLogic
+		        .runLogic("add assignment1 on 08/08/2015 to 09082015 alias a1");
+		
+		String expectedFeedbackType = "add";
+		String feedbackType = result.get(FEEDBACK_TYPE).get(0);
+		assertEquals(expectedFeedbackType, feedbackType);
+		
+		String expectedFeedbackDes = result.get(FEEDBACK_DESC).get(0);
+		String feedbackDes = "Added \"assignment1 on 08/08/2015 to 09082015 alias a1\".";
+		assertEquals(expectedFeedbackDes, feedbackDes);
+		
+		String expectedDesc = "1. assignment1";
+		String taskDesc = result.get(TASK_DESC).get(0);
+		assertNotEquals(expectedDesc, taskDesc);
+		
+		String expectedDate = "08 Aug 2015 00:00 to 09 Aug 2015 23:59";
+		String taskDate = result.get(TASK_DATE).get(0);
+		assertEquals(expectedDate, taskDate);
+		
+		String expectedAlias = "a1";
+		String taskAlias = result.get(TASK_ALIAS).get(0);
+		assertNotEquals(expectedAlias, taskAlias);
+		
+	}
+	
+	@Test
+	public void testAddTwoDateOneTimeNoAliasFail() {
+		ArrayList<ArrayList<String>> result = MainLogic.runLogic("delete all");
+		
+		// Task with 2 date, 1 time, no alias
+		// Wrong date and time format
+		result = MainLogic
+		        .runLogic("add assignment1 on 08/08/2015 to 09082015 2359am");
+		
+		String expectedFeedbackType = "add";
+		String feedbackType = result.get(FEEDBACK_TYPE).get(0);
+		assertEquals(expectedFeedbackType, feedbackType);
+		
+		String expectedFeedbackDes = result.get(FEEDBACK_DESC).get(0);
+		String feedbackDes = "Added \"assignment1 on 08/08/2015 to 09082015 2359am\".";
+		assertEquals(expectedFeedbackDes, feedbackDes);
+		
+		String expectedDesc = "1. assignment1";
+		String taskDesc = result.get(TASK_DESC).get(0);
+		assertNotEquals(expectedDesc, taskDesc);
+		
+		String expectedDate = "08 Aug 2015 10:00 to 09 Aug 2015 23:59";
+		String taskDate = result.get(TASK_DATE).get(0);
+		assertNotEquals(expectedDate, taskDate);
+		
+	}
+	
+	@Test
+	public void testAddTwoDateOneTimeWithAliasFail() {
+		ArrayList<ArrayList<String>> result = MainLogic.runLogic("delete all");
+		
+		// Task with 2 date, 1 time, with alias
+		// Wrong date, time, alias format
+		result = MainLogic
+		        .runLogic("add assignment1 on 08/08/2015 to 09082015 1000 alias a1");
+		
+		String expectedFeedbackType = "add";
+		String feedbackType = result.get(FEEDBACK_TYPE).get(0);
+		assertEquals(expectedFeedbackType, feedbackType);
+		
+		String expectedFeedbackDes = result.get(FEEDBACK_DESC).get(0);
+		String feedbackDes = "Added \"assignment1 on 08/08/2015 to 09082015 1000 alias a1\".";
+		assertEquals(expectedFeedbackDes, feedbackDes);
+		
+		String expectedDesc = "1. assignment1";
+		String taskDesc = result.get(TASK_DESC).get(0);
+		assertNotEquals(expectedDesc, taskDesc);
+		
+		String expectedDate = "08 Aug 2015 10:00 to 09 Aug 2015 23:59";
+		String taskDate = result.get(TASK_DATE).get(0);
+		assertEquals(expectedDate, taskDate);
+		
+		String expectedAlias = "a1";
+		String taskAlias = result.get(TASK_ALIAS).get(0);
+		assertNotEquals(expectedAlias, taskAlias);
+		
+	}
+	
+	@Test
+	public void testAddTwoDateTwoTimeNoAliasFail() {
+		ArrayList<ArrayList<String>> result = MainLogic.runLogic("delete all");
+		
+		// Task with 2 date, 2 time, no alias
+		// Wrong date and time format
+		result = MainLogic
+		        .runLogic("add assignment1 on 29/29/2015 to 29302015 1800am to 2300am");
+		
+		String expectedFeedbackType = "add";
+		String feedbackType = result.get(FEEDBACK_TYPE).get(0);
+		assertEquals(expectedFeedbackType, feedbackType);
+		
+		String expectedFeedbackDes = result.get(FEEDBACK_DESC).get(0);
+		String feedbackDes = "Added \"assignment1 on 29/29/2015 to 29302015 1800am to 2300am\".";
+		assertEquals(expectedFeedbackDes, feedbackDes);
+		
+		String expectedDesc = "1. assignment1";
+		String taskDesc = result.get(TASK_DESC).get(0);
+		assertNotEquals(expectedDesc, taskDesc);
+		
+		String expectedDate = "08 Aug 2015 10:00 to 09 Aug 2015 18:00";
+		String taskDate = result.get(TASK_DATE).get(0);
+		assertNotEquals(expectedDate, taskDate);
+		
+	}
+	
+	@Test
+	public void testAddTwoDateTwoTimeWithAliasFail() {
+		ArrayList<ArrayList<String>> result = MainLogic.runLogic("delete all");
+		
+		// Task with 2 date, 2 time, no alias
+		// Wrong date, time and alias format
+		result = MainLogic
+		        .runLogic("add assignment1 on 29/29/2015 to 29302015 1800am to 2300am alias a1");
+		
+		String expectedFeedbackType = "add";
+		String feedbackType = result.get(FEEDBACK_TYPE).get(0);
+		assertEquals(expectedFeedbackType, feedbackType);
+		
+		String expectedFeedbackDes = result.get(FEEDBACK_DESC).get(0);
+		String feedbackDes = "Added \"assignment1 on 29/29/2015 to 29302015 1800am to 2300am alias a1\".";
+		assertEquals(expectedFeedbackDes, feedbackDes);
+		
+		String expectedDesc = "1. assignment1";
+		String taskDesc = result.get(TASK_DESC).get(0);
+		assertNotEquals(expectedDesc, taskDesc);
+		
+		String expectedDate = "08 Aug 2015 10:00 to 09 Aug 2015 18:00";
+		String taskDate = result.get(TASK_DATE).get(0);
+		assertNotEquals(expectedDate, taskDate);
+		
+		String expectedAlias = "a1";
+		String taskAlias = result.get(TASK_ALIAS).get(0);
+		assertNotEquals(expectedAlias, taskAlias);
+		
+	}
+	
+}
+
+	// End of segment: D:\Workspace\CS2103T NEW\src\dothings\tests\IntegrationTestingAdd.java
 
 
 

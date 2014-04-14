@@ -27,7 +27,7 @@ public class CustomCommandHandler {
 	protected static final String HEADER_HELP = "[HELP]";
 	protected static final String HEADER_MARK = "[MARK]";
 	protected static final String HEADER_EXIT = "[EXIT]";
-
+	
 	public static final String MESSAGE_CUSTOM_DUPLICATE = "Sorry, but this word is already in use.";
 	public static final String MESSAGE_CUSTOM_SUCCESS = "\"%s\" has been added to the command list.";
 	public static final String MESSAGE_CUSTOM_DELETED = "\"%s\" has been deleted from the command list.";
@@ -37,6 +37,7 @@ public class CustomCommandHandler {
 	
 	/**
 	 * Returns true if the keyword is a valid keyword of the commandType.
+	 * 
 	 * @param keyword
 	 * @param commandType
 	 * @return true if the keyword is a valid keyword of the commandType.
@@ -52,17 +53,20 @@ public class CustomCommandHandler {
 	}
 	
 	/**
-	 * Adds a custom command to the current list of custom commands and saves the
-	 * list to the file.
+	 * Adds a custom command to the current list of custom commands and saves the list to the file.
+	 * 
 	 * @param userCommand
 	 * @param commandType
 	 * @return a Feedback object containing the message that is to be shown to the user
 	 */
-	public static Feedback addCustomCommand(String userCommand, String commandType) {
-		// if user inputs a white space between two or more words, take only the first
+	public static Feedback addCustomCommand(String userCommand,
+	                                        String commandType) {
+		// if user inputs a white space between two or more words, take only the
+		// first
 		userCommand = userCommand.split(WHITESPACE)[0];
 		
-		if (isDuplicateCommand(userCommand) || MainLogic.isDefaultCommand(userCommand)) {
+		if (isDuplicateCommand(userCommand)
+		        || MainLogic.isDefaultCommand(userCommand)) {
 			return new Feedback(MESSAGE_CUSTOM_DUPLICATE);
 		}
 		
@@ -73,6 +77,7 @@ public class CustomCommandHandler {
 	
 	/**
 	 * Add the userCommand to the list of custom command, depending on the commandType
+	 * 
 	 * @param userCommand
 	 * @param commandType
 	 */
@@ -87,12 +92,14 @@ public class CustomCommandHandler {
 			customCommandList.add(newCommandEntry);
 		}
 		
-		FileManager.log(String.format(LOG_ADDED_COMMAND, userCommand, commandType));
+		FileManager.log(String.format(LOG_ADDED_COMMAND, userCommand,
+		        commandType));
 	}
-
+	
 	/**
-	 * Get the index of the specific command header in the customCommandList
+	 * Get the index of the specific command header in the customCommandList 
 	 * Returns -1 if not found.
+	 * 
 	 * @return index of the specific command header
 	 */
 	private static int getCommandHeaderIndex(String commandType) {
@@ -107,6 +114,7 @@ public class CustomCommandHandler {
 	
 	/**
 	 * Get a String containing all the custom commands for the specified header
+	 * 
 	 * @param header
 	 * @return
 	 */
@@ -125,6 +133,7 @@ public class CustomCommandHandler {
 	
 	/**
 	 * Check if the input custom command is already in use
+	 * 
 	 * @param command
 	 * @return true if the command is already in use.
 	 */
@@ -138,8 +147,8 @@ public class CustomCommandHandler {
 	}
 	
 	/**
-	 * Deletes a custom command from the list of custom commands 
-	 * and saves the list to the file.
+	 * Deletes a custom command from the list of custom commands and saves the list to the file.
+	 * 
 	 * @param userCommand
 	 * @return a Feedback object containing the message that is to be shown to the user
 	 */
@@ -147,35 +156,40 @@ public class CustomCommandHandler {
 		for (int i = 0; i < customCommandList.size(); i++) {
 			for (int j = 0; j < customCommandList.get(i).size(); j++) {
 				if (customCommandList.get(i).get(j).equals(userCommand)) {
-					FileManager.log(String.format(LOG_DELETED_CUSTOM_COMMAND, userCommand, customCommandList.get(i).get(0)));
+					FileManager.log(String.format(LOG_DELETED_CUSTOM_COMMAND,
+					        userCommand, customCommandList.get(i).get(0)));
 					customCommandList.get(i).remove(j);
 					saveCustomCommands();
-					return new Feedback(String.format(MESSAGE_CUSTOM_DELETED, userCommand));
+					return new Feedback(String.format(MESSAGE_CUSTOM_DELETED,
+					        userCommand));
 				}
 			}
 		}
 		
 		return new Feedback(MESSAGE_CUSTOM_NONEXISTANT, false);
-	}	
+	}
 	
 	/**
 	 * Reads custom commands from the "custom.txt" file
+	 * 
 	 * @return list of custom commands
 	 */
 	protected static ArrayList<ArrayList<String>> loadCustomCommands() {
 		FileManager.log(LOG_LOADING_CUSTOM_COMMANDS);
-		ArrayList<ArrayList<String>> commandList = new ArrayList<ArrayList<String>>();
-		ArrayList<String> loadedCommands = FileManager.readFromFile(FILE_CUSTOM);
+		ArrayList<ArrayList<String>> commandList =
+		        new ArrayList<ArrayList<String>>();
+		ArrayList<String> loadedCommands =
+		        FileManager.readFromFile(FILE_CUSTOM);
 		
 		for (int i = 0; i < loadedCommands.size(); i++) {
 			String[] tokens = loadedCommands.get(i).split(" ");
-			ArrayList<String> tempList = new ArrayList<String>(Arrays.asList(tokens));
+			ArrayList<String> tempList =
+			        new ArrayList<String>(Arrays.asList(tokens));
 			commandList.add(tempList);
 		}
 		
 		return commandList;
 	}
-	
 	
 	/**
 	 * Saves the list of custom commands to the "customs.txt" file
@@ -224,6 +238,7 @@ public class HistoryHandler {
 	
 	/**
 	 * Undo the previous actions which manipulates the task list numberOfSteps times
+	 * 
 	 * @return a Feedback object to be shown to the user, indicating success or failure in undoing
 	 */
 	protected static Feedback undoCommand(int numberOfSteps) {
@@ -238,8 +253,8 @@ public class HistoryHandler {
 				break;
 			}
 		}
-
-		if(successfulTries > 0) {
+		
+		if (successfulTries > 0) {
 			Task.saveTasks();
 			saveUndoStack();
 			return new Feedback(String.format(UNDO_SUCCESS, successfulTries));
@@ -250,6 +265,7 @@ public class HistoryHandler {
 	
 	/**
 	 * redo the previous undo actions numberOfSteps times
+	 * 
 	 * @return a Feedback object to be shown to the user, indicating success or failure in redoing
 	 */
 	protected static Feedback redoCommand(int numberOfSteps) {
@@ -264,8 +280,8 @@ public class HistoryHandler {
 				break;
 			}
 		}
-
-		if(successfulTries > 0) {
+		
+		if (successfulTries > 0) {
 			Task.saveTasks();
 			saveUndoStack();
 			return new Feedback(String.format(REDO_SUCCESS, successfulTries));
@@ -273,12 +289,12 @@ public class HistoryHandler {
 			return new Feedback(REDO_FAIL);
 		}
 	}
-
+	
 	/**
 	 * Pushes a copy of the taskList and CustomCommandList into the undo stack.
 	 */
 	protected static void pushUndoStack() {
-		ArrayList<Task> taskNewList = Task.getCloneList();		
+		ArrayList<Task> taskNewList = Task.getCloneList();
 		taskUndoStack.add(taskNewList);
 		reduceStackSize();
 		saveUndoStack();
@@ -294,12 +310,13 @@ public class HistoryHandler {
 	}
 	
 	private static void pushRedoStack() {
-		ArrayList<Task> taskNewList = Task.getCloneList();		
+		ArrayList<Task> taskNewList = Task.getCloneList();
 		taskRedoStack.add(taskNewList);
 	}
 	
 	/**
 	 * Get the top of the undo stack
+	 * 
 	 * @return true if stack size is greater than zero, false otherwise
 	 */
 	private static boolean popUndoStack() {
@@ -315,6 +332,7 @@ public class HistoryHandler {
 	
 	/**
 	 * Get the top of the redo stack
+	 * 
 	 * @return true if stack size is greater than zero, false otherwise
 	 */
 	private static boolean popRedoStack() {
@@ -340,7 +358,8 @@ public class HistoryHandler {
 	 */
 	private static void saveUndoStack() {
 		FileManager.log(LOG_SAVING_UNDO_HISTORY);
-		ArrayDeque<ArrayList<Task>> undoStack = (ArrayDeque<ArrayList<Task>>) taskUndoStack.clone();
+		ArrayDeque<ArrayList<Task>> undoStack =
+		        (ArrayDeque<ArrayList<Task>>) taskUndoStack.clone();
 		ArrayList<String> saveList = new ArrayList<String>();
 		
 		for (int i = 0; i < MAXIMUM_SAVE_STACK_SIZE; i++) {
@@ -358,6 +377,7 @@ public class HistoryHandler {
 	
 	/**
 	 * Loads undo history from a file
+	 * 
 	 * @return
 	 */
 	private static ArrayDeque<ArrayList<Task>> loadUndoStack() {
@@ -393,15 +413,16 @@ public class HistoryHandler {
 
 	/**
 	 * Check whether a command input is a default command
+	 * 
 	 * @param s
 	 * @return true or false
 	 */
 	protected static boolean isDefaultCommand(String s) {
 		String[] defaultCommandList = {
-				DEFAULT_ADD, DEFAULT_UPDATE, DEFAULT_MARK,
-				DEFAULT_DELETE, DEFAULT_LIST, DEFAULT_SEARCH,
-				DEFAULT_UNDO, DEFAULT_REDO, DEFAULT_CUSTOM,
-				DEFAULT_DELETE_CUSTOM,  DEFAULT_HELP, DEFAULT_EXIT
+		        DEFAULT_ADD, DEFAULT_UPDATE, DEFAULT_MARK,
+		        DEFAULT_DELETE, DEFAULT_LIST, DEFAULT_SEARCH,
+		        DEFAULT_UNDO, DEFAULT_REDO, DEFAULT_CUSTOM,
+		        DEFAULT_DELETE_CUSTOM, DEFAULT_HELP, DEFAULT_EXIT
 		};
 		
 		for (int i = 0; i < defaultCommandList.length; i++) {
@@ -411,16 +432,18 @@ public class HistoryHandler {
 		}
 		return false;
 	}
+	
 	/**
 	 * creates help description
+	 * 
 	 * @return longHelpDescription
 	 */
 	private static String helpDescription() {
 		String[] commandList = {
-				DEFAULT_ADD, DEFAULT_UPDATE, DEFAULT_MARK,
-				DEFAULT_DELETE, DEFAULT_LIST, DEFAULT_SEARCH,
-				DEFAULT_UNDO, DEFAULT_REDO, DEFAULT_CUSTOM,
-				DEFAULT_DELETE_CUSTOM,  DEFAULT_HELP, DEFAULT_EXIT
+		        DEFAULT_ADD, DEFAULT_UPDATE, DEFAULT_MARK,
+		        DEFAULT_DELETE, DEFAULT_LIST, DEFAULT_SEARCH,
+		        DEFAULT_UNDO, DEFAULT_REDO, DEFAULT_CUSTOM,
+		        DEFAULT_DELETE_CUSTOM, DEFAULT_HELP, DEFAULT_EXIT
 		};
 		
 		String longHelpDescription = "";
@@ -428,13 +451,13 @@ public class HistoryHandler {
 		for (int i = 0; i < commandList.length; i++) {
 			String commandHeader = getCustomHeader(commandList[i]);
 			longHelpDescription += (commandHeader + "\n");
-			longHelpDescription += (commandList[i] + CustomCommandHandler.getListOfCustomCommands(commandHeader) + "\n\n");
+			longHelpDescription += (commandList[i]
+			        + CustomCommandHandler
+			                .getListOfCustomCommands(commandHeader) + "\n\n");
 		}
 		return longHelpDescription;
 	}
 }
-
-
 
 	// End of segment: D:\Workspace\CS2103T NEW\src\dothings\logic\MainLogic.java
 
@@ -450,12 +473,12 @@ class TaskHandler {
 	
 	private static final String MESSAGE_SHOW__ON_DATE = "Showing tasks on %s";
 	private static final String MESSAGE_ADDED_TASK = "Added \"%s\".";
-	private static final String MESSAGE_UPDATE_TASK = "Task has been updated.";	
+	private static final String MESSAGE_UPDATE_TASK = "Task has been updated.";
 	private static final String MESSAGE_LIST_INCOMPLETE = "Showing incomplete tasks";
 	private static final String MESSAGE_LIST_ERROR = "Oh no! Please enter a valid date or status";
 	private static final String MESSAGE_LIST_COMPLETE = "Showing completed tasks";
 	private static final String MESSAGE_LIST_OVERDUE = "Showing overdue tasks";
-	private static final String MESSAGE_LIST_ALL = "Showing all tasks";	
+	private static final String MESSAGE_LIST_ALL = "Showing all tasks";
 	private static final String MESSAGE_DELETE_COMPLETE = "All completed tasks have been deleted.";
 	private static final String MESSAGE_DELETE_ALL = "All tasks have been deleted.";
 	private static final String MESSAGE_DELETE_SUCCESS = "All specified tasks have been deleted.";
@@ -465,7 +488,7 @@ class TaskHandler {
 	private static final String MESSAGE_ERROR_DELETE_ARGUMENT = "Hmmm ... Please enter a task to delete";
 	private static final String MESSAGE_ERROR_UPDATE_NO_SUCH_TASK = "Please enter a valid task number to update.";
 	private static final String MESSAGE_ERROR_UPDATE_ARGUMENT = "Incorrect update format.";
-	private static final String MESSAGE_ERROR_START_AFTER_END ="Error, start time cannot be after end time.";
+	private static final String MESSAGE_ERROR_START_AFTER_END = "Error, start time cannot be after end time.";
 	private static final String MESSAGE_ERROR_TASK_DESC_EMPTY = "Error, task description cannot be empty.";
 	private static final String MESSAGE_ERROR_ALIAS_IN_USE = "Alias is already in use";
 	private static final String MESSAGE_ERROR_DELETE = "No such task(s). Please enter a valid number or alias.";
@@ -487,11 +510,11 @@ class TaskHandler {
 	private static final String TASK_SELECT_ALL = "all";
 	private static final String TASK_STATUS_COMPLETE = "completed";
 	
-	
-	//////////ADD Functionality//////////
+	// ////////ADD Functionality//////////
 	
 	/**
 	 * Add a task using the user input
+	 * 
 	 * @param userInput
 	 * @return a Feedback object to be shown to the user
 	 */
@@ -504,7 +527,7 @@ class TaskHandler {
 		
 		if (newTask == null) {
 			return new Feedback(MESSAGE_ERROR_START_AFTER_END, true);
-		} 
+		}
 		
 		if (newTask.getDescription().trim().length() == 0) {
 			return new Feedback(MESSAGE_ERROR_TASK_DESC_EMPTY, true);
@@ -518,15 +541,18 @@ class TaskHandler {
 	
 	/**
 	 * Creates a task from the given userInput
+	 * 
 	 * @param userInput
 	 * @return Task created from the userInput
 	 */
 	protected static Task createTask(String userInput) {
 		String[] inputTokens = userInput.split(WHITESPACE);
-		ArrayList<String> input = new ArrayList<String>(Arrays.asList(inputTokens));
+		ArrayList<String> input = new ArrayList<String>(
+		        Arrays.asList(inputTokens));
 		
 		String alias = CommandParser.getAliasFromDescription(userInput);
-		alias = (Task.isAliasValid(alias) || CommandParser.isInteger(alias)) ? null : alias;
+		alias = (Task.isAliasValid(alias) || CommandParser.isInteger(alias)) ? null
+		        : alias;
 		userInput = CommandParser.removeDateTimeFromString(userInput);
 		userInput = CommandParser.removeAliasAndEscapeChar(userInput);
 		
@@ -535,7 +561,8 @@ class TaskHandler {
 		return createTaskFromFields(fields, userInput, alias);
 	}
 	
-	private static Task createTaskFromFields(String[] fields, String input, String alias) {
+	private static Task createTaskFromFields(String[] fields, String input,
+	                                         String alias) {
 		Task newTask = null;
 		
 		if (fields[Task.START_DATE] == null) {
@@ -544,7 +571,9 @@ class TaskHandler {
 			newTask = createTaskWithStartDate(fields);
 		}
 		
-		if (newTask.getStartDateTime() != null && newTask.getEndDateTime() != null && newTask.getStartDateTime().isAfter(newTask.getEndDateTime())) {
+		if (newTask.getStartDateTime() != null
+		        && newTask.getEndDateTime() != null
+		        && newTask.getStartDateTime().isAfter(newTask.getEndDateTime())) {
 			return null;
 		} else {
 			newTask.setDescription(input);
@@ -552,7 +581,7 @@ class TaskHandler {
 			return newTask;
 		}
 	}
-
+	
 	private static Task createTaskWithoutStartDate(String[] fields) {
 		DateTime start = null;
 		DateTime end = null;
@@ -565,7 +594,7 @@ class TaskHandler {
 			if (fields[Task.END_TIME] != null) {
 				end = DateParser.setDate();
 				end = TimeParser.setTime(start, fields[Task.END_TIME]);
-			} 
+			}
 		}
 		
 		return new Task(null, start, end, null);
@@ -622,7 +651,6 @@ class TaskHandler {
 		return new Task(null, start, end, null);
 	}
 	
-	
 	// End of segment: D:\Workspace\CS2103T NEW\src\dothings\logic\TaskHandler.java
 
 
@@ -642,23 +670,25 @@ public class CommandParser {
 	
 	/**
 	 * Returns the command type portion of the string
+	 * 
 	 * @param userInput
 	 * @return command type portion of the input
 	 */
 	public static String getUserCommandType(String userInput) {
-		assert(userInput != null);
+		assert (userInput != null);
 		
 		String[] tokens = userInput.split(WHITESPACE);
 		return tokens[0];
 	}
-
+	
 	/**
 	 * Returns the description portion of the string
+	 * 
 	 * @param userInput
 	 * @return description portion of the input
 	 */
 	public static String getUserCommandDesc(String userInput) {
-		assert(userInput != null);
+		assert (userInput != null);
 		
 		String[] tokens = userInput.split(WHITESPACE, 2);
 		if (tokens.length < 2) {
@@ -669,25 +699,29 @@ public class CommandParser {
 	
 	/**
 	 * Checks if the user input has at least the specified number of words
+	 * 
 	 * @param userInput
 	 * @return true if the command has at least length words long, false otherwise
 	 */
 	public static boolean isInputValid(String userInput, int length) {
-		if (userInput == null || userInput.length() == 0 || userInput.equals("")) {
+		if (userInput == null || userInput.length() == 0
+		        || userInput.equals("")) {
 			return false;
 		}
 		
 		String[] tokens = userInput.split(WHITESPACE);
 		boolean isValid = (tokens.length >= length);
-		FileManager.log(String.format(LOG_IS_INPUT_VALID, userInput, length, isValid));
+		FileManager.log(String.format(LOG_IS_INPUT_VALID, userInput, length,
+		        isValid));
 		
 		return isValid;
 	}
 	
 	/**
-	 * Returns an array of string of length 4 containing the start and end
-	 * dates and times of the input. Index 0 and 1 contains the start date
-	 * and time respectively. Index 2 and 3 contains the end date and time.
+	 * Returns an array of string of length 4 containing the start and end dates and times of the
+	 * input. Index 0 and 1 contains the start date and time respectively. Index 2 and 3 contains
+	 * the end date and time.
+	 * 
 	 * @param input
 	 * @return a String array containing start and end date/times
 	 */
@@ -699,13 +733,15 @@ public class CommandParser {
 	}
 	
 	/**
-	 * Returns an array of string of length 4 containing the start and end
-	 * dates of the input at index 0 and 2 of the array respectively.
+	 * Returns an array of string of length 4 containing the start and end dates of the input at
+	 * index 0 and 2 of the array respectively.
+	 * 
 	 * @param input
 	 * @param fields
 	 * @return a String array containing the start and end date
 	 */
-	private static String[] getDateFields(ArrayList<String> input, String[] fields) {
+	private static String[] getDateFields(ArrayList<String> input,
+	                                      String[] fields) {
 		for (int i = 0; i < input.size(); i++) {
 			if (DateParser.isDate(input.get(i))) {
 				if (fields[Task.START_DATE] == null) {
@@ -721,13 +757,15 @@ public class CommandParser {
 	}
 	
 	/**
-	 * Returns an array of string of length 4 containing the start and end
-	 * times of the input at index 1 and 3 of the array respectively.
+	 * Returns an array of string of length 4 containing the start and end times of the input at
+	 * index 1 and 3 of the array respectively.
+	 * 
 	 * @param input
 	 * @param fields
 	 * @return a String array containing the start and end date
 	 */
-	private static String[] getTimeFields(ArrayList<String> input, String[] fields) {
+	private static String[] getTimeFields(ArrayList<String> input,
+	                                      String[] fields) {
 		for (int i = 0; i < input.size(); i++) {
 			if (TimeParser.isTime(input.get(i))) {
 				if (fields[Task.START_TIME] == null) {
@@ -744,13 +782,14 @@ public class CommandParser {
 	
 	/**
 	 * Removes date and time from the string
+	 * 
 	 * @param s
 	 * @return String without date and time
 	 */
 	public static String removeDateTimeFromString(String s) {
 		String[] tokens = s.split(WHITESPACE);
 		
-		for(int i = 0; i < tokens.length; i++) {
+		for (int i = 0; i < tokens.length; i++) {
 			if (DateParser.isDate(tokens[i]) || TimeParser.isTime(tokens[i])) {
 				int j = i - 1;
 				while (j >= 0 && isDateTimeIdentifier(tokens[j])) {
@@ -765,6 +804,7 @@ public class CommandParser {
 	
 	/**
 	 * Removes all occurrences of "alias:<string>" and escape character "\" from the string
+	 * 
 	 * @param desc
 	 * @return String with alias and escape character removed
 	 */
@@ -777,7 +817,7 @@ public class CommandParser {
 			}
 			if (tokens[i].contains(ALIAS_IDENTIFIER)) {
 				tokens[i] = null;
-			}	
+			}
 		}
 		
 		return arrayToString(tokens);
@@ -785,6 +825,7 @@ public class CommandParser {
 	
 	/**
 	 * Get the first occurrence of an alias in the string
+	 * 
 	 * @param desc
 	 * @return
 	 */
@@ -801,6 +842,7 @@ public class CommandParser {
 	
 	/**
 	 * Checks if the string is a time identifier
+	 * 
 	 * @param s
 	 * @return true if s is a time identifier
 	 */
@@ -811,8 +853,9 @@ public class CommandParser {
 			return false;
 		}
 		
-		for(String identifier: identifierList) {
-			if (s.equals(identifier)) return true;
+		for (String identifier : identifierList) {
+			if (s.equals(identifier))
+				return true;
 		}
 		
 		return false;
@@ -820,15 +863,17 @@ public class CommandParser {
 	
 	/**
 	 * Converts a String array to a sentence
+	 * 
 	 * @param s
 	 * @return array s as String sentence
 	 */
 	protected static String arrayToString(String[] s) {
-		assert(s != null);
+		assert (s != null);
 		
 		String r = "";
 		for (int i = 0; i < s.length; i++) {
-			if (s[i] == null) continue;
+			if (s[i] == null)
+				continue;
 			if (i == s.length) {
 				r = r + s[i];
 			} else {
@@ -841,11 +886,12 @@ public class CommandParser {
 	
 	/**
 	 * Checks if the String is a valid integer
+	 * 
 	 * @param str
 	 * @return true is str is an integer
 	 */
 	public static boolean isInteger(String str) {
-		assert(str != null);
+		assert (str != null);
 		
 		try {
 			Integer.parseInt(str);
@@ -866,7 +912,7 @@ public class CommandParser {
 	 * origin: D:\Workspace\CS2103T NEW\src\dothings\parser\DateParser.java
 	 */
 
-public class DateParser{
+public class DateParser {
 	private static final String DATE_FORMAT_0 = "dd/MM/YYYY";
 	private static final String DATE_FORMAT_1 = "dd-MM-YYYY";
 	private static final String DATE_FORMAT_2 = "dd.MM.YYYY";
@@ -879,45 +925,45 @@ public class DateParser{
 	private static final String DATE_FORMAT_9 = "dd/MMM";
 	private static final String DATE_FORMAT_10 = "dd-MMM";
 	private static final String DATE_FORMAT_11 = "E";
-	private static final int FORMAT_TYPE_0_INDEX = 7;	//format 0 : full date, with year
-	private static final int FORMAT_TYPE_1_INDEX = 11;	//format 1 : with day and month only
-	private static final int FORMAT_TYPE_2_INDEX = 12;	//format 2 : day of the week, Friday, etc.
+	private static final int FORMAT_TYPE_0_INDEX = 7;	// format 0 : full date, with year
+	private static final int FORMAT_TYPE_1_INDEX = 11;	// format 1 : with day and month only
+	private static final int FORMAT_TYPE_2_INDEX = 12;	// format 2 : day of the week, Friday, etc.
 	
 	private static final String DATE_TODAY = "today";
 	private static final String DATE_TOMORROW = "tomorrow";
 	private static final String DATE_YESTERDAY = "yesterday";
 	
-	private static ArrayList<DateTimeFormatter> dateFormats = 
-		new ArrayList<DateTimeFormatter> (Arrays.asList( 
-			DateTimeFormat.forPattern(DATE_FORMAT_0), 
-			DateTimeFormat.forPattern(DATE_FORMAT_1), 
-			DateTimeFormat.forPattern(DATE_FORMAT_2), 	
-			DateTimeFormat.forPattern(DATE_FORMAT_3), 
-			DateTimeFormat.forPattern(DATE_FORMAT_4), 
-			DateTimeFormat.forPattern(DATE_FORMAT_5), 
-			DateTimeFormat.forPattern(DATE_FORMAT_6),
-			DateTimeFormat.forPattern(DATE_FORMAT_7), 
-			DateTimeFormat.forPattern(DATE_FORMAT_8), 
-			DateTimeFormat.forPattern(DATE_FORMAT_9), 
-			DateTimeFormat.forPattern(DATE_FORMAT_10),
-			DateTimeFormat.forPattern(DATE_FORMAT_11)
-		));
-
+	private static ArrayList<DateTimeFormatter> dateFormats =
+	        new ArrayList<DateTimeFormatter>(Arrays.asList(
+	                DateTimeFormat.forPattern(DATE_FORMAT_0),
+	                DateTimeFormat.forPattern(DATE_FORMAT_1),
+	                DateTimeFormat.forPattern(DATE_FORMAT_2),
+	                DateTimeFormat.forPattern(DATE_FORMAT_3),
+	                DateTimeFormat.forPattern(DATE_FORMAT_4),
+	                DateTimeFormat.forPattern(DATE_FORMAT_5),
+	                DateTimeFormat.forPattern(DATE_FORMAT_6),
+	                DateTimeFormat.forPattern(DATE_FORMAT_7),
+	                DateTimeFormat.forPattern(DATE_FORMAT_8),
+	                DateTimeFormat.forPattern(DATE_FORMAT_9),
+	                DateTimeFormat.forPattern(DATE_FORMAT_10),
+	                DateTimeFormat.forPattern(DATE_FORMAT_11)
+	                ));
 	
 	/**
 	 * Sets the date to the one from the input.
+	 * 
 	 * @param input
 	 * @return a DateTime object with the date to the input
 	 */
 	public static DateTime setDate(String input) {
 		int formatType = getDateFormatType(input);
 		DateTime date = new DateTime();
-
+		
 		if (formatType == 0) {
 			date = parseDateFormat0(input);
 		} else if (formatType == 1) {
 			date = parseDateFormat1(input, date);
-		} else if (formatType == 2) { 
+		} else if (formatType == 2) {
 			date = parseDateFormat2(input, date);
 		} else if (formatType == 3) {
 			date = parseDateFormat3(input);
@@ -928,26 +974,25 @@ public class DateParser{
 	
 	/**
 	 * Set the date to today's date
+	 * 
 	 * @return a DateTime object with the date set to today.
 	 */
 	public static DateTime setDate() {
 		return new DateTime();
 	}
-
+	
 	/**
-	 * Get the date format type of the input.
-	 * returns 0 if date contains day, month and year
-	 * returns 1 if date contains day and month only
-	 * returns 2 if date is written in English (Tuesday, wed etc)
-	 * returns 3 if date is yesterday/today/tomorrow
-	 * returns -1 if invalid
+	 * Get the date format type of the input. returns 0 if date contains day, month and year returns
+	 * 1 if date contains day and month only returns 2 if date is written in English (Tuesday, wed
+	 * etc) returns 3 if date is yesterday/today/tomorrow returns -1 if invalid
+	 * 
 	 * @param input
 	 * @return the format of the input date
 	 */
 	private static int getDateFormatType(String input) {
 		DateTime date;
 		int i = 0;
-		for ( ; i < dateFormats.size(); i++) {
+		for (; i < dateFormats.size(); i++) {
 			try {
 				date = dateFormats.get(i).parseDateTime(input);
 				break;
@@ -965,27 +1010,31 @@ public class DateParser{
 		} else if (isFormat3(input)) {
 			return 3;
 		}
-			
+		
 		return -1;
 	}
 	
 	/**
 	 * Checks if input String is a date with format 3 (yesterday, today, tomorrow)
+	 * 
 	 * @param input
 	 * @return true if input is format3
 	 */
 	private static boolean isFormat3(String input) {
-		return input.equalsIgnoreCase(DATE_TODAY) || input.equalsIgnoreCase(DATE_TOMORROW) || input.equalsIgnoreCase(DATE_YESTERDAY);
+		return input.equalsIgnoreCase(DATE_TODAY)
+		        || input.equalsIgnoreCase(DATE_TOMORROW)
+		        || input.equalsIgnoreCase(DATE_YESTERDAY);
 	}
 	
 	/**
 	 * Finds if the input string is a valid date
+	 * 
 	 * @param input
 	 * @return true if the input string is a valid date
 	 */
 	public static boolean isDate(String input) {
 		int formatType = getDateFormatType(input);
-		assert(formatType >= -1 && formatType <=3);
+		assert (formatType >= -1 && formatType <= 3);
 		
 		if (formatType == -1) {
 			return false;
@@ -996,22 +1045,25 @@ public class DateParser{
 	
 	/**
 	 * Checks if two dates are the same day
+	 * 
 	 * @param date1
 	 * @param date2
 	 * @return true if date1 is the same as date 2
 	 */
 	public static boolean isSameDate(DateTime date1, DateTime date2) {
-		assert(date1 != null && date2 != null);
-		return (date1.getYear() == date2.getYear()) && (date1.getDayOfYear() == date2.getDayOfYear());
+		assert (date1 != null && date2 != null);
+		return (date1.getYear() == date2.getYear())
+		        && (date1.getDayOfYear() == date2.getDayOfYear());
 	}
 	
 	/**
-	 * Parse the input string with date format type 0 and returns a
-	 * DateTime object with the corresponding date
+	 * Parse the input string with date format type 0 and returns a DateTime object with the
+	 * corresponding date
+	 * 
 	 * @param input
 	 * @return a DateTime object with the date set to the input date
 	 */
-	private static DateTime parseDateFormat0(String input){
+	private static DateTime parseDateFormat0(String input) {
 		DateTime date = null;
 		
 		for (int i = 0; i < FORMAT_TYPE_0_INDEX; i++) {
@@ -1026,8 +1078,9 @@ public class DateParser{
 	}
 	
 	/**
-	 * Parse the input string with date format type 1 and returns a
-	 * DateTime object with the corresponding date
+	 * Parse the input string with date format type 1 and returns a DateTime object with the
+	 * corresponding date
+	 * 
 	 * @param input
 	 * @return a DateTime object with the date set to the input date
 	 */
@@ -1039,8 +1092,10 @@ public class DateParser{
 		int currentMonth = date.getMonthOfYear();
 		
 		// Target day to be set has already passed, so set it to next year
-		if (targetMonth < currentMonth || (targetMonth == currentMonth && targetDay < currentDay)) {
-			date = new DateTime(date.getYear()+1 , targetMonth, targetDay, 0, 0);
+		if (targetMonth < currentMonth
+		        || (targetMonth == currentMonth && targetDay < currentDay)) {
+			date = new DateTime(date.getYear() + 1, targetMonth, targetDay, 0,
+			        0);
 		} else {
 			date = new DateTime(date.getYear(), targetMonth, targetDay, 0, 0);
 		}
@@ -1048,27 +1103,30 @@ public class DateParser{
 	}
 	
 	/**
-	 * Parse the input string with date format type 2 and returns a
-	 * DateTime object with the corresponding date
+	 * Parse the input string with date format type 2 and returns a DateTime object with the
+	 * corresponding date
+	 * 
 	 * @param input
 	 * @return a DateTime object with the date set to the input date
 	 */
 	private static DateTime parseDateFormat2(String input, DateTime date) {
-		DateTime tempDate = dateFormats.get(FORMAT_TYPE_2_INDEX - 1).parseDateTime(input);
+		DateTime tempDate = dateFormats.get(FORMAT_TYPE_2_INDEX - 1)
+		        .parseDateTime(input);
 		int targetDayOfWeek = tempDate.getDayOfWeek();
 		int currentDayOfWeek = date.getDayOfWeek();
 		
 		if (targetDayOfWeek < currentDayOfWeek) {
 			date = date.plusWeeks(1);
-		} 
+		}
 		
 		date = date.withDayOfWeek(targetDayOfWeek);
 		return date;
 	}
 	
 	/**
-	 * Parse the input string with date format type 3 and returns a
-	 * DateTime object with the corresponding date
+	 * Parse the input string with date format type 3 and returns a DateTime object with the
+	 * corresponding date
+	 * 
 	 * @param input
 	 * @return a DateTime object with the date set to the input date
 	 */
@@ -1086,6 +1144,7 @@ public class DateParser{
 	
 	/**
 	 * Splits the day and month of the input date string into two integers
+	 * 
 	 * @param date
 	 * @return integer array with the day of the month in index 0 and month of the year in index 1
 	 */
@@ -1099,10 +1158,11 @@ public class DateParser{
 		
 		int[] intTokens = new int[tokens.length];
 		for (int i = 0; i < tokens.length; i++) {
-			try {	
+			try {
 				intTokens[i] = Integer.parseInt(tokens[i]);
 			} catch (NumberFormatException e) {
-				DateTime tempDate = DateTimeFormat.forPattern("MMM").parseDateTime(tokens[i]);
+				DateTime tempDate = DateTimeFormat.forPattern("MMM")
+				        .parseDateTime(tokens[i]);
 				intTokens[i] = tempDate.getMonthOfYear();
 			}
 		}
@@ -1121,7 +1181,7 @@ public class DateParser{
 	 * origin: D:\Workspace\CS2103T NEW\src\dothings\parser\TimeParser.java
 	 */
 
-public class TimeParser{
+public class TimeParser {
 	
 	private static final String TIME_FORMAT_0 = "HH:mm";
 	private static final String TIME_FORMAT_1 = "HH.mm";
@@ -1133,20 +1193,21 @@ public class TimeParser{
 	private static final String TIME_FORMAT_7 = "haa";
 	private static final int FORMAT_SIZE = 8;
 	
-	private static ArrayList<DateTimeFormatter> timeFormats = 
-		new ArrayList<DateTimeFormatter> (Arrays.asList( 
-			DateTimeFormat.forPattern(TIME_FORMAT_0), 
-			DateTimeFormat.forPattern(TIME_FORMAT_1), 
-			DateTimeFormat.forPattern(TIME_FORMAT_2), 	
-			DateTimeFormat.forPattern(TIME_FORMAT_3), 
-			DateTimeFormat.forPattern(TIME_FORMAT_4), 
-			DateTimeFormat.forPattern(TIME_FORMAT_5), 
-			DateTimeFormat.forPattern(TIME_FORMAT_6),
-			DateTimeFormat.forPattern(TIME_FORMAT_7)
-		));
+	private static ArrayList<DateTimeFormatter> timeFormats =
+	        new ArrayList<DateTimeFormatter>(Arrays.asList(
+	                DateTimeFormat.forPattern(TIME_FORMAT_0),
+	                DateTimeFormat.forPattern(TIME_FORMAT_1),
+	                DateTimeFormat.forPattern(TIME_FORMAT_2),
+	                DateTimeFormat.forPattern(TIME_FORMAT_3),
+	                DateTimeFormat.forPattern(TIME_FORMAT_4),
+	                DateTimeFormat.forPattern(TIME_FORMAT_5),
+	                DateTimeFormat.forPattern(TIME_FORMAT_6),
+	                DateTimeFormat.forPattern(TIME_FORMAT_7)
+	                ));
 	
 	/**
 	 * Alters the time component of the input DateTime object with the input time string
+	 * 
 	 * @param date
 	 * @param input
 	 * @return a DateTime object with date and time already set
@@ -1159,9 +1220,10 @@ public class TimeParser{
 			return date;
 		}
 	}
-
+	
 	/**
 	 * Checks if the input string is a valid date format
+	 * 
 	 * @param input
 	 * @return true if valid, false otherwise
 	 */
@@ -1169,7 +1231,7 @@ public class TimeParser{
 		DateTime date;
 		int i = 0;
 		
-		for ( ; i < timeFormats.size(); i++) {
+		for (; i < timeFormats.size(); i++) {
 			try {
 				date = timeFormats.get(i).parseDateTime(input);
 				break;
@@ -1189,6 +1251,7 @@ public class TimeParser{
 	
 	/**
 	 * Checks whether the input string is a time
+	 * 
 	 * @param input
 	 * @return true if string is a time, false otherwise
 	 */
@@ -1198,11 +1261,12 @@ public class TimeParser{
 	
 	/**
 	 * Sets the time of the DateTime object to the input time
+	 * 
 	 * @param date
 	 * @param input
 	 * @return DateTime object with the input time
 	 */
-	private static DateTime parseTimeFormat(DateTime date, String input){
+	private static DateTime parseTimeFormat(DateTime date, String input) {
 		DateTime time = null;
 		
 		for (int i = 0; i < FORMAT_SIZE; i++) {
@@ -1213,7 +1277,9 @@ public class TimeParser{
 			}
 		}
 		
-		return new DateTime(date.getYear(), date.getMonthOfYear(), date.getDayOfMonth(), time.getHourOfDay(), time.getMinuteOfHour());
+		return new DateTime(date.getYear(), date.getMonthOfYear(),
+		        date.getDayOfMonth(), time.getHourOfDay(),
+		        time.getMinuteOfHour());
 	}
 	
 }
@@ -1235,21 +1301,28 @@ public class FileManager {
 	private static final String MESSAGE_ERROR_LOGGER_WRITE = "Error writing to file ";
 	private static final String MESSAGE_ERROR_ENCODING = "Unsupported file encoding";
 	@SuppressWarnings("deprecation")
-	public static final String FILEPATH = new File(URLDecoder.decode(DoThingsGUI.class.getProtectionDomain().getCodeSource().getLocation().getPath())).getParent() + System.getProperty("file.separator");
+	public static final String FILEPATH = new File(
+	        URLDecoder.decode(DoThingsGui.class.getProtectionDomain()
+	                .getCodeSource().getLocation().getPath())).getParent()
+	        + System.getProperty("file.separator");
 	
-	private static Logger logger = Logger.getLogger(FileManager.class.getName());
+	private static Logger logger = Logger
+	        .getLogger(FileManager.class.getName());
 	
 	/**
 	 * Get a new buffered reader with UTF8 encoding
+	 * 
 	 * @param fileName
 	 * @return buffered reader
 	 * @throws FileNotFoundException
 	 */
-	private static BufferedReader getReader(String fileName) throws FileNotFoundException {
+	private static BufferedReader getReader(String fileName)
+	        throws FileNotFoundException {
 		File file = new File(fileName);
 		BufferedReader bw;
 		try {
-			bw = new BufferedReader(new InputStreamReader(new FileInputStream(file), ENCODING_UTF8));
+			bw = new BufferedReader(new InputStreamReader(new FileInputStream(
+			        file), ENCODING_UTF8));
 			return bw;
 		} catch (UnsupportedEncodingException e) {
 			log(MESSAGE_ERROR_ENCODING);
@@ -1261,39 +1334,43 @@ public class FileManager {
 	
 	/**
 	 * Get a new buffered writer with UTF8 encoding
+	 * 
 	 * @param fileName
 	 * @return buffered writer
 	 * @throws FileNotFoundException
 	 */
 	private static BufferedWriter getWriter(String fileName) throws IOException {
 		File file = new File(fileName);
-		BufferedWriter bw = new BufferedWriter(new OutputStreamWriter(new FileOutputStream(file), "UTF8"));
+		BufferedWriter bw = new BufferedWriter(new OutputStreamWriter(
+		        new FileOutputStream(file), "UTF8"));
 		return bw;
 	}
 	
 	/**
-	 * Appends any log messages to the log file 
+	 * Appends any log messages to the log file
+	 * 
 	 * @param message
 	 */
 	public static void log(String message) {
 		FileHandler fh;
-		try {   
-	        fh = new FileHandler(FILEPATH + LOG_FILE, true);  
-	        logger.addHandler(fh);
-	        SimpleFormatter formatter = new SimpleFormatter();  
-	        fh.setFormatter(formatter);  
-	        logger.info(message);
-		    fh.close(); 
-
-	    } catch (SecurityException e) {  
-	        e.printStackTrace();  
-	    } catch (IOException e) {  
-	        e.printStackTrace();  
-	    } 
+		try {
+			fh = new FileHandler(FILEPATH + LOG_FILE, true);
+			logger.addHandler(fh);
+			SimpleFormatter formatter = new SimpleFormatter();
+			fh.setFormatter(formatter);
+			logger.info(message);
+			fh.close();
+			
+		} catch (SecurityException e) {
+			e.printStackTrace();
+		} catch (IOException e) {
+			e.printStackTrace();
+		}
 	}
 	
 	/**
 	 * Read lines from a text file
+	 * 
 	 * @param fileName
 	 * @return ArrayList of String with each line as an entry
 	 */
@@ -1315,13 +1392,14 @@ public class FileManager {
 	
 	/**
 	 * Saves ArrayList of String to a file
+	 * 
 	 * @param fileName
 	 * @param list
 	 */
 	public static void writeToFile(String fileName, ArrayList<String> list) {
 		try {
 			BufferedWriter writer = getWriter(FILEPATH + fileName);
-			for(int i = 0; i < list.size(); i++) {
+			for (int i = 0; i < list.size(); i++) {
 				writer.write(list.get(i) + System.getProperty("line.separator"));
 			}
 			writer.flush();
@@ -1360,11 +1438,11 @@ public class TestFileManager {
 		FileManager.writeToFile("testFM.txt", list);
 		ArrayList<String> readList = FileManager.readFromFile(TEST_FILE);
 		for (int i = 0; i < 10; i++) {
-			assertEquals("line " + i , list.get(i));;
+			assertEquals("line " + i, readList.get(i));;
 		}
 		
 	}
-
+	
 }
 
 	// End of segment: D:\Workspace\CS2103T NEW\src\dothings\tests\TestFileManager.java
@@ -1378,7 +1456,7 @@ public class TestFileManager {
 	 */
 
 public class TestLogic {
-
+	
 	@Test
 	public void testCustomCommandHandler() {
 		CustomCommandHandler.deleteCustomCommand("insert");
@@ -1386,11 +1464,14 @@ public class TestLogic {
 		assertTrue(CustomCommandHandler.isCustomCommand("insert", "[ADD]"));
 		assertFalse(CustomCommandHandler.isCustomCommand("insert", "[DELETE]"));
 		
-		Feedback feedback = CustomCommandHandler.addCustomCommand("insert", "[ADD]");
-		assertEquals(feedback.toString(), CustomCommandHandler.MESSAGE_CUSTOM_DUPLICATE);
+		Feedback feedback = CustomCommandHandler.addCustomCommand("insert",
+		        "[ADD]");
+		assertEquals(feedback.toString(),
+		        CustomCommandHandler.MESSAGE_CUSTOM_DUPLICATE);
 		
 		feedback = CustomCommandHandler.addCustomCommand("insert", "[DELETE]");
-		assertEquals(feedback.toString(), CustomCommandHandler.MESSAGE_CUSTOM_DUPLICATE);
+		assertEquals(feedback.toString(),
+		        CustomCommandHandler.MESSAGE_CUSTOM_DUPLICATE);
 	}
 	
 	@Test
@@ -1417,7 +1498,6 @@ public class TestLogic {
 		task.setEndDateTime(time);
 		assertEquals(time, task.getEndDateTime());
 		
-		
 		Task task2 = new Task("This is the second task");
 		Task.setList(new ArrayList<Task>());
 		Task.getList().add(task);
@@ -1431,11 +1511,13 @@ public class TestLogic {
 	
 	@Test
 	public void testTaskTimeMethods() {
-		Task task1 = new Task("This is a dummy scheduled task", new DateTime().minusDays(2), null, "yolo");
+		Task task1 = new Task("This is a dummy scheduled task",
+		        new DateTime().minusDays(2), null, "yolo");
 		assertTrue(task1.isOverdue());
 		assertFalse(task1.isUnscheduled());
-
-		Task task2 = new Task("This is a second dummy scheduled task", new DateTime(), new DateTime(), "yolo");
+		
+		Task task2 = new Task("This is a second dummy scheduled task",
+		        new DateTime(), new DateTime(), "yolo");
 		assertFalse(task2.isOverdue());
 		assertTrue(task2.isToday());
 		assertFalse(task2.isUnscheduled());
@@ -1449,30 +1531,35 @@ public class TestLogic {
 	@Test
 	public void testTaskOtherMethods() {
 		// test toString()
-		Task task = new Task("This is to test the string methods", null, null, "trippy");
+		Task task = new Task("This is to test the string methods", null, null,
+		        "trippy");
 		String expectedString = "NO_START_TIME ~~ NO_END_TIME ~~ trippy ~~ false ~~ This is to test the string methods";
-		assertEquals(expectedString,task.toString());
+		assertEquals(expectedString, task.toString());
 		
 		// test parseTaskFromString()
 		task = Task.parseTaskFromString(expectedString);
-		assertEquals("This is to test the string methods", task.getDescription());
+		assertEquals("This is to test the string methods",
+		        task.getDescription());
 		assertEquals("trippy", task.getAlias());
 		assertNull(task.getStartDateTime());
 		assertNull(task.getEndDateTime());
-		assertFalse(task.getStatus());	
+		assertFalse(task.getStatus());
 		
 		// test compareTo()
-		Task task1 = new Task("This is the a scheduled task", new DateTime(), new DateTime(), "yoko");
-		Task task2 = new Task("This is the a scheduled task", new DateTime(), new DateTime(), "hama");
-		Task task3 = new Task("This is the another scheduled task", new DateTime().plusHours(1), null, "coco");
+		Task task1 = new Task("This is the a scheduled task", new DateTime(),
+		        new DateTime(), "yoko");
+		Task task2 = new Task("This is the a scheduled task", new DateTime(),
+		        new DateTime(), "hama");
+		Task task3 = new Task("This is the another scheduled task",
+		        new DateTime().plusHours(1), null, "coco");
 		Task task4 = new Task("A");
-		Task task5 = new Task("B",  null, null, "loco");
+		Task task5 = new Task("B", null, null, "loco");
 		
 		assertTrue(task1.compareTo(task2) < 0);
 		assertTrue(task1.compareTo(task3) < 0);
 		assertTrue(task1.compareTo(task4) < 0);
 		assertTrue(task1.compareTo(task5) < 0);
-
+		
 		assertTrue(task2.compareTo(task3) < 0);
 		assertTrue(task2.compareTo(task4) < 0);
 		assertTrue(task2.compareTo(task5) < 0);
@@ -1512,19 +1599,22 @@ public class TestLogic {
 	 */
 
 public class TestParser {
-	////////Tests for Command Parser /////////
+	// //////Tests for Command Parser /////////
 	
-	@Test 
+	@Test
 	public void testGetUserCommand() {
-		assertEquals("add", CommandParser.getUserCommandType("add meeting with john"));
-		assertEquals("meeting with jack", CommandParser.getUserCommandDesc("add meeting with jack"));
+		assertEquals("add",
+		        CommandParser.getUserCommandType("add meeting with john"));
+		assertEquals("meeting with jack",
+		        CommandParser.getUserCommandDesc("add meeting with jack"));
 		assertNull(CommandParser.getUserCommandDesc("add"));
 	}
 	
 	@Test
 	public void testIsValidCommand() {
 		assertTrue(CommandParser.isInputValid("add yolo", 2));
-		assertTrue(CommandParser.isInputValid("add yolo forever and ever and ever", 2));
+		assertTrue(CommandParser.isInputValid(
+		        "add yolo forever and ever and ever", 2));
 		assertFalse(CommandParser.isInputValid("add", 2));
 		assertFalse(CommandParser.isInputValid("add ", 2));
 	}
@@ -1563,21 +1653,41 @@ public class TestParser {
 	
 	@Test
 	public void testRemoveDateTimeFromString() {
-		assertEquals("do stuff", CommandParser.removeDateTimeFromString("do stuff"));
-		assertEquals("do stuff with abby", CommandParser.removeDateTimeFromString("do stuff on monday with abby"));
-		assertEquals("do stuff with abby", CommandParser.removeDateTimeFromString("on monday do stuff with abby until tue"));
-		assertEquals("meeting with abby", CommandParser.removeDateTimeFromString("from 5pm to 6pm meeting with abby on 12/12/12"));
+		assertEquals("do stuff",
+		        CommandParser.removeDateTimeFromString("do stuff"));
+		assertEquals(
+		        "do stuff with abby",
+		        CommandParser
+		                .removeDateTimeFromString("do stuff on monday with abby"));
+		assertEquals(
+		        "do stuff with abby",
+		        CommandParser
+		                .removeDateTimeFromString("on monday do stuff with abby until tue"));
+		assertEquals(
+		        "meeting with abby",
+		        CommandParser
+		                .removeDateTimeFromString("from 5pm to 6pm meeting with abby on 12/12/12"));
 	}
 	
 	@Test
 	public void testRemoveAliasAndEscapeChar() {
-		assertEquals("do stuff", CommandParser.removeAliasAndEscapeChar("do stuff"));
-		assertEquals("do stuff on monday with abby", CommandParser.removeAliasAndEscapeChar("do stuff on \\monday with abby"));
-		assertEquals("do stuff with abby", CommandParser.removeAliasAndEscapeChar("alias:who do stuff with abby"));
-		assertEquals("meeting with abby on 12/12/12", CommandParser.removeAliasAndEscapeChar("alias:meat meeting with abby on \\12/12/12"));
+		assertEquals("do stuff",
+		        CommandParser.removeAliasAndEscapeChar("do stuff"));
+		assertEquals(
+		        "do stuff on monday with abby",
+		        CommandParser
+		                .removeAliasAndEscapeChar("do stuff on \\monday with abby"));
+		assertEquals(
+		        "do stuff with abby",
+		        CommandParser
+		                .removeAliasAndEscapeChar("alias:who do stuff with abby"));
+		assertEquals(
+		        "meeting with abby on 12/12/12",
+		        CommandParser
+		                .removeAliasAndEscapeChar("alias:meat meeting with abby on \\12/12/12"));
 	}
 	
-	////////Tests for Date Parser /////////
+	// //////Tests for Date Parser /////////
 	
 	@Test
 	public void testIsDate() {
@@ -1621,7 +1731,7 @@ public class TestParser {
 		assertEquals("11/12/2012", dt.toString("dd/MM/YYYY"));
 	}
 	
-	//////// Tests for Time Parser /////////
+	// ////// Tests for Time Parser /////////
 	
 	@Test
 	public void testIsTime() {
@@ -1663,7 +1773,6 @@ public class TestParser {
 		assertEquals("01:00", dt.toString("HH:mm"));
 	}
 }
-
 
 	// End of segment: D:\Workspace\CS2103T NEW\src\dothings\tests\TestParser.java
 

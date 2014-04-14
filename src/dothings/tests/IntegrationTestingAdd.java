@@ -1,4 +1,5 @@
 package dothings.tests;
+
 import static org.junit.Assert.*;
 
 import java.util.ArrayList;
@@ -14,7 +15,6 @@ public class IntegrationTestingAdd {
 	private static final int FEEDBACK_DESC = 1;
 	private static final int TASK_DESC = 2;
 	private static final int TASK_ALIAS = 3;
-	private static final int TASK_STATUS = 4;
 	private static final int TASK_DATE = 5;
 	private static final int TASK_TIME = 6;
 	
@@ -43,7 +43,7 @@ public class IntegrationTestingAdd {
 	@Test
 	public void testAddNoDateNoTimeWithAlias() {
 		ArrayList<ArrayList<String>> result = MainLogic.runLogic("delete all");
-	
+		
 		// Task with no date, no time, with alias
 		result = MainLogic.runLogic("add assignment1 alias:a1");
 		
@@ -122,7 +122,7 @@ public class IntegrationTestingAdd {
 	public void testAddNoDateTwoTimeNoAlias() {
 		ArrayList<ArrayList<String>> result = MainLogic.runLogic("delete all");
 		
-		//Task with no date, 2 time, without alias
+		// Task with no date, 2 time, without alias
 		result = MainLogic.runLogic("add assignment1 on 1130 by 2359");
 		
 		String expectedFeedbackType = "add";
@@ -146,7 +146,7 @@ public class IntegrationTestingAdd {
 	public void testAddNoDateTwoTimeWithAlias() {
 		ArrayList<ArrayList<String>> result = MainLogic.runLogic("delete all");
 		
-		//Task with no date, 2 time, without alias
+		// Task with no date, 2 time, without alias
 		result = MainLogic.runLogic("add assignment1 on 1130 by 2359 alias:a1");
 		
 		String expectedFeedbackType = "add";
@@ -173,7 +173,7 @@ public class IntegrationTestingAdd {
 	@Test
 	public void testAddOneDateNoTimeNoAlias() {
 		ArrayList<ArrayList<String>> result = MainLogic.runLogic("delete all");
-
+		
 		// Task with 1 date, 0 time, without alias
 		result = MainLogic.runLogic("add assignment1 on 08/08/2015");
 		
@@ -198,7 +198,7 @@ public class IntegrationTestingAdd {
 	@Test
 	public void testAddOneDateNoTimeWithAlias() {
 		ArrayList<ArrayList<String>> result = MainLogic.runLogic("delete all");
-
+		
 		// Task with 1 date, 0 time, without alias
 		result = MainLogic.runLogic("add assignment1 on 08/08/2015 alias:a1");
 		
@@ -254,7 +254,8 @@ public class IntegrationTestingAdd {
 		ArrayList<ArrayList<String>> result = MainLogic.runLogic("delete all");
 		
 		// Task with 1 date, 1 time, without alias
-		result = MainLogic.runLogic("add alias:a1 assignment1 on 08/08/2015 1800");
+		result = MainLogic
+		        .runLogic("add alias:a1 assignment1 on 08/08/2015 1800");
 		
 		String expectedFeedbackType = "add";
 		String feedbackType = result.get(FEEDBACK_TYPE).get(0);
@@ -274,16 +275,17 @@ public class IntegrationTestingAdd {
 		
 		String expectedAlias = "a1";
 		String taskAlias = result.get(TASK_ALIAS).get(0);
-		assertEquals(expectedAlias,taskAlias);
+		assertEquals(expectedAlias, taskAlias);
 		
 	}
-
+	
 	@Test
 	public void testAddOneDateTwoTimeNoAlias() {
 		ArrayList<ArrayList<String>> result = MainLogic.runLogic("delete all");
 		
 		// Task with 1 date, 2 time, without alias
-		result = MainLogic.runLogic("add assignment1 on 08/08/2015 1800 by 2000");
+		result = MainLogic
+		        .runLogic("add assignment1 on 08/08/2015 1800 by 2000");
 		
 		String expectedFeedbackType = "add";
 		String feedbackType = result.get(FEEDBACK_TYPE).get(0);
@@ -307,7 +309,8 @@ public class IntegrationTestingAdd {
 		ArrayList<ArrayList<String>> result = MainLogic.runLogic("delete all");
 		
 		// Task with 1 date, 2 time, with alias
-		result = MainLogic.runLogic("add assignment1 on 08/08/2015 1800 by 2000 alias:a1");
+		result = MainLogic
+		        .runLogic("add assignment1 on 08/08/2015 1800 by 2000 alias:a1");
 		
 		String expectedFeedbackType = "add";
 		String feedbackType = result.get(FEEDBACK_TYPE).get(0);
@@ -327,7 +330,7 @@ public class IntegrationTestingAdd {
 		
 		String expectedAlias = "a1";
 		String taskAlias = result.get(TASK_ALIAS).get(0);
-		assertEquals(expectedAlias,taskAlias);
+		assertEquals(expectedAlias, taskAlias);
 		
 	}
 	
@@ -336,8 +339,9 @@ public class IntegrationTestingAdd {
 		ArrayList<ArrayList<String>> result = MainLogic.runLogic("delete all");
 		
 		// Task with 2 date, no time, no alias
-		result = MainLogic.runLogic("add assignment1 on 08/08/2015 to 09082015");
-	
+		result = MainLogic
+		        .runLogic("add assignment1 on 08/08/2015 to 09082015");
+		
 		String expectedFeedbackType = "add";
 		String feedbackType = result.get(FEEDBACK_TYPE).get(0);
 		assertEquals(expectedFeedbackType, feedbackType);
@@ -353,16 +357,17 @@ public class IntegrationTestingAdd {
 		String expectedDate = "08 Aug 2015 00:00 to 09 Aug 2015 23:59";
 		String taskDate = result.get(TASK_DATE).get(0);
 		assertEquals(expectedDate, taskDate);
-
+		
 	}
-
+	
 	@Test
 	public void testAddTwoDateNoTimeWithAlias() {
 		ArrayList<ArrayList<String>> result = MainLogic.runLogic("delete all");
 		
 		// Task with 2 date, no time, with alias
-		result = MainLogic.runLogic("add assignment1 on 08/08/2015 to 09082015 alias:a1");
-	
+		result = MainLogic
+		        .runLogic("add assignment1 on 08/08/2015 to 09082015 alias:a1");
+		
 		String expectedFeedbackType = "add";
 		String feedbackType = result.get(FEEDBACK_TYPE).get(0);
 		assertEquals(expectedFeedbackType, feedbackType);
@@ -381,8 +386,8 @@ public class IntegrationTestingAdd {
 		
 		String expectedAlias = "a1";
 		String taskAlias = result.get(TASK_ALIAS).get(0);
-		assertEquals(expectedAlias,taskAlias);
-
+		assertEquals(expectedAlias, taskAlias);
+		
 	}
 	
 	@Test
@@ -390,8 +395,9 @@ public class IntegrationTestingAdd {
 		ArrayList<ArrayList<String>> result = MainLogic.runLogic("delete all");
 		
 		// Task with 2 date, 1 time, no alias
-		result = MainLogic.runLogic("add assignment1 on 08/08/2015 to 09082015 1000");
-	
+		result = MainLogic
+		        .runLogic("add assignment1 on 08/08/2015 to 09082015 1000");
+		
 		String expectedFeedbackType = "add";
 		String feedbackType = result.get(FEEDBACK_TYPE).get(0);
 		assertEquals(expectedFeedbackType, feedbackType);
@@ -407,7 +413,7 @@ public class IntegrationTestingAdd {
 		String expectedDate = "08 Aug 2015 10:00 to 09 Aug 2015 23:59";
 		String taskDate = result.get(TASK_DATE).get(0);
 		assertEquals(expectedDate, taskDate);
-
+		
 	}
 	
 	@Test
@@ -415,8 +421,9 @@ public class IntegrationTestingAdd {
 		ArrayList<ArrayList<String>> result = MainLogic.runLogic("delete all");
 		
 		// Task with 2 date, 1 time, with alias
-		result = MainLogic.runLogic("add assignment1 on 08/08/2015 to 09082015 1000 alias:a1");
-	
+		result = MainLogic
+		        .runLogic("add assignment1 on 08/08/2015 to 09082015 1000 alias:a1");
+		
 		String expectedFeedbackType = "add";
 		String feedbackType = result.get(FEEDBACK_TYPE).get(0);
 		assertEquals(expectedFeedbackType, feedbackType);
@@ -432,10 +439,10 @@ public class IntegrationTestingAdd {
 		String expectedDate = "08 Aug 2015 10:00 to 09 Aug 2015 23:59";
 		String taskDate = result.get(TASK_DATE).get(0);
 		assertEquals(expectedDate, taskDate);
-
+		
 		String expectedAlias = "a1";
 		String taskAlias = result.get(TASK_ALIAS).get(0);
-		assertEquals(expectedAlias,taskAlias);
+		assertEquals(expectedAlias, taskAlias);
 		
 	}
 	
@@ -444,7 +451,8 @@ public class IntegrationTestingAdd {
 		ArrayList<ArrayList<String>> result = MainLogic.runLogic("delete all");
 		
 		// Task with 2 date, 2 time, no alias
-		result = MainLogic.runLogic("add assignment1 on 08/08/2015 to 09082015 1000 to 1800");
+		result = MainLogic
+		        .runLogic("add assignment1 on 08/08/2015 to 09082015 1000 to 1800");
 		
 		String expectedFeedbackType = "add";
 		String feedbackType = result.get(FEEDBACK_TYPE).get(0);
@@ -469,7 +477,8 @@ public class IntegrationTestingAdd {
 		ArrayList<ArrayList<String>> result = MainLogic.runLogic("delete all");
 		
 		// Task with 2 date, 2 time, no alias
-		result = MainLogic.runLogic("add assignment1 on 08/08/2015 to 09082015 1000 to 1800 alias:a1");
+		result = MainLogic
+		        .runLogic("add assignment1 on 08/08/2015 to 09082015 1000 to 1800 alias:a1");
 		
 		String expectedFeedbackType = "add";
 		String feedbackType = result.get(FEEDBACK_TYPE).get(0);
@@ -486,13 +495,12 @@ public class IntegrationTestingAdd {
 		String expectedDate = "08 Aug 2015 10:00 to 09 Aug 2015 18:00";
 		String taskDate = result.get(TASK_DATE).get(0);
 		assertEquals(expectedDate, taskDate);
-
+		
 		String expectedAlias = "a1";
 		String taskAlias = result.get(TASK_ALIAS).get(0);
-		assertEquals(expectedAlias,taskAlias);
+		assertEquals(expectedAlias, taskAlias);
 		
 	}
-	
 	
 	// Fail cases
 	
@@ -518,7 +526,7 @@ public class IntegrationTestingAdd {
 	@Test
 	public void testAddNoDateNoTimeWithAliasFail() {
 		ArrayList<ArrayList<String>> result = MainLogic.runLogic("delete all");
-	
+		
 		// Task with no date, no time, with alias
 		// Wrong alias format
 		result = MainLogic.runLogic("add assignment1 alias a1");
@@ -538,7 +546,7 @@ public class IntegrationTestingAdd {
 		String expectedAlias = "a1";
 		String taskAlias = result.get(TASK_ALIAS).get(0);
 		assertNotEquals(expectedAlias, taskAlias);
-	
+		
 	}
 	
 	@Test
@@ -601,8 +609,8 @@ public class IntegrationTestingAdd {
 	public void testAddNoDateTwoTimeNoAliasFail() {
 		ArrayList<ArrayList<String>> result = MainLogic.runLogic("delete all");
 		
-		//Task with no date, 2 time, without alias
-		//Wrong time format
+		// Task with no date, 2 time, without alias
+		// Wrong time format
 		result = MainLogic.runLogic("add assignment1 on 0000 by 2359am");
 		
 		String expectedFeedbackType = "add";
@@ -626,8 +634,8 @@ public class IntegrationTestingAdd {
 	public void testAddNoDateTwoTimeWithAliasFail() {
 		ArrayList<ArrayList<String>> result = MainLogic.runLogic("delete all");
 		
-		//Task with no date, 2 time, without alias
-		//Wrong alias format
+		// Task with no date, 2 time, without alias
+		// Wrong alias format
 		result = MainLogic.runLogic("add assignment1 on 1130 by 2359 alias a1");
 		
 		String expectedFeedbackType = "add";
@@ -654,7 +662,7 @@ public class IntegrationTestingAdd {
 	@Test
 	public void testAddOneDateNoTimeNoAliasFail() {
 		ArrayList<ArrayList<String>> result = MainLogic.runLogic("delete all");
-
+		
 		// Task with 1 date, 0 time, without alias
 		// Wrong date format
 		result = MainLogic.runLogic("add assignment1 on 29/29/2015");
@@ -680,7 +688,7 @@ public class IntegrationTestingAdd {
 	@Test
 	public void testAddOneDateNoTimeWithAliasFail() {
 		ArrayList<ArrayList<String>> result = MainLogic.runLogic("delete all");
-
+		
 		// Task with 1 date, 0 time, with alias
 		// Wrong alias format
 		result = MainLogic.runLogic("add assignment1 on 08/08/2015 alias a1");
@@ -739,7 +747,8 @@ public class IntegrationTestingAdd {
 		
 		// Task with 1 date, 1 time, with alias
 		// Wrong alias format
-		result = MainLogic.runLogic("add alias a1 assignment1 on 08/08/2015 1800");
+		result = MainLogic
+		        .runLogic("add alias a1 assignment1 on 08/08/2015 1800");
 		
 		String expectedFeedbackType = "add";
 		String feedbackType = result.get(FEEDBACK_TYPE).get(0);
@@ -759,17 +768,18 @@ public class IntegrationTestingAdd {
 		
 		String expectedAlias = "a1";
 		String taskAlias = result.get(TASK_ALIAS).get(0);
-		assertNotEquals(expectedAlias,taskAlias);
+		assertNotEquals(expectedAlias, taskAlias);
 		
 	}
-
+	
 	@Test
 	public void testAddOneDateTwoTimeNoAliasFail() {
 		ArrayList<ArrayList<String>> result = MainLogic.runLogic("delete all");
 		
 		// Task with 1 date, 2 time, without alias
 		// Wrong time format
-		result = MainLogic.runLogic("add assignment1 on 08/08/2015 1800 by 2359am");
+		result = MainLogic
+		        .runLogic("add assignment1 on 08/08/2015 1800 by 2359am");
 		
 		String expectedFeedbackType = "add";
 		String feedbackType = result.get(FEEDBACK_TYPE).get(0);
@@ -794,7 +804,8 @@ public class IntegrationTestingAdd {
 		
 		// Task with 1 date, 2 time, with alias
 		// Wrong alias format
-		result = MainLogic.runLogic("add assignment1 on 08/08/2015 1800 by 2000 alias a1");
+		result = MainLogic
+		        .runLogic("add assignment1 on 08/08/2015 1800 by 2000 alias a1");
 		
 		String expectedFeedbackType = "add";
 		String feedbackType = result.get(FEEDBACK_TYPE).get(0);
@@ -814,7 +825,7 @@ public class IntegrationTestingAdd {
 		
 		String expectedAlias = "a1";
 		String taskAlias = result.get(TASK_ALIAS).get(0);
-		assertNotEquals(expectedAlias,taskAlias);
+		assertNotEquals(expectedAlias, taskAlias);
 		
 	}
 	
@@ -824,8 +835,9 @@ public class IntegrationTestingAdd {
 		
 		// Task with 2 date, no time, no alias
 		// Wrong date format
-		result = MainLogic.runLogic("add assignment1 on 08/08/2015 to 09292015");
-	
+		result = MainLogic
+		        .runLogic("add assignment1 on 08/08/2015 to 09292015");
+		
 		String expectedFeedbackType = "add";
 		String feedbackType = result.get(FEEDBACK_TYPE).get(0);
 		assertEquals(expectedFeedbackType, feedbackType);
@@ -841,17 +853,18 @@ public class IntegrationTestingAdd {
 		String expectedDate = "08 Aug 2015 00:00 to 09 Aug 2015 23:59";
 		String taskDate = result.get(TASK_DATE).get(0);
 		assertNotEquals(expectedDate, taskDate);
-
+		
 	}
-
+	
 	@Test
 	public void testAddTwoDateNoTimeWithAliasFail() {
 		ArrayList<ArrayList<String>> result = MainLogic.runLogic("delete all");
 		
 		// Task with 2 date, no time, with alias
 		// Wrong alias format
-		result = MainLogic.runLogic("add assignment1 on 08/08/2015 to 09082015 alias a1");
-	
+		result = MainLogic
+		        .runLogic("add assignment1 on 08/08/2015 to 09082015 alias a1");
+		
 		String expectedFeedbackType = "add";
 		String feedbackType = result.get(FEEDBACK_TYPE).get(0);
 		assertEquals(expectedFeedbackType, feedbackType);
@@ -870,8 +883,8 @@ public class IntegrationTestingAdd {
 		
 		String expectedAlias = "a1";
 		String taskAlias = result.get(TASK_ALIAS).get(0);
-		assertNotEquals(expectedAlias,taskAlias);
-
+		assertNotEquals(expectedAlias, taskAlias);
+		
 	}
 	
 	@Test
@@ -880,8 +893,9 @@ public class IntegrationTestingAdd {
 		
 		// Task with 2 date, 1 time, no alias
 		// Wrong date and time format
-		result = MainLogic.runLogic("add assignment1 on 08/08/2015 to 09082015 2359am");
-	
+		result = MainLogic
+		        .runLogic("add assignment1 on 08/08/2015 to 09082015 2359am");
+		
 		String expectedFeedbackType = "add";
 		String feedbackType = result.get(FEEDBACK_TYPE).get(0);
 		assertEquals(expectedFeedbackType, feedbackType);
@@ -897,7 +911,7 @@ public class IntegrationTestingAdd {
 		String expectedDate = "08 Aug 2015 10:00 to 09 Aug 2015 23:59";
 		String taskDate = result.get(TASK_DATE).get(0);
 		assertNotEquals(expectedDate, taskDate);
-
+		
 	}
 	
 	@Test
@@ -906,8 +920,9 @@ public class IntegrationTestingAdd {
 		
 		// Task with 2 date, 1 time, with alias
 		// Wrong date, time, alias format
-		result = MainLogic.runLogic("add assignment1 on 08/08/2015 to 09082015 1000 alias a1");
-	
+		result = MainLogic
+		        .runLogic("add assignment1 on 08/08/2015 to 09082015 1000 alias a1");
+		
 		String expectedFeedbackType = "add";
 		String feedbackType = result.get(FEEDBACK_TYPE).get(0);
 		assertEquals(expectedFeedbackType, feedbackType);
@@ -923,10 +938,10 @@ public class IntegrationTestingAdd {
 		String expectedDate = "08 Aug 2015 10:00 to 09 Aug 2015 23:59";
 		String taskDate = result.get(TASK_DATE).get(0);
 		assertEquals(expectedDate, taskDate);
-
+		
 		String expectedAlias = "a1";
 		String taskAlias = result.get(TASK_ALIAS).get(0);
-		assertNotEquals(expectedAlias,taskAlias);
+		assertNotEquals(expectedAlias, taskAlias);
 		
 	}
 	
@@ -936,7 +951,8 @@ public class IntegrationTestingAdd {
 		
 		// Task with 2 date, 2 time, no alias
 		// Wrong date and time format
-		result = MainLogic.runLogic("add assignment1 on 29/29/2015 to 29302015 1800am to 2300am");
+		result = MainLogic
+		        .runLogic("add assignment1 on 29/29/2015 to 29302015 1800am to 2300am");
 		
 		String expectedFeedbackType = "add";
 		String feedbackType = result.get(FEEDBACK_TYPE).get(0);
@@ -962,7 +978,8 @@ public class IntegrationTestingAdd {
 		
 		// Task with 2 date, 2 time, no alias
 		// Wrong date, time and alias format
-		result = MainLogic.runLogic("add assignment1 on 29/29/2015 to 29302015 1800am to 2300am alias a1");
+		result = MainLogic
+		        .runLogic("add assignment1 on 29/29/2015 to 29302015 1800am to 2300am alias a1");
 		
 		String expectedFeedbackType = "add";
 		String feedbackType = result.get(FEEDBACK_TYPE).get(0);
@@ -979,13 +996,11 @@ public class IntegrationTestingAdd {
 		String expectedDate = "08 Aug 2015 10:00 to 09 Aug 2015 18:00";
 		String taskDate = result.get(TASK_DATE).get(0);
 		assertNotEquals(expectedDate, taskDate);
-
+		
 		String expectedAlias = "a1";
 		String taskAlias = result.get(TASK_ALIAS).get(0);
-		assertNotEquals(expectedAlias,taskAlias);
+		assertNotEquals(expectedAlias, taskAlias);
 		
 	}
 	
-		
-
 }
