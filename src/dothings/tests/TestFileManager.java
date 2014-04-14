@@ -8,6 +8,7 @@ import org.junit.Test;
 
 import dothings.storage.FileManager;
 
+//@author A0099727J
 public class TestFileManager {
 	private static final String TEST_FILE = "testFM.txt";
 	
