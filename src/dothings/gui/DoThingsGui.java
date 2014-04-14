@@ -42,7 +42,7 @@ import org.jnativehook.keyboard.NativeKeyListener;
 
 import dothings.logic.MainLogic;
 
-//@author A0101924R
+// @author A0101924R
 @SuppressWarnings("serial")
 public class DoThingsGui extends JFrame {
 	private static final String DEFAULT_EXIT = "exit";
